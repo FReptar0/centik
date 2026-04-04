@@ -1,7 +1,10 @@
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <h1 className="text-4xl font-semibold">Centik</h1>
-    </div>
+    <main className="flex min-h-screen items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold text-accent">Centik</h1>
+        <p className="mt-2 text-text-secondary">Personal finance tracking</p>
+      </div>
+    </main>
   )
 }
