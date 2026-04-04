@@ -14,7 +14,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **INFRA-03**: ESLint flat config + Prettier configured with zero warnings
 - [x] **INFRA-04**: Vitest configured for unit tests with coverage reporting
 - [x] **INFRA-05**: Playwright configured for E2E tests
-- [ ] **INFRA-06**: `npm run build` passes with zero errors and zero warnings
+- [x] **INFRA-06**: `npm run build` passes with zero errors and zero warnings
 - [x] **INFRA-07**: Environment files (.env, .env.example, .env.test) configured
 
 ### Database
@@ -175,7 +175,7 @@ Deferred to future release. Tracked but not in current roadmap.
 | INFRA-03 | Phase 1 | Complete |
 | INFRA-04 | Phase 1 | Complete |
 | INFRA-05 | Phase 1 | Complete |
-| INFRA-06 | Phase 1 | Pending |
+| INFRA-06 | Phase 1 | Complete |
 | INFRA-07 | Phase 1 | Complete |
 | DB-01 | Phase 2 | Pending |
 | DB-02 | Phase 2 | Pending |

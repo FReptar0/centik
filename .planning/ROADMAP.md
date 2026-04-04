@@ -12,7 +12,7 @@ Centik delivers a personal finance tracking app for the Mexican quincenal pay cy
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Infrastructure + Scaffolding** - Reconcile actual installed versions (Next.js 16, Tailwind v4, Prisma 7, ESLint 9), configure toolchain, Docker Compose, passing build with zero tests
+- [x] **Phase 1: Infrastructure + Scaffolding** - Reconcile actual installed versions (Next.js 16, Tailwind v4, Prisma 7, ESLint 9), configure toolchain, Docker Compose, passing build with zero tests (completed 2026-04-04)
 - [ ] **Phase 2: Database Schema + Seed** - Prisma schema for all 7 MVP entities + v2 stubs, migrations, idempotent seed with non-zero BigInt amounts
 - [ ] **Phase 3: Foundation Libraries** - Utilities, serializer, Zod validators, constants, TypeScript types -- all at 100% test coverage
 - [ ] **Phase 4: Layout Shell** - Root layout with dark theme, desktop sidebar, mobile bottom tabs, floating FAB, DynamicIcon, period selector
@@ -36,7 +36,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. `npm run test:run` executes Vitest successfully (even with zero test files)
   4. Docker Compose starts dev DB (port 5432) and test DB (port 5433, tmpfs) without manual intervention
   5. Tailwind v4 `@theme` CSS config renders custom dark palette correctly in the dev server
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 - [x] 01-01-PLAN.md -- Restructure to src/ layout, install all dependencies, Docker Compose, environment files
@@ -215,7 +215,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Infrastructure + Scaffolding | 2/3 | In Progress|  |
+| 1. Infrastructure + Scaffolding | 3/3 | Complete   | 2026-04-04 |
 | 2. Database Schema + Seed | 0/2 | Not started | - |
 | 3. Foundation Libraries | 0/3 | Not started | - |
 | 4. Layout Shell | 0/3 | Not started | - |
