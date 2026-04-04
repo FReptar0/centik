@@ -39,7 +39,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans:** 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md -- Restructure to src/ layout, install all dependencies, Docker Compose, environment files
+- [x] 01-01-PLAN.md -- Restructure to src/ layout, install all dependencies, Docker Compose, environment files
 - [ ] 01-02-PLAN.md -- ESLint + Prettier config, Vitest + Playwright setup, Prisma 7 stub schema
 - [ ] 01-03-PLAN.md -- Tailwind v4 @theme dark palette, DM Sans font, Recharts validation, full build pass
 
