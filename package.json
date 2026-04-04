@@ -6,21 +6,56 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format:check": "prettier --check .",
+    "format": "prettier --write .",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:integration": "vitest run --config vitest.integration.config.mts",
+    "test:e2e": "playwright test",
+    "quality": "npm run build && npm run lint && npm run format:check && npm run test:run",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@prisma/client": "latest",
+    "@prisma/adapter-pg": "latest",
+    "clsx": "latest",
+    "dotenv": "latest",
+    "lucide-react": "latest",
     "next": "16.2.2",
+    "pg": "latest",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "react-is": "^19.2.4",
+    "recharts": "latest",
+    "tailwind-merge": "latest",
+    "zod": "latest"
   },
   "devDependencies": {
+    "@playwright/test": "latest",
     "@tailwindcss/postcss": "^4",
+    "@testing-library/dom": "latest",
+    "@testing-library/react": "latest",
     "@types/node": "^20",
+    "@types/pg": "latest",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "latest",
     "eslint": "^9",
     "eslint-config-next": "16.2.2",
+    "eslint-config-prettier": "latest",
+    "jsdom": "latest",
+    "prettier": "latest",
+    "prisma": "latest",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "tsx": "latest",
+    "typescript": "^5",
+    "vite-tsconfig-paths": "latest",
+    "vitest": "latest"
+  },
+  "overrides": {
+    "react-is": "$react-is"
   }
 }

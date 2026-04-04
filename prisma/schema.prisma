@@ -1,0 +1,11 @@
+// Prisma schema -- full schema defined in Phase 2
+// This minimal file exists so `prisma generate` succeeds during postinstall
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}

@@ -30,8 +30,18 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files (secrets -- .env.example is committed)
+.env
+.env.test
+.env.local
+.env.*.local
+
+# Prisma generated client
+/generated/
+
+# Playwright artifacts
+/e2e-results/
+/playwright-report/
 
 # vercel
 .vercel
