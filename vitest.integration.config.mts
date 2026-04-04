@@ -6,6 +6,7 @@ export default defineConfig({
   },
   test: {
     environment: 'node',
+    passWithNoTests: true,
     include: ['tests/integration/**/*.test.ts'],
     setupFiles: ['tests/setup.ts'],
     pool: 'forks',
