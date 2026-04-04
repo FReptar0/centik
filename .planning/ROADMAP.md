@@ -31,24 +31,24 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Depends on**: Nothing (first phase)
 **Requirements**: INFRA-01, INFRA-02, INFRA-03, INFRA-04, INFRA-05, INFRA-06, INFRA-07
 **Success Criteria** (what must be TRUE):
-  1. `pnpm build` completes with zero errors and zero warnings
-  2. `pnpm lint` (via `eslint .` with flat config) completes with zero warnings
-  3. `pnpm test` executes Vitest successfully (even with zero test files)
+  1. `npm run build` completes with zero errors and zero warnings
+  2. `npm run lint` (via `eslint .` with flat config) completes with zero warnings
+  3. `npm run test:run` executes Vitest successfully (even with zero test files)
   4. Docker Compose starts dev DB (port 5432) and test DB (port 5433, tmpfs) without manual intervention
   5. Tailwind v4 `@theme` CSS config renders custom dark palette correctly in the dev server
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
-- [ ] 01-03: TBD
+- [ ] 01-01-PLAN.md -- Restructure to src/ layout, install all dependencies, Docker Compose, environment files
+- [ ] 01-02-PLAN.md -- ESLint + Prettier config, Vitest + Playwright setup, Prisma 7 stub schema
+- [ ] 01-03-PLAN.md -- Tailwind v4 @theme dark palette, DM Sans font, Recharts validation, full build pass
 
 ### Phase 2: Database Schema + Seed
 **Goal**: Complete database schema exists with seeded reference data including non-zero monetary amounts that exercise BigInt serialization
 **Depends on**: Phase 1
 **Requirements**: DB-01, DB-02, DB-03, DB-04, DB-05, DB-06, DB-07, DB-08, DB-09
 **Success Criteria** (what must be TRUE):
-  1. `pnpm prisma migrate dev` applies all migrations cleanly on a fresh database
+  1. `npm run prisma migrate dev` applies all migrations cleanly on a fresh database
   2. Seed script creates 8 categories (6 expense + 2 income) with correct Lucide icon names and hex colors
   3. Seed script creates current period, default income sources, default debts, and zero-amount budget entries
   4. Seed is idempotent -- running it twice produces no errors and no duplicate records
@@ -68,7 +68,7 @@ Plans:
   2. `formatMoney("15075")` returns "$150.75" in MXN format and handles edge cases (zero, large amounts)
   3. `toCents("150.75")` returns "15075" without float contamination (string-split parsing, not parseFloat * 100)
   4. All Zod schemas (transaction, debt, budget, income source, category) reject invalid input with descriptive errors
-  5. `pnpm test:coverage` reports 100% coverage on `src/lib/` files
+  5. `npm run test:coverage` reports 100% coverage on `src/lib/` files
 **Plans**: TBD
 
 Plans:
@@ -215,7 +215,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Infrastructure + Scaffolding | 0/3 | Not started | - |
+| 1. Infrastructure + Scaffolding | 0/3 | Planning complete | - |
 | 2. Database Schema + Seed | 0/2 | Not started | - |
 | 3. Foundation Libraries | 0/3 | Not started | - |
 | 4. Layout Shell | 0/3 | Not started | - |
