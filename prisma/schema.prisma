@@ -9,3 +9,15 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+// Stub model for toolchain validation. Full schema in Phase 2.
+model Period {
+  id        String   @id @default(cuid())
+  month     Int
+  year      Int
+  isClosed  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([month, year])
+}
