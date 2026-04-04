@@ -11,9 +11,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **INFRA-01**: Project scaffolded with Next.js 16, TypeScript strict, Tailwind v4, Prisma 7, npm
 - [x] **INFRA-02**: Docker Compose for dev PostgreSQL (port 5432) and test PostgreSQL (port 5433, tmpfs)
-- [ ] **INFRA-03**: ESLint flat config + Prettier configured with zero warnings
-- [ ] **INFRA-04**: Vitest configured for unit tests with coverage reporting
-- [ ] **INFRA-05**: Playwright configured for E2E tests
+- [x] **INFRA-03**: ESLint flat config + Prettier configured with zero warnings
+- [x] **INFRA-04**: Vitest configured for unit tests with coverage reporting
+- [x] **INFRA-05**: Playwright configured for E2E tests
 - [ ] **INFRA-06**: `npm run build` passes with zero errors and zero warnings
 - [x] **INFRA-07**: Environment files (.env, .env.example, .env.test) configured
 
@@ -172,9 +172,9 @@ Deferred to future release. Tracked but not in current roadmap.
 |-------------|-------|--------|
 | INFRA-01 | Phase 1 | Complete |
 | INFRA-02 | Phase 1 | Complete |
-| INFRA-03 | Phase 1 | Pending |
-| INFRA-04 | Phase 1 | Pending |
-| INFRA-05 | Phase 1 | Pending |
+| INFRA-03 | Phase 1 | Complete |
+| INFRA-04 | Phase 1 | Complete |
+| INFRA-05 | Phase 1 | Complete |
 | INFRA-06 | Phase 1 | Pending |
 | INFRA-07 | Phase 1 | Complete |
 | DB-01 | Phase 2 | Pending |
