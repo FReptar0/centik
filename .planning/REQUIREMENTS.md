@@ -70,8 +70,8 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **TXN-01**: User can register a transaction in under 30 seconds via quick-add modal
 - [x] **TXN-02**: Quick-add modal: toggle expense/income, amount input (auto-focus, numeric keyboard), category icon grid, save button
 - [x] **TXN-03**: Optional fields collapsed by default: description, payment method, notes, date (defaults to today)
-- [ ] **TXN-04**: User can view transaction list for current period, sorted by date descending
-- [ ] **TXN-05**: User can filter transactions by category, type (income/expense), date range, and payment method
+- [x] **TXN-04**: User can view transaction list for current period, sorted by date descending
+- [x] **TXN-05**: User can filter transactions by category, type (income/expense), date range, and payment method
 - [x] **TXN-06**: User can edit an existing transaction
 - [x] **TXN-07**: User can delete a transaction with inline confirmation
 - [x] **TXN-08**: Transactions in closed periods cannot be created/edited/deleted (enforced server-side)
@@ -213,8 +213,8 @@ Deferred to future release. Tracked but not in current roadmap.
 | TXN-01 | Phase 6 | Complete |
 | TXN-02 | Phase 6 | Complete |
 | TXN-03 | Phase 6 | Complete |
-| TXN-04 | Phase 6 | Pending |
-| TXN-05 | Phase 6 | Pending |
+| TXN-04 | Phase 6 | Complete |
+| TXN-05 | Phase 6 | Complete |
 | TXN-06 | Phase 6 | Complete |
 | TXN-07 | Phase 6 | Complete |
 | TXN-08 | Phase 6 | Complete |
