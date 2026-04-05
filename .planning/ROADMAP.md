@@ -85,7 +85,7 @@ Plans:
   3. Floating "+" FAB button is visible on all pages across both desktop and mobile viewports
   4. Period selector displays current month/year and allows navigation to previous periods via URL search params
   5. DynamicIcon component renders any Lucide icon by its string name from the database
-**Plans:** 3 plans
+**Plans:** 2/3 plans executed
 
 Plans:
 - [ ] 04-01-PLAN.md -- DynamicIcon component, nav constants (Spanish labels, i18n-ready), Modal/Sheet responsive primitive
@@ -217,7 +217,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 1. Infrastructure + Scaffolding | 3/3 | Complete   | 2026-04-04 |
 | 2. Database Schema + Seed | 2/2 | Complete | 2026-04-05 |
 | 3. Foundation Libraries | 0/2 | Not started | - |
-| 4. Layout Shell | 0/3 | Not started | - |
+| 4. Layout Shell | 2/3 | In Progress|  |
 | 5. Income Sources | 0/2 | Not started | - |
 | 6. Categories + Transactions | 0/4 | Not started | - |
 | 7. Dashboard | 0/3 | Not started | - |

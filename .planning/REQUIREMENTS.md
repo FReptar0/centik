@@ -43,9 +43,9 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Layout
 
 - [ ] **LAYOUT-01**: Root layout with dark theme (bg #0a0f1a), DM Sans font, and Tailwind v4 custom color palette
-- [ ] **LAYOUT-02**: Desktop sidebar navigation (fixed, 240px) with Lucide icons and active state highlighting
-- [ ] **LAYOUT-03**: Mobile bottom tab bar (5 items: Dashboard, Movimientos, [+], Deudas, Presupuesto)
-- [ ] **LAYOUT-04**: Floating "+" FAB button for quick transaction entry (always visible)
+- [x] **LAYOUT-02**: Desktop sidebar navigation (fixed, 240px) with Lucide icons and active state highlighting
+- [x] **LAYOUT-03**: Mobile bottom tab bar (5 items: Dashboard, Movimientos, [+], Deudas, Presupuesto)
+- [x] **LAYOUT-04**: Floating "+" FAB button for quick transaction entry (always visible)
 - [ ] **LAYOUT-05**: Page header pattern with title, period indicator, and primary action button
 - [ ] **LAYOUT-06**: Period selector showing current month/year with navigation to previous periods
 - [x] **LAYOUT-07**: DynamicIcon component that renders Lucide icons by name from DB string
@@ -195,9 +195,9 @@ Deferred to future release. Tracked but not in current roadmap.
 | FOUND-07 | Phase 3 | Complete |
 | FOUND-08 | Phase 3 | Complete |
 | LAYOUT-01 | Phase 4 | Pending |
-| LAYOUT-02 | Phase 4 | Pending |
-| LAYOUT-03 | Phase 4 | Pending |
-| LAYOUT-04 | Phase 4 | Pending |
+| LAYOUT-02 | Phase 4 | Complete |
+| LAYOUT-03 | Phase 4 | Complete |
+| LAYOUT-04 | Phase 4 | Complete |
 | LAYOUT-05 | Phase 4 | Pending |
 | LAYOUT-06 | Phase 4 | Pending |
 | LAYOUT-07 | Phase 4 | Complete |
