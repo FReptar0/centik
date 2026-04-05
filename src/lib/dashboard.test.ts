@@ -18,7 +18,7 @@ const mockBudgetFindMany = vi.fn()
 
 const mockMonthlySummaryFindMany = vi.fn()
 
-const mockTransactionAggregate = vi.fn()
+const mockCategoryFindMany = vi.fn()
 
 vi.mock('@/lib/prisma', () => ({
   default: {
@@ -38,6 +38,9 @@ vi.mock('@/lib/prisma', () => ({
     },
     monthlySummary: {
       findMany: (...args: unknown[]) => mockMonthlySummaryFindMany(...args),
+    },
+    category: {
+      findMany: (...args: unknown[]) => mockCategoryFindMany(...args),
     },
   },
 }))
@@ -148,7 +151,7 @@ describe('getCategoryExpenses', () => {
       { categoryId: 'cat-1', _sum: { amount: BigInt(500000) } },
       { categoryId: 'cat-2', _sum: { amount: BigInt(1200000) } },
     ])
-    mockFindMany.mockResolvedValue([
+    mockCategoryFindMany.mockResolvedValue([
       { id: 'cat-1', name: 'Comida', icon: 'utensils', color: '#fb923c' },
       { id: 'cat-2', name: 'Servicios', icon: 'zap', color: '#60a5fa' },
     ])
@@ -167,7 +170,6 @@ describe('getCategoryExpenses', () => {
 
   it('returns empty array when no expenses', async () => {
     mockGroupBy.mockResolvedValue([])
-    mockFindMany.mockResolvedValue([])
 
     const result = await getCategoryExpenses('period-1')
 
