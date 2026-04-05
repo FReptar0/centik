@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 5: Income Sources** - Full CRUD for simplest entity, validates Server Component + Server Action pattern end-to-end (completed 2026-04-05)
 - [ ] **Phase 6: Categories + Transactions** - Category list view, transaction quick-add, list with filters, edit/delete, closed-period enforcement
 - [x] **Phase 7: Dashboard** - 6 KPI cards via SQL aggregation, 3 charts (budget bar, trend area, expense donut), recent transactions (completed 2026-04-05)
-- [ ] **Phase 8: Debts** - Credit card and loan tracking with type-specific calculated fields, inline balance editing, summary metrics
+- [x] **Phase 8: Debts** - Credit card and loan tracking with type-specific calculated fields, inline balance editing, summary metrics (completed 2026-04-05)
 - [ ] **Phase 9: Budget Configuration + Progress** - Quincenal budget input, auto-calculated views, progress bars with traffic light, budget-copy-from-previous
 - [ ] **Phase 10: History + Period Close** - Annual pivot table, atomic period close transaction, read-only closed periods, reopen capability
 - [ ] **Phase 11: Polish + Accessibility** - Skeleton loading states, toast notifications, empty states, a11y audit, form UX refinements
@@ -150,7 +150,7 @@ Plans:
   2. User can create a new debt (credit card or personal loan) with type-specific fields
   3. User can update a debt balance inline and delete a debt with confirmation
   4. Summary section shows total debt, total monthly debt payments, and debt-to-income ratio
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [ ] 08-01-PLAN.md -- Debt calculation utilities (metrics, health colors, summary) + Server Actions (create, update, updateBalance, delete) with TDD tests
@@ -219,7 +219,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 5. Income Sources | 2/2 | Complete   | 2026-04-05 |
 | 6. Categories + Transactions | 0/4 | Not started | - |
 | 7. Dashboard | 2/2 | Complete   | 2026-04-05 |
-| 8. Debts | 1/2 | In Progress|  |
+| 8. Debts | 2/2 | Complete   | 2026-04-05 |
 | 9. Budget Configuration + Progress | 0/3 | Not started | - |
 | 10. History + Period Close | 0/3 | Not started | - |
 | 11. Polish + Accessibility | 0/3 | Not started | - |

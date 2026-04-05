@@ -90,9 +90,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Debts
 
-- [ ] **DEBT-01**: User can view all active debts as expandable cards with type-specific metrics
-- [ ] **DEBT-02**: Credit card view: utilization bar (green <30%, orange 30-70%, red >70%), minimum payment, cut-off/payment dates, estimated monthly interest
-- [ ] **DEBT-03**: Loan view: progress bar (% paid), monthly payment, remaining months, total remaining
+- [x] **DEBT-01**: User can view all active debts as expandable cards with type-specific metrics
+- [x] **DEBT-02**: Credit card view: utilization bar (green <30%, orange 30-70%, red >70%), minimum payment, cut-off/payment dates, estimated monthly interest
+- [x] **DEBT-03**: Loan view: progress bar (% paid), monthly payment, remaining months, total remaining
 - [x] **DEBT-04**: User can create a new debt (credit card or personal loan) with type-specific fields
 - [x] **DEBT-05**: User can update debt balance (inline edit or modal)
 - [x] **DEBT-06**: User can delete a debt with confirmation
@@ -227,9 +227,9 @@ Deferred to future release. Tracked but not in current roadmap.
 | DASH-05 | Phase 7 | Complete |
 | DASH-06 | Phase 7 | Complete |
 | DASH-07 | Phase 7 | Complete |
-| DEBT-01 | Phase 8 | Pending |
-| DEBT-02 | Phase 8 | Pending |
-| DEBT-03 | Phase 8 | Pending |
+| DEBT-01 | Phase 8 | Complete |
+| DEBT-02 | Phase 8 | Complete |
+| DEBT-03 | Phase 8 | Complete |
 | DEBT-04 | Phase 8 | Complete |
 | DEBT-05 | Phase 8 | Complete |
 | DEBT-06 | Phase 8 | Complete |
