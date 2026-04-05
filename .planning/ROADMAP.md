@@ -135,7 +135,7 @@ Plans:
   3. Area/line chart shows income vs expenses trend for the last 6 months (from MonthlySummary data)
   4. Donut chart shows expense distribution by category for the current month
   5. Recent transactions section shows the last 8 movements with category icon, description, date, and formatted amount
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
 - [ ] 07-01-PLAN.md -- Dashboard data queries (5 SQL aggregation functions) + types + KPICard/KPIGrid components with unit tests
@@ -219,7 +219,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 4. Layout Shell | 2/3 | In Progress|  |
 | 5. Income Sources | 2/2 | Complete   | 2026-04-05 |
 | 6. Categories + Transactions | 0/4 | Not started | - |
-| 7. Dashboard | 0/2 | Not started | - |
+| 7. Dashboard | 1/2 | In Progress|  |
 | 8. Debts | 0/3 | Not started | - |
 | 9. Budget Configuration + Progress | 0/3 | Not started | - |
 | 10. History + Period Close | 0/3 | Not started | - |
