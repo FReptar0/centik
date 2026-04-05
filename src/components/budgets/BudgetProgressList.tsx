@@ -2,8 +2,8 @@
 
 import DynamicIcon from '@/components/ui/DynamicIcon'
 import { cn, formatMoney } from '@/lib/utils'
-import { getBudgetColor } from '@/lib/budget'
-import type { BudgetWithSpent } from '@/lib/budget'
+import { getBudgetColor } from '@/lib/budget-shared'
+import type { BudgetWithSpent } from '@/lib/budget-shared'
 
 interface BudgetProgressListProps {
   budgets: BudgetWithSpent[]

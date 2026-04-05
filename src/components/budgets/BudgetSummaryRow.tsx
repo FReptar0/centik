@@ -1,7 +1,7 @@
 'use client'
 
 import { cn, formatMoney } from '@/lib/utils'
-import type { BudgetWithSpent } from '@/lib/budget'
+import type { BudgetWithSpent } from '@/lib/budget-shared'
 
 interface BudgetSummaryRowProps {
   budgets: BudgetWithSpent[]

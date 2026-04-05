@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react'
 import DynamicIcon from '@/components/ui/DynamicIcon'
 import { cn, formatMoney, toCents } from '@/lib/utils'
-import type { BudgetWithSpent } from '@/lib/budget'
+import type { BudgetWithSpent } from '@/lib/budget-shared'
 
 interface BudgetTableProps {
   budgets: BudgetWithSpent[]
