@@ -1,10 +1,16 @@
 import { describe, it, expect } from 'vitest'
+import { ICON_MAP } from '@/components/ui/DynamicIcon'
 import {
   DEFAULT_CATEGORIES,
   CATEGORY_COLORS,
   INCOME_SOURCE_TYPES,
   PAYMENT_METHODS_DISPLAY,
   FREQUENCY_DISPLAY,
+  SIDEBAR_NAV_ITEMS,
+  MOBILE_TAB_ITEMS,
+  MORE_MENU_ITEMS,
+  PERIOD_AWARE_ROUTES,
+  MONTH_NAMES_ES,
 } from './constants'
 
 describe('DEFAULT_CATEGORIES', () => {
@@ -101,5 +107,75 @@ describe('FREQUENCY_DISPLAY', () => {
   it('maps to Spanish display names', () => {
     expect(FREQUENCY_DISPLAY['QUINCENAL']).toBe('Quincenal')
     expect(FREQUENCY_DISPLAY['VARIABLE']).toBe('Variable')
+  })
+})
+
+describe('SIDEBAR_NAV_ITEMS', () => {
+  it('has 6 items', () => {
+    expect(SIDEBAR_NAV_ITEMS).toHaveLength(6)
+  })
+
+  it('has correct labels in order', () => {
+    const labels = SIDEBAR_NAV_ITEMS.map((item) => item.label)
+    expect(labels).toEqual([
+      'Inicio',
+      'Movimientos',
+      'Deudas',
+      'Presupuesto',
+      'Ingresos',
+      'Historial',
+    ])
+  })
+
+  it('has all icon names present in ICON_MAP', () => {
+    for (const item of SIDEBAR_NAV_ITEMS) {
+      expect(ICON_MAP[item.icon]).toBeDefined()
+    }
+  })
+})
+
+describe('MOBILE_TAB_ITEMS', () => {
+  it('has 4 items', () => {
+    expect(MOBILE_TAB_ITEMS).toHaveLength(4)
+  })
+
+  it('has all icon names present in ICON_MAP', () => {
+    for (const item of MOBILE_TAB_ITEMS) {
+      expect(ICON_MAP[item.icon]).toBeDefined()
+    }
+  })
+})
+
+describe('MORE_MENU_ITEMS', () => {
+  it('has 3 items', () => {
+    expect(MORE_MENU_ITEMS).toHaveLength(3)
+  })
+
+  it('has all icon names present in ICON_MAP', () => {
+    for (const item of MORE_MENU_ITEMS) {
+      expect(ICON_MAP[item.icon]).toBeDefined()
+    }
+  })
+})
+
+describe('PERIOD_AWARE_ROUTES', () => {
+  it('contains exactly the 4 expected paths', () => {
+    expect(PERIOD_AWARE_ROUTES).toEqual([
+      '/',
+      '/movimientos',
+      '/presupuesto',
+      '/historial',
+    ])
+  })
+})
+
+describe('MONTH_NAMES_ES', () => {
+  it('has 12 entries', () => {
+    expect(MONTH_NAMES_ES).toHaveLength(12)
+  })
+
+  it('starts with Enero and ends with Diciembre', () => {
+    expect(MONTH_NAMES_ES[0]).toBe('Enero')
+    expect(MONTH_NAMES_ES[11]).toBe('Diciembre')
   })
 })

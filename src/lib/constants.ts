@@ -46,3 +46,75 @@ export const FREQUENCY_DISPLAY: Record<string, string> = {
   SEMANAL: 'Semanal',
   VARIABLE: 'Variable',
 } as const
+
+/** Navigation item definition for sidebar and mobile nav */
+export interface NavItem {
+  label: string
+  href: string
+  icon: string
+  periodAware?: boolean
+}
+
+/** Desktop sidebar navigation items (6 items) */
+export const SIDEBAR_NAV_ITEMS: NavItem[] = [
+  { label: 'Inicio', href: '/', icon: 'layout-dashboard', periodAware: true },
+  {
+    label: 'Movimientos',
+    href: '/movimientos',
+    icon: 'arrow-left-right',
+    periodAware: true,
+  },
+  { label: 'Deudas', href: '/deudas', icon: 'credit-card' },
+  {
+    label: 'Presupuesto',
+    href: '/presupuesto',
+    icon: 'piggy-bank',
+    periodAware: true,
+  },
+  { label: 'Ingresos', href: '/ingresos', icon: 'banknote' },
+  {
+    label: 'Historial',
+    href: '/historial',
+    icon: 'history',
+    periodAware: true,
+  },
+]
+
+/** Mobile bottom tab bar items (4 items; 5th "Mas" handled in MobileNav) */
+export const MOBILE_TAB_ITEMS: NavItem[] = [
+  { label: 'Inicio', href: '/', icon: 'layout-dashboard' },
+  { label: 'Movimientos', href: '/movimientos', icon: 'arrow-left-right' },
+  { label: 'Deudas', href: '/deudas', icon: 'credit-card' },
+  { label: 'Presupuesto', href: '/presupuesto', icon: 'piggy-bank' },
+]
+
+/** "Mas" overflow menu items for mobile nav */
+export const MORE_MENU_ITEMS: NavItem[] = [
+  { label: 'Ingresos', href: '/ingresos', icon: 'banknote' },
+  { label: 'Historial', href: '/historial', icon: 'history' },
+  { label: 'Configuracion', href: '/configuracion', icon: 'settings' },
+]
+
+/** Routes where the period selector should appear */
+export const PERIOD_AWARE_ROUTES = [
+  '/',
+  '/movimientos',
+  '/presupuesto',
+  '/historial',
+]
+
+/** Spanish month names for period display (i18n-ready) */
+export const MONTH_NAMES_ES = [
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Octubre',
+  'Noviembre',
+  'Diciembre',
+] as const
