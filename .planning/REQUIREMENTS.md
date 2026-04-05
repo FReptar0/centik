@@ -52,7 +52,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Income Sources
 
-- [ ] **INC-01**: User can view list of income sources with name, amount, frequency, and monthly equivalent
+- [x] **INC-01**: User can view list of income sources with name, amount, frequency, and monthly equivalent
 - [x] **INC-02**: User can create a new income source with name, default amount, frequency, and type
 - [x] **INC-03**: User can edit an existing income source
 - [x] **INC-04**: User can delete an income source with confirmation
@@ -201,7 +201,7 @@ Deferred to future release. Tracked but not in current roadmap.
 | LAYOUT-05 | Phase 4 | Complete |
 | LAYOUT-06 | Phase 4 | Complete |
 | LAYOUT-07 | Phase 4 | Complete |
-| INC-01 | Phase 5 | Pending |
+| INC-01 | Phase 5 | Complete |
 | INC-02 | Phase 5 | Complete |
 | INC-03 | Phase 5 | Complete |
 | INC-04 | Phase 5 | Complete |

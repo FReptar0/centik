@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Database Schema + Seed** - Prisma schema for all 7 MVP entities + v2 stubs, migrations, idempotent seed with non-zero BigInt amounts (completed 2026-04-05)
 - [ ] **Phase 3: Foundation Libraries** - Utilities, serializer, Zod validators, constants, TypeScript types -- all at 100% test coverage
 - [ ] **Phase 4: Layout Shell** - Root layout with dark theme, desktop sidebar, mobile bottom tabs, floating FAB, DynamicIcon, period selector
-- [ ] **Phase 5: Income Sources** - Full CRUD for simplest entity, validates Server Component + Server Action pattern end-to-end
+- [x] **Phase 5: Income Sources** - Full CRUD for simplest entity, validates Server Component + Server Action pattern end-to-end (completed 2026-04-05)
 - [ ] **Phase 6: Categories + Transactions** - Category list view, transaction quick-add, list with filters, edit/delete, closed-period enforcement
 - [ ] **Phase 7: Dashboard** - 6 KPI cards via SQL aggregation, 3 charts (budget bar, trend area, expense donut), recent transactions
 - [ ] **Phase 8: Debts** - Credit card and loan tracking with type-specific calculated fields, inline balance editing, summary metrics
@@ -101,7 +101,7 @@ Plans:
   2. User can create a new income source with name, amount, frequency, and type -- and it appears in the list without page refresh
   3. User can edit and delete income sources with confirmation dialog on delete
   4. Summary cards display quincenal, monthly, semester, and annual income estimates derived from all sources
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 
 Plans:
 - [x] 05-01-PLAN.md -- Server Actions (create, update, delete) + income calculation utilities (monthly equivalent, summary aggregation) with TDD tests
@@ -218,7 +218,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 2. Database Schema + Seed | 2/2 | Complete | 2026-04-05 |
 | 3. Foundation Libraries | 0/2 | Not started | - |
 | 4. Layout Shell | 2/3 | In Progress|  |
-| 5. Income Sources | 1/2 | In Progress | - |
+| 5. Income Sources | 2/2 | Complete   | 2026-04-05 |
 | 6. Categories + Transactions | 0/4 | Not started | - |
 | 7. Dashboard | 0/3 | Not started | - |
 | 8. Debts | 0/3 | Not started | - |
