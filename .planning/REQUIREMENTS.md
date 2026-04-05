@@ -31,14 +31,14 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Foundation
 
-- [ ] **FOUND-01**: `serializeBigInts()` correctly converts BigInt fields to String in nested objects and arrays
-- [ ] **FOUND-02**: `formatMoney()` converts cents string to MXN currency display ($1,234.56)
-- [ ] **FOUND-03**: `toCents()` converts user decimal input to cents string without float contamination
-- [ ] **FOUND-04**: `parseCents()` converts string to BigInt for DB operations
-- [ ] **FOUND-05**: `formatRate()` converts basis points to percentage display (4500 → "45.00%")
+- [x] **FOUND-01**: `serializeBigInts()` correctly converts BigInt fields to String in nested objects and arrays
+- [x] **FOUND-02**: `formatMoney()` converts cents string to MXN currency display ($1,234.56)
+- [x] **FOUND-03**: `toCents()` converts user decimal input to cents string without float contamination
+- [x] **FOUND-04**: `parseCents()` converts string to BigInt for DB operations
+- [x] **FOUND-05**: `formatRate()` converts basis points to percentage display (4500 → "45.00%")
 - [ ] **FOUND-06**: Zod schemas defined for all mutation endpoints (transaction, debt, budget, income source, category)
 - [ ] **FOUND-07**: 100% test coverage on all utility functions and Zod schemas
-- [ ] **FOUND-08**: `cn()` utility (clsx + tailwind-merge) for conditional class names
+- [x] **FOUND-08**: `cn()` utility (clsx + tailwind-merge) for conditional class names
 
 ### Layout
 
@@ -186,14 +186,14 @@ Deferred to future release. Tracked but not in current roadmap.
 | DB-07 | Phase 2 | Complete |
 | DB-08 | Phase 2 | Complete |
 | DB-09 | Phase 2 | Complete |
-| FOUND-01 | Phase 3 | Pending |
-| FOUND-02 | Phase 3 | Pending |
-| FOUND-03 | Phase 3 | Pending |
-| FOUND-04 | Phase 3 | Pending |
-| FOUND-05 | Phase 3 | Pending |
+| FOUND-01 | Phase 3 | Complete |
+| FOUND-02 | Phase 3 | Complete |
+| FOUND-03 | Phase 3 | Complete |
+| FOUND-04 | Phase 3 | Complete |
+| FOUND-05 | Phase 3 | Complete |
 | FOUND-06 | Phase 3 | Pending |
 | FOUND-07 | Phase 3 | Pending |
-| FOUND-08 | Phase 3 | Pending |
+| FOUND-08 | Phase 3 | Complete |
 | LAYOUT-01 | Phase 4 | Pending |
 | LAYOUT-02 | Phase 4 | Pending |
 | LAYOUT-03 | Phase 4 | Pending |
