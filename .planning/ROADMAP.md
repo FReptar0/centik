@@ -53,11 +53,11 @@ Plans:
   3. Seed script creates current period, default income sources, default debts, and zero-amount budget entries
   4. Seed is idempotent -- running it twice produces no errors and no duplicate records
   5. All BigInt monetary fields in seed data include at least one non-zero value to validate serialization paths
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
+- [ ] 02-01-PLAN.md -- Complete Prisma schema (10 models, 6 enums, all relations/indexes), initial migration
+- [ ] 02-02-PLAN.md -- Idempotent seed script with realistic demo data, integration tests for seed correctness
 
 ### Phase 3: Foundation Libraries
 **Goal**: All shared utilities, validators, and types are built and tested to 100% coverage before any feature code depends on them
