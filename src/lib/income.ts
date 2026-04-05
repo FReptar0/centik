@@ -19,9 +19,9 @@ export function getMonthlyEquivalent(defaultAmount: string, frequency: string): 
 
   switch (frequency) {
     case 'QUINCENAL':
-      return (amount * 2n).toString()
+      return (amount * BigInt(2)).toString()
     case 'SEMANAL':
-      return (amount * 4n).toString()
+      return (amount * BigInt(4)).toString()
     case 'MENSUAL':
       return amount.toString()
     case 'VARIABLE':
@@ -39,7 +39,7 @@ export function getMonthlyEquivalent(defaultAmount: string, frequency: string): 
  * Quincenal conversion: QUINCENAL=direct, SEMANAL=x2, MENSUAL=/2, VARIABLE=/2.
  */
 export function calculateIncomeSummary(sources: SerializedIncomeSource[]): IncomeSummary {
-  let quincenalTotal = 0n
+  let quincenalTotal = BigInt(0)
 
   for (const source of sources) {
     const amount = BigInt(source.defaultAmount)
@@ -49,21 +49,21 @@ export function calculateIncomeSummary(sources: SerializedIncomeSource[]): Incom
         quincenalTotal += amount
         break
       case 'SEMANAL':
-        quincenalTotal += amount * 2n
+        quincenalTotal += amount * BigInt(2)
         break
       case 'MENSUAL':
-        quincenalTotal += amount / 2n
+        quincenalTotal += amount / BigInt(2)
         break
       case 'VARIABLE':
-        quincenalTotal += amount / 2n
+        quincenalTotal += amount / BigInt(2)
         break
     }
   }
 
   return {
     quincenal: quincenalTotal.toString(),
-    monthly: (quincenalTotal * 2n).toString(),
-    semester: (quincenalTotal * 12n).toString(),
-    annual: (quincenalTotal * 24n).toString(),
+    monthly: (quincenalTotal * BigInt(2)).toString(),
+    semester: (quincenalTotal * BigInt(12)).toString(),
+    annual: (quincenalTotal * BigInt(24)).toString(),
   }
 }
