@@ -104,7 +104,7 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 05-01-PLAN.md -- Server Actions (create, update, delete) + income calculation utilities (monthly equivalent, summary aggregation) with TDD tests
+- [x] 05-01-PLAN.md -- Server Actions (create, update, delete) + income calculation utilities (monthly equivalent, summary aggregation) with TDD tests
 - [ ] 05-02-PLAN.md -- UI components (card, list, form, summary cards) + page wiring + loading skeleton + human verification checkpoint
 
 ### Phase 6: Categories + Transactions
@@ -218,7 +218,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 2. Database Schema + Seed | 2/2 | Complete | 2026-04-05 |
 | 3. Foundation Libraries | 0/2 | Not started | - |
 | 4. Layout Shell | 2/3 | In Progress|  |
-| 5. Income Sources | 0/2 | Not started | - |
+| 5. Income Sources | 1/2 | In Progress | - |
 | 6. Categories + Transactions | 0/4 | Not started | - |
 | 7. Dashboard | 0/3 | Not started | - |
 | 8. Debts | 0/3 | Not started | - |

@@ -53,11 +53,11 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Income Sources
 
 - [ ] **INC-01**: User can view list of income sources with name, amount, frequency, and monthly equivalent
-- [ ] **INC-02**: User can create a new income source with name, default amount, frequency, and type
-- [ ] **INC-03**: User can edit an existing income source
-- [ ] **INC-04**: User can delete an income source with confirmation
-- [ ] **INC-05**: Variable frequency sources show defaultAmount with "(estimado)" label; 3-month average calculation deferred to Dashboard (Phase 7) when transaction history exists
-- [ ] **INC-06**: Summary cards show quincenal, monthly, semester, and annual income estimates
+- [x] **INC-02**: User can create a new income source with name, default amount, frequency, and type
+- [x] **INC-03**: User can edit an existing income source
+- [x] **INC-04**: User can delete an income source with confirmation
+- [x] **INC-05**: Variable frequency sources show defaultAmount with "(estimado)" label; 3-month average calculation deferred to Dashboard (Phase 7) when transaction history exists
+- [x] **INC-06**: Summary cards show quincenal, monthly, semester, and annual income estimates
 
 ### Categories
 
@@ -202,11 +202,11 @@ Deferred to future release. Tracked but not in current roadmap.
 | LAYOUT-06 | Phase 4 | Complete |
 | LAYOUT-07 | Phase 4 | Complete |
 | INC-01 | Phase 5 | Pending |
-| INC-02 | Phase 5 | Pending |
-| INC-03 | Phase 5 | Pending |
-| INC-04 | Phase 5 | Pending |
-| INC-05 | Phase 5 | Pending |
-| INC-06 | Phase 5 | Pending |
+| INC-02 | Phase 5 | Complete |
+| INC-03 | Phase 5 | Complete |
+| INC-04 | Phase 5 | Complete |
+| INC-05 | Phase 5 | Complete |
+| INC-06 | Phase 5 | Complete |
 | CAT-01 | Phase 6 | Pending |
 | CAT-02 | Phase 6 | Pending |
 | CAT-03 | Phase 6 | Pending |
