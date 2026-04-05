@@ -1,6 +1,3 @@
-// Prisma schema -- full schema defined in Phase 2
-// This minimal file exists so `prisma generate` succeeds during postinstall
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
@@ -10,14 +7,221 @@ datasource db {
   provider = "postgresql"
 }
 
-// Stub model for toolchain validation. Full schema in Phase 2.
+// --- Enums ---
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+enum Frequency {
+  QUINCENAL
+  MENSUAL
+  SEMANAL
+  VARIABLE
+}
+
+enum DebtType {
+  CREDIT_CARD
+  PERSONAL_LOAN
+  AUTO_LOAN
+  OTHER
+}
+
+enum PaymentMethod {
+  EFECTIVO
+  DEBITO
+  CREDITO
+  TRANSFERENCIA
+}
+
+enum CategoryType {
+  EXPENSE
+  INCOME
+  BOTH
+}
+
+enum AssetCategory {
+  PPR
+  INVESTMENT
+  SAVINGS
+  CRYPTO
+  OTHER
+}
+
+// --- MVP Models (DFR 2.1 - 2.7) ---
+
+/// DFR 2.1 - Income sources (employment, freelance, other)
+model IncomeSource {
+  id            String      @id @default(cuid())
+  name          String      @unique
+  defaultAmount BigInt
+  frequency     Frequency
+  type          String      // "EMPLOYMENT", "FREELANCE", "OTHER" — not an enum per DFR
+  isActive      Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  transactions Transaction[]
+}
+
+/// DFR 2.2 - Financial transactions (income and expense)
+model Transaction {
+  id             String          @id @default(cuid())
+  type           TransactionType
+  amount         BigInt
+  description    String?
+  categoryId     String
+  incomeSourceId String?
+  date           DateTime        @db.Date
+  paymentMethod  PaymentMethod?
+  periodId       String
+  notes          String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  category     Category     @relation(fields: [categoryId], references: [id])
+  incomeSource IncomeSource? @relation(fields: [incomeSourceId], references: [id])
+  period       Period       @relation(fields: [periodId], references: [id])
+
+  @@index([periodId, date])
+  @@index([categoryId])
+}
+
+/// DFR 2.3 - Expense and income categories
+model Category {
+  id        String       @id @default(cuid())
+  name      String       @unique
+  icon      String
+  color     String
+  type      CategoryType
+  isDefault Boolean      @default(false)
+  isActive  Boolean      @default(true)
+  sortOrder Int          @default(0)
+
+  transactions Transaction[]
+  budgets      Budget[]
+}
+
+/// DFR 2.4 - Debts (credit cards, loans)
+model Debt {
+  id              String   @id @default(cuid())
+  name            String   @unique
+  type            DebtType
+  currentBalance  BigInt
+  creditLimit     BigInt?
+  annualRate      Int      // basis points (4500 = 45.00%)
+  minimumPayment  BigInt?
+  monthlyPayment  BigInt?
+  originalAmount  BigInt?
+  remainingMonths Int?
+  cutOffDay       Int?
+  paymentDueDay   Int?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+/// DFR 2.5 - Budget allocations per category per period
+model Budget {
+  id              String   @id @default(cuid())
+  categoryId      String
+  quincenalAmount BigInt
+  periodId        String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  category Category @relation(fields: [categoryId], references: [id])
+  period   Period   @relation(fields: [periodId], references: [id])
+
+  @@unique([periodId, categoryId])
+}
+
+/// DFR 2.6 - Calendar month periods
 model Period {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   month     Int
   year      Int
-  isClosed  Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  startDate DateTime  @db.Date
+  endDate   DateTime  @db.Date
+  isClosed  Boolean   @default(false)
+  closedAt  DateTime?
+  createdAt DateTime  @default(now())
+
+  transactions   Transaction[]
+  budgets        Budget[]
+  monthlySummary MonthlySummary?
 
   @@unique([month, year])
+}
+
+/// DFR 2.7 - Monthly summary snapshot created on period close
+model MonthlySummary {
+  id            String   @id @default(cuid())
+  periodId      String   @unique
+  totalIncome   BigInt
+  totalExpenses BigInt
+  totalSavings  BigInt
+  savingsRate   Int      // basis points (2050 = 20.50%)
+  debtAtClose   BigInt
+  debtPayments  BigInt
+  notes         String?
+  createdAt     DateTime @default(now())
+
+  period Period @relation(fields: [periodId], references: [id])
+}
+
+// --- v2 Models (DFR 2.8 - 2.10) ---
+
+/// DFR 2.8 - Value units for tracking assets in non-MXN denominations
+model ValueUnit {
+  id              String   @id @default(cuid())
+  code            String   @unique
+  name            String
+  precision       Int
+  symbol          String?
+  providerUrl     String?
+  providerPath    String?
+  providerHeaders Json?
+  refreshInterval Int      @default(0)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  rates  UnitRate[]
+  assets Asset[]
+}
+
+/// DFR 2.9 - Historical conversion rates from value units to MXN centavos
+model UnitRate {
+  id             String   @id @default(cuid())
+  unitId         String
+  date           DateTime @db.Date
+  rateToMxnCents BigInt
+  rateRaw        String
+  source         String
+  createdAt      DateTime @default(now())
+
+  unit ValueUnit @relation(fields: [unitId], references: [id], onDelete: Cascade)
+
+  @@unique([unitId, date])
+  @@index([unitId])
+}
+
+/// DFR 2.10 - Assets and investments tracked in value units
+model Asset {
+  id          String        @id @default(cuid())
+  name        String
+  unitId      String
+  amount      BigInt
+  category    AssetCategory
+  institution String?
+  notes       String?
+  isActive    Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  unit ValueUnit @relation(fields: [unitId], references: [id], onDelete: Cascade)
+
+  @@index([unitId])
 }
