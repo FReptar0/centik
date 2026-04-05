@@ -61,9 +61,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Categories
 
-- [ ] **CAT-01**: User can view all categories with icons, colors, and type (expense/income)
-- [ ] **CAT-02**: User can create a custom expense category with name, Lucide icon name, and color
-- [ ] **CAT-03**: Default categories are not deletable (isDefault=true)
+- [x] **CAT-01**: User can view all categories with icons, colors, and type (expense/income)
+- [x] **CAT-02**: User can create a custom expense category with name, Lucide icon name, and color
+- [x] **CAT-03**: Default categories are not deletable (isDefault=true)
 
 ### Transactions
 
@@ -207,9 +207,9 @@ Deferred to future release. Tracked but not in current roadmap.
 | INC-04 | Phase 5 | Complete |
 | INC-05 | Phase 5 | Complete |
 | INC-06 | Phase 5 | Complete |
-| CAT-01 | Phase 6 | Pending |
-| CAT-02 | Phase 6 | Pending |
-| CAT-03 | Phase 6 | Pending |
+| CAT-01 | Phase 6 | Complete |
+| CAT-02 | Phase 6 | Complete |
+| CAT-03 | Phase 6 | Complete |
 | TXN-01 | Phase 6 | Complete |
 | TXN-02 | Phase 6 | Pending |
 | TXN-03 | Phase 6 | Pending |
