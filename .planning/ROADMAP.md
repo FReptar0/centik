@@ -165,12 +165,11 @@ Plans:
   2. Total row shows quincenal income vs total quincenal budget with surplus/deficit indicator
   3. Progress bars per category show % spent with traffic light coloring (green <80%, orange 80-100%, red >100%)
   4. If no budget exists for the current period, budgets are automatically copied from the previous period
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 09-01: TBD
-- [ ] 09-02: TBD
-- [ ] 09-03: TBD
+- [ ] 09-01-PLAN.md -- Budget utilities (getBudgetColor, getBudgetsWithSpent, copyBudgetsFromPreviousPeriod) + Server Action (upsertBudgets) with TDD tests
+- [ ] 09-02-PLAN.md -- UI components (BudgetTable, BudgetProgressList, BudgetSummaryRow) + page wiring + PresupuestoClientWrapper + human verification
 
 ### Phase 10: History + Period Close
 **Goal**: User can close a month to lock it as a permanent financial record and view annual history across all closed periods
@@ -220,6 +219,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 6. Categories + Transactions | 0/4 | Not started | - |
 | 7. Dashboard | 2/2 | Complete   | 2026-04-05 |
 | 8. Debts | 2/2 | Complete   | 2026-04-05 |
-| 9. Budget Configuration + Progress | 0/3 | Not started | - |
+| 9. Budget Configuration + Progress | 0/2 | Not started | - |
 | 10. History + Period Close | 0/3 | Not started | - |
 | 11. Polish + Accessibility | 0/3 | Not started | - |
