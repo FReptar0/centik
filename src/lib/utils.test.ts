@@ -86,6 +86,10 @@ describe('toCents', () => {
   it('throws on whitespace-only input', () => {
     expect(() => toCents('   ')).toThrow()
   })
+
+  it('throws on non-numeric characters in decimal part', () => {
+    expect(() => toCents('10.ab')).toThrow('non-numeric characters in decimal')
+  })
 })
 
 describe('parseCents', () => {

@@ -25,7 +25,7 @@ export const DEFAULT_CATEGORIES: readonly DefaultCategory[] = [
 
 /** Maps category names to their hex color values */
 export const CATEGORY_COLORS: Record<string, string> = Object.fromEntries(
-  DEFAULT_CATEGORIES.map((cat) => [cat.name, cat.color])
+  DEFAULT_CATEGORIES.map((cat) => [cat.name, cat.color]),
 )
 
 /** Valid income source type values */

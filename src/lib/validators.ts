@@ -19,17 +19,13 @@ export const createTransactionSchema = z.object({
   type: z.enum(TransactionType, {
     error: 'El tipo debe ser INCOME o EXPENSE',
   }),
-  amount: z
-    .string({ error: 'El monto es requerido' })
-    .regex(amountRegex, {
-      error: 'El monto debe ser un numero entero no negativo en centavos',
-    }),
+  amount: z.string({ error: 'El monto es requerido' }).regex(amountRegex, {
+    error: 'El monto debe ser un numero entero no negativo en centavos',
+  }),
   categoryId: z.string({ error: 'La categoria es requerida' }),
   date: z.iso.date({ error: 'La fecha debe tener formato YYYY-MM-DD' }),
   description: z.string().optional(),
-  paymentMethod: z
-    .enum(PaymentMethod, { error: 'Metodo de pago no valido' })
-    .optional(),
+  paymentMethod: z.enum(PaymentMethod, { error: 'Metodo de pago no valido' }).optional(),
   notes: z.string().optional(),
   incomeSourceId: z.string().optional(),
 })
@@ -41,11 +37,9 @@ export const createDebtSchema = z
       .string({ error: 'El nombre es requerido' })
       .min(1, { error: 'El nombre no puede estar vacio' }),
     type: z.enum(DebtType, { error: 'Tipo de deuda no valido' }),
-    currentBalance: z
-      .string({ error: 'El saldo actual es requerido' })
-      .regex(amountRegex, {
-        error: 'El saldo debe ser un numero entero no negativo en centavos',
-      }),
+    currentBalance: z.string({ error: 'El saldo actual es requerido' }).regex(amountRegex, {
+      error: 'El saldo debe ser un numero entero no negativo en centavos',
+    }),
     creditLimit: z
       .string()
       .regex(amountRegex, {
@@ -65,21 +59,16 @@ export const createDebtSchema = z
     cutOffDay: z.number().int().min(1).max(31).optional(),
     paymentDueDay: z.number().int().min(1).max(31).optional(),
   })
-  .refine(
-    (data) => data.type !== 'CREDIT_CARD' || data.creditLimit !== undefined,
-    {
-      error: 'El limite de credito es requerido para tarjetas de credito',
-      path: ['creditLimit'],
-    }
-  )
+  .refine((data) => data.type !== 'CREDIT_CARD' || data.creditLimit !== undefined, {
+    error: 'El limite de credito es requerido para tarjetas de credito',
+    path: ['creditLimit'],
+  })
 
 /** Validates PUT /api/debts/[id] balance update */
 export const updateDebtBalanceSchema = z.object({
-  currentBalance: z
-    .string({ error: 'El saldo actual es requerido' })
-    .regex(amountRegex, {
-      error: 'El saldo debe ser un numero entero no negativo en centavos',
-    }),
+  currentBalance: z.string({ error: 'El saldo actual es requerido' }).regex(amountRegex, {
+    error: 'El saldo debe ser un numero entero no negativo en centavos',
+  }),
 })
 
 /** Validates POST /api/budgets request body */
@@ -88,13 +77,10 @@ export const createBudgetSchema = z.object({
     .array(
       z.object({
         categoryId: z.string({ error: 'La categoria es requerida' }),
-        quincenalAmount: z
-          .string({ error: 'El monto quincenal es requerido' })
-          .regex(amountRegex, {
-            error:
-              'El monto quincenal debe ser un numero entero no negativo en centavos',
-          }),
-      })
+        quincenalAmount: z.string({ error: 'El monto quincenal es requerido' }).regex(amountRegex, {
+          error: 'El monto quincenal debe ser un numero entero no negativo en centavos',
+        }),
+      }),
     )
     .min(1, { error: 'El presupuesto debe tener al menos una entrada' }),
 })
@@ -104,12 +90,9 @@ export const createIncomeSourceSchema = z.object({
   name: z
     .string({ error: 'El nombre es requerido' })
     .min(1, { error: 'El nombre no puede estar vacio' }),
-  defaultAmount: z
-    .string({ error: 'El monto por defecto es requerido' })
-    .regex(amountRegex, {
-      error:
-        'El monto por defecto debe ser un numero entero no negativo en centavos',
-    }),
+  defaultAmount: z.string({ error: 'El monto por defecto es requerido' }).regex(amountRegex, {
+    error: 'El monto por defecto debe ser un numero entero no negativo en centavos',
+  }),
   frequency: z.enum(Frequency, { error: 'Frecuencia no valida' }),
   type: z
     .string({ error: 'El tipo es requerido' })
@@ -124,11 +107,9 @@ export const createCategorySchema = z.object({
   icon: z
     .string({ error: 'El icono es requerido' })
     .min(1, { error: 'El icono no puede estar vacio' }),
-  color: z
-    .string({ error: 'El color es requerido' })
-    .regex(/^#[0-9a-fA-F]{6}$/, {
-      error: 'El color debe ser un codigo hexadecimal valido (ej: #8b5cf6)',
-    }),
+  color: z.string({ error: 'El color es requerido' }).regex(/^#[0-9a-fA-F]{6}$/, {
+    error: 'El color debe ser un codigo hexadecimal valido (ej: #8b5cf6)',
+  }),
   type: z.enum(CategoryType, { error: 'Tipo de categoria no valido' }),
 })
 
@@ -138,11 +119,9 @@ export const createAssetSchema = z.object({
     .string({ error: 'El nombre es requerido' })
     .min(1, { error: 'El nombre no puede estar vacio' }),
   unitId: z.string({ error: 'La unidad de valor es requerida' }),
-  amount: z
-    .string({ error: 'El monto es requerido' })
-    .regex(amountRegex, {
-      error: 'El monto debe ser un numero entero no negativo',
-    }),
+  amount: z.string({ error: 'El monto es requerido' }).regex(amountRegex, {
+    error: 'El monto debe ser un numero entero no negativo',
+  }),
   category: z.enum(AssetCategory, {
     error: 'Categoria de activo no valida',
   }),

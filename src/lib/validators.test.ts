@@ -11,14 +11,17 @@ import {
 } from './validators'
 
 // Helper to get first error message from a failed parse result
-function getFirstError(result: { success: false; error: { issues: { message: string }[] } }): string {
+function getFirstError(result: {
+  success: false
+  error: { issues: { message: string }[] }
+}): string {
   return result.error.issues[0].message
 }
 
 // Helper to get error message for a specific path
 function getErrorAtPath(
   result: { success: false; error: { issues: { message: string; path: (string | number)[] }[] } },
-  path: string
+  path: string,
 ): string | undefined {
   const issue = result.error.issues.find((i) => i.path.includes(path))
   return issue?.message
@@ -118,7 +121,10 @@ describe('createTransactionSchema', () => {
     })
 
     it('rejects invalid paymentMethod', () => {
-      const result = createTransactionSchema.safeParse({ ...validMinimal, paymentMethod: 'BITCOIN' })
+      const result = createTransactionSchema.safeParse({
+        ...validMinimal,
+        paymentMethod: 'BITCOIN',
+      })
       expect(result.success).toBe(false)
       if (!result.success) {
         expect(getErrorAtPath(result, 'paymentMethod')).toContain('no valido')
@@ -197,7 +203,7 @@ describe('createDebtSchema', () => {
       expect(result.success).toBe(false)
       if (!result.success) {
         expect(getErrorAtPath(result, 'creditLimit')).toBe(
-          'El limite de credito es requerido para tarjetas de credito'
+          'El limite de credito es requerido para tarjetas de credito',
         )
       }
     })

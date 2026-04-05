@@ -25,7 +25,13 @@ export {
 
 // --- Serialized variants (BigInt fields become string for JSON) ---
 
-import type { Transaction, IncomeSource, Debt, Budget, MonthlySummary } from '../../generated/prisma/client'
+import type {
+  Transaction,
+  IncomeSource,
+  Debt,
+  Budget,
+  MonthlySummary,
+} from '../../generated/prisma/client'
 
 /** Transaction with amount as string (serialized from BigInt centavos) */
 export type SerializedTransaction = Omit<Transaction, 'amount'> & {
