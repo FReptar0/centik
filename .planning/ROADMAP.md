@@ -13,7 +13,7 @@ Centik delivers a personal finance tracking app for the Mexican quincenal pay cy
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Infrastructure + Scaffolding** - Reconcile actual installed versions (Next.js 16, Tailwind v4, Prisma 7, ESLint 9), configure toolchain, Docker Compose, passing build with zero tests (completed 2026-04-04)
-- [ ] **Phase 2: Database Schema + Seed** - Prisma schema for all 7 MVP entities + v2 stubs, migrations, idempotent seed with non-zero BigInt amounts
+- [x] **Phase 2: Database Schema + Seed** - Prisma schema for all 7 MVP entities + v2 stubs, migrations, idempotent seed with non-zero BigInt amounts (completed 2026-04-05)
 - [ ] **Phase 3: Foundation Libraries** - Utilities, serializer, Zod validators, constants, TypeScript types -- all at 100% test coverage
 - [ ] **Phase 4: Layout Shell** - Root layout with dark theme, desktop sidebar, mobile bottom tabs, floating FAB, DynamicIcon, period selector
 - [ ] **Phase 5: Income Sources** - Full CRUD for simplest entity, validates Server Component + Server Action pattern end-to-end
@@ -53,11 +53,11 @@ Plans:
   3. Seed script creates current period, default income sources, default debts, and zero-amount budget entries
   4. Seed is idempotent -- running it twice produces no errors and no duplicate records
   5. All BigInt monetary fields in seed data include at least one non-zero value to validate serialization paths
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
-- [ ] 02-01-PLAN.md -- Complete Prisma schema (10 models, 6 enums, all relations/indexes), initial migration
-- [ ] 02-02-PLAN.md -- Idempotent seed script with realistic demo data, integration tests for seed correctness
+- [x] 02-01-PLAN.md -- Complete Prisma schema (10 models, 6 enums, all relations/indexes), initial migration
+- [x] 02-02-PLAN.md -- Idempotent seed script with realistic demo data, integration tests for seed correctness
 
 ### Phase 3: Foundation Libraries
 **Goal**: All shared utilities, validators, and types are built and tested to 100% coverage before any feature code depends on them
@@ -216,7 +216,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Infrastructure + Scaffolding | 3/3 | Complete   | 2026-04-04 |
-| 2. Database Schema + Seed | 1/2 | In Progress|  |
+| 2. Database Schema + Seed | 2/2 | Complete | 2026-04-05 |
 | 3. Foundation Libraries | 0/3 | Not started | - |
 | 4. Layout Shell | 0/3 | Not started | - |
 | 5. Income Sources | 0/2 | Not started | - |

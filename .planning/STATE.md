@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_plan: 1 of 3
+current_plan: 2
 status: executing
-stopped_at: Completed 02-01-PLAN.md
-last_updated: "2026-04-05T00:12:50Z"
+stopped_at: Completed 02-02-PLAN.md
+last_updated: "2026-04-05T00:25:15.356Z"
 last_activity: 2026-04-05
 progress:
   total_phases: 11
-  completed_phases: 1
-  total_plans: 3
-  completed_plans: 4
+  completed_phases: 2
+  total_plans: 5
+  completed_plans: 5
   percent: 40
 ---
 
@@ -27,9 +27,9 @@ See: .planning/PROJECT.md (updated 2026-04-04)
 ## Current Position
 
 **Phase:** 2 of 11 (Database Schema + Seed)
-**Current Plan:** 1 of 3
+**Current Plan:** 2
 **Total Plans in Phase:** 3
-**Status:** Executing
+**Status:** Ready to execute
 **Last Activity:** 2026-04-05
 
 Progress: [####......] 40%
@@ -56,6 +56,7 @@ Progress: [####......] 40%
 | Phase 01 P02 | 5min | 2 tasks | 11 files |
 | Phase 01 P03 | 4min | 3 tasks | 6 files |
 | Phase 02 P01 | 3min | 1 task | 3 files |
+| Phase 02 P02 | 8min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -78,6 +79,9 @@ Recent decisions affecting current work:
 - [Phase 02]: Period model drops updatedAt from Phase 1 stub since DFR.md does not specify it for Period
 - [Phase 02]: Asset and UnitRate use onDelete Cascade from ValueUnit; all other FKs use default restrict
 - [Phase 02]: IncomeSource.name and Debt.name have @unique for seed upsert idempotency
+- [Phase 02]: Split seed into 3 files (seed.ts, seed-data.ts, seed-transactions.ts) to keep all under 300-line limit
+- [Phase 02]: Prisma 7 migrate reset --force does not auto-seed; explicit db seed call required in tests
+- [Phase 02]: Transaction seed idempotency via count-check per period since transactions lack natural unique key
 
 ### Pending Todos
 
@@ -91,6 +95,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-05T00:12:50Z
-Stopped at: Completed 02-01-PLAN.md
-Resume file: .planning/phases/02-database-schema-seed/02-01-SUMMARY.md
+Last session: 2026-04-05T00:25:15.353Z
+Stopped at: Completed 02-02-PLAN.md
+Resume file: None

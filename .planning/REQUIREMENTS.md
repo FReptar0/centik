@@ -23,10 +23,10 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **DB-02**: All monetary fields stored as BigInt (centavos), interest rates as Int (basis points)
 - [x] **DB-03**: Enums defined: TransactionType, Frequency, DebtType, PaymentMethod, CategoryType
 - [x] **DB-04**: Indexes on Transaction(periodId, date), Transaction(categoryId), Budget(periodId, categoryId) unique, Period(month, year) unique
-- [ ] **DB-05**: Seed script creates default categories (6 expense + 2 income) with Lucide icon names and colors
-- [ ] **DB-06**: Seed script creates default income sources (TerSoft quincenal, Freelance variable)
-- [ ] **DB-07**: Seed script creates default debts (1 credit card, 1 personal loan, zero balances)
-- [ ] **DB-08**: Seed script creates current period and zero-amount budget entries
+- [x] **DB-05**: Seed script creates default categories (6 expense + 2 income) with Lucide icon names and colors
+- [x] **DB-06**: Seed script creates default income sources (TerSoft quincenal, Freelance variable)
+- [x] **DB-07**: Seed script creates default debts (1 credit card, 1 personal loan, zero balances)
+- [x] **DB-08**: Seed script creates current period and zero-amount budget entries
 - [x] **DB-09**: v2 entities (ValueUnit, UnitRate, Asset) included in schema but no UI/API
 
 ### Foundation
@@ -181,10 +181,10 @@ Deferred to future release. Tracked but not in current roadmap.
 | DB-02 | Phase 2 | Complete |
 | DB-03 | Phase 2 | Complete |
 | DB-04 | Phase 2 | Complete |
-| DB-05 | Phase 2 | Pending |
-| DB-06 | Phase 2 | Pending |
-| DB-07 | Phase 2 | Pending |
-| DB-08 | Phase 2 | Pending |
+| DB-05 | Phase 2 | Complete |
+| DB-06 | Phase 2 | Complete |
+| DB-07 | Phase 2 | Complete |
+| DB-08 | Phase 2 | Complete |
 | DB-09 | Phase 2 | Complete |
 | FOUND-01 | Phase 3 | Pending |
 | FOUND-02 | Phase 3 | Pending |
