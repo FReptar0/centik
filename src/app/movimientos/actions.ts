@@ -2,10 +2,36 @@
 
 import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
+import { serializeBigInts } from '@/lib/serialize'
 import { createTransactionSchema } from '@/lib/validators'
 import { getPeriodForDate } from '@/lib/period'
+import type { Category, SerializedIncomeSource } from '@/types'
 
 type ActionResult = { success: true } | { error: Record<string, string[]> }
+
+/**
+ * Fetches categories and income sources for the TransactionForm.
+ * Used by FAB to lazy-load form data on first open.
+ */
+export async function getTransactionFormData(): Promise<{
+  categories: Category[]
+  incomeSources: SerializedIncomeSource[]
+}> {
+  const [categories, rawSources] = await Promise.all([
+    prisma.category.findMany({
+      where: { isActive: true },
+      orderBy: { sortOrder: 'asc' },
+    }),
+    prisma.incomeSource.findMany({
+      where: { isActive: true },
+      orderBy: { createdAt: 'asc' },
+    }),
+  ])
+
+  const incomeSources = serializeBigInts(rawSources) as unknown as SerializedIncomeSource[]
+
+  return { categories, incomeSources }
+}
 
 /** Closed-period error message in Spanish */
 const CLOSED_PERIOD_ERROR =

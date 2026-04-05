@@ -1,9 +1,31 @@
-import { describe, it, expect, afterEach } from 'vitest'
-import { render, screen, fireEvent, cleanup } from '@testing-library/react'
+import { describe, it, expect, vi, afterEach } from 'vitest'
+import { render, screen, fireEvent, cleanup, act } from '@testing-library/react'
 import FAB from './FAB'
+
+const mockGetTransactionFormData = vi.fn().mockResolvedValue({
+  categories: [
+    { id: 'cat-1', name: 'Comida', icon: 'utensils', color: '#fb923c', type: 'EXPENSE', isDefault: true, isActive: true, sortOrder: 1, createdAt: new Date(), updatedAt: new Date() },
+  ],
+  incomeSources: [],
+})
+
+vi.mock('@/app/movimientos/actions', () => ({
+  getTransactionFormData: () => mockGetTransactionFormData(),
+}))
+
+vi.mock('@/components/transactions/TransactionForm', () => ({
+  default: ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) =>
+    isOpen ? (
+      <div data-testid="transaction-form">
+        <span>TransactionForm</span>
+        <button onClick={onClose}>Cerrar</button>
+      </div>
+    ) : null,
+}))
 
 afterEach(() => {
   cleanup()
+  vi.clearAllMocks()
 })
 
 describe('FAB', () => {
@@ -15,41 +37,60 @@ describe('FAB', () => {
     expect(button).toBeDefined()
   })
 
-  it('FAB button is present in the document on initial render', () => {
+  it('clicking FAB fetches form data and opens TransactionForm', async () => {
     render(<FAB />)
     const button = screen.getByRole('button', {
       name: /registrar movimiento/i,
     })
-    expect(button).toBeDefined()
+
+    await act(async () => {
+      fireEvent.click(button)
+    })
+
+    expect(mockGetTransactionFormData).toHaveBeenCalledOnce()
+    expect(screen.getByTestId('transaction-form')).toBeDefined()
+    expect(screen.getByText('TransactionForm')).toBeDefined()
   })
 
-  it('clicking FAB opens Modal with placeholder content', () => {
+  it('caches form data on subsequent opens', async () => {
     render(<FAB />)
     const button = screen.getByRole('button', {
       name: /registrar movimiento/i,
     })
-    fireEvent.click(button)
 
-    // Modal renders "Nuevo movimiento" title (both mobile and desktop variants)
-    const titles = screen.getAllByText('Nuevo movimiento')
-    expect(titles.length).toBeGreaterThanOrEqual(1)
+    await act(async () => {
+      fireEvent.click(button)
+    })
+
+    expect(mockGetTransactionFormData).toHaveBeenCalledOnce()
+
+    // Close
+    fireEvent.click(screen.getByText('Cerrar'))
+    expect(screen.queryByTestId('transaction-form')).toBeNull()
+
+    // Reopen -- should not fetch again
+    await act(async () => {
+      fireEvent.click(button)
+    })
+
+    expect(mockGetTransactionFormData).toHaveBeenCalledOnce()
+    expect(screen.getByTestId('transaction-form')).toBeDefined()
   })
 
-  it('after opening, triggering onClose hides modal content', () => {
+  it('closes TransactionForm when onClose is called', async () => {
     render(<FAB />)
     const button = screen.getByRole('button', {
       name: /registrar movimiento/i,
     })
-    fireEvent.click(button)
 
-    // Modal is open -- verify title is present
-    const titles = screen.getAllByText('Nuevo movimiento')
-    expect(titles.length).toBeGreaterThanOrEqual(1)
+    await act(async () => {
+      fireEvent.click(button)
+    })
 
-    // Close via Escape key
-    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(screen.getByTestId('transaction-form')).toBeDefined()
 
-    // Modal content should be gone
-    expect(screen.queryByText('Nuevo movimiento')).toBeNull()
+    fireEvent.click(screen.getByText('Cerrar'))
+
+    expect(screen.queryByTestId('transaction-form')).toBeNull()
   })
 })

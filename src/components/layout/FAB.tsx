@@ -1,20 +1,43 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, Receipt } from 'lucide-react'
-import Modal from '@/components/ui/Modal'
+import { Plus, Loader2 } from 'lucide-react'
+import TransactionForm from '@/components/transactions/TransactionForm'
+import { getTransactionFormData } from '@/app/movimientos/actions'
 import { cn } from '@/lib/utils'
+import type { Category, SerializedIncomeSource } from '@/types'
 
-/** Floating action button for quick transaction entry */
+interface FormData {
+  categories: Category[]
+  incomeSources: SerializedIncomeSource[]
+}
+
+/** Floating action button that opens TransactionForm with lazy-loaded data */
 export default function FAB() {
   const [isOpen, setIsOpen] = useState(false)
+  const [formData, setFormData] = useState<FormData | null>(null)
+  const [loading, setLoading] = useState(false)
+
+  async function handleOpen() {
+    setIsOpen(true)
+    if (!formData) {
+      setLoading(true)
+      const data = await getTransactionFormData()
+      setFormData(data)
+      setLoading(false)
+    }
+  }
+
+  function handleClose() {
+    setIsOpen(false)
+  }
 
   return (
     <>
       <button
         type="button"
         aria-label="Registrar movimiento"
-        onClick={() => setIsOpen(true)}
+        onClick={handleOpen}
         className={cn(
           'fixed z-40',
           'bottom-20 right-4 md:bottom-6 md:right-6',
@@ -25,33 +48,21 @@ export default function FAB() {
           'transition-all duration-200',
         )}
       >
-        <Plus size={24} className="text-bg-primary" />
+        {loading ? (
+          <Loader2 size={24} className="text-bg-primary animate-spin" />
+        ) : (
+          <Plus size={24} className="text-bg-primary" />
+        )}
       </button>
 
-      <Modal
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        title="Nuevo movimiento"
-      >
-        <div className="flex flex-col items-center gap-4 py-6">
-          <Receipt size={48} className="text-text-muted" aria-hidden="true" />
-          <p className="text-sm text-text-secondary text-center">
-            El formulario de transacciones se construira en una fase posterior.
-          </p>
-          <button
-            type="button"
-            onClick={() => setIsOpen(false)}
-            className={cn(
-              'rounded-md px-4 py-2 text-sm font-semibold',
-              'border border-border-light text-text-secondary',
-              'hover:text-text-primary hover:bg-bg-card-hover',
-              'transition-all duration-200',
-            )}
-          >
-            Cerrar
-          </button>
-        </div>
-      </Modal>
+      {formData && (
+        <TransactionForm
+          isOpen={isOpen}
+          onClose={handleClose}
+          categories={formData.categories}
+          incomeSources={formData.incomeSources}
+        />
+      )}
     </>
   )
 }
