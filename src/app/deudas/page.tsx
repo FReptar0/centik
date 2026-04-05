@@ -1,21 +1,23 @@
-import PageHeader from '@/components/layout/PageHeader'
-import DynamicIcon from '@/components/ui/DynamicIcon'
+import prisma from '@/lib/prisma'
+import { serializeBigInts } from '@/lib/serialize'
+import { calculateIncomeSummary } from '@/lib/income'
+import DeudasClientWrapper from './DeudasClientWrapper'
+import type { SerializedDebt, SerializedIncomeSource } from '@/types'
 
-export default function DeudasPage() {
-  return (
-    <div>
-      <PageHeader title="Deudas" />
-      <div className="flex flex-col items-center justify-center py-20 text-center">
-        <DynamicIcon
-          name="credit-card"
-          size={48}
-          className="text-text-muted mb-4"
-          aria-hidden="true"
-        />
-        <p className="text-text-secondary text-lg">
-          Las deudas se construiran en una fase posterior
-        </p>
-      </div>
-    </div>
-  )
+export default async function DeudasPage() {
+  const [debts, incomeSources] = await Promise.all([
+    prisma.debt.findMany({
+      where: { isActive: true },
+      orderBy: { createdAt: 'asc' },
+    }),
+    prisma.incomeSource.findMany({
+      where: { isActive: true },
+    }),
+  ])
+
+  const serializedDebts = serializeBigInts(debts) as unknown as SerializedDebt[]
+  const serializedSources = serializeBigInts(incomeSources) as unknown as SerializedIncomeSource[]
+  const incomeSummary = calculateIncomeSummary(serializedSources)
+
+  return <DeudasClientWrapper debts={serializedDebts} monthlyIncome={incomeSummary.monthly} />
 }
