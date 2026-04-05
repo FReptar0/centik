@@ -33,6 +33,8 @@ import {
   TrendingDown,
   Wallet,
   Percent,
+  BarChart3,
+  PieChart,
   type LucideProps,
 } from 'lucide-react'
 import { type ComponentType } from 'react'
@@ -66,6 +68,9 @@ export const ICON_MAP: Record<string, ComponentType<LucideProps>> = {
   'trending-down': TrendingDown,
   wallet: Wallet,
   percent: Percent,
+  // Chart empty state icons
+  'bar-chart-3': BarChart3,
+  'pie-chart': PieChart,
   // Extra icons for custom categories
   home: Home,
   receipt: Receipt,
