@@ -25,8 +25,8 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **DB-04**: Indexes on Transaction(periodId, date), Transaction(categoryId), Budget(periodId, categoryId) unique, Period(month, year) unique
 - [x] **DB-05**: Seed script creates default categories (6 expense + 2 income) with Lucide icon names and colors
 - [x] **DB-06**: Seed script creates default income sources (TerSoft quincenal, Freelance variable)
-- [x] **DB-07**: Seed script creates default debts (1 credit card, 1 personal loan, zero balances)
-- [x] **DB-08**: Seed script creates current period and zero-amount budget entries
+- [x] **DB-07**: Seed script creates default debts (1 credit card, 1 personal loan, with realistic non-zero balances for demo)
+- [x] **DB-08**: Seed script creates current period with non-zero quincenal budget entries, plus 1 closed previous month with MonthlySummary
 - [x] **DB-09**: v2 entities (ValueUnit, UnitRate, Asset) included in schema but no UI/API
 
 ### Foundation
