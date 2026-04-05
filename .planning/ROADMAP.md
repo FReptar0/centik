@@ -18,7 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 4: Layout Shell** - Root layout with dark theme, desktop sidebar, mobile bottom tabs, floating FAB, DynamicIcon, period selector
 - [x] **Phase 5: Income Sources** - Full CRUD for simplest entity, validates Server Component + Server Action pattern end-to-end (completed 2026-04-05)
 - [ ] **Phase 6: Categories + Transactions** - Category list view, transaction quick-add, list with filters, edit/delete, closed-period enforcement
-- [ ] **Phase 7: Dashboard** - 6 KPI cards via SQL aggregation, 3 charts (budget bar, trend area, expense donut), recent transactions
+- [x] **Phase 7: Dashboard** - 6 KPI cards via SQL aggregation, 3 charts (budget bar, trend area, expense donut), recent transactions (completed 2026-04-05)
 - [ ] **Phase 8: Debts** - Credit card and loan tracking with type-specific calculated fields, inline balance editing, summary metrics
 - [ ] **Phase 9: Budget Configuration + Progress** - Quincenal budget input, auto-calculated views, progress bars with traffic light, budget-copy-from-previous
 - [ ] **Phase 10: History + Period Close** - Annual pivot table, atomic period close transaction, read-only closed periods, reopen capability
@@ -135,7 +135,7 @@ Plans:
   3. Area/line chart shows income vs expenses trend for the last 6 months (from MonthlySummary data)
   4. Donut chart shows expense distribution by category for the current month
   5. Recent transactions section shows the last 8 movements with category icon, description, date, and formatted amount
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [ ] 07-01-PLAN.md -- Dashboard data queries (5 SQL aggregation functions) + types + KPICard/KPIGrid components with unit tests
@@ -219,7 +219,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 4. Layout Shell | 2/3 | In Progress|  |
 | 5. Income Sources | 2/2 | Complete   | 2026-04-05 |
 | 6. Categories + Transactions | 0/4 | Not started | - |
-| 7. Dashboard | 1/2 | In Progress|  |
+| 7. Dashboard | 2/2 | Complete   | 2026-04-05 |
 | 8. Debts | 0/3 | Not started | - |
 | 9. Budget Configuration + Progress | 0/3 | Not started | - |
 | 10. History + Period Close | 0/3 | Not started | - |

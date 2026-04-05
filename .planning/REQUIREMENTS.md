@@ -81,12 +81,12 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Dashboard
 
 - [x] **DASH-01**: KPI cards: monthly estimated income, month expenses, available (income - expenses), total debt, savings rate, debt-to-income ratio
-- [ ] **DASH-02**: Bar chart: budget vs actual spending per category (current month)
-- [ ] **DASH-03**: Area/line chart: income vs expenses trend (last 6 months from MonthlySummary)
-- [ ] **DASH-04**: Donut chart: expense distribution by category (current month)
-- [ ] **DASH-05**: Recent transactions list (last 8) with category icon, description, date, and amount
+- [x] **DASH-02**: Bar chart: budget vs actual spending per category (current month)
+- [x] **DASH-03**: Area/line chart: income vs expenses trend (last 6 months from MonthlySummary)
+- [x] **DASH-04**: Donut chart: expense distribution by category (current month)
+- [x] **DASH-05**: Recent transactions list (last 8) with category icon, description, date, and amount
 - [x] **DASH-06**: All KPIs computed via SQL aggregation queries (not client-side)
-- [ ] **DASH-07**: Empty states with descriptive text and CTA when no data exists
+- [x] **DASH-07**: Empty states with descriptive text and CTA when no data exists
 
 ### Debts
 
@@ -221,12 +221,12 @@ Deferred to future release. Tracked but not in current roadmap.
 | TXN-09 | Phase 6 | Complete |
 | TXN-10 | Phase 6 | Complete |
 | DASH-01 | Phase 7 | Complete |
-| DASH-02 | Phase 7 | Pending |
-| DASH-03 | Phase 7 | Pending |
-| DASH-04 | Phase 7 | Pending |
-| DASH-05 | Phase 7 | Pending |
+| DASH-02 | Phase 7 | Complete |
+| DASH-03 | Phase 7 | Complete |
+| DASH-04 | Phase 7 | Complete |
+| DASH-05 | Phase 7 | Complete |
 | DASH-06 | Phase 7 | Complete |
-| DASH-07 | Phase 7 | Pending |
+| DASH-07 | Phase 7 | Complete |
 | DEBT-01 | Phase 8 | Pending |
 | DEBT-02 | Phase 8 | Pending |
 | DEBT-03 | Phase 8 | Pending |
