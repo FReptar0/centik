@@ -53,7 +53,7 @@ Plans:
   3. Seed script creates current period, default income sources, default debts, and zero-amount budget entries
   4. Seed is idempotent -- running it twice produces no errors and no duplicate records
   5. All BigInt monetary fields in seed data include at least one non-zero value to validate serialization paths
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
 - [ ] 02-01-PLAN.md -- Complete Prisma schema (10 models, 6 enums, all relations/indexes), initial migration
@@ -216,7 +216,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Infrastructure + Scaffolding | 3/3 | Complete   | 2026-04-04 |
-| 2. Database Schema + Seed | 0/2 | Not started | - |
+| 2. Database Schema + Seed | 1/2 | In Progress|  |
 | 3. Foundation Libraries | 0/3 | Not started | - |
 | 4. Layout Shell | 0/3 | Not started | - |
 | 5. Income Sources | 0/2 | Not started | - |
