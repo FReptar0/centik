@@ -135,12 +135,11 @@ Plans:
   3. Area/line chart shows income vs expenses trend for the last 6 months (from MonthlySummary data)
   4. Donut chart shows expense distribution by category for the current month
   5. Recent transactions section shows the last 8 movements with category icon, description, date, and formatted amount
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 07-01: TBD
-- [ ] 07-02: TBD
-- [ ] 07-03: TBD
+- [ ] 07-01-PLAN.md -- Dashboard data queries (5 SQL aggregation functions) + types + KPICard/KPIGrid components with unit tests
+- [ ] 07-02-PLAN.md -- 3 Recharts chart components (budget bar, trend area, expense donut) + RecentTransactions + page.tsx wiring + human verification
 
 ### Phase 8: Debts
 **Goal**: User can track credit cards and loans with type-specific metrics and see their total debt position at a glance
@@ -220,7 +219,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 4. Layout Shell | 2/3 | In Progress|  |
 | 5. Income Sources | 2/2 | Complete   | 2026-04-05 |
 | 6. Categories + Transactions | 0/4 | Not started | - |
-| 7. Dashboard | 0/3 | Not started | - |
+| 7. Dashboard | 0/2 | Not started | - |
 | 8. Debts | 0/3 | Not started | - |
 | 9. Budget Configuration + Progress | 0/3 | Not started | - |
 | 10. History + Period Close | 0/3 | Not started | - |
