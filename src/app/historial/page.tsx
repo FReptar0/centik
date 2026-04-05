@@ -6,21 +6,21 @@ interface PageProps {
   searchParams: Promise<{ month?: string; year?: string }>
 }
 
-export default async function HomePage({ searchParams }: PageProps) {
+export default async function HistorialPage({ searchParams }: PageProps) {
   await searchParams
 
   return (
     <div>
-      <PageHeader title="Inicio" periodSelector={<PeriodSelector />} />
+      <PageHeader title="Historial" periodSelector={<PeriodSelector />} />
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <DynamicIcon
-          name="layout-dashboard"
+          name="history"
           size={48}
           className="text-text-muted mb-4"
           aria-hidden="true"
         />
         <p className="text-text-secondary text-lg">
-          El dashboard se construira en una fase posterior
+          El historial se construira en una fase posterior
         </p>
       </div>
     </div>

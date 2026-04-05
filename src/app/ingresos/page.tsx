@@ -1,26 +1,19 @@
 import PageHeader from '@/components/layout/PageHeader'
-import PeriodSelector from '@/components/layout/PeriodSelector'
 import DynamicIcon from '@/components/ui/DynamicIcon'
 
-interface PageProps {
-  searchParams: Promise<{ month?: string; year?: string }>
-}
-
-export default async function HomePage({ searchParams }: PageProps) {
-  await searchParams
-
+export default function IngresosPage() {
   return (
     <div>
-      <PageHeader title="Inicio" periodSelector={<PeriodSelector />} />
+      <PageHeader title="Ingresos" />
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <DynamicIcon
-          name="layout-dashboard"
+          name="banknote"
           size={48}
           className="text-text-muted mb-4"
           aria-hidden="true"
         />
         <p className="text-text-secondary text-lg">
-          El dashboard se construira en una fase posterior
+          Los ingresos se construiran en una fase posterior
         </p>
       </div>
     </div>
