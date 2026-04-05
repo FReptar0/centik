@@ -1,0 +1,98 @@
+import prisma from '@/lib/prisma'
+
+/** Budget row with joined category info and spent amount for display */
+export interface BudgetWithSpent {
+  id: string
+  categoryId: string
+  categoryName: string
+  categoryIcon: string
+  categoryColor: string
+  /** Quincenal budget amount in centavos (serialized BigInt) */
+  quincenalAmount: string
+  /** Actual spending in centavos for the period (serialized BigInt) */
+  spent: string
+}
+
+/**
+ * Returns traffic-light color for budget usage percentage.
+ * <80 = positive (green), 80-99 = warning (orange), >=100 = negative (red).
+ */
+export function getBudgetColor(percentUsed: number): 'positive' | 'warning' | 'negative' {
+  if (percentUsed < 80) return 'positive'
+  if (percentUsed < 100) return 'warning'
+  return 'negative'
+}
+
+/**
+ * Fetches budgets for a period with actual spending per category.
+ * Uses parallel queries: budget findMany (with category include) + transaction groupBy.
+ * Joins results via a spentMap keyed by categoryId.
+ */
+export async function getBudgetsWithSpent(periodId: string): Promise<BudgetWithSpent[]> {
+  const [budgets, expenseGroups] = await Promise.all([
+    prisma.budget.findMany({
+      where: { periodId },
+      include: { category: true },
+    }),
+    prisma.transaction.groupBy({
+      by: ['categoryId'],
+      where: { periodId, type: 'EXPENSE' },
+      _sum: { amount: true },
+    }),
+  ])
+
+  if (budgets.length === 0) return []
+
+  const spentMap = new Map<string, bigint>()
+  for (const group of expenseGroups) {
+    if (group._sum.amount !== null) {
+      spentMap.set(group.categoryId, group._sum.amount)
+    }
+  }
+
+  return budgets.map((budget) => ({
+    id: budget.id,
+    categoryId: budget.categoryId,
+    categoryName: budget.category.name,
+    categoryIcon: budget.category.icon,
+    categoryColor: budget.category.color,
+    quincenalAmount: budget.quincenalAmount.toString(),
+    spent: (spentMap.get(budget.categoryId) ?? BigInt(0)).toString(),
+  }))
+}
+
+/**
+ * Copies budget entries from the previous month's period to the target period.
+ * Handles January -> December year wrap.
+ * Returns true if budgets were copied, false if nothing to copy.
+ */
+export async function copyBudgetsFromPreviousPeriod(
+  periodId: string,
+  month: number,
+  year: number,
+): Promise<boolean> {
+  const prevMonth = month === 1 ? 12 : month - 1
+  const prevYear = month === 1 ? year - 1 : year
+
+  const previousPeriod = await prisma.period.findUnique({
+    where: { month_year: { month: prevMonth, year: prevYear } },
+  })
+
+  if (!previousPeriod) return false
+
+  const previousBudgets = await prisma.budget.findMany({
+    where: { periodId: previousPeriod.id },
+  })
+
+  if (previousBudgets.length === 0) return false
+
+  await prisma.budget.createMany({
+    data: previousBudgets.map((budget) => ({
+      categoryId: budget.categoryId,
+      quincenalAmount: budget.quincenalAmount,
+      periodId,
+    })),
+  })
+
+  return true
+}
