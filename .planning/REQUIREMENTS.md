@@ -100,12 +100,12 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Budget
 
-- [ ] **BDG-01**: User can configure budget per category with quincenal amount input
+- [x] **BDG-01**: User can configure budget per category with quincenal amount input
 - [ ] **BDG-02**: Calculated columns display: monthly (x2), semester (x6), annual (x12)
 - [ ] **BDG-03**: Total row and comparison: quincenal income vs total quincenal budget -> surplus/deficit
 - [ ] **BDG-04**: Progress bars per category showing % spent with traffic light (green <80%, orange 80-100%, red >100%)
 - [ ] **BDG-05**: Budget amounts and spent shown side-by-side per category
-- [ ] **BDG-06**: If no budget exists for current period, copy from previous period automatically
+- [x] **BDG-06**: If no budget exists for current period, copy from previous period automatically
 
 ### History
 
@@ -234,12 +234,12 @@ Deferred to future release. Tracked but not in current roadmap.
 | DEBT-05 | Phase 8 | Complete |
 | DEBT-06 | Phase 8 | Complete |
 | DEBT-07 | Phase 8 | Complete |
-| BDG-01 | Phase 9 | Pending |
+| BDG-01 | Phase 9 | Complete |
 | BDG-02 | Phase 9 | Pending |
 | BDG-03 | Phase 9 | Pending |
 | BDG-04 | Phase 9 | Pending |
 | BDG-05 | Phase 9 | Pending |
-| BDG-06 | Phase 9 | Pending |
+| BDG-06 | Phase 9 | Complete |
 | HIST-01 | Phase 10 | Pending |
 | HIST-02 | Phase 10 | Pending |
 | HIST-03 | Phase 10 | Pending |
