@@ -29,6 +29,10 @@ import {
   ChevronLeft,
   ChevronRight,
   Lock,
+  TrendingUp,
+  TrendingDown,
+  Wallet,
+  Percent,
   type LucideProps,
 } from 'lucide-react'
 import { type ComponentType } from 'react'
@@ -57,6 +61,11 @@ export const ICON_MAP: Record<string, ComponentType<LucideProps>> = {
   'chevron-left': ChevronLeft,
   'chevron-right': ChevronRight,
   lock: Lock,
+  // Dashboard KPI icons
+  'trending-up': TrendingUp,
+  'trending-down': TrendingDown,
+  wallet: Wallet,
+  percent: Percent,
   // Extra icons for custom categories
   home: Home,
   receipt: Receipt,
