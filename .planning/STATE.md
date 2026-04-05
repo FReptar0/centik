@@ -2,17 +2,17 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_plan: Not started
-status: planning
-stopped_at: Phase 8 context gathered
-last_updated: "2026-04-05T19:48:02.804Z"
+current_plan: 2 of 2
+status: executing
+stopped_at: Completed 08-01-PLAN.md
+last_updated: "2026-04-05T22:48:16Z"
 last_activity: 2026-04-05
 progress:
   total_phases: 11
   completed_phases: 7
-  total_plans: 18
-  completed_plans: 18
-  percent: 83
+  total_plans: 20
+  completed_plans: 19
+  percent: 86
 ---
 
 # Project State
@@ -22,17 +22,17 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-04)
 
 **Core value:** A single user can register a financial transaction in under 30 seconds and immediately see how it impacts their budget, debt ratio, and savings rate across all views.
-**Current focus:** Phase 7: Dashboard
+**Current focus:** Phase 8: Debts
 
 ## Current Position
 
-**Phase:** 7 of 11 (Dashboard)
-**Current Plan:** Not started
+**Phase:** 8 of 11 (Debts)
+**Current Plan:** 2 of 2
 **Total Plans in Phase:** 2
-**Status:** Ready to plan
+**Status:** Executing
 **Last Activity:** 2026-04-05
 
-Progress: [########░░] 83%
+Progress: [########░░] 86%
 
 ## Performance Metrics
 
@@ -70,6 +70,7 @@ Progress: [########░░] 83%
 | Phase 06 P04 | 7min | 3 tasks | 9 files |
 | Phase 07 P01 | 10min | 2 tasks | 6 files |
 | Phase 07 P02 | 3min | 3 tasks | 6 files |
+| Phase 08 P01 | 4min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -128,6 +129,9 @@ Recent decisions affecting current work:
 - [Phase 07]: Category data joined via separate findMany after groupBy (Prisma groupBy does not support include)
 - [Phase 07]: Savings rate and debt-to-income use estimated income from IncomeSource, not actual income transactions
 - [Phase 07]: Recharts Cell for per-category bar coloring; custom SVG center label in donut; separate RecentTransactions component (not reusing TransactionRow)
+- [Phase 08]: DebtMetrics uses combined interface with null fields per type (not discriminated union) for simpler UI consumption
+- [Phase 08]: Debt-to-income ratio uses BigInt basis-point precision: (payments * 10000) / income / 100
+- [Phase 08]: calculateDebtSummary sums minimumPayment for CREDIT_CARD, monthlyPayment for all other types
 
 ### Pending Todos
 
@@ -141,6 +145,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-05T19:48:02.800Z
-Stopped at: Phase 8 context gathered
-Resume file: .planning/phases/08-debts/08-CONTEXT.md
+Last session: 2026-04-05T22:48:16Z
+Stopped at: Completed 08-01-PLAN.md
+Resume file: .planning/phases/08-debts/08-02-PLAN.md

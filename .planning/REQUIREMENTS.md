@@ -93,10 +93,10 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **DEBT-01**: User can view all active debts as expandable cards with type-specific metrics
 - [ ] **DEBT-02**: Credit card view: utilization bar (green <30%, orange 30-70%, red >70%), minimum payment, cut-off/payment dates, estimated monthly interest
 - [ ] **DEBT-03**: Loan view: progress bar (% paid), monthly payment, remaining months, total remaining
-- [ ] **DEBT-04**: User can create a new debt (credit card or personal loan) with type-specific fields
-- [ ] **DEBT-05**: User can update debt balance (inline edit or modal)
-- [ ] **DEBT-06**: User can delete a debt with confirmation
-- [ ] **DEBT-07**: Summary: total debt, total monthly debt payments, debt-to-income ratio
+- [x] **DEBT-04**: User can create a new debt (credit card or personal loan) with type-specific fields
+- [x] **DEBT-05**: User can update debt balance (inline edit or modal)
+- [x] **DEBT-06**: User can delete a debt with confirmation
+- [x] **DEBT-07**: Summary: total debt, total monthly debt payments, debt-to-income ratio
 
 ### Budget
 
@@ -230,10 +230,10 @@ Deferred to future release. Tracked but not in current roadmap.
 | DEBT-01 | Phase 8 | Pending |
 | DEBT-02 | Phase 8 | Pending |
 | DEBT-03 | Phase 8 | Pending |
-| DEBT-04 | Phase 8 | Pending |
-| DEBT-05 | Phase 8 | Pending |
-| DEBT-06 | Phase 8 | Pending |
-| DEBT-07 | Phase 8 | Pending |
+| DEBT-04 | Phase 8 | Complete |
+| DEBT-05 | Phase 8 | Complete |
+| DEBT-06 | Phase 8 | Complete |
+| DEBT-07 | Phase 8 | Complete |
 | BDG-01 | Phase 9 | Pending |
 | BDG-02 | Phase 9 | Pending |
 | BDG-03 | Phase 9 | Pending |
