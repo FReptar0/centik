@@ -150,12 +150,11 @@ Plans:
   2. User can create a new debt (credit card or personal loan) with type-specific fields
   3. User can update a debt balance inline and delete a debt with confirmation
   4. Summary section shows total debt, total monthly debt payments, and debt-to-income ratio
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 08-01: TBD
-- [ ] 08-02: TBD
-- [ ] 08-03: TBD
+- [ ] 08-01-PLAN.md -- Debt calculation utilities (metrics, health colors, summary) + Server Actions (create, update, updateBalance, delete) with TDD tests
+- [ ] 08-02-PLAN.md -- UI components (DebtCard, DebtForm, DebtSummaryCards, DebtList) + page wiring + DeudasClientWrapper + human verification
 
 ### Phase 9: Budget Configuration + Progress
 **Goal**: User can set quincenal budgets per category and see real-time progress bars showing how much of each budget has been spent
@@ -220,7 +219,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 5. Income Sources | 2/2 | Complete   | 2026-04-05 |
 | 6. Categories + Transactions | 0/4 | Not started | - |
 | 7. Dashboard | 2/2 | Complete   | 2026-04-05 |
-| 8. Debts | 0/3 | Not started | - |
+| 8. Debts | 0/2 | Not started | - |
 | 9. Budget Configuration + Progress | 0/3 | Not started | - |
 | 10. History + Period Close | 0/3 | Not started | - |
 | 11. Polish + Accessibility | 0/3 | Not started | - |
