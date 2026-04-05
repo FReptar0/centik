@@ -71,3 +71,38 @@ export type SerializedMonthlySummary = Omit<
   debtAtClose: string
   debtPayments: string
 }
+
+/** Dashboard KPI values -- all monetary amounts as serialized strings (centavos), rates as basis points */
+export interface DashboardKPIs {
+  monthlyEstimatedIncome: string
+  monthExpenses: string
+  available: string
+  totalDebt: string
+  savingsRate: number // basis points (2050 = 20.50%)
+  debtToIncomeRatio: number // basis points
+}
+
+/** Category expense total for pie/donut chart */
+export interface CategoryExpense {
+  name: string
+  icon: string
+  color: string
+  total: string // centavos
+}
+
+/** Budget vs spent per category for bar chart */
+export interface BudgetVsSpent {
+  name: string
+  color: string
+  budget: string // monthly budget in centavos (quincenalAmount * 2)
+  spent: string // actual expenses in centavos
+}
+
+/** Monthly trend data point from MonthlySummary */
+export interface MonthlyTrendPoint {
+  month: number
+  year: number
+  totalIncome: string
+  totalExpenses: string
+  totalSavings: string
+}
