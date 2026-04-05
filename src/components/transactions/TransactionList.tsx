@@ -1,0 +1,70 @@
+'use client'
+
+import DynamicIcon from '@/components/ui/DynamicIcon'
+import TransactionRow from '@/components/transactions/TransactionRow'
+import { cn } from '@/lib/utils'
+import type { SerializedTransaction } from '@/types'
+
+type TransactionWithCategory = SerializedTransaction & {
+  category: { name: string; icon: string; color: string }
+}
+
+interface TransactionListProps {
+  transactions: TransactionWithCategory[]
+  onEdit: (transaction: SerializedTransaction) => void
+  hasMore: boolean
+  onLoadMore: () => void
+  isLoadingMore: boolean
+}
+
+/** Transaction list with empty state and "Cargar mas" pagination */
+export default function TransactionList({
+  transactions,
+  onEdit,
+  hasMore,
+  onLoadMore,
+  isLoadingMore,
+}: TransactionListProps) {
+  if (transactions.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <DynamicIcon
+          name="arrow-left-right"
+          size={48}
+          className="text-text-muted mb-4"
+          aria-hidden="true"
+        />
+        <p className="text-text-secondary text-lg">
+          Sin movimientos este mes
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <div className="space-y-2">
+        {transactions.map((txn) => (
+          <TransactionRow key={txn.id} transaction={txn} onEdit={onEdit} />
+        ))}
+      </div>
+
+      {hasMore && (
+        <button
+          type="button"
+          onClick={onLoadMore}
+          disabled={isLoadingMore}
+          className={cn(
+            'mt-4 w-full rounded-xl border border-border bg-bg-card py-3',
+            'text-sm font-medium text-text-secondary',
+            'transition-colors duration-200',
+            'hover:bg-bg-card-hover hover:text-text-primary',
+            'disabled:opacity-50 disabled:cursor-not-allowed',
+          )}
+        >
+          {isLoadingMore ? 'Cargando...' : 'Cargar mas'}
+        </button>
+      )}
+    </div>
+  )
+}
