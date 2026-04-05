@@ -5,8 +5,20 @@ import { CategoryType, Frequency, DebtType } from '../generated/prisma/client'
 export const CATEGORIES = [
   { name: 'Comida', icon: 'utensils', color: '#fb923c', type: CategoryType.EXPENSE, sortOrder: 1 },
   { name: 'Servicios', icon: 'zap', color: '#60a5fa', type: CategoryType.EXPENSE, sortOrder: 2 },
-  { name: 'Entretenimiento', icon: 'clapperboard', color: '#a78bfa', type: CategoryType.EXPENSE, sortOrder: 3 },
-  { name: 'Suscripciones', icon: 'smartphone', color: '#f472b6', type: CategoryType.EXPENSE, sortOrder: 4 },
+  {
+    name: 'Entretenimiento',
+    icon: 'clapperboard',
+    color: '#a78bfa',
+    type: CategoryType.EXPENSE,
+    sortOrder: 3,
+  },
+  {
+    name: 'Suscripciones',
+    icon: 'smartphone',
+    color: '#f472b6',
+    type: CategoryType.EXPENSE,
+    sortOrder: 4,
+  },
   { name: 'Transporte', icon: 'car', color: '#fbbf24', type: CategoryType.EXPENSE, sortOrder: 5 },
   { name: 'Otros', icon: 'package', color: '#94a3b8', type: CategoryType.EXPENSE, sortOrder: 6 },
   { name: 'Empleo', icon: 'briefcase', color: '#34d399', type: CategoryType.INCOME, sortOrder: 7 },
@@ -80,8 +92,7 @@ export const VALUE_UNITS = [
     name: 'Unidad de Inversion',
     precision: 6,
     symbol: 'UDI',
-    providerUrl:
-      'https://www.banxico.org.mx/SieAPIRest/service/v1/series/SP68257/datos/oportuno',
+    providerUrl: 'https://www.banxico.org.mx/SieAPIRest/service/v1/series/SP68257/datos/oportuno',
     providerPath: '$.bmx.series[0].datos[0].dato',
     providerHeaders: { 'Bmx-Token': 'BANXICO_API_TOKEN' },
     refreshInterval: 24,

@@ -10,10 +10,7 @@ import {
   MARCH_SUMMARY,
   UNIT_RATES,
 } from './seed-data'
-import {
-  buildCurrentMonthTransactions,
-  buildPreviousMonthTransactions,
-} from './seed-transactions'
+import { buildCurrentMonthTransactions, buildPreviousMonthTransactions } from './seed-transactions'
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL!,
@@ -137,10 +134,7 @@ async function seedValueUnits() {
   }
 }
 
-async function seedBudgets(
-  categories: Record<string, string>,
-  currentPeriodId: string,
-) {
+async function seedBudgets(categories: Record<string, string>, currentPeriodId: string) {
   let count = 0
 
   for (const [categoryName, quincenalAmount] of Object.entries(BUDGET_AMOUNTS)) {
@@ -209,9 +203,7 @@ async function seedTransactions(
   const totalPrevious = await prisma.transaction.count({
     where: { periodId: previousPeriodId },
   })
-  console.log(
-    `Seeded transactions: ${totalCurrent} for April, ${totalPrevious} for March`,
-  )
+  console.log(`Seeded transactions: ${totalCurrent} for April, ${totalPrevious} for March`)
 }
 
 async function seedMonthlySummary(previousPeriodId: string) {
@@ -227,10 +219,7 @@ async function seedMonthlySummary(previousPeriodId: string) {
   console.log('Seeded MonthlySummary for March 2026')
 }
 
-async function seedUnitRates(valueUnits: {
-  udi: { id: string }
-  uma: { id: string }
-}) {
+async function seedUnitRates(valueUnits: { udi: { id: string }; uma: { id: string } }) {
   const udiRate = UNIT_RATES.udi
   const existingUdiRate = await prisma.unitRate.findUnique({
     where: {
@@ -267,12 +256,7 @@ async function main() {
   await seedDebts()
   const valueUnits = await seedValueUnits()
   await seedBudgets(categories, currentPeriod.id)
-  await seedTransactions(
-    categories,
-    currentPeriod.id,
-    previousPeriod.id,
-    incomeSources,
-  )
+  await seedTransactions(categories, currentPeriod.id, previousPeriod.id, incomeSources)
   await seedMonthlySummary(previousPeriod.id)
   await seedUnitRates(valueUnits)
 
