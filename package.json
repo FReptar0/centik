@@ -19,8 +19,8 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@prisma/client": "latest",
     "@prisma/adapter-pg": "latest",
+    "@prisma/client": "latest",
     "clsx": "latest",
     "dotenv": "latest",
     "lucide-react": "latest",
@@ -43,6 +43,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "latest",
+    "@vitest/coverage-v8": "^4.1.2",
     "eslint": "^9",
     "eslint-config-next": "16.2.2",
     "eslint-config-prettier": "latest",
