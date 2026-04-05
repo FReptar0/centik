@@ -35,7 +35,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **FOUND-02**: `formatMoney()` converts cents string to MXN currency display ($1,234.56)
 - [x] **FOUND-03**: `toCents()` converts user decimal input to cents string without float contamination
 - [x] **FOUND-04**: `parseCents()` converts string to BigInt for DB operations
-- [x] **FOUND-05**: `formatRate()` converts basis points to percentage display (4500 → "45.00%")
+- [x] **FOUND-05**: `formatRate()` converts basis points to percentage display (4500 -> "45.00%")
 - [x] **FOUND-06**: Zod schemas defined for all mutation endpoints (transaction, debt, budget, income source, category)
 - [x] **FOUND-07**: 100% test coverage on all utility functions and Zod schemas
 - [x] **FOUND-08**: `cn()` utility (clsx + tailwind-merge) for conditional class names
@@ -56,7 +56,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **INC-02**: User can create a new income source with name, default amount, frequency, and type
 - [ ] **INC-03**: User can edit an existing income source
 - [ ] **INC-04**: User can delete an income source with confirmation
-- [ ] **INC-05**: Variable frequency sources show 3-month average (or available months if <3)
+- [ ] **INC-05**: Variable frequency sources show defaultAmount with "(estimado)" label; 3-month average calculation deferred to Dashboard (Phase 7) when transaction history exists
 - [ ] **INC-06**: Summary cards show quincenal, monthly, semester, and annual income estimates
 
 ### Categories
@@ -102,7 +102,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [ ] **BDG-01**: User can configure budget per category with quincenal amount input
 - [ ] **BDG-02**: Calculated columns display: monthly (x2), semester (x6), annual (x12)
-- [ ] **BDG-03**: Total row and comparison: quincenal income vs total quincenal budget → surplus/deficit
+- [ ] **BDG-03**: Total row and comparison: quincenal income vs total quincenal budget -> surplus/deficit
 - [ ] **BDG-04**: Progress bars per category showing % spent with traffic light (green <80%, orange 80-100%, red >100%)
 - [ ] **BDG-05**: Budget amounts and spent shown side-by-side per category
 - [ ] **BDG-06**: If no budget exists for current period, copy from previous period automatically
@@ -111,7 +111,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [ ] **HIST-01**: Annual pivot table: rows = metrics (income, expenses, savings, savings rate, debt at close, debt payments), columns = Jan-Dec + annual total
 - [ ] **HIST-02**: Year selector to navigate between years
-- [ ] **HIST-03**: Period close button triggers atomic transaction: calculate totals → create MonthlySummary → mark period closed → create next period → copy budgets
+- [ ] **HIST-03**: Period close button triggers atomic transaction: calculate totals -> create MonthlySummary -> mark period closed -> create next period -> copy budgets
 - [ ] **HIST-04**: Confirmation modal before close showing preview of totals
 - [ ] **HIST-05**: Closed periods show lock icon and read-only banner across all views
 - [ ] **HIST-06**: User can reopen a closed period (deletes MonthlySummary, unlocks editing)
@@ -163,7 +163,7 @@ Deferred to future release. Tracked but not in current roadmap.
 | Multi-currency in MVP | MXN only; v2 ValueUnit system handles UDI/UMA/USD |
 | Light mode | Doubles styling work; dark-only is the design decision |
 | Real-time notifications | Single user, no urgency; passive date display suffices |
-| Complex investments | Options, futures, rebalancing — out of scope entirely |
+| Complex investments | Options, futures, rebalancing -- out of scope entirely |
 | Client-side state management | React state + Server Components is sufficient |
 
 ## Traceability
@@ -263,4 +263,4 @@ Deferred to future release. Tracked but not in current roadmap.
 
 ---
 *Requirements defined: 2026-04-04*
-*Last updated: 2026-04-04 — INFRA-01 and INFRA-06 corrected from pnpm to npm per locked user decision*
+*Last updated: 2026-04-05 -- INC-05 updated: variable frequency shows "(estimado)" in Phase 5, 3-month average deferred to Phase 7*

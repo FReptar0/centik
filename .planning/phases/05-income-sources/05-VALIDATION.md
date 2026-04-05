@@ -38,16 +38,21 @@ created: 2026-04-05
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 05-01-01 | 01 | 1 | INC-02, INC-03, INC-04 | unit | `npx vitest run src/app/ingresos/actions.test.ts` | ❌ W0 | ⬜ pending |
-| 05-01-02 | 01 | 1 | INC-01, INC-05, INC-06 | unit + visual | `npm run build && npm run lint` | N/A | ⬜ pending |
-| 05-02-01 | 02 | 2 | INC-01-INC-06 | integration | `npm run test:integration` | ❌ W0 | ⬜ pending |
+| 05-01-01 | 01 | 1 | INC-05, INC-06 | unit | `npx vitest run src/lib/income.test.ts --reporter=verbose` | W0 | pending |
+| 05-01-02 | 01 | 1 | INC-02, INC-03, INC-04 | unit | `npx vitest run src/app/ingresos/actions.test.ts --reporter=verbose` | W0 | pending |
+| 05-02-01 | 02 | 2 | INC-01, INC-05 | unit | `npx vitest run src/components/income/ --reporter=verbose` | W0 | pending |
+| 05-02-02 | 02 | 2 | INC-01-INC-06 | build + lint | `npm run build && npm run lint` | N/A | pending |
+| 05-02-03 | 02 | 2 | INC-01-INC-06 | human-verify | Manual CRUD walkthrough at /ingresos | N/A | pending |
 
 ---
 
 ## Wave 0 Requirements
 
-- [ ] `src/app/ingresos/actions.test.ts` — Server Action unit tests
-- [ ] `tests/integration/income-sources.test.ts` — Integration tests for full CRUD cycle
+- [ ] `src/lib/income.test.ts` -- Income calculation utility tests (Plan 01 Task 1)
+- [ ] `src/app/ingresos/actions.test.ts` -- Server Action unit tests (Plan 01 Task 2)
+- [ ] `src/components/income/IncomeSourceCard.test.tsx` -- Card component tests (Plan 02 Task 1)
+- [ ] `src/components/income/IncomeSummaryCards.test.tsx` -- Summary cards tests (Plan 02 Task 1)
+- [ ] `tests/integration/income-sources.test.ts` -- Integration tests for full CRUD cycle (post-phase or verify-work)
 
 ---
 
@@ -55,9 +60,11 @@ created: 2026-04-05
 
 | Behavior | Requirement | Why Manual | Test Instructions |
 |----------|-------------|------------|-------------------|
-| Income cards display correctly | INC-01 | Visual layout check | View /ingresos — verify cards show name, amount, frequency, monthly equivalent |
+| Income cards display correctly | INC-01 | Visual layout check | View /ingresos -- verify cards show name, amount, frequency, monthly equivalent |
 | Create/edit modal works | INC-02, INC-03 | Interactive UI check | Open modal, fill form, save, verify list updates |
+| Delete inline confirmation | INC-04 | Interactive timing check | Click delete, verify 3s auto-revert, confirm deletion |
 | Summary cards aggregate correctly | INC-06 | Visual + math check | Verify quincenal/monthly/semester/annual totals match sources |
+| Variable frequency shows (estimado) | INC-05 | Visual check | Verify Freelance card shows "(estimado)" label |
 
 ---
 

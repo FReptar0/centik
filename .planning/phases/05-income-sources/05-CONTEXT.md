@@ -19,14 +19,13 @@ All decisions derive from DFR.md section 3.5, UX_RULES.md, and STYLE_GUIDE.md. N
 ### Display (from DFR.md 3.5)
 - Card-based list of income sources
 - Each card: name, default amount (formatted), frequency, type badge
-- For quincenal frequency: show monthly equivalent (×2)
-- For variable frequency: show 3-month average (or available months if <3)
+- For quincenal frequency: show monthly equivalent (x2)
 - Summary section: quincenal, monthly, semester, annual income estimates
 
 ### CRUD operations (from UX_RULES.md)
 - Create: Modal with form (name, defaultAmount, frequency selector, type selector)
 - Edit: Same modal, pre-filled with existing data
-- Delete: Inline confirmation (not modal) — button changes to "¿Eliminar? Sí / No", auto-reverts after 3s
+- Delete: Inline confirmation (not modal) — button changes to "Eliminar? Si / No", auto-reverts after 3s
 - All mutations via Server Actions, not API routes
 - Zod validation with createIncomeSourceSchema (already built in Phase 3)
 - Toast notifications for success/error (if toast system exists; otherwise skip for now — Phase 11)
@@ -45,6 +44,7 @@ All decisions derive from DFR.md section 3.5, UX_RULES.md, and STYLE_GUIDE.md. N
 - Whether to split into sub-components or keep page-level
 - Form field ordering and optional field handling
 - Loading state while mutations are in progress
+- Variable frequency display: Phase 5 shows defaultAmount with "(estimado)" label since no transactions exist yet. The DFR.md 3-month average calculation is deferred to Phase 6 (Dashboard/transactions) when transaction history is available to compute it.
 
 </decisions>
 
