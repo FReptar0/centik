@@ -69,12 +69,11 @@ Plans:
   3. `toCents("150.75")` returns "15075" without float contamination (string-split parsing, not parseFloat * 100)
   4. All Zod schemas (transaction, debt, budget, income source, category) reject invalid input with descriptive errors
   5. `npm run test:coverage` reports 100% coverage on `src/lib/` files
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
-- [ ] 03-03: TBD
+- [ ] 03-01-PLAN.md -- Types, serializer, utility functions (formatMoney, toCents, parseCents, formatRate, formatUnitAmount, cn), constants with tests
+- [ ] 03-02-PLAN.md -- All 8 Zod v4 validation schemas with Spanish error messages, comprehensive tests, 100% coverage gate
 
 ### Phase 4: Layout Shell
 **Goal**: Every page renders inside a responsive layout with navigation, period context, and the always-visible quick-add button
@@ -217,7 +216,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 |-------|----------------|--------|-----------|
 | 1. Infrastructure + Scaffolding | 3/3 | Complete   | 2026-04-04 |
 | 2. Database Schema + Seed | 2/2 | Complete | 2026-04-05 |
-| 3. Foundation Libraries | 0/3 | Not started | - |
+| 3. Foundation Libraries | 0/2 | Not started | - |
 | 4. Layout Shell | 0/3 | Not started | - |
 | 5. Income Sources | 0/2 | Not started | - |
 | 6. Categories + Transactions | 0/4 | Not started | - |
