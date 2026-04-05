@@ -20,7 +20,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 6: Categories + Transactions** - Category list view, transaction quick-add, list with filters, edit/delete, closed-period enforcement
 - [x] **Phase 7: Dashboard** - 6 KPI cards via SQL aggregation, 3 charts (budget bar, trend area, expense donut), recent transactions (completed 2026-04-05)
 - [x] **Phase 8: Debts** - Credit card and loan tracking with type-specific calculated fields, inline balance editing, summary metrics (completed 2026-04-05)
-- [ ] **Phase 9: Budget Configuration + Progress** - Quincenal budget input, auto-calculated views, progress bars with traffic light, budget-copy-from-previous
+- [x] **Phase 9: Budget Configuration + Progress** - Quincenal budget input, auto-calculated views, progress bars with traffic light, budget-copy-from-previous (completed 2026-04-05)
 - [ ] **Phase 10: History + Period Close** - Annual pivot table, atomic period close transaction, read-only closed periods, reopen capability
 - [ ] **Phase 11: Polish + Accessibility** - Skeleton loading states, toast notifications, empty states, a11y audit, form UX refinements
 
@@ -165,7 +165,7 @@ Plans:
   2. Total row shows quincenal income vs total quincenal budget with surplus/deficit indicator
   3. Progress bars per category show % spent with traffic light coloring (green <80%, orange 80-100%, red >100%)
   4. If no budget exists for the current period, budgets are automatically copied from the previous period
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 
 Plans:
 - [ ] 09-01-PLAN.md -- Budget utilities (getBudgetColor, getBudgetsWithSpent, copyBudgetsFromPreviousPeriod) + Server Action (upsertBudgets) with TDD tests
@@ -219,6 +219,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 6. Categories + Transactions | 0/4 | Not started | - |
 | 7. Dashboard | 2/2 | Complete   | 2026-04-05 |
 | 8. Debts | 2/2 | Complete   | 2026-04-05 |
-| 9. Budget Configuration + Progress | 0/2 | Not started | - |
+| 9. Budget Configuration + Progress | 2/2 | Complete   | 2026-04-05 |
 | 10. History + Period Close | 0/3 | Not started | - |
 | 11. Polish + Accessibility | 0/3 | Not started | - |
