@@ -101,11 +101,11 @@ Plans:
   2. User can create a new income source with name, amount, frequency, and type -- and it appears in the list without page refresh
   3. User can edit and delete income sources with confirmation dialog on delete
   4. Summary cards display quincenal, monthly, semester, and annual income estimates derived from all sources
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 05-01: TBD
-- [ ] 05-02: TBD
+- [ ] 05-01-PLAN.md -- Server Actions (create, update, delete) + income calculation utilities (monthly equivalent, summary aggregation) with TDD tests
+- [ ] 05-02-PLAN.md -- UI components (card, list, form, summary cards) + page wiring + loading skeleton + human verification checkpoint
 
 ### Phase 6: Categories + Transactions
 **Goal**: User can register a financial transaction in under 30 seconds and browse/filter their transaction history for the current period
