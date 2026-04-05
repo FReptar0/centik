@@ -90,7 +90,7 @@ export async function deleteCategory(id: string): Promise<ActionResult> {
 
     revalidateCategoryPaths()
     return { success: true }
-  } catch (_error: unknown) {
+  } catch {
     return { error: { _form: ['Error de servidor'] } }
   }
 }
