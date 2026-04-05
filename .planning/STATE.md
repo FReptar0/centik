@@ -2,17 +2,17 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_plan: Not started
-status: planning
-stopped_at: Phase 6 context gathered
-last_updated: "2026-04-05T07:07:20.290Z"
+current_plan: 2 of 4
+status: executing
+stopped_at: Completed 06-02-PLAN.md
+last_updated: "2026-04-05T18:23:07.193Z"
 last_activity: 2026-04-05
 progress:
   total_phases: 11
   completed_phases: 5
-  total_plans: 12
-  completed_plans: 12
-  percent: 80
+  total_plans: 16
+  completed_plans: 13
+  percent: 81
 ---
 
 # Project State
@@ -22,17 +22,17 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-04)
 
 **Core value:** A single user can register a financial transaction in under 30 seconds and immediately see how it impacts their budget, debt ratio, and savings rate across all views.
-**Current focus:** Phase 5: Income Sources
+**Current focus:** Phase 6: Categories & Transactions
 
 ## Current Position
 
-**Phase:** 5 of 11 (Income Sources)
-**Current Plan:** Not started
-**Total Plans in Phase:** 2
-**Status:** Ready to plan
+**Phase:** 6 of 11 (Categories & Transactions)
+**Current Plan:** 2 of 4
+**Total Plans in Phase:** 4
+**Status:** Executing
 **Last Activity:** 2026-04-05
 
-Progress: [########..] 80%
+Progress: [########░░] 81%
 
 ## Performance Metrics
 
@@ -64,6 +64,7 @@ Progress: [########..] 80%
 | Phase 04 P03 | 5min | 3 tasks | 20 files |
 | Phase 05 P01 | 4min | 2 tasks | 4 files |
 | Phase 05 P02 | 5min | 3 tasks | 9 files |
+| Phase 06 P02 | 3min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -109,6 +110,9 @@ Recent decisions affecting current work:
 - [Phase 05]: Key-based remount pattern for form initialization avoids setState-in-useEffect lint error
 - [Phase 05]: IngresosClientWrapper separates Server Component data fetch from Client Component modal state
 - [Phase 05]: serializeBigInts cast via unknown to SerializedIncomeSource[] at server-client boundary
+- [Phase 06]: getPeriodForDate uses UTC month/year from date string to avoid timezone drift when parsing ISO date strings
+- [Phase 06]: Shared findOrCreatePeriod helper used by both getCurrentPeriod and getPeriodForDate to avoid duplication
+- [Phase 06]: updateTransaction checks both current period and target period for closed status (date may change months)
 
 ### Pending Todos
 
@@ -122,6 +126,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-05T07:07:20.277Z
-Stopped at: Phase 6 context gathered
-Resume file: .planning/phases/06-categories-transactions/06-CONTEXT.md
+Last session: 2026-04-05T18:23:07.191Z
+Stopped at: Completed 06-02-PLAN.md
+Resume file: None

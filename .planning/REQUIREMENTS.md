@@ -67,15 +67,15 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Transactions
 
-- [ ] **TXN-01**: User can register a transaction in under 30 seconds via quick-add modal
+- [x] **TXN-01**: User can register a transaction in under 30 seconds via quick-add modal
 - [ ] **TXN-02**: Quick-add modal: toggle expense/income, amount input (auto-focus, numeric keyboard), category icon grid, save button
 - [ ] **TXN-03**: Optional fields collapsed by default: description, payment method, notes, date (defaults to today)
 - [ ] **TXN-04**: User can view transaction list for current period, sorted by date descending
 - [ ] **TXN-05**: User can filter transactions by category, type (income/expense), date range, and payment method
-- [ ] **TXN-06**: User can edit an existing transaction
-- [ ] **TXN-07**: User can delete a transaction with inline confirmation
-- [ ] **TXN-08**: Transactions in closed periods cannot be created/edited/deleted (enforced server-side)
-- [ ] **TXN-09**: Income transactions optionally link to an income source
+- [x] **TXN-06**: User can edit an existing transaction
+- [x] **TXN-07**: User can delete a transaction with inline confirmation
+- [x] **TXN-08**: Transactions in closed periods cannot be created/edited/deleted (enforced server-side)
+- [x] **TXN-09**: Income transactions optionally link to an income source
 - [ ] **TXN-10**: Transaction amounts display with sign and color: green +$X for income, red -$X for expense
 
 ### Dashboard
@@ -210,15 +210,15 @@ Deferred to future release. Tracked but not in current roadmap.
 | CAT-01 | Phase 6 | Pending |
 | CAT-02 | Phase 6 | Pending |
 | CAT-03 | Phase 6 | Pending |
-| TXN-01 | Phase 6 | Pending |
+| TXN-01 | Phase 6 | Complete |
 | TXN-02 | Phase 6 | Pending |
 | TXN-03 | Phase 6 | Pending |
 | TXN-04 | Phase 6 | Pending |
 | TXN-05 | Phase 6 | Pending |
-| TXN-06 | Phase 6 | Pending |
-| TXN-07 | Phase 6 | Pending |
-| TXN-08 | Phase 6 | Pending |
-| TXN-09 | Phase 6 | Pending |
+| TXN-06 | Phase 6 | Complete |
+| TXN-07 | Phase 6 | Complete |
+| TXN-08 | Phase 6 | Complete |
+| TXN-09 | Phase 6 | Complete |
 | TXN-10 | Phase 6 | Pending |
 | DASH-01 | Phase 7 | Pending |
 | DASH-02 | Phase 7 | Pending |
