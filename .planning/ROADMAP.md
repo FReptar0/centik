@@ -117,13 +117,13 @@ Plans:
   3. Transaction list shows current period entries sorted by date descending with green +$X for income, red -$X for expense
   4. User can filter transactions by category, type, date range, and payment method
   5. User can edit and delete transactions (with inline confirmation on delete), and closed-period transactions are protected server-side
-**Plans**: TBD
+**Plans:** 4 plans
 
 Plans:
-- [ ] 06-01: TBD
-- [ ] 06-02: TBD
-- [ ] 06-03: TBD
-- [ ] 06-04: TBD
+- [ ] 06-01-PLAN.md -- Category Server Actions (create, soft-delete) + Category UI on /configuracion (list with icons/colors, create form with preset icon grid and color palette)
+- [ ] 06-02-PLAN.md -- getCurrentPeriod utility + Transaction Server Actions (create, update, delete) with closed-period enforcement and TDD tests
+- [ ] 06-03-PLAN.md -- TransactionForm (quick-add modal with type toggle, amount, category grid, optional fields) + TransactionRow (colored signed amount) with TDD tests
+- [ ] 06-04-PLAN.md -- TransactionFilters + TransactionList + /movimientos page wiring + FAB connection to TransactionForm + human verification checkpoint
 
 ### Phase 7: Dashboard
 **Goal**: User opens the app and immediately sees their financial health: income, expenses, available balance, debt, savings rate, and visual breakdowns
