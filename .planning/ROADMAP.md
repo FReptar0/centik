@@ -81,16 +81,16 @@ Plans:
 **Requirements**: LAYOUT-01, LAYOUT-02, LAYOUT-03, LAYOUT-04, LAYOUT-05, LAYOUT-06, LAYOUT-07
 **Success Criteria** (what must be TRUE):
   1. Desktop viewport shows fixed 240px sidebar with Lucide icons and active state highlighting on current route
-  2. Mobile viewport shows bottom tab bar with 5 items (Dashboard, Movimientos, [+], Deudas, Presupuesto)
+  2. Mobile viewport shows bottom tab bar with 5 items (Inicio, Movimientos, Deudas, Presupuesto, Mas) -- NO [+] in tab bar, FAB is separate
   3. Floating "+" FAB button is visible on all pages across both desktop and mobile viewports
-  4. Period selector displays current month/year and allows navigation to previous periods
+  4. Period selector displays current month/year and allows navigation to previous periods via URL search params
   5. DynamicIcon component renders any Lucide icon by its string name from the database
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 04-01: TBD
-- [ ] 04-02: TBD
-- [ ] 04-03: TBD
+- [ ] 04-01-PLAN.md -- DynamicIcon component, nav constants (Spanish labels, i18n-ready), Modal/Sheet responsive primitive
+- [ ] 04-02-PLAN.md -- Desktop/tablet Sidebar, mobile MobileNav with MobileMoreSheet, floating FAB
+- [ ] 04-03-PLAN.md -- PageHeader, PeriodSelector (URL params), root layout wiring, 7 placeholder route pages with loading skeletons
 
 ### Phase 5: Income Sources
 **Goal**: User can manage all income sources and see how they aggregate into quincenal, monthly, semester, and annual totals
