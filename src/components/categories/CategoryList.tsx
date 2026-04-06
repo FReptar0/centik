@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { toast } from 'sonner'
 import { Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import DynamicIcon from '@/components/ui/DynamicIcon'
@@ -72,7 +73,17 @@ function CategoryRow({ category }: CategoryRowProps) {
 
   const handleDelete = useCallback(async () => {
     setDeleting(true)
-    await deleteCategory(category.id)
+    try {
+      const result = await deleteCategory(category.id)
+      if (result && 'error' in result) {
+        const messages = Object.values(result.error).flat()
+        toast.error(messages[0] ?? 'Error al eliminar', { duration: 5000 })
+      } else {
+        toast.success('Categoria eliminada')
+      }
+    } catch {
+      toast.error('Error al eliminar', { duration: 5000 })
+    }
     setDeleting(false)
     setConfirmingDelete(false)
   }, [category.id])

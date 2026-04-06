@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { toast } from 'sonner'
 import { Pencil, Trash2 } from 'lucide-react'
 import { cn, formatMoney } from '@/lib/utils'
 import { getMonthlyEquivalent } from '@/lib/income'
@@ -32,7 +33,17 @@ export default function IncomeSourceCard({ source, onEdit }: IncomeSourceCardPro
 
   const handleDelete = useCallback(async () => {
     setDeleting(true)
-    await deleteIncomeSource(source.id)
+    try {
+      const result = await deleteIncomeSource(source.id)
+      if (result && 'error' in result) {
+        const messages = Object.values(result.error).flat()
+        toast.error(messages[0] ?? 'Error al eliminar', { duration: 5000 })
+      } else {
+        toast.success('Fuente de ingreso eliminada')
+      }
+    } catch {
+      toast.error('Error al eliminar', { duration: 5000 })
+    }
     setDeleting(false)
     setConfirmingDelete(false)
   }, [source.id])

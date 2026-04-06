@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 import Modal from '@/components/ui/Modal'
 import DynamicIcon from '@/components/ui/DynamicIcon'
 import { cn } from '@/lib/utils'
@@ -84,9 +85,12 @@ function CategoryFormContent({ onClose }: FormContentProps) {
     setSubmitting(false)
 
     if ('success' in result) {
+      toast.success('Categoria creada')
       onClose()
     } else {
       setErrors(result.error)
+      const messages = Object.values(result.error).flat()
+      toast.error(messages[0] ?? 'Error al guardar', { duration: 5000 })
     }
   }
 

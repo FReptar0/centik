@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 import Modal from '@/components/ui/Modal'
 import { cn, toCents } from '@/lib/utils'
 import { createIncomeSource, updateIncomeSource } from '@/app/ingresos/actions'
@@ -76,9 +77,12 @@ function IncomeSourceFormContent({ source, onClose }: FormContentProps) {
     setSubmitting(false)
 
     if ('success' in result) {
+      toast.success(isEditing ? 'Fuente de ingreso actualizada' : 'Fuente de ingreso creada')
       onClose()
     } else {
       setErrors(result.error)
+      const messages = Object.values(result.error).flat()
+      toast.error(messages[0] ?? 'Error al guardar', { duration: 5000 })
     }
   }
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import { toast } from 'sonner'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { Plus, RotateCcw } from 'lucide-react'
 import { reopenPeriod } from '@/app/historial/actions'
@@ -97,8 +98,14 @@ export default function MovimientosClientWrapper({
   }
 
   async function handleReopen() {
-    await reopenPeriod(periodId)
-    router.refresh()
+    const result = await reopenPeriod(periodId)
+    if ('success' in result) {
+      toast.success('Periodo reabierto')
+      router.refresh()
+    } else {
+      const messages = Object.values(result.error).flat()
+      toast.error(messages[0] ?? 'Error al reabrir periodo', { duration: 5000 })
+    }
   }
 
   return (

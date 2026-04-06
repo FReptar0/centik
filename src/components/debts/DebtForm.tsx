@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 import Modal from '@/components/ui/Modal'
 import { cn, toCents } from '@/lib/utils'
 import { createDebt, updateDebt } from '@/app/deudas/actions'
@@ -104,9 +105,12 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
     setSubmitting(false)
 
     if ('success' in result) {
+      toast.success(isEditing ? 'Deuda actualizada' : 'Deuda creada')
       onClose()
     } else {
       setErrors(result.error)
+      const messages = Object.values(result.error).flat()
+      toast.error(messages[0] ?? 'Error al guardar', { duration: 5000 })
     }
   }
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { toast } from 'sonner'
 import { Pencil, Trash2 } from 'lucide-react'
 import DynamicIcon from '@/components/ui/DynamicIcon'
 import { cn, formatMoney } from '@/lib/utils'
@@ -41,7 +42,17 @@ export default function TransactionRow({ transaction, onEdit }: TransactionRowPr
 
   const handleDelete = useCallback(async () => {
     setDeleting(true)
-    await deleteTransaction(transaction.id)
+    try {
+      const result = await deleteTransaction(transaction.id)
+      if (result && 'error' in result) {
+        const messages = Object.values(result.error).flat()
+        toast.error(messages[0] ?? 'Error al eliminar', { duration: 5000 })
+      } else {
+        toast.success('Movimiento eliminado')
+      }
+    } catch {
+      toast.error('Error al eliminar', { duration: 5000 })
+    }
     setDeleting(false)
     setConfirmingDelete(false)
   }, [transaction.id])

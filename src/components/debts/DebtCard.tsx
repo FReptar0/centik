@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { toast } from 'sonner'
 import { CreditCard, Landmark, ChevronDown, ChevronUp, Pencil, Trash2 } from 'lucide-react'
 import { cn, formatMoney, formatRate, toCents } from '@/lib/utils'
 import { calculateDebtMetrics, getUtilizationColor } from '@/lib/debt'
@@ -77,9 +78,15 @@ export default function DebtCard({ debt, onEdit }: DebtCardProps) {
     setIsSaving(true)
     try {
       const cents = toCents(balanceInput)
-      await updateDebtBalance(debt.id, { currentBalance: cents })
+      const result = await updateDebtBalance(debt.id, { currentBalance: cents })
+      if (result && 'error' in result) {
+        const messages = Object.values(result.error).flat()
+        toast.error(messages[0] ?? 'Error al actualizar saldo', { duration: 5000 })
+      } else {
+        toast.success('Saldo actualizado')
+      }
     } catch {
-      // Server action handles errors via revalidation
+      toast.error('Error al actualizar saldo', { duration: 5000 })
     }
     setIsSaving(false)
     setIsEditingBalance(false)
@@ -99,7 +106,17 @@ export default function DebtCard({ debt, onEdit }: DebtCardProps) {
 
   const handleDelete = useCallback(async () => {
     setDeleting(true)
-    await deleteDebt(debt.id)
+    try {
+      const result = await deleteDebt(debt.id)
+      if (result && 'error' in result) {
+        const messages = Object.values(result.error).flat()
+        toast.error(messages[0] ?? 'Error al eliminar', { duration: 5000 })
+      } else {
+        toast.success('Deuda eliminada')
+      }
+    } catch {
+      toast.error('Error al eliminar', { duration: 5000 })
+    }
     setDeleting(false)
     setConfirmingDelete(false)
   }, [debt.id])

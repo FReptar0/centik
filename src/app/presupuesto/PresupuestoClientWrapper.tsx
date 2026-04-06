@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useState } from 'react'
+import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { RotateCcw } from 'lucide-react'
 import PageHeader from '@/components/layout/PageHeader'
@@ -29,8 +30,14 @@ export default function PresupuestoClientWrapper({
   const [error, setError] = useState<string | null>(null)
 
   async function handleReopen() {
-    await reopenPeriod(periodId)
-    router.refresh()
+    const result = await reopenPeriod(periodId)
+    if ('success' in result) {
+      toast.success('Periodo reabierto')
+      router.refresh()
+    } else {
+      const messages = Object.values(result.error).flat()
+      toast.error(messages[0] ?? 'Error al reabrir periodo', { duration: 5000 })
+    }
   }
 
   const handleSave = useCallback(
@@ -40,6 +47,9 @@ export default function PresupuestoClientWrapper({
       if ('error' in result) {
         const messages = Object.values(result.error).flat()
         setError(messages[0] ?? 'Error al guardar')
+        toast.error(messages[0] ?? 'Error al guardar presupuesto', { duration: 5000 })
+      } else {
+        toast.success('Presupuesto guardado')
       }
     },
     [periodId],

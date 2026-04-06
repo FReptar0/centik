@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import { toast } from 'sonner'
 import { useRouter, useSearchParams } from 'next/navigation'
 import PageHeader from '@/components/layout/PageHeader'
 import YearSelector from './YearSelector'
@@ -82,7 +83,11 @@ export default function HistorialClientWrapper({
     setIsModalOpen(false)
 
     if ('success' in result) {
+      toast.success('Periodo cerrado')
       router.refresh()
+    } else {
+      const messages = Object.values(result.error).flat()
+      toast.error(messages[0] ?? 'Error al cerrar periodo', { duration: 5000 })
     }
   }, [selectedPeriodId, router])
 
@@ -94,8 +99,14 @@ export default function HistorialClientWrapper({
 
   const handleReopenClick = useCallback(
     async (periodId: string) => {
-      await reopenPeriod(periodId)
-      router.refresh()
+      const result = await reopenPeriod(periodId)
+      if ('success' in result) {
+        toast.success('Periodo reabierto')
+        router.refresh()
+      } else {
+        const messages = Object.values(result.error).flat()
+        toast.error(messages[0] ?? 'Error al reabrir periodo', { duration: 5000 })
+      }
     },
     [router],
   )
