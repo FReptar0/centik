@@ -30,6 +30,12 @@ A single user can register a financial transaction in under 30 seconds and immed
 
 ### Active
 
+- [ ] Glyph Finance design system — replace STYLE_GUIDE.md with Nothing OS-inspired tokens
+- [ ] Glyph Finance UX rules — replace UX_RULES.md with new interaction patterns
+- [ ] Update CLAUDE.md styling references to match Glyph Finance
+
+### Backlog
+
 - [ ] System of value units (UDI, UMA, USD) with configurable rate providers
 - [ ] Asset/investment tracking (PPR, CETES, funds) with MXN conversion
 - [ ] Authentication (NextAuth/Clerk) for multi-user support
@@ -64,6 +70,16 @@ A single user can register a financial transaction in under 30 seconds and immed
 - **i18n:** Spanish by default (nav labels, Zod messages), i18n-ready structure (constants files)
 - **Open source:** Files <300 lines, functions <50 lines (2 components slightly exceed — noted for refactor)
 
+## Current Milestone: v1.1 Glyph Finance Design System
+
+**Goal:** Replace the current cyan/dark design system with a Nothing OS-inspired "Glyph Finance" aesthetic across all reference documents — OLED black, chartreuse accent, dot-matrix textures, monospaced financial numbers, segmented progress bars.
+
+**Target features:**
+- Update STYLE_GUIDE.md with Glyph Finance color palette, typography (monospaced numbers, geometric sans headings), spacing, and component specs
+- Update UX_RULES.md with new interaction patterns (icon-only bottom nav, segmented battery-bar progress, dot-matrix texture accents, pill-shaped buttons)
+- Update CLAUDE.md styling section to reference new design tokens
+- No code changes — implementation deferred to v1.2+ after Stitch validation
+
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
@@ -82,4 +98,4 @@ A single user can register a financial transaction in under 30 seconds and immed
 | FAB separate from tab bar | Avoids confusion about [+] context — always means "new transaction" | ✓ Good |
 
 ---
-*Last updated: 2026-04-06 after v1.0 milestone*
+*Last updated: 2026-04-06 after v1.1 milestone start*
