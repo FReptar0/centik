@@ -21,7 +21,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 7: Dashboard** - 6 KPI cards via SQL aggregation, 3 charts (budget bar, trend area, expense donut), recent transactions (completed 2026-04-05)
 - [x] **Phase 8: Debts** - Credit card and loan tracking with type-specific calculated fields, inline balance editing, summary metrics (completed 2026-04-05)
 - [x] **Phase 9: Budget Configuration + Progress** - Quincenal budget input, auto-calculated views, progress bars with traffic light, budget-copy-from-previous (completed 2026-04-05)
-- [ ] **Phase 10: History + Period Close** - Annual pivot table, atomic period close transaction, read-only closed periods, reopen capability
+- [x] **Phase 10: History + Period Close** - Annual pivot table, atomic period close transaction, read-only closed periods, reopen capability (completed 2026-04-06)
 - [ ] **Phase 11: Polish + Accessibility** - Skeleton loading states, toast notifications, empty states, a11y audit, form UX refinements
 
 ## Phase Details
@@ -180,7 +180,7 @@ Plans:
   2. Period close button triggers atomic transaction: calculates totals, creates MonthlySummary, marks period closed, creates next period, copies budgets
   3. Confirmation modal shows preview of totals before close, and closed periods display lock icon with read-only banner
   4. User can reopen a closed period (deletes MonthlySummary, unlocks editing)
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [ ] 10-01-PLAN.md -- History data queries (getMonthlySummariesForYear, getAvailableYears, getClosePeriodPreview) + closePeriod/reopenPeriod Server Actions with TDD tests
@@ -219,5 +219,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 7. Dashboard | 2/2 | Complete   | 2026-04-05 |
 | 8. Debts | 2/2 | Complete   | 2026-04-05 |
 | 9. Budget Configuration + Progress | 2/2 | Complete   | 2026-04-05 |
-| 10. History + Period Close | 1/2 | In Progress|  |
+| 10. History + Period Close | 2/2 | Complete   | 2026-04-06 |
 | 11. Polish + Accessibility | 0/3 | Not started | - |

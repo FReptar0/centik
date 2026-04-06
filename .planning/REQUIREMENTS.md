@@ -109,11 +109,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### History
 
-- [ ] **HIST-01**: Annual pivot table: rows = metrics (income, expenses, savings, savings rate, debt at close, debt payments), columns = Jan-Dec + annual total
-- [ ] **HIST-02**: Year selector to navigate between years
+- [x] **HIST-01**: Annual pivot table: rows = metrics (income, expenses, savings, savings rate, debt at close, debt payments), columns = Jan-Dec + annual total
+- [x] **HIST-02**: Year selector to navigate between years
 - [x] **HIST-03**: Period close button triggers atomic transaction: calculate totals -> create MonthlySummary -> mark period closed -> create next period -> copy budgets
 - [x] **HIST-04**: Confirmation modal before close showing preview of totals
-- [ ] **HIST-05**: Closed periods show lock icon and read-only banner across all views
+- [x] **HIST-05**: Closed periods show lock icon and read-only banner across all views
 - [x] **HIST-06**: User can reopen a closed period (deletes MonthlySummary, unlocks editing)
 
 ### UX & Polish
@@ -240,11 +240,11 @@ Deferred to future release. Tracked but not in current roadmap.
 | BDG-04 | Phase 9 | Complete |
 | BDG-05 | Phase 9 | Complete |
 | BDG-06 | Phase 9 | Complete |
-| HIST-01 | Phase 10 | Pending |
-| HIST-02 | Phase 10 | Pending |
+| HIST-01 | Phase 10 | Complete |
+| HIST-02 | Phase 10 | Complete |
 | HIST-03 | Phase 10 | Complete |
 | HIST-04 | Phase 10 | Complete |
-| HIST-05 | Phase 10 | Pending |
+| HIST-05 | Phase 10 | Complete |
 | HIST-06 | Phase 10 | Complete |
 | UX-01 | Phase 11 | Pending |
 | UX-02 | Phase 11 | Pending |

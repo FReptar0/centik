@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_plan: 1 of 2
+current_plan: 2
 status: executing
-stopped_at: Completed 10-01-PLAN.md
-last_updated: "2026-04-06T00:12:10Z"
+stopped_at: Completed 10-02-PLAN.md
+last_updated: "2026-04-06T00:22:21.764Z"
 last_activity: 2026-04-06
 progress:
   total_phases: 11
-  completed_phases: 9
+  completed_phases: 10
   total_plans: 24
-  completed_plans: 23
+  completed_plans: 24
   percent: 92
 ---
 
@@ -27,9 +27,9 @@ See: .planning/PROJECT.md (updated 2026-04-04)
 ## Current Position
 
 **Phase:** 10 of 11 (History + Period Close)
-**Current Plan:** 1 of 2
+**Current Plan:** 2
 **Total Plans in Phase:** 2
-**Status:** Executing
+**Status:** Ready to execute
 **Last Activity:** 2026-04-06
 
 Progress: [#########░] 92%
@@ -75,6 +75,7 @@ Progress: [#########░] 92%
 | Phase 09 P01 | 3min | 2 tasks | 4 files |
 | Phase 09 P02 | 4min | 3 tasks | 7 files |
 | Phase 10 P01 | 4min | 2 tasks | 4 files |
+| Phase 10 P02 | 5min | 3 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -146,6 +147,9 @@ Recent decisions affecting current work:
 - [Phase 10]: debtPayments = BigInt(0) for MVP since no explicit debt-payment category tracking exists
 - [Phase 10]: Budget copy inlined inside $transaction using tx client for atomicity (not calling copyBudgetsFromPreviousPeriod)
 - [Phase 10]: Budget copy checks nextBudgetCount > 0 for idempotency; period upsert for safe next-period creation
+- [Phase 10]: Annual total for debtAtClose uses latest closed month's value (not sum) since debt is a point-in-time snapshot
+- [Phase 10]: Reopen from pivot table is direct action (no confirmation) since reopening is reversible
+- [Phase 10]: PageHeader reopenAction prop: slot for ghost button in closed-period banner across all period-aware pages
 
 ### Pending Todos
 
@@ -159,6 +163,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-06T00:12:10Z
-Stopped at: Completed 10-01-PLAN.md
-Resume file: .planning/phases/10-history-period-close/10-01-SUMMARY.md
+Last session: 2026-04-06T00:22:21.761Z
+Stopped at: Completed 10-02-PLAN.md
+Resume file: None
