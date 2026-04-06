@@ -1,9 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { getMonthlySummariesForYear, getAvailableYears, getClosePeriodPreview } from './history'
 
-const mockFindMany = vi.fn()
-const mockAggregate = vi.fn()
-
 const mockMonthlySummaryFindMany = vi.fn()
 const mockPeriodFindMany = vi.fn()
 const mockTransactionAggregate = vi.fn()
