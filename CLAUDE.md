@@ -442,8 +442,8 @@ Reference the full schema in `DFR.md` sections 2.1-2.10. Key points:
 ## Seed Data
 
 The seed script must create:
-1. Default expense categories: Comida (utensils, #fb923c), Servicios (zap, #60a5fa), Entretenimiento (clapperboard, #a78bfa), Suscripciones (smartphone, #f472b6), Transporte (car, #fbbf24), Otros (package, #94a3b8)
-2. Default income categories: Empleo (briefcase, #34d399), Freelance (laptop, #22d3ee)
+1. Default expense categories: Comida (utensils, #C88A5A), Servicios (zap, #7A9EC4), Entretenimiento (clapperboard, #9B89C4), Suscripciones (smartphone, #C48AA3), Transporte (car, #C4A84E), Otros (package, #8A9099)
+2. Default income categories: Empleo (briefcase, #00E676), Freelance (laptop, #CCFF00)
 3. Default income sources: "TerSoft (Empleo)" quincenal, "Freelance" variable
 4. Default debts: One credit card, one personal loan (both with zero balances, amounts as BigInt centavos)
 5. Current period (current month/year)
