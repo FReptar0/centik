@@ -78,27 +78,46 @@ Cada pagina tiene un header consistente:
 
 ## 4. Patrones de Interacción
 
-### 4.1 Registro Rápido de Transacción
+### 4.1 Registro Rapido de Transaccion
 
-Este es el flujo más crítico de toda la app. Debe ser rápido e intuitivo.
+Este es el flujo mas critico de toda la app. Debe completarse en menos de 30 segundos y 4 taps.
 
-**Flujo óptimo (4 pasos):**
+**Flujo optimo (4 pasos):**
 
-1. Tap en botón [+] o FAB → Abre modal/sheet
-2. Toggle Gasto/Ingreso (default: Gasto)
-3. Escribir monto → Seleccionar categoría (grid de íconos, no dropdown)
-4. Tap "Guardar" → Toast de confirmación, modal se cierra
+1. **Tap en FAB circular chartreuse** → Abre bottom sheet (85% de la pantalla, desliza hacia arriba).
+   - Spec: drag handle (40px ancho, 4px alto, `--color-border-divider`) centrado en la parte superior.
+   - Boton X en esquina superior izquierda para cerrar. Boton "GUARDAR" en esquina superior derecha en `--color-accent` (chartreuse), nivel Label (12px, uppercase, letter-spacing +2px).
+   - Referencia cruzada: STYLE_GUIDE.md > Componentes Base > Modales > Mobile (bottom sheet) para la spec completa del contenedor.
 
-**Campos opcionales (colapsados por default):**
-- Descripción, forma de pago, notas, fecha (default: hoy)
-- Solo se muestran si el usuario toca "Más detalles"
+2. **Area hero de monto con dot-matrix:**
+   - Zona superior del sheet con fondo textura dot-matrix. Referencia cruzada: STYLE_GUIDE.md > Identidad Visual > Textura Dot-Matrix para la implementacion del patron SVG de 8x8px.
+   - Input de monto grande, monoespaciado (IBM Plex Mono, nivel Display ~36px), "$" silenciado en `--color-text-tertiary` a tamano menor. Digitos en `--color-text-primary` (#E8E8E8).
+   - Debajo del monto: toggle pills Gasto/Ingreso (default: Gasto). Estilo: referencia cruzada a STYLE_GUIDE.md > Componentes Base > Buttons > Toggle pills. Activo: fondo chartreuse con texto negro. Inactivo: ghost/transparente con texto `--color-text-secondary`.
 
-**Reglas del formulario:**
-- El input de monto recibe focus automático al abrir el modal
-- El teclado numérico se activa en móvil (`inputMode="decimal"`)
-- Las categorías se muestran como grid de íconos con label debajo (no como lista dropdown) para selección de un tap
-- La fecha default es hoy y solo se cambia si el usuario lo necesita
-- Al guardar: cerrar modal, mostrar toast de éxito con resumen ("Comida -$150.00"), actualizar lista si está visible
+3. **Selector de categoria circular con ring de acento:**
+   - Layout: grid de 4 columnas x 2 filas para las 8 categorias default. Grid fijo porque todas las opciones son visibles simultaneamente — sin opciones ocultas detras de scroll.
+   - Cada categoria: icono circular (40px) con contenedor de color de categoria al 12% de opacidad. Label debajo en nivel Meta (11px, `--color-text-secondary`). Referencia cruzada: STYLE_GUIDE.md > Iconografia > Contenedores de Icono para spec de tamano y color.
+   - Estado seleccionado: ring de 2px en `--color-accent` (chartreuse) alrededor del circulo del icono.
+
+4. **Custom dark numpad** (debajo del grid de categorias):
+   - Grid layout: 4 columnas x 4 filas.
+   - Row 1: `1`, `2`, `3`, backspace icon (Lucide `Delete`)
+   - Row 2: `4`, `5`, `6`, `.` (punto decimal)
+   - Row 3: `7`, `8`, `9`, `00`
+   - Row 4: vacio, `0`, vacio, vacio
+   - Superficie: teclas en `--color-surface-elevated` (#141414) sobre fondo `--color-surface` (#0A0A0A).
+   - Key specs: min touch target 48px, font IBM Plex Mono nivel Heading (20px), `--color-text-primary`.
+   - Key press feedback: background `--color-surface-hover` (#1A1A1A), transition 100ms.
+
+**Campos opcionales:**
+- Colapsados por default en una seccion "Mas detalles" debajo del numpad.
+- Descripcion, forma de pago, notas, fecha (default: hoy).
+- Inputs estilo underline-only con floating labels. Referencia cruzada: STYLE_GUIDE.md > Componentes Base > Inputs.
+
+**Comportamiento al guardar:**
+- Tap "GUARDAR" → breve checkmark animation (200ms): el texto del boton transiciona a un icono check (Lucide `Check`) en `--color-positive`, luego el sheet se cierra con animacion slide-down (300ms).
+- Toast de confirmacion aparece: formato "Comida -$150.00" con icono check. Referencia cruzada: seccion 8.1 Toasts para posicion y duracion.
+- Si la lista de movimientos esta visible, el nuevo item aparece con efecto pixel-dissolve (revelacion por scanlines). Referencia cruzada: STYLE_GUIDE.md > Identidad Visual > Micro-Animacion Pixel-Dissolve.
 
 ### 4.2 Edición Inline vs Modal
 
