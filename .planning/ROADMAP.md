@@ -78,7 +78,7 @@ Plans:
   2. Segmented battery-bar spec includes segment count (10), gap size (2px), fill color (chartreuse), and usage mapping (budget progress, credit utilization)
   3. Monospaced financial display spec includes layout rules (left-aligned muted dollar sign at smaller font size, right-aligned off-white digits), font choice, and color-coding by income/expense direction
   4. Category icon, status dot animation, and pixel-dissolve micro-animation specs each include enough visual and behavioral detail to implement without ambiguity
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
 - [ ] 14-01: Dot-matrix texture, battery-bar indicator, and monospaced financial display specs
