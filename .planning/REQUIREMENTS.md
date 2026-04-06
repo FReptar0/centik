@@ -1,266 +1,117 @@
 # Requirements: Centik
 
-**Defined:** 2026-04-04
+**Defined:** 2026-04-06
 **Core Value:** A single user can register a financial transaction in under 30 seconds and immediately see how it impacts their budget, debt ratio, and savings rate across all views.
 
-## v1 Requirements
+## v1.1 Requirements
 
-Requirements for initial release. Each maps to roadmap phases.
+Requirements for Glyph Finance design system overhaul. Docs-only milestone — no code changes.
 
-### Infrastructure
+### Design Tokens
 
-- [x] **INFRA-01**: Project scaffolded with Next.js 16, TypeScript strict, Tailwind v4, Prisma 7, npm
-- [x] **INFRA-02**: Docker Compose for dev PostgreSQL (port 5432) and test PostgreSQL (port 5433, tmpfs)
-- [x] **INFRA-03**: ESLint flat config + Prettier configured with zero warnings
-- [x] **INFRA-04**: Vitest configured for unit tests with coverage reporting
-- [x] **INFRA-05**: Playwright configured for E2E tests
-- [x] **INFRA-06**: `npm run build` passes with zero errors and zero warnings
-- [x] **INFRA-07**: Environment files (.env, .env.example, .env.test) configured
+- [ ] **TOKENS-01**: STYLE_GUIDE.md color palette replaced with Glyph Finance tokens (OLED #000000 bg, #0A0A0A secondary, #141414 surface, #222222 borders, #E8E8E8 text, #CCFF00 accent, #FF3333 negative, #00E676 positive, #1E1E1E dot-matrix)
+- [ ] **TOKENS-02**: STYLE_GUIDE.md typography updated to monospaced numbers (JetBrains Mono/Space Mono) + geometric sans headings (Outfit/Satoshi), with 3-level hierarchy (Display, Body, Meta) and uppercase letterspaced metadata
+- [ ] **TOKENS-03**: STYLE_GUIDE.md spacing and radius updated (20-24px card padding, 12px gaps, 16px margins, 16px card radius, 12px button radius, 24px modal radius)
+- [ ] **TOKENS-04**: STYLE_GUIDE.md shadows replaced with elevation-only hierarchy (no decorative borders, bg shift for depth: #000000 → #0A0A0A → #141414)
+- [ ] **TOKENS-05**: STYLE_GUIDE.md Tailwind config section updated with new Glyph Finance CSS @theme tokens
 
-### Database
+### Components
 
-- [x] **DB-01**: Prisma schema defines all 7 MVP entities (IncomeSource, Transaction, Category, Debt, Budget, Period, MonthlySummary)
-- [x] **DB-02**: All monetary fields stored as BigInt (centavos), interest rates as Int (basis points)
-- [x] **DB-03**: Enums defined: TransactionType, Frequency, DebtType, PaymentMethod, CategoryType
-- [x] **DB-04**: Indexes on Transaction(periodId, date), Transaction(categoryId), Budget(periodId, categoryId) unique, Period(month, year) unique
-- [x] **DB-05**: Seed script creates default categories (6 expense + 2 income) with Lucide icon names and colors
-- [x] **DB-06**: Seed script creates default income sources (TerSoft quincenal, Freelance variable)
-- [x] **DB-07**: Seed script creates default debts (1 credit card, 1 personal loan, with realistic non-zero balances for demo)
-- [x] **DB-08**: Seed script creates current period with non-zero quincenal budget entries, plus 1 closed previous month with MonthlySummary
-- [x] **DB-09**: v2 entities (ValueUnit, UnitRate, Asset) included in schema but no UI/API
+- [ ] **COMP-01**: Card specs updated (no visible borders, #141414 surface on #000000, 1px #222222 separator when stacked)
+- [ ] **COMP-02**: Button specs updated to pill-shaped with accent fill for primary, ghost/outline for secondary
+- [ ] **COMP-03**: Progress bar specs replaced with segmented battery-bar style (10 rectangular segments, 2px gaps, chartreuse fill)
+- [ ] **COMP-04**: Chart specs updated (no grid lines, dot endpoints, 1.5px stroke in accent, minimal axis labels)
+- [ ] **COMP-05**: Input specs updated (underline-only style for modal/sheet forms, standard style for desktop forms)
+- [ ] **COMP-06**: Table specs updated to match new elevation model and color tokens
+- [ ] **COMP-07**: Badge specs updated with new color palette and pill styling
 
-### Foundation
+### Signature Details
 
-- [x] **FOUND-01**: `serializeBigInts()` correctly converts BigInt fields to String in nested objects and arrays
-- [x] **FOUND-02**: `formatMoney()` converts cents string to MXN currency display ($1,234.56)
-- [x] **FOUND-03**: `toCents()` converts user decimal input to cents string without float contamination
-- [x] **FOUND-04**: `parseCents()` converts string to BigInt for DB operations
-- [x] **FOUND-05**: `formatRate()` converts basis points to percentage display (4500 -> "45.00%")
-- [x] **FOUND-06**: Zod schemas defined for all mutation endpoints (transaction, debt, budget, income source, category)
-- [x] **FOUND-07**: 100% test coverage on all utility functions and Zod schemas
-- [x] **FOUND-08**: `cn()` utility (clsx + tailwind-merge) for conditional class names
+- [ ] **SIG-01**: Dot-matrix texture specification documented (pixel-grid pattern at 40% #1E1E1E opacity for section headers/card accents)
+- [ ] **SIG-02**: Segmented battery-bar indicator specification documented (10 rectangular segments for budget/utilization progress)
+- [ ] **SIG-03**: Monospaced financial data display spec documented (left-aligned muted dollar sign at smaller size, right-aligned off-white digits)
+- [ ] **SIG-04**: Category icon style spec updated (8x8 pixel-art inspired, simple geometric, recognizable at small size)
+- [ ] **SIG-05**: Status dot animation spec documented (accent-colored pulsing glow dot near live/updating data)
+- [ ] **SIG-06**: Glyph-style micro-animation spec documented (pixel-dissolve fade-in effect for element rendering)
 
-### Layout
+### UX Patterns
 
-- [x] **LAYOUT-01**: Root layout with dark theme (bg #0a0f1a), DM Sans font, and Tailwind v4 custom color palette
-- [x] **LAYOUT-02**: Desktop sidebar navigation (fixed, 240px) with Lucide icons and active state highlighting
-- [x] **LAYOUT-03**: Mobile bottom tab bar (5 items: Dashboard, Movimientos, [+], Deudas, Presupuesto)
-- [x] **LAYOUT-04**: Floating "+" FAB button for quick transaction entry (always visible)
-- [x] **LAYOUT-05**: Page header pattern with title, period indicator, and primary action button
-- [x] **LAYOUT-06**: Period selector showing current month/year with navigation to previous periods
-- [x] **LAYOUT-07**: DynamicIcon component that renders Lucide icons by name from DB string
+- [ ] **UX-01**: UX_RULES.md navigation updated — bottom tab bar icon-only (no text labels) with small dot indicator for active state, circular accent-filled Add button
+- [ ] **UX-02**: UX_RULES.md amount display updated — monospaced numbers, muted smaller dollar sign, off-white digits, color-coded by direction
+- [ ] **UX-03**: UX_RULES.md transaction flow updated — bottom sheet modal (85% screen height), category circular icon grid with accent ring selection, custom dark numpad option
+- [ ] **UX-04**: UX_RULES.md responsive patterns updated for new component specs, navigation model, and elevation hierarchy
+- [ ] **UX-05**: UX_RULES.md form patterns updated (underline inputs in modals, uppercase letterspaced labels, circular category grid selector)
 
-### Income Sources
+### References
 
-- [x] **INC-01**: User can view list of income sources with name, amount, frequency, and monthly equivalent
-- [x] **INC-02**: User can create a new income source with name, default amount, frequency, and type
-- [x] **INC-03**: User can edit an existing income source
-- [x] **INC-04**: User can delete an income source with confirmation
-- [x] **INC-05**: Variable frequency sources show defaultAmount with "(estimado)" label; 3-month average calculation deferred to Dashboard (Phase 7) when transaction history exists
-- [x] **INC-06**: Summary cards show quincenal, monthly, semester, and annual income estimates
-
-### Categories
-
-- [x] **CAT-01**: User can view all categories with icons, colors, and type (expense/income)
-- [x] **CAT-02**: User can create a custom expense category with name, Lucide icon name, and color
-- [x] **CAT-03**: Default categories are not deletable (isDefault=true)
-
-### Transactions
-
-- [x] **TXN-01**: User can register a transaction in under 30 seconds via quick-add modal
-- [x] **TXN-02**: Quick-add modal: toggle expense/income, amount input (auto-focus, numeric keyboard), category icon grid, save button
-- [x] **TXN-03**: Optional fields collapsed by default: description, payment method, notes, date (defaults to today)
-- [x] **TXN-04**: User can view transaction list for current period, sorted by date descending
-- [x] **TXN-05**: User can filter transactions by category, type (income/expense), date range, and payment method
-- [x] **TXN-06**: User can edit an existing transaction
-- [x] **TXN-07**: User can delete a transaction with inline confirmation
-- [x] **TXN-08**: Transactions in closed periods cannot be created/edited/deleted (enforced server-side)
-- [x] **TXN-09**: Income transactions optionally link to an income source
-- [x] **TXN-10**: Transaction amounts display with sign and color: green +$X for income, red -$X for expense
-
-### Dashboard
-
-- [x] **DASH-01**: KPI cards: monthly estimated income, month expenses, available (income - expenses), total debt, savings rate, debt-to-income ratio
-- [x] **DASH-02**: Bar chart: budget vs actual spending per category (current month)
-- [x] **DASH-03**: Area/line chart: income vs expenses trend (last 6 months from MonthlySummary)
-- [x] **DASH-04**: Donut chart: expense distribution by category (current month)
-- [x] **DASH-05**: Recent transactions list (last 8) with category icon, description, date, and amount
-- [x] **DASH-06**: All KPIs computed via SQL aggregation queries (not client-side)
-- [x] **DASH-07**: Empty states with descriptive text and CTA when no data exists
-
-### Debts
-
-- [x] **DEBT-01**: User can view all active debts as expandable cards with type-specific metrics
-- [x] **DEBT-02**: Credit card view: utilization bar (green <30%, orange 30-70%, red >70%), minimum payment, cut-off/payment dates, estimated monthly interest
-- [x] **DEBT-03**: Loan view: progress bar (% paid), monthly payment, remaining months, total remaining
-- [x] **DEBT-04**: User can create a new debt (credit card or personal loan) with type-specific fields
-- [x] **DEBT-05**: User can update debt balance (inline edit or modal)
-- [x] **DEBT-06**: User can delete a debt with confirmation
-- [x] **DEBT-07**: Summary: total debt, total monthly debt payments, debt-to-income ratio
-
-### Budget
-
-- [x] **BDG-01**: User can configure budget per category with quincenal amount input
-- [x] **BDG-02**: Calculated columns display: monthly (x2), semester (x6), annual (x12)
-- [x] **BDG-03**: Total row and comparison: quincenal income vs total quincenal budget -> surplus/deficit
-- [x] **BDG-04**: Progress bars per category showing % spent with traffic light (green <80%, orange 80-100%, red >100%)
-- [x] **BDG-05**: Budget amounts and spent shown side-by-side per category
-- [x] **BDG-06**: If no budget exists for current period, copy from previous period automatically
-
-### History
-
-- [x] **HIST-01**: Annual pivot table: rows = metrics (income, expenses, savings, savings rate, debt at close, debt payments), columns = Jan-Dec + annual total
-- [x] **HIST-02**: Year selector to navigate between years
-- [x] **HIST-03**: Period close button triggers atomic transaction: calculate totals -> create MonthlySummary -> mark period closed -> create next period -> copy budgets
-- [x] **HIST-04**: Confirmation modal before close showing preview of totals
-- [x] **HIST-05**: Closed periods show lock icon and read-only banner across all views
-- [x] **HIST-06**: User can reopen a closed period (deletes MonthlySummary, unlocks editing)
-
-### UX & Polish
-
-- [x] **UX-01**: Toast notifications for all mutations (success: 3s green, error: 5s red)
-- [x] **UX-02**: Skeleton loading states for all pages (no generic spinners)
-- [x] **UX-03**: Empty states with icon, descriptive text, and CTA for all sections
-- [x] **UX-04**: Form validation on blur with error messages below inputs
-- [x] **UX-05**: Amount inputs: numeric keyboard on mobile, "$" prefix, right-aligned, comma formatting on blur
-- [x] **UX-06**: Focus-visible rings on all interactive elements (a11y)
-- [x] **UX-07**: Semantic HTML: nav, main, section with aria-labelledby, proper table markup
-- [x] **UX-08**: All monetary amounts use tabular-nums for column alignment
-- [x] **UX-09**: Loading.tsx Suspense boundaries on each page route
+- [ ] **REF-01**: CLAUDE.md styling section updated to reference Glyph Finance tokens (colors, fonts, radius, spacing) instead of current cyan/dark palette
 
 ## v2 Requirements
 
-Deferred to future release. Tracked but not in current roadmap.
+Deferred to future milestones.
 
-### Value Units & Assets
+### Implementation
 
-- **UNIT-01**: User can configure value units (UDI, UMA, USD) with API provider details
-- **UNIT-02**: Automatic rate refresh via cron/API route based on configurable interval
-- **UNIT-03**: User can create/edit/delete assets linked to value units
-- **UNIT-04**: Asset list shows native amount + MXN equivalent at latest rate
-- **UNIT-05**: Portfolio total in MXN
+- **IMPL-01**: Implement Glyph Finance tokens in Tailwind CSS @theme
+- **IMPL-02**: Implement component redesign across all pages
+- **IMPL-03**: Add dot-matrix texture CSS/SVG patterns
+- **IMPL-04**: Add segmented progress bar component
+- **IMPL-05**: Add pixel-dissolve micro-animations
+- **IMPL-06**: Integrate monospaced font for all financial figures
 
-### Authentication
+### Features
 
-- **AUTH-01**: User authentication via NextAuth or Clerk
-- **AUTH-02**: Session management across browser refresh
-
-### Platform
-
-- **PLAT-01**: PWA with offline support
-- **PLAT-02**: CSV/PDF statement import
-- **PLAT-03**: Debt payoff simulator (avalanche vs snowball)
-- **PLAT-04**: Savings goals with tracking
-- **PLAT-05**: Export reports (PDF/Excel)
-- **PLAT-06**: Notification alerts for cut-off/payment dates
+- **FEAT-01**: System of value units (UDI, UMA, USD) with configurable rate providers
+- **FEAT-02**: Asset/investment tracking (PPR, CETES, funds) with MXN conversion
+- **FEAT-03**: Authentication (NextAuth/Clerk) for multi-user support
+- **FEAT-04**: PWA with offline support
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Bank API connections | Mexican bank APIs are unreliable; manual entry with fast UX is the strategy |
-| AI categorization | Single user already knows categories; adds unpredictability |
-| Multi-currency in MVP | MXN only; v2 ValueUnit system handles UDI/UMA/USD |
-| Light mode | Doubles styling work; dark-only is the design decision |
-| Real-time notifications | Single user, no urgency; passive date display suffices |
-| Complex investments | Options, futures, rebalancing -- out of scope entirely |
-| Client-side state management | React state + Server Components is sufficient |
+| Code changes to components | Docs-only milestone — implementation deferred to v1.2+ after Stitch validation |
+| App name change | Keeping Centik/MisFinanzas — Glyph Finance is the design system name only |
+| Light mode | Dark-only remains the design decision (OLED black reinforces this) |
+| Custom icon font | Using Lucide React with pixel-art styling guidance, not building a custom font |
+| Screen-by-screen Stitch prompts in docs | User-facing Stitch workflow stays separate from reference docs |
 
 ## Traceability
 
+Which phases cover which requirements. Updated during roadmap creation.
+
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-01 | Phase 1 | Complete |
-| INFRA-02 | Phase 1 | Complete |
-| INFRA-03 | Phase 1 | Complete |
-| INFRA-04 | Phase 1 | Complete |
-| INFRA-05 | Phase 1 | Complete |
-| INFRA-06 | Phase 1 | Complete |
-| INFRA-07 | Phase 1 | Complete |
-| DB-01 | Phase 2 | Complete |
-| DB-02 | Phase 2 | Complete |
-| DB-03 | Phase 2 | Complete |
-| DB-04 | Phase 2 | Complete |
-| DB-05 | Phase 2 | Complete |
-| DB-06 | Phase 2 | Complete |
-| DB-07 | Phase 2 | Complete |
-| DB-08 | Phase 2 | Complete |
-| DB-09 | Phase 2 | Complete |
-| FOUND-01 | Phase 3 | Complete |
-| FOUND-02 | Phase 3 | Complete |
-| FOUND-03 | Phase 3 | Complete |
-| FOUND-04 | Phase 3 | Complete |
-| FOUND-05 | Phase 3 | Complete |
-| FOUND-06 | Phase 3 | Complete |
-| FOUND-07 | Phase 3 | Complete |
-| FOUND-08 | Phase 3 | Complete |
-| LAYOUT-01 | Phase 4 | Complete |
-| LAYOUT-02 | Phase 4 | Complete |
-| LAYOUT-03 | Phase 4 | Complete |
-| LAYOUT-04 | Phase 4 | Complete |
-| LAYOUT-05 | Phase 4 | Complete |
-| LAYOUT-06 | Phase 4 | Complete |
-| LAYOUT-07 | Phase 4 | Complete |
-| INC-01 | Phase 5 | Complete |
-| INC-02 | Phase 5 | Complete |
-| INC-03 | Phase 5 | Complete |
-| INC-04 | Phase 5 | Complete |
-| INC-05 | Phase 5 | Complete |
-| INC-06 | Phase 5 | Complete |
-| CAT-01 | Phase 6 | Complete |
-| CAT-02 | Phase 6 | Complete |
-| CAT-03 | Phase 6 | Complete |
-| TXN-01 | Phase 6 | Complete |
-| TXN-02 | Phase 6 | Complete |
-| TXN-03 | Phase 6 | Complete |
-| TXN-04 | Phase 6 | Complete |
-| TXN-05 | Phase 6 | Complete |
-| TXN-06 | Phase 6 | Complete |
-| TXN-07 | Phase 6 | Complete |
-| TXN-08 | Phase 6 | Complete |
-| TXN-09 | Phase 6 | Complete |
-| TXN-10 | Phase 6 | Complete |
-| DASH-01 | Phase 7 | Complete |
-| DASH-02 | Phase 7 | Complete |
-| DASH-03 | Phase 7 | Complete |
-| DASH-04 | Phase 7 | Complete |
-| DASH-05 | Phase 7 | Complete |
-| DASH-06 | Phase 7 | Complete |
-| DASH-07 | Phase 7 | Complete |
-| DEBT-01 | Phase 8 | Complete |
-| DEBT-02 | Phase 8 | Complete |
-| DEBT-03 | Phase 8 | Complete |
-| DEBT-04 | Phase 8 | Complete |
-| DEBT-05 | Phase 8 | Complete |
-| DEBT-06 | Phase 8 | Complete |
-| DEBT-07 | Phase 8 | Complete |
-| BDG-01 | Phase 9 | Complete |
-| BDG-02 | Phase 9 | Complete |
-| BDG-03 | Phase 9 | Complete |
-| BDG-04 | Phase 9 | Complete |
-| BDG-05 | Phase 9 | Complete |
-| BDG-06 | Phase 9 | Complete |
-| HIST-01 | Phase 10 | Complete |
-| HIST-02 | Phase 10 | Complete |
-| HIST-03 | Phase 10 | Complete |
-| HIST-04 | Phase 10 | Complete |
-| HIST-05 | Phase 10 | Complete |
-| HIST-06 | Phase 10 | Complete |
-| UX-01 | Phase 11 | Complete |
-| UX-02 | Phase 11 | Complete |
-| UX-03 | Phase 11 | Complete |
-| UX-04 | Phase 11 | Complete |
-| UX-05 | Phase 11 | Complete |
-| UX-06 | Phase 11 | Complete |
-| UX-07 | Phase 11 | Complete |
-| UX-08 | Phase 11 | Complete |
-| UX-09 | Phase 11 | Complete |
+| TOKENS-01 | — | Pending |
+| TOKENS-02 | — | Pending |
+| TOKENS-03 | — | Pending |
+| TOKENS-04 | — | Pending |
+| TOKENS-05 | — | Pending |
+| COMP-01 | — | Pending |
+| COMP-02 | — | Pending |
+| COMP-03 | — | Pending |
+| COMP-04 | — | Pending |
+| COMP-05 | — | Pending |
+| COMP-06 | — | Pending |
+| COMP-07 | — | Pending |
+| SIG-01 | — | Pending |
+| SIG-02 | — | Pending |
+| SIG-03 | — | Pending |
+| SIG-04 | — | Pending |
+| SIG-05 | — | Pending |
+| SIG-06 | — | Pending |
+| UX-01 | — | Pending |
+| UX-02 | — | Pending |
+| UX-03 | — | Pending |
+| UX-04 | — | Pending |
+| UX-05 | — | Pending |
+| REF-01 | — | Pending |
 
 **Coverage:**
-- v1 requirements: 72 total
-- Mapped to phases: 72
-- Unmapped: 0
+- v1.1 requirements: 24 total
+- Mapped to phases: 0
+- Unmapped: 24 (awaiting roadmap)
 
 ---
-*Requirements defined: 2026-04-04*
-*Last updated: 2026-04-05 -- INC-05 updated: variable frequency shows "(estimado)" in Phase 5, 3-month average deferred to Phase 7*
+*Requirements defined: 2026-04-06*
+*Last updated: 2026-04-06 after initial definition*
