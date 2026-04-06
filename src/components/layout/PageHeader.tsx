@@ -9,6 +9,8 @@ interface PageHeaderProps {
   action?: React.ReactNode
   /** Whether to show the closed period banner */
   closedBanner?: boolean
+  /** Optional reopen action rendered inside closed banner (ghost button slot) */
+  reopenAction?: React.ReactNode
 }
 
 /** Reusable page header with title, optional period selector, and optional action slot */
@@ -17,6 +19,7 @@ export default function PageHeader({
   periodSelector,
   action,
   closedBanner,
+  reopenAction,
 }: PageHeaderProps) {
   return (
     <header className="mb-6">
@@ -38,6 +41,7 @@ export default function PageHeader({
           <span className="text-sm text-info">
             Periodo cerrado -- solo lectura
           </span>
+          {reopenAction && <div className="ml-auto">{reopenAction}</div>}
         </div>
       )}
     </header>

@@ -1,28 +1,44 @@
-import PageHeader from '@/components/layout/PageHeader'
-import PeriodSelector from '@/components/layout/PeriodSelector'
-import DynamicIcon from '@/components/ui/DynamicIcon'
+import prisma from '@/lib/prisma'
+import { getMonthlySummariesForYear, getAvailableYears } from '@/lib/history'
+import { getCurrentPeriod } from '@/lib/period'
+import HistorialClientWrapper from '@/components/history/HistorialClientWrapper'
 
 interface PageProps {
-  searchParams: Promise<{ month?: string; year?: string }>
+  searchParams: Promise<{ year?: string }>
 }
 
 export default async function HistorialPage({ searchParams }: PageProps) {
-  await searchParams
+  const params = await searchParams
+
+  const now = new Date()
+  const defaultYear = now.getFullYear()
+  const year = params.year ? Number(params.year) : defaultYear
+
+  const [data, availableYears, periodsForYear, currentPeriod] =
+    await Promise.all([
+      getMonthlySummariesForYear(year),
+      getAvailableYears(),
+      prisma.period.findMany({
+        where: { year },
+        select: { id: true, month: true, year: true, isClosed: true },
+      }),
+      getCurrentPeriod(),
+    ])
+
+  // Ensure current year is in available years
+  const allYears = Array.from(new Set([...availableYears, defaultYear])).sort()
+
+  // Determine current period ID if it falls in the displayed year
+  const currentPeriodId =
+    currentPeriod.year === year ? currentPeriod.id : null
 
   return (
-    <div>
-      <PageHeader title="Historial" periodSelector={<PeriodSelector />} />
-      <div className="flex flex-col items-center justify-center py-20 text-center">
-        <DynamicIcon
-          name="history"
-          size={48}
-          className="text-text-muted mb-4"
-          aria-hidden="true"
-        />
-        <p className="text-text-secondary text-lg">
-          El historial se construira en una fase posterior
-        </p>
-      </div>
-    </div>
+    <HistorialClientWrapper
+      initialYear={year}
+      availableYears={allYears}
+      data={data}
+      periods={periodsForYear}
+      currentPeriodId={currentPeriodId}
+    />
   )
 }

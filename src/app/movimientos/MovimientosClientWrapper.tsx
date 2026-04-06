@@ -2,7 +2,8 @@
 
 import { useState, useCallback } from 'react'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
-import { Plus } from 'lucide-react'
+import { Plus, RotateCcw } from 'lucide-react'
+import { reopenPeriod } from '@/app/historial/actions'
 import PageHeader from '@/components/layout/PageHeader'
 import PeriodSelector from '@/components/layout/PeriodSelector'
 import TransactionFilters from '@/components/transactions/TransactionFilters'
@@ -21,6 +22,7 @@ interface MovimientosClientWrapperProps {
   incomeSources: SerializedIncomeSource[]
   totalCount: number
   periodIsClosed: boolean
+  periodId: string
 }
 
 /** Client wrapper for /movimientos managing form state, filters, and pagination */
@@ -30,6 +32,7 @@ export default function MovimientosClientWrapper({
   incomeSources,
   totalCount,
   periodIsClosed,
+  periodId,
 }: MovimientosClientWrapperProps) {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -93,11 +96,28 @@ export default function MovimientosClientWrapper({
     setIsLoadingMore(false)
   }
 
+  async function handleReopen() {
+    await reopenPeriod(periodId)
+    router.refresh()
+  }
+
   return (
     <div>
       <PageHeader
         title="Movimientos"
         periodSelector={<PeriodSelector isClosed={periodIsClosed} />}
+        reopenAction={
+          periodIsClosed ? (
+            <button
+              type="button"
+              onClick={handleReopen}
+              className="flex items-center gap-1.5 text-sm text-info hover:text-info/80 underline underline-offset-2 transition-colors duration-200"
+            >
+              <RotateCcw size={14} aria-hidden="true" />
+              Reabrir periodo
+            </button>
+          ) : undefined
+        }
         action={
           !periodIsClosed ? (
             <button

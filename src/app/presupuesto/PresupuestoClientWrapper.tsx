@@ -1,12 +1,15 @@
 'use client'
 
 import { useCallback, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { RotateCcw } from 'lucide-react'
 import PageHeader from '@/components/layout/PageHeader'
 import PeriodSelector from '@/components/layout/PeriodSelector'
 import BudgetTable from '@/components/budgets/BudgetTable'
 import BudgetProgressList from '@/components/budgets/BudgetProgressList'
 import BudgetSummaryRow from '@/components/budgets/BudgetSummaryRow'
 import { upsertBudgets } from './actions'
+import { reopenPeriod } from '@/app/historial/actions'
 import type { BudgetWithSpent } from '@/lib/budget-shared'
 
 interface PresupuestoClientWrapperProps {
@@ -22,7 +25,13 @@ export default function PresupuestoClientWrapper({
   periodId,
   isClosed,
 }: PresupuestoClientWrapperProps) {
+  const router = useRouter()
   const [error, setError] = useState<string | null>(null)
+
+  async function handleReopen() {
+    await reopenPeriod(periodId)
+    router.refresh()
+  }
 
   const handleSave = useCallback(
     async (entries: { categoryId: string; quincenalAmount: string }[]) => {
@@ -42,6 +51,18 @@ export default function PresupuestoClientWrapper({
         title="Presupuesto"
         periodSelector={<PeriodSelector isClosed={isClosed} />}
         closedBanner={isClosed}
+        reopenAction={
+          isClosed ? (
+            <button
+              type="button"
+              onClick={handleReopen}
+              className="flex items-center gap-1.5 text-sm text-info hover:text-info/80 underline underline-offset-2 transition-colors duration-200"
+            >
+              <RotateCcw size={14} aria-hidden="true" />
+              Reabrir periodo
+            </button>
+          ) : undefined
+        }
       />
 
       <div className="grid gap-8 lg:grid-cols-2">

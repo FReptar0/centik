@@ -94,6 +94,7 @@ export default async function MovimientosPage({ searchParams }: PageProps) {
       incomeSources={incomeSources}
       totalCount={totalCount}
       periodIsClosed={period.isClosed}
+      periodId={period.id}
     />
   )
 }
