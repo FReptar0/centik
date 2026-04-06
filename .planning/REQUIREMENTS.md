@@ -82,36 +82,36 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| TOKENS-01 | — | Pending |
-| TOKENS-02 | — | Pending |
-| TOKENS-03 | — | Pending |
-| TOKENS-04 | — | Pending |
-| TOKENS-05 | — | Pending |
-| COMP-01 | — | Pending |
-| COMP-02 | — | Pending |
-| COMP-03 | — | Pending |
-| COMP-04 | — | Pending |
-| COMP-05 | — | Pending |
-| COMP-06 | — | Pending |
-| COMP-07 | — | Pending |
-| SIG-01 | — | Pending |
-| SIG-02 | — | Pending |
-| SIG-03 | — | Pending |
-| SIG-04 | — | Pending |
-| SIG-05 | — | Pending |
-| SIG-06 | — | Pending |
-| UX-01 | — | Pending |
-| UX-02 | — | Pending |
-| UX-03 | — | Pending |
-| UX-04 | — | Pending |
-| UX-05 | — | Pending |
-| REF-01 | — | Pending |
+| TOKENS-01 | Phase 12 | Pending |
+| TOKENS-02 | Phase 12 | Pending |
+| TOKENS-03 | Phase 12 | Pending |
+| TOKENS-04 | Phase 12 | Pending |
+| TOKENS-05 | Phase 12 | Pending |
+| COMP-01 | Phase 13 | Pending |
+| COMP-02 | Phase 13 | Pending |
+| COMP-03 | Phase 13 | Pending |
+| COMP-04 | Phase 13 | Pending |
+| COMP-05 | Phase 13 | Pending |
+| COMP-06 | Phase 13 | Pending |
+| COMP-07 | Phase 13 | Pending |
+| SIG-01 | Phase 14 | Pending |
+| SIG-02 | Phase 14 | Pending |
+| SIG-03 | Phase 14 | Pending |
+| SIG-04 | Phase 14 | Pending |
+| SIG-05 | Phase 14 | Pending |
+| SIG-06 | Phase 14 | Pending |
+| UX-01 | Phase 15 | Pending |
+| UX-02 | Phase 15 | Pending |
+| UX-03 | Phase 15 | Pending |
+| UX-04 | Phase 15 | Pending |
+| UX-05 | Phase 15 | Pending |
+| REF-01 | Phase 16 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 24 total
-- Mapped to phases: 0
-- Unmapped: 24 (awaiting roadmap)
+- Mapped to phases: 24
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-06*
-*Last updated: 2026-04-06 after initial definition*
+*Last updated: 2026-04-06 after roadmap creation*

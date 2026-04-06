@@ -1,223 +1,128 @@
 # Roadmap: Centik
 
-## Overview
+## Milestones
 
-Centik delivers a personal finance tracking app for the Mexican quincenal pay cycle. The roadmap moves from infrastructure reconciliation (Next.js 16, Tailwind v4, Prisma 7 all have breaking changes from documentation assumptions) through foundational libraries, layout shell, and then vertical feature slices ordered by dependency: income sources (simplest CRUD, validates the pattern) to categories and transactions (core loop) to dashboard (read-only aggregation needing transaction data) to debts, budgets, history/period-close (most complex mutation, built last on stable ground), and finally a polish pass for loading states, accessibility, and edge cases.
+- v1.0 MVP - Phases 1-11 (shipped 2026-04-06)
+- v1.1 Glyph Finance Design System - Phases 12-16 (in progress)
 
 ## Phases
 
-**Phase Numbering:**
-- Integer phases (1, 2, 3): Planned milestone work
-- Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
+<details>
+<summary>v1.0 MVP (Phases 1-11) - SHIPPED 2026-04-06</summary>
 
-Decimal phases appear between their surrounding integers in numeric order.
+See `.planning/milestones/v1.0-ROADMAP.md` for full phase details.
 
-- [x] **Phase 1: Infrastructure + Scaffolding** - Reconcile actual installed versions (Next.js 16, Tailwind v4, Prisma 7, ESLint 9), configure toolchain, Docker Compose, passing build with zero tests (completed 2026-04-04)
-- [x] **Phase 2: Database Schema + Seed** - Prisma schema for all 7 MVP entities + v2 stubs, migrations, idempotent seed with non-zero BigInt amounts (completed 2026-04-05)
-- [ ] **Phase 3: Foundation Libraries** - Utilities, serializer, Zod validators, constants, TypeScript types -- all at 100% test coverage
-- [ ] **Phase 4: Layout Shell** - Root layout with dark theme, desktop sidebar, mobile bottom tabs, floating FAB, DynamicIcon, period selector
-- [x] **Phase 5: Income Sources** - Full CRUD for simplest entity, validates Server Component + Server Action pattern end-to-end (completed 2026-04-05)
-- [ ] **Phase 6: Categories + Transactions** - Category list view, transaction quick-add, list with filters, edit/delete, closed-period enforcement
-- [x] **Phase 7: Dashboard** - 6 KPI cards via SQL aggregation, 3 charts (budget bar, trend area, expense donut), recent transactions (completed 2026-04-05)
-- [x] **Phase 8: Debts** - Credit card and loan tracking with type-specific calculated fields, inline balance editing, summary metrics (completed 2026-04-05)
-- [x] **Phase 9: Budget Configuration + Progress** - Quincenal budget input, auto-calculated views, progress bars with traffic light, budget-copy-from-previous (completed 2026-04-05)
-- [x] **Phase 10: History + Period Close** - Annual pivot table, atomic period close transaction, read-only closed periods, reopen capability (completed 2026-04-06)
-- [x] **Phase 11: Polish + Accessibility** - Skeleton loading states, toast notifications, empty states, a11y audit, form UX refinements (completed 2026-04-06)
+- [x] **Phase 1: Infrastructure + Scaffolding** - Reconcile actual installed versions, configure toolchain, Docker, passing build
+- [x] **Phase 2: Database Schema + Seed** - Prisma schema for all entities, migrations, idempotent seed
+- [x] **Phase 3: Foundation Libraries** - Utilities, serializer, Zod validators, constants, types at 100% coverage
+- [x] **Phase 4: Layout Shell** - Root layout with dark theme, sidebar, bottom tabs, FAB, period selector
+- [x] **Phase 5: Income Sources** - Full CRUD, validates Server Component + Server Action pattern
+- [x] **Phase 6: Categories + Transactions** - Category management, transaction quick-add, list with filters
+- [x] **Phase 7: Dashboard** - 6 KPI cards, 3 Recharts charts, recent transactions
+- [x] **Phase 8: Debts** - Credit card and loan tracking with metrics, inline balance editing
+- [x] **Phase 9: Budget Configuration + Progress** - Quincenal budgets, progress bars, traffic light
+- [x] **Phase 10: History + Period Close** - Annual pivot table, atomic period close, reopen
+- [x] **Phase 11: Polish + Accessibility** - Toast notifications, loading states, empty states, focus rings, a11y
+
+</details>
+
+### v1.1 Glyph Finance Design System (In Progress)
+
+**Milestone Goal:** Replace the current cyan/dark design system documentation with a Nothing OS-inspired "Glyph Finance" aesthetic across all reference documents. No code changes -- docs-only milestone establishing the visual language for future implementation.
+
+- [ ] **Phase 12: Design Tokens** - Replace STYLE_GUIDE.md foundational sections with Glyph Finance color palette, typography, spacing, elevation, and Tailwind config
+- [ ] **Phase 13: Component Specifications** - Update all component specs in STYLE_GUIDE.md to reflect new tokens (cards, buttons, progress bars, charts, inputs, tables, badges)
+- [ ] **Phase 14: Signature Visual Identity** - Document the six distinctive Glyph Finance visual elements that differentiate it from generic dark themes
+- [ ] **Phase 15: UX Interaction Patterns** - Update UX_RULES.md with new navigation model, amount display, transaction flow, responsive patterns, and form patterns
+- [ ] **Phase 16: Reference Synchronization** - Update CLAUDE.md styling section to reference Glyph Finance tokens consistently
 
 ## Phase Details
 
-### Phase 1: Infrastructure + Scaffolding
-**Goal**: Developer can run the full toolchain (build, lint, test, dev server) with zero errors on the actual installed versions
-**Depends on**: Nothing (first phase)
-**Requirements**: INFRA-01, INFRA-02, INFRA-03, INFRA-04, INFRA-05, INFRA-06, INFRA-07
+### Phase 12: Design Tokens
+**Goal**: STYLE_GUIDE.md foundational sections (colors, typography, spacing, elevation, Tailwind config) are fully rewritten with Glyph Finance tokens, forming the single source of truth for all downstream component and UX documentation
+**Depends on**: Nothing (first phase of v1.1)
+**Requirements**: TOKENS-01, TOKENS-02, TOKENS-03, TOKENS-04, TOKENS-05
 **Success Criteria** (what must be TRUE):
-  1. `npm run build` completes with zero errors and zero warnings
-  2. `npm run lint` (via `eslint .` with flat config) completes with zero warnings
-  3. `npm run test:run` executes Vitest successfully (even with zero test files)
-  4. Docker Compose starts dev DB (port 5432) and test DB (port 5433, tmpfs) without manual intervention
-  5. Tailwind v4 `@theme` CSS config renders custom dark palette correctly in the dev server
-**Plans:** 3/3 plans complete
+  1. STYLE_GUIDE.md color palette section documents all Glyph Finance tokens (OLED #000000 background, #0A0A0A secondary, #141414 surface, #222222 borders, #E8E8E8 text, #CCFF00 accent, #FF3333 negative, #00E676 positive, #1E1E1E dot-matrix) with named semantic roles
+  2. STYLE_GUIDE.md typography section specifies monospaced font (JetBrains Mono or Space Mono) for financial numbers, geometric sans (Outfit or Satoshi) for headings, and a 3-level hierarchy (Display, Body, Meta) with uppercase letterspaced metadata style
+  3. STYLE_GUIDE.md spacing and radius section documents the new scale (20-24px card padding, 12px gaps, 16px margins, 16px card radius, 12px button radius, 24px modal radius)
+  4. STYLE_GUIDE.md elevation section replaces decorative borders and shadows with background-shift depth hierarchy (#000000 -> #0A0A0A -> #141414) and no visible card borders
+  5. STYLE_GUIDE.md Tailwind config section contains a complete CSS @theme block with all Glyph Finance tokens ready for copy-paste into the codebase
+**Plans**: TBD
 
 Plans:
-- [x] 01-01-PLAN.md -- Restructure to src/ layout, install all dependencies, Docker Compose, environment files
-- [ ] 01-02-PLAN.md -- ESLint + Prettier config, Vitest + Playwright setup, Prisma 7 stub schema
-- [ ] 01-03-PLAN.md -- Tailwind v4 @theme dark palette, DM Sans font, Recharts validation, full build pass
+- [ ] 12-01: Color palette, elevation hierarchy, and shadow replacement in STYLE_GUIDE.md
+- [ ] 12-02: Typography system, spacing scale, radius values, and Tailwind @theme config in STYLE_GUIDE.md
 
-### Phase 2: Database Schema + Seed
-**Goal**: Complete database schema exists with seeded reference data including non-zero monetary amounts that exercise BigInt serialization
-**Depends on**: Phase 1
-**Requirements**: DB-01, DB-02, DB-03, DB-04, DB-05, DB-06, DB-07, DB-08, DB-09
+### Phase 13: Component Specifications
+**Goal**: Every component spec in STYLE_GUIDE.md is updated to use Glyph Finance tokens, so a developer implementing any component has unambiguous visual specifications
+**Depends on**: Phase 12
+**Requirements**: COMP-01, COMP-02, COMP-03, COMP-04, COMP-05, COMP-06, COMP-07
 **Success Criteria** (what must be TRUE):
-  1. `npm run prisma migrate dev` applies all migrations cleanly on a fresh database
-  2. Seed script creates 8 categories (6 expense + 2 income) with correct Lucide icon names and hex colors
-  3. Seed script creates current period, default income sources, default debts, and zero-amount budget entries
-  4. Seed is idempotent -- running it twice produces no errors and no duplicate records
-  5. All BigInt monetary fields in seed data include at least one non-zero value to validate serialization paths
-**Plans:** 2/2 plans complete
+  1. Card spec documents borderless design (#141414 surface on #000000 background) with 1px #222222 separator rule for stacked cards
+  2. Button spec documents pill-shaped primary (accent fill, dark text), ghost secondary, and outline tertiary variants with the new radius
+  3. Progress bar spec documents segmented battery-bar style (10 rectangular segments, 2px gaps, chartreuse fill) replacing continuous bars
+  4. Chart, input, table, and badge specs all reference Glyph Finance tokens exclusively -- no leftover cyan/dark palette references remain in STYLE_GUIDE.md
+**Plans**: TBD
 
 Plans:
-- [x] 02-01-PLAN.md -- Complete Prisma schema (10 models, 6 enums, all relations/indexes), initial migration
-- [x] 02-02-PLAN.md -- Idempotent seed script with realistic demo data, integration tests for seed correctness
+- [ ] 13-01: Card, button, and progress bar component specs
+- [ ] 13-02: Chart, input, table, and badge component specs
 
-### Phase 3: Foundation Libraries
-**Goal**: All shared utilities, validators, and types are built and tested to 100% coverage before any feature code depends on them
-**Depends on**: Phase 2
-**Requirements**: FOUND-01, FOUND-02, FOUND-03, FOUND-04, FOUND-05, FOUND-06, FOUND-07, FOUND-08
+### Phase 14: Signature Visual Identity
+**Goal**: The six distinctive Glyph Finance visual signatures are documented with enough detail that a developer (or Stitch AI) can implement each one from the specification alone
+**Depends on**: Phase 12
+**Requirements**: SIG-01, SIG-02, SIG-03, SIG-04, SIG-05, SIG-06
 **Success Criteria** (what must be TRUE):
-  1. `serializeBigInts()` correctly converts nested BigInt fields to strings (verified by tests with non-zero values, arrays, and nested objects)
-  2. `formatMoney("15075")` returns "$150.75" in MXN format and handles edge cases (zero, large amounts)
-  3. `toCents("150.75")` returns "15075" without float contamination (string-split parsing, not parseFloat * 100)
-  4. All Zod schemas (transaction, debt, budget, income source, category) reject invalid input with descriptive errors
-  5. `npm run test:coverage` reports 100% coverage on `src/lib/` files
-**Plans:** 2 plans
+  1. Dot-matrix texture spec includes pixel-grid pattern definition (size, color #1E1E1E, 40% opacity), usage contexts (section headers, card accents), and CSS/SVG implementation guidance
+  2. Segmented battery-bar spec includes segment count (10), gap size (2px), fill color (chartreuse), and usage mapping (budget progress, credit utilization)
+  3. Monospaced financial display spec includes layout rules (left-aligned muted dollar sign at smaller font size, right-aligned off-white digits), font choice, and color-coding by income/expense direction
+  4. Category icon, status dot animation, and pixel-dissolve micro-animation specs each include enough visual and behavioral detail to implement without ambiguity
+**Plans**: TBD
 
 Plans:
-- [ ] 03-01-PLAN.md -- Types, serializer, utility functions (formatMoney, toCents, parseCents, formatRate, formatUnitAmount, cn), constants with tests
-- [ ] 03-02-PLAN.md -- All 8 Zod v4 validation schemas with Spanish error messages, comprehensive tests, 100% coverage gate
+- [ ] 14-01: Dot-matrix texture, battery-bar indicator, and monospaced financial display specs
+- [ ] 14-02: Category icon style, status dot animation, and pixel-dissolve micro-animation specs
 
-### Phase 4: Layout Shell
-**Goal**: Every page renders inside a responsive layout with navigation, period context, and the always-visible quick-add button
-**Depends on**: Phase 3
-**Requirements**: LAYOUT-01, LAYOUT-02, LAYOUT-03, LAYOUT-04, LAYOUT-05, LAYOUT-06, LAYOUT-07
+### Phase 15: UX Interaction Patterns
+**Goal**: UX_RULES.md is fully updated with Glyph Finance interaction patterns, so every user-facing flow references the new visual language
+**Depends on**: Phase 13, Phase 14
+**Requirements**: UX-01, UX-02, UX-03, UX-04, UX-05
 **Success Criteria** (what must be TRUE):
-  1. Desktop viewport shows fixed 240px sidebar with Lucide icons and active state highlighting on current route
-  2. Mobile viewport shows bottom tab bar with 5 items (Inicio, Movimientos, Deudas, Presupuesto, Mas) -- NO [+] in tab bar, FAB is separate
-  3. Floating "+" FAB button is visible on all pages across both desktop and mobile viewports
-  4. Period selector displays current month/year and allows navigation to previous periods via URL search params
-  5. DynamicIcon component renders any Lucide icon by its string name from the database
-**Plans:** 2/3 plans executed
+  1. Navigation section documents icon-only bottom tab bar (no text labels), small dot indicator for active state, and circular accent-filled Add button -- replacing the current text-labeled tab bar spec
+  2. Amount display section documents monospaced numbers, muted smaller dollar sign, off-white digits, and color-coding by direction -- consistent with SIG-03 spec
+  3. Transaction flow section documents bottom sheet modal (85% screen height), category circular icon grid with accent ring selection, and optional custom dark numpad
+  4. Responsive patterns and form patterns sections reference new component specs (pill buttons, underline inputs in modals, uppercase letterspaced labels, circular category grid) with no leftover references to the old design system
+**Plans**: TBD
 
 Plans:
-- [ ] 04-01-PLAN.md -- DynamicIcon component, nav constants (Spanish labels, i18n-ready), Modal/Sheet responsive primitive
-- [ ] 04-02-PLAN.md -- Desktop/tablet Sidebar, mobile MobileNav with MobileMoreSheet, floating FAB
-- [ ] 04-03-PLAN.md -- PageHeader, PeriodSelector (URL params), root layout wiring, 7 placeholder route pages with loading skeletons
+- [ ] 15-01: Navigation model, amount display rules, and transaction flow in UX_RULES.md
+- [ ] 15-02: Responsive patterns and form patterns in UX_RULES.md
 
-### Phase 5: Income Sources
-**Goal**: User can manage all income sources and see how they aggregate into quincenal, monthly, semester, and annual totals
-**Depends on**: Phase 4
-**Requirements**: INC-01, INC-02, INC-03, INC-04, INC-05, INC-06
+### Phase 16: Reference Synchronization
+**Goal**: CLAUDE.md styling section accurately references Glyph Finance tokens, so any Claude session reading CLAUDE.md gets the correct design system context
+**Depends on**: Phase 15
+**Requirements**: REF-01
 **Success Criteria** (what must be TRUE):
-  1. User can view a list of income sources showing name, formatted amount, frequency, and calculated monthly equivalent
-  2. User can create a new income source with name, amount, frequency, and type -- and it appears in the list without page refresh
-  3. User can edit and delete income sources with confirmation dialog on delete
-  4. Summary cards display quincenal, monthly, semester, and annual income estimates derived from all sources
-**Plans:** 2/2 plans complete
+  1. CLAUDE.md "Styling Guidelines" section references Glyph Finance colors (#000000 bg, #CCFF00 accent, etc.) instead of the current cyan (#22d3ee) and dark (#0a0f1a) palette
+  2. CLAUDE.md font references updated to geometric sans + monospaced number system instead of DM Sans
+  3. No contradictions exist between CLAUDE.md styling section and the updated STYLE_GUIDE.md -- a developer reading either document gets consistent guidance
+**Plans**: TBD
 
 Plans:
-- [x] 05-01-PLAN.md -- Server Actions (create, update, delete) + income calculation utilities (monthly equivalent, summary aggregation) with TDD tests
-- [ ] 05-02-PLAN.md -- UI components (card, list, form, summary cards) + page wiring + loading skeleton + human verification checkpoint
-
-### Phase 6: Categories + Transactions
-**Goal**: User can register a financial transaction in under 30 seconds and browse/filter their transaction history for the current period
-**Depends on**: Phase 5
-**Requirements**: CAT-01, CAT-02, CAT-03, TXN-01, TXN-02, TXN-03, TXN-04, TXN-05, TXN-06, TXN-07, TXN-08, TXN-09, TXN-10
-**Success Criteria** (what must be TRUE):
-  1. User can view all categories with their Lucide icons, colors, and type (expense/income), and can create custom expense categories
-  2. User can register a transaction via quick-add modal in under 30 seconds: toggle type, enter amount, pick category from icon grid, save
-  3. Transaction list shows current period entries sorted by date descending with green +$X for income, red -$X for expense
-  4. User can filter transactions by category, type, date range, and payment method
-  5. User can edit and delete transactions (with inline confirmation on delete), and closed-period transactions are protected server-side
-**Plans:** 4 plans
-
-Plans:
-- [ ] 06-01-PLAN.md -- Category Server Actions (create, soft-delete) + Category UI on /configuracion (list with icons/colors, create form with preset icon grid and color palette)
-- [ ] 06-02-PLAN.md -- getCurrentPeriod utility + Transaction Server Actions (create, update, delete) with closed-period enforcement and TDD tests
-- [ ] 06-03-PLAN.md -- TransactionForm (quick-add modal with type toggle, amount, category grid, optional fields) + TransactionRow (colored signed amount) with TDD tests
-- [ ] 06-04-PLAN.md -- TransactionFilters + TransactionList + /movimientos page wiring + FAB connection to TransactionForm + human verification checkpoint
-
-### Phase 7: Dashboard
-**Goal**: User opens the app and immediately sees their financial health: income, expenses, available balance, debt, savings rate, and visual breakdowns
-**Depends on**: Phase 6
-**Requirements**: DASH-01, DASH-02, DASH-03, DASH-04, DASH-05, DASH-06, DASH-07
-**Success Criteria** (what must be TRUE):
-  1. Dashboard displays 6 KPI cards: monthly estimated income, month expenses, available (income - expenses), total debt, savings rate, debt-to-income ratio
-  2. Bar chart shows budget vs actual spending per category for the current month
-  3. Area/line chart shows income vs expenses trend for the last 6 months (from MonthlySummary data)
-  4. Donut chart shows expense distribution by category for the current month
-  5. Recent transactions section shows the last 8 movements with category icon, description, date, and formatted amount
-**Plans:** 2/2 plans complete
-
-Plans:
-- [ ] 07-01-PLAN.md -- Dashboard data queries (5 SQL aggregation functions) + types + KPICard/KPIGrid components with unit tests
-- [ ] 07-02-PLAN.md -- 3 Recharts chart components (budget bar, trend area, expense donut) + RecentTransactions + page.tsx wiring + human verification
-
-### Phase 8: Debts
-**Goal**: User can track credit cards and loans with type-specific metrics and see their total debt position at a glance
-**Depends on**: Phase 4
-**Requirements**: DEBT-01, DEBT-02, DEBT-03, DEBT-04, DEBT-05, DEBT-06, DEBT-07
-**Success Criteria** (what must be TRUE):
-  1. User can view all debts as expandable cards showing type-specific metrics (credit card: utilization bar, cut-off/payment dates, estimated interest; loan: progress bar, remaining months, total remaining)
-  2. User can create a new debt (credit card or personal loan) with type-specific fields
-  3. User can update a debt balance inline and delete a debt with confirmation
-  4. Summary section shows total debt, total monthly debt payments, and debt-to-income ratio
-**Plans:** 2/2 plans complete
-
-Plans:
-- [ ] 08-01-PLAN.md -- Debt calculation utilities (metrics, health colors, summary) + Server Actions (create, update, updateBalance, delete) with TDD tests
-- [ ] 08-02-PLAN.md -- UI components (DebtCard, DebtForm, DebtSummaryCards, DebtList) + page wiring + DeudasClientWrapper + human verification
-
-### Phase 9: Budget Configuration + Progress
-**Goal**: User can set quincenal budgets per category and see real-time progress bars showing how much of each budget has been spent
-**Depends on**: Phase 6
-**Requirements**: BDG-01, BDG-02, BDG-03, BDG-04, BDG-05, BDG-06
-**Success Criteria** (what must be TRUE):
-  1. User can configure budget amounts per category using quincenal input, with calculated monthly/semester/annual columns displayed
-  2. Total row shows quincenal income vs total quincenal budget with surplus/deficit indicator
-  3. Progress bars per category show % spent with traffic light coloring (green <80%, orange 80-100%, red >100%)
-  4. If no budget exists for the current period, budgets are automatically copied from the previous period
-**Plans:** 2/2 plans complete
-
-Plans:
-- [ ] 09-01-PLAN.md -- Budget utilities (getBudgetColor, getBudgetsWithSpent, copyBudgetsFromPreviousPeriod) + Server Action (upsertBudgets) with TDD tests
-- [ ] 09-02-PLAN.md -- UI components (BudgetTable, BudgetProgressList, BudgetSummaryRow) + page wiring + PresupuestoClientWrapper + human verification
-
-### Phase 10: History + Period Close
-**Goal**: User can close a month to lock it as a permanent financial record and view annual history across all closed periods
-**Depends on**: Phase 7, Phase 8, Phase 9
-**Requirements**: HIST-01, HIST-02, HIST-03, HIST-04, HIST-05, HIST-06
-**Success Criteria** (what must be TRUE):
-  1. Annual pivot table displays 12 months of data (income, expenses, savings, savings rate, debt at close, debt payments) with annual totals
-  2. Period close button triggers atomic transaction: calculates totals, creates MonthlySummary, marks period closed, creates next period, copies budgets
-  3. Confirmation modal shows preview of totals before close, and closed periods display lock icon with read-only banner
-  4. User can reopen a closed period (deletes MonthlySummary, unlocks editing)
-**Plans:** 2/2 plans complete
-
-Plans:
-- [ ] 10-01-PLAN.md -- History data queries (getMonthlySummariesForYear, getAvailableYears, getClosePeriodPreview) + closePeriod/reopenPeriod Server Actions with TDD tests
-- [ ] 10-02-PLAN.md -- UI components (AnnualPivotTable, CloseConfirmationModal, YearSelector, HistorialClientWrapper) + page wiring + PageHeader reopen support + human verification
-
-### Phase 11: Polish + Accessibility
-**Goal**: Every page has proper loading states, error feedback, empty states, and meets baseline accessibility standards
-**Depends on**: Phase 10
-**Requirements**: UX-01, UX-02, UX-03, UX-04, UX-05, UX-06, UX-07, UX-08, UX-09
-**Success Criteria** (what must be TRUE):
-  1. All mutations show toast notifications (green success for 3s, red error for 5s) via sonner
-  2. Every page route has a `loading.tsx` with skeleton placeholders (no generic spinners)
-  3. All sections with no data show empty states with descriptive icon, text, and call-to-action button
-  4. Amount inputs show numeric keyboard on mobile, "$" prefix, right-aligned text, and comma formatting on blur
-  5. All interactive elements have visible focus rings, semantic HTML uses nav/main/section with aria-labelledby, and monetary amounts use tabular-nums
-**Plans:** 3/3 plans complete
-
-Plans:
-- [ ] 11-01-PLAN.md -- Install sonner, add Toaster to root layout, add toast notifications to all Server Action result handlers across 11 client components
-- [ ] 11-02-PLAN.md -- Blur validation on all forms (validate on blur, re-validate on change after first error), amount input polish ($ prefix, right-align, comma formatting)
-- [ ] 11-03-PLAN.md -- Global focus-visible rings, semantic HTML fixes (aria-labelledby, scope=col), empty state completeness audit, tabular-nums audit
+- [ ] 16-01: Update CLAUDE.md styling section, cross-check against STYLE_GUIDE.md and UX_RULES.md for consistency
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 11
+Phases execute in numeric order: 12 -> 13 -> 14 -> 15 -> 16
+(Note: Phases 13 and 14 can execute in parallel since both depend only on Phase 12)
 
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. Infrastructure + Scaffolding | 3/3 | Complete   | 2026-04-04 |
-| 2. Database Schema + Seed | 2/2 | Complete | 2026-04-05 |
-| 3. Foundation Libraries | 0/2 | Not started | - |
-| 4. Layout Shell | 2/3 | In Progress|  |
-| 5. Income Sources | 2/2 | Complete   | 2026-04-05 |
-| 6. Categories + Transactions | 0/4 | Not started | - |
-| 7. Dashboard | 2/2 | Complete   | 2026-04-05 |
-| 8. Debts | 2/2 | Complete   | 2026-04-05 |
-| 9. Budget Configuration + Progress | 2/2 | Complete   | 2026-04-05 |
-| 10. History + Period Close | 2/2 | Complete    | 2026-04-06 |
-| 11. Polish + Accessibility | 3/3 | Complete    | 2026-04-06 |
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 1-11 | v1.0 | 27/27 | Complete | 2026-04-06 |
+| 12. Design Tokens | v1.1 | 0/2 | Not started | - |
+| 13. Component Specifications | v1.1 | 0/2 | Not started | - |
+| 14. Signature Visual Identity | v1.1 | 0/2 | Not started | - |
+| 15. UX Interaction Patterns | v1.1 | 0/2 | Not started | - |
+| 16. Reference Synchronization | v1.1 | 0/1 | Not started | - |
