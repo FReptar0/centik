@@ -30,9 +30,9 @@ Requirements for Glyph Finance design system overhaul. Docs-only milestone — n
 - [x] **SIG-01**: Dot-matrix texture specification documented (pixel-grid pattern at 40% #1E1E1E opacity for section headers/card accents)
 - [x] **SIG-02**: Segmented battery-bar indicator specification documented (10 rectangular segments for budget/utilization progress)
 - [x] **SIG-03**: Monospaced financial data display spec documented (left-aligned muted dollar sign at smaller size, right-aligned off-white digits)
-- [ ] **SIG-04**: Category icon style spec updated (8x8 pixel-art inspired, simple geometric, recognizable at small size)
-- [ ] **SIG-05**: Status dot animation spec documented (accent-colored pulsing glow dot near live/updating data)
-- [ ] **SIG-06**: Glyph-style micro-animation spec documented (pixel-dissolve fade-in effect for element rendering)
+- [x] **SIG-04**: Category icon style spec updated (8x8 pixel-art inspired, simple geometric, recognizable at small size)
+- [x] **SIG-05**: Status dot animation spec documented (accent-colored pulsing glow dot near live/updating data)
+- [x] **SIG-06**: Glyph-style micro-animation spec documented (pixel-dissolve fade-in effect for element rendering)
 
 ### UX Patterns
 
@@ -97,9 +97,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SIG-01 | Phase 14 | Complete |
 | SIG-02 | Phase 14 | Complete |
 | SIG-03 | Phase 14 | Complete |
-| SIG-04 | Phase 14 | Pending |
-| SIG-05 | Phase 14 | Pending |
-| SIG-06 | Phase 14 | Pending |
+| SIG-04 | Phase 14 | Complete |
+| SIG-05 | Phase 14 | Complete |
+| SIG-06 | Phase 14 | Complete |
 | UX-01 | Phase 15 | Pending |
 | UX-02 | Phase 15 | Pending |
 | UX-03 | Phase 15 | Pending |

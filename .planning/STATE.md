@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Glyph Finance Design System
 status: executing
-stopped_at: Completed 14-01-PLAN.md
-last_updated: "2026-04-06T18:13:14.387Z"
-last_activity: 2026-04-06 -- Completed 14-01 Identidad Visual section with dot-matrix spec
+stopped_at: Completed 14-02-PLAN.md
+last_updated: "2026-04-06T18:16:33Z"
+last_activity: 2026-04-06 -- Completed 14-02 Visual signatures (category icons, status dot, pixel-dissolve)
 progress:
   total_phases: 5
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 6
-  completed_plans: 5
-  percent: 97
+  completed_plans: 6
+  percent: 100
 ---
 
 # Project State
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 
 ## Current Position
 
-Phase: 14 of 16 (Signature Details)
-Plan: 1 of 2 in current phase
-Status: Executing Phase 14
-Last activity: 2026-04-06 -- Completed 14-01 Identidad Visual section with dot-matrix spec
+Phase: 14 of 16 (Signature Details) -- COMPLETE
+Plan: 2 of 2 in current phase (done)
+Status: Phase 14 Complete
+Last activity: 2026-04-06 -- Completed 14-02 Visual signatures (category icons, status dot, pixel-dissolve)
 
-Progress: [##########] 97% (5/9 plans)
+Progress: [##########] 100% (6/6 plans)
 
 ## Performance Metrics
 
@@ -56,6 +56,7 @@ Progress: [##########] 97% (5/9 plans)
 | Phase 13 P01 | 2min | 2 tasks | 1 files |
 | Phase 13 P02 | 2min | 2 tasks | 1 files |
 | Phase 14 P01 | 2min | 2 tasks | 1 files |
+| Phase 14 P02 | 2min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -84,6 +85,10 @@ Recent decisions affecting current work:
 - [13-02]: Mobile modals use bottom sheet pattern (85vh, handle indicator, top-corner radius)
 - [Phase 14]: Dot-matrix uses pseudo-element overlay to avoid interfering with card content
 - [Phase 14]: Two CSS approaches for dot-matrix: SVG data URI (preferred) and radial-gradient (fallback)
+- [14-02]: Category icons use stroke-width 1.5 and crispEdges for pixel-aligned rendering
+- [14-02]: Status dot continuous 2.5s pulse -- calm, not frantic
+- [14-02]: Pixel-dissolve uses clip-path with steps(12, end) for mechanical scanline feel
+- [14-02]: Reduced motion completely disables pixel-dissolve for accessibility
 
 ### Pending Todos
 
@@ -95,6 +100,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-06T18:13:14.381Z
-Stopped at: Completed 14-01-PLAN.md
+Last session: 2026-04-06T18:16:33Z
+Stopped at: Completed 14-02-PLAN.md
 Resume file: None
