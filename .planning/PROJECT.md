@@ -27,15 +27,13 @@ A single user can register a financial transaction in under 30 seconds and immed
 - ✓ Category management with preset icon/color pickers — v1.0
 - ✓ Dark mode UI with cyan accent, responsive sidebar/bottom tabs — v1.0
 - ✓ Toast notifications (sonner), blur validation, focus rings, semantic HTML, tabular-nums — v1.0
+- ✓ Glyph Finance design system — STYLE_GUIDE.md rewritten with Nothing OS-inspired tokens (OLED black, chartreuse, IBM Plex Mono + Satoshi) — v1.1
+- ✓ Glyph Finance UX rules — UX_RULES.md updated with icon-only nav, custom numpad, battery-bar progress, underline inputs — v1.1
+- ✓ Glyph Finance reference sync — CLAUDE.md styling section synchronized, zero contradictions — v1.1
 
 ### Active
 
-- [ ] Glyph Finance design system — replace STYLE_GUIDE.md with Nothing OS-inspired tokens
-- [ ] Glyph Finance UX rules — replace UX_RULES.md with new interaction patterns
-- [ ] Update CLAUDE.md styling references to match Glyph Finance
-
-### Backlog
-
+- [ ] Implement Glyph Finance design in code (tokens, components, animations)
 - [ ] System of value units (UDI, UMA, USD) with configurable rate providers
 - [ ] Asset/investment tracking (PPR, CETES, funds) with MXN conversion
 - [ ] Authentication (NextAuth/Clerk) for multi-user support
@@ -58,7 +56,8 @@ A single user can register a financial transaction in under 30 seconds and immed
 - **Database:** 10 Prisma models (7 MVP + 3 v2 stubs), idempotent seed with realistic demo data
 - **Target market:** Mexican personal finance, quincenal pay cycle
 - **Monetization:** None — open source, code quality and documentation are priorities
-- **Documentation:** DFR.md, STYLE_GUIDE.md, UX_RULES.md, DATA_FLOW.md all remain as reference
+- **Documentation:** DFR.md, STYLE_GUIDE.md (Glyph Finance v1.1), UX_RULES.md (Glyph Finance v1.1), DATA_FLOW.md all remain as reference
+- **Design system:** Glyph Finance — OLED black (#000000), chartreuse (#CCFF00) accent, IBM Plex Mono + Satoshi typography, docs-only (not yet implemented in code)
 
 ## Constraints
 
@@ -69,16 +68,6 @@ A single user can register a financial transaction in under 30 seconds and immed
 - **Serialization:** BigInt→String via serializeBigInts() at Server Component boundary
 - **i18n:** Spanish by default (nav labels, Zod messages), i18n-ready structure (constants files)
 - **Open source:** Files <300 lines, functions <50 lines (2 components slightly exceed — noted for refactor)
-
-## Current Milestone: v1.1 Glyph Finance Design System
-
-**Goal:** Replace the current cyan/dark design system with a Nothing OS-inspired "Glyph Finance" aesthetic across all reference documents — OLED black, chartreuse accent, dot-matrix textures, monospaced financial numbers, segmented progress bars.
-
-**Target features:**
-- Update STYLE_GUIDE.md with Glyph Finance color palette, typography (monospaced numbers, geometric sans headings), spacing, and component specs
-- Update UX_RULES.md with new interaction patterns (icon-only bottom nav, segmented battery-bar progress, dot-matrix texture accents, pill-shaped buttons)
-- Update CLAUDE.md styling section to reference new design tokens
-- No code changes — implementation deferred to v1.2+ after Stitch validation
 
 ## Key Decisions
 
@@ -96,6 +85,15 @@ A single user can register a financial transaction in under 30 seconds and immed
 | Zod v4 Spanish messages | { error: "..." } syntax, z.locales.es() fallback | ✓ Good |
 | Period state via URL params | Compatible with Server Component data fetching, bookmarkable | ✓ Good |
 | FAB separate from tab bar | Avoids confusion about [+] context — always means "new transaction" | ✓ Good |
+| IBM Plex Mono for financial numbers | Industrial precision feel, replaces JetBrains Mono | ✓ Good |
+| Satoshi for headings/body | Geometric sans replacing DM Sans, pairs well with monospace | ✓ Good |
+| OLED black (#000000) background | Pure black for depth, Nothing OS-inspired | ✓ Good |
+| Chartreuse (#CCFF00) accent | Electric, distinctive, high contrast on black | ✓ Good |
+| Pill-shaped buttons (radius-full) | Strong visual identity, Nothing OS aesthetic | ✓ Good |
+| Segmented battery-bar progress | Replaces smooth bars, quantized digital feel | ✓ Good |
+| Underline-only inputs everywhere | Minimal, elegant, consistent across all forms | ✓ Good |
+| Drop all shadows | Elevation via background-shift only, cleaner aesthetic | ✓ Good |
+| Docs-only v1.1 milestone | Design system documented before implementation, Stitch validation first | — Pending |
 
 ---
-*Last updated: 2026-04-06 after v1.1 milestone start*
+*Last updated: 2026-04-06 after v1.1 milestone*
