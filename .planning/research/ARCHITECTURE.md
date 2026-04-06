@@ -1,713 +1,618 @@
-# Architecture Patterns
+# Architecture Research
 
-**Domain:** Personal finance tracking web app (Mexican quincenal cycle)
-**Researched:** 2026-04-04
-**Overall confidence:** HIGH
-
----
-
-## Recommended Architecture
-
-Centik follows a **Server Component-first, Server Action-preferred** architecture on Next.js 16 App Router with PostgreSQL via Prisma. The system is a single-user CRUD application with aggregation-heavy dashboard views, meaning the architecture optimizes for: (1) minimal client-side JavaScript, (2) server-side data aggregation, and (3) a clean serialization boundary between BigInt storage and string-based client consumption.
-
-### High-Level System Diagram
-
-```
-                         Browser (Client)
-                              |
-          ┌───────────────────┼───────────────────┐
-          |                   |                    |
-   Server Components    Client Components    Server Actions
-   (pages, layouts)     (forms, charts,      (mutations via
-                         modals, sidebar)     'use server')
-          |                   |                    |
-          └───────────────────┼───────────────────┘
-                              |
-                   serializeBigInts() boundary
-                              |
-                    ┌─────────┴─────────┐
-                    |                   |
-               Prisma ORM         API Routes
-               (direct DB)        (external/fallback)
-                    |                   |
-                    └─────────┬─────────┘
-                              |
-                      PostgreSQL (Docker)
-                      bigint centavos
-```
-
-### Architecture Layers
-
-| Layer | Technology | Responsibility |
-|-------|-----------|---------------|
-| **Presentation** | React Server Components + Client Components | Render UI, convert cents-string to display format, convert user input to cents-string |
-| **Mutation** | Server Actions (`'use server'`) | Validate with Zod, execute Prisma writes, call `revalidatePath()` |
-| **Query** | Prisma in Server Components | Direct database reads, SQL aggregations for KPIs/charts |
-| **Serialization** | `serializeBigInts()` | Convert BigInt to String at the server/client boundary |
-| **Persistence** | PostgreSQL via Prisma | Store all monetary values as `bigint` centavos, rates as `int` basis points |
-| **Validation** | Zod schemas | Validate all inputs at the mutation layer before any DB operation |
+**Domain:** Design system migration — Glyph Finance into existing Next.js 16 App Router app
+**Researched:** 2026-04-06
+**Confidence:** HIGH (codebase is fully readable, design specs are finalized docs)
 
 ---
 
-## Component Boundaries
+## Standard Architecture
 
-### 1. Page Components (Server Components)
+### System Overview
 
-Each route has a Server Component page that fetches data and passes serialized props downward. Pages never contain interactive logic -- they orchestrate data flow.
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                       TOKEN LAYER (globals.css)                   │
+│  @theme { --color-*, --font-*, --radius-* }                       │
+│  @theme inline { --font-sans: var(--font-satoshi) }               │
+├──────────────────────────────────────────────────────────────────┤
+│                       ROOT LAYOUT (layout.tsx)                    │
+│  next/font loads → CSS variables → @theme inline picks them up    │
+│  Body classname uses: bg-bg font-sans text-text-primary           │
+├──────────────────────────────────────────────────────────────────┤
+│  LAYOUT COMPONENTS               │  PRIMITIVE UI COMPONENTS       │
+│  Sidebar (modified)              │  Modal (modified)              │
+│  MobileNav (modified)            │  DynamicIcon (unchanged)       │
+│  FAB (modified)                  │  BatteryBar (NEW)              │
+│  MobileMoreSheet (unchanged)     │  FloatingInput (NEW)           │
+│  PageHeader (modified)           │  StatusDot (NEW)               │
+│                                  │  Numpad (NEW)                  │
+│                                  │  TogglePills (NEW)             │
+├──────────────────────────────────────────────────────────────────┤
+│  FEATURE COMPONENTS (modified — token swap unless noted)          │
+│  KPICard · BudgetProgressList (→ BatteryBar) · DebtCard           │
+│  TransactionForm (→ bottom sheet + numpad + floating inputs)       │
+│  TrendAreaChart · ExpenseDonutChart · BudgetBarChart (all charts) │
+│  TransactionRow · TransactionList · TransactionFilters            │
+│  IncomeSourceCard · IncomeSummaryCards                            │
+│  AnnualPivotTable                                                 │
+├──────────────────────────────────────────────────────────────────┤
+│  DATA LAYER (unchanged — zero impact from design migration)       │
+│  Server Actions · API Routes · Prisma · PostgreSQL                │
+└──────────────────────────────────────────────────────────────────┘
+```
 
-| Component | Path | Responsibility | Communicates With |
-|-----------|------|---------------|-------------------|
-| Dashboard | `app/page.tsx` | Fetch KPIs, chart data, recent transactions via parallel `Promise.all` | KPICards, ExpensePieChart, BudgetBarChart, TrendAreaChart, RecentTransactions |
-| Movimientos | `app/movimientos/page.tsx` | Fetch transactions (filtered), categories, income sources | TransactionFilters, TransactionList, TransactionForm |
-| Deudas | `app/deudas/page.tsx` | Fetch debts, monthly income for ratio calculation | DebtCard, DebtForm |
-| Presupuesto | `app/presupuesto/page.tsx` | Fetch budgets with spent amounts, quincenal income | BudgetTable, BudgetProgress |
-| Ingresos | `app/ingresos/page.tsx` | Fetch income sources, variable averages | IncomeSourceCard, IncomeSourceForm |
-| Historial | `app/historial/page.tsx` | Fetch MonthlySummaries for year, available years | HistoryTable, PeriodCloseModal |
+The migration is purely additive at the data layer and purely substitutive at the token layer. No new API routes, no schema changes, no server actions. All impact is in `globals.css`, `layout.tsx`, and the component tree.
 
-### 2. Client Components (Interactive)
+---
 
-These handle user interaction, local form state, and chart rendering. They never fetch data directly -- they receive serialized data as props and call Server Actions for mutations.
+## Integration Points: New vs Modified vs Unchanged
 
-| Component | Type | Why Client | Receives From |
-|-----------|------|-----------|--------------|
-| TransactionForm | Form | Controlled inputs, toggle, category grid, modal lifecycle | Server Component props (categories, income sources) |
-| TransactionFilters | Interaction | Filter state management, URL query param sync | Server Component props (categories) |
-| DebtForm | Form | Inline editing, modal for full edit | Server Component props (debt data) |
-| BudgetTable | Form | Inline editable cells for quincenal amounts | Server Component props (budgets + spent) |
-| IncomeSourceForm | Form | Modal with controlled inputs | Server Component props |
-| PeriodCloseModal | Modal | Confirmation dialog with preview data | Server Component props (period totals) |
-| KPICards | Display | Only if animated transitions needed; otherwise Server Component | Props from Dashboard page |
-| ExpensePieChart | Chart | Recharts requires DOM access | Serialized chart data arrays |
-| BudgetBarChart | Chart | Recharts requires DOM access | Serialized chart data arrays |
-| TrendAreaChart | Chart | Recharts requires DOM access | Serialized chart data arrays |
-| Sidebar | Navigation | Toggle state on mobile, active route highlighting | Layout props |
-| MobileNav | Navigation | Bottom tab bar, FAB button | Layout props |
-| Modal | UI Primitive | Overlay, escape handling, focus trap | Any parent component |
+### Category 1: Token Swap Only (modify CSS classes, no structural change)
 
-### 3. Shared Library Layer
+These files change only which token names appear in `className` strings. The component logic, props API, and structure stay identical. Search-replace of old token names to new ones, then verify visually.
 
-Pure functions and utilities with zero side effects. These are the foundation -- built and tested first.
+| File | Old tokens to New tokens (examples) |
+|------|--------------------------------------|
+| `src/app/globals.css` | Entire `@theme` block replaced. `--color-bg-primary` → `--color-bg`, `--color-bg-card` → `--color-surface`, `--color-bg-elevated` → `--color-surface-elevated`, `--color-border` → `--color-border-divider`, `--font-mono: 'JetBrains Mono'` → `'IBM Plex Mono'`, all radius values updated, all shadow tokens removed |
+| `src/app/layout.tsx` | `DM_Sans` import → Satoshi font (local or Google); `IBM_Plex_Mono` added; CSS variable names updated accordingly |
+| `src/components/layout/Sidebar.tsx` | `bg-bg-card border-r border-border` → `bg-surface` (no border); active item `bg-accent/15 text-accent` stays valid; icon `size={18}` already matches spec |
+| `src/components/layout/FAB.tsx` | `shadow-lg shadow-glow` removed; `text-bg-primary` → `text-black`; button already `rounded-full` — correct |
+| `src/components/layout/MobileMoreSheet.tsx` | Token names only |
+| `src/components/layout/PageHeader.tsx` | Token names only |
+| `src/components/debts/DebtSummaryCards.tsx` | Token names only |
+| `src/components/income/IncomeSourceCard.tsx` | Token names only |
+| `src/components/income/IncomeSummaryCards.tsx` | Token names only |
+| `src/components/history/AnnualPivotTable.tsx` | Token names only; table header uppercase + tracking styles already partially present |
+| `src/components/categories/*` | Token names only |
 
-| Module | Purpose | Used By |
-|--------|---------|---------|
-| `lib/prisma.ts` | Singleton Prisma client | All Server Components, Server Actions, API Routes |
-| `lib/serialize.ts` | `serializeBigInts()` -- BigInt to String conversion | Every data-fetching Server Component and API Route |
-| `lib/utils.ts` | `formatMoney()`, `toCents()`, `parseCents()`, `formatRate()`, `formatUnitAmount()`, date helpers | Client Components (display), Server Actions (conversion) |
-| `lib/validators.ts` | Zod schemas for every entity mutation | Server Actions, API Routes |
-| `lib/constants.ts` | Color palette, category defaults, pagination limits | Components, seed script |
-| `types/index.ts` | Shared TypeScript interfaces | Everywhere |
+### Category 2: Structural Modifications (component logic or structure changes, same file)
 
-### 4. Server Actions Layer
+These need more than a token swap — the rendered HTML structure or component behavior changes.
 
-Server Actions are the preferred mutation mechanism. Each action validates input, performs the write, and calls `revalidatePath()` for affected routes. They live in dedicated files colocated with their domain.
+**`src/components/ui/Modal.tsx`** — MODIFY (significant)
+- Mobile bottom sheet: `rounded-t-xl` → `rounded-t-[24px]` (radius-xl: 24px); `border-t border-border` removed; drag handle `h-1` stays but `rounded-full` removed (flat rect per spec); color `bg-border-light` → `bg-border-divider`
+- Mobile sheet header restructure: current layout has `<h2>` title + right-side `<X>` button. New spec: left-side `<X>` button + right-side `GUARDAR` button in Label style (12px, uppercase, letter-spacing, chartreuse). This is a breaking change to Modal's header interface — TransactionForm must provide its own header or Modal needs a `headerSlot` prop
+- Desktop modal: `rounded-xl` → `rounded-[24px]`; `border border-border` removed; `shadow-md` removed; `bg-bg-card` → `bg-surface-elevated`
+- Desktop animation: add `animate-in fade-in` + scale-from-95 classes if using tailwindcss-animate, or inline CSS animation
 
-| Action Module | Actions | Revalidation Targets |
-|---------------|---------|---------------------|
-| `actions/transactions.ts` | createTransaction, updateTransaction, deleteTransaction | `/`, `/movimientos`, `/presupuesto` |
-| `actions/debts.ts` | createDebt, updateDebt, deleteDebt | `/`, `/deudas` |
-| `actions/budgets.ts` | upsertBudgets | `/`, `/presupuesto` |
-| `actions/income-sources.ts` | createIncomeSource, updateIncomeSource, deleteIncomeSource | `/`, `/ingresos`, `/presupuesto` |
-| `actions/categories.ts` | createCategory | `/movimientos` |
-| `actions/periods.ts` | closePeriod, reopenPeriod | `/`, `/historial`, `/presupuesto` |
+**`src/components/layout/MobileNav.tsx`** — MODIFY (significant)
+- Remove `<span>` text labels entirely from all nav items and "Mas" button
+- Icon stays in `text-text-secondary` even when active — the dot communicates state, not icon color
+- Add `<StatusDot>` component positioned 8px below the icon of the active tab item (absolute positioning within each button's relative container)
+- "Mas" tab: same dot treatment when any overflow route is active
 
-### 5. API Routes (Fallback)
+**`src/components/budgets/BudgetProgressList.tsx`** — MODIFY (significant)
+- Replace the smooth progress bar `<div>` (currently: `h-1.5 overflow-hidden rounded-full` with inner `div` at `width: X%`) with `<BatteryBar value={percentUsed} />`
+- Remove `COLOR_TRACK` and `COLOR_BG` maps — BatteryBar handles colors internally
+- Percentage text: BatteryBar renders its own overflow text; remove duplicate percentage `<p>` below the bar or move it inside BatteryBar
+- Icon container: `h-7 w-7 rounded-lg` → `h-9 w-9 rounded-[12px]` (spec: 36px, 12px radius)
+- Amount display: wrap values in `font-mono tabular-nums`
 
-API Routes exist only for cases where Server Actions are insufficient. In this project, that means:
+**`src/components/debts/DebtCard.tsx`** — MODIFY
+- Replace smooth progress bar with `<BatteryBar value={utilizationPercent} thresholds={{ warning: 31, danger: 71 }} />` (credit utilization thresholds differ from budget thresholds)
+- Debt ratio bar also uses BatteryBar with `thresholds={{ warning: 36, danger: 51 }}`
+- Remove any `shadow-*` classes
+- Token name updates
 
-| Route | Reason Not Server Action |
-|-------|------------------------|
-| `GET /api/dashboard` | Complex aggregation endpoint that could be called by future external tools |
-| `GET /api/dashboard/trend` | Separate data endpoint for 6-month trend |
-| `GET /api/history/[year]` | Read-only data endpoint |
-| `POST /api/cron/refresh-rates` | v2.0: External cron invocation target |
+**`src/components/dashboard/KPICard.tsx`** — MODIFY
+- Icon container: `rounded-lg` → `rounded-[12px]`
+- Value: add `font-mono tabular-nums`; consider splitting "$" prefix from digits into separate `<span>` elements so "$" can render at smaller size in `text-text-tertiary`
+- Container: remove `border border-border`; `bg-bg-card` → `bg-surface-elevated`
+- Hero balance card variant: add dot-matrix CSS class as background layer (opt-in prop or applied at page level)
 
-All other CRUD operations use Server Actions.
+**`src/components/charts/TrendAreaChart.tsx`** — MODIFY
+- Replace `CHART_COLORS` object with Glyph Finance values (see token migration map below)
+- Remove `<CartesianGrid>` entirely
+- Change `strokeWidth={2}` → `strokeWidth={1.5}` on both `<Area>` elements
+- Add `dot={{ r: 2, fill: color }}` to each Area for 4px solid dot endpoints
+- Remove `<YAxis>` or set it to `hide={true}` (spec: no Y-axis labels)
+- X-axis: show only start and end labels, not all month labels
+- Legend: keep existing, but update to match token colors
+
+**`src/components/charts/ExpenseDonutChart.tsx`** — MODIFY
+- Update `CHART_COLORS` with desaturated category colors from Glyph Finance palette
+- Increase `innerRadius` proportion to ~70% of `outerRadius` for thinner ring
+- Remove any grid references
+
+**`src/components/charts/BudgetBarChart.tsx`** — MODIFY
+- Update `CHART_COLORS`
+- Set `radius={0}` on bars (flat tops, no border-radius)
+- Reduce `barSize` to ~60% of available space (wider gaps between bars)
+- Remove `<CartesianGrid>`
+
+**`src/components/transactions/TransactionForm.tsx`** — MODIFY (major restructure)
+- Replace all `<input>` elements with `<FloatingInput>` component
+- Amount input: replace `<input>` with `<Numpad>` component; display amount in large `font-mono` hero zone above numpad
+- Add dot-matrix texture CSS class to amount hero zone
+- Category selector: replace current dropdown/list with 4-column grid of 40px circular icon buttons; selection state = 2px chartreuse ring around circle
+- Expense/Income toggle: replace current toggle with `<TogglePills>` component
+- Optional fields: wrap in collapsible "Mas detalles" section
+- Bottom sheet header: left `<X>` close + right `GUARDAR` (Label style) — coordinate with Modal restructure
+
+**`src/components/transactions/TransactionRow.tsx`** — MODIFY
+- Amount: wrap in `font-mono tabular-nums`; render "+" prefix in `text-positive` for income, "-" prefix in `text-negative` for expense (separately from the digit span)
+- Category icon container: update to spec dimensions (36px, 12px radius) with desaturated color palette
+
+**`src/components/transactions/TransactionFilters.tsx`** — MODIFY
+- Filter chips: ensure `rounded-full` pill shape; active chip: `bg-accent-subtle text-accent`; inactive: neutral badge style
+
+### Category 3: New Components (create from scratch)
+
+These do not exist in the current codebase at all.
+
+**`src/components/ui/BatteryBar.tsx`** — NEW
+
+```typescript
+interface BatteryBarProps {
+  value: number   // 0-100+ (percentage, already calculated)
+  variant?: 'compact' | 'detailed'   // 6px vs 8px height
+  thresholds?: { warning: number; danger: number }  // default: { warning: 80, danger: 100 }
+}
+```
+
+Renders 10 equal-width rectangular segments with 2px gaps. Segment color determined by cumulative fill position vs thresholds. Overflow text "+N%" in `text-negative` Meta size rendered right of bar when value > 100. Segments are flat rectangles (no border-radius). Role `progressbar` with aria attributes.
+
+**`src/components/ui/FloatingInput.tsx`** — NEW
+
+```typescript
+interface FloatingInputProps {
+  label: string
+  value: string
+  onChange: (value: string) => void
+  type?: 'text' | 'number' | 'decimal' | 'date'
+  prefix?: string      // "$" for money inputs, static, does not float
+  suffix?: string      // "%" for rate inputs, static
+  error?: string       // shows below input in Meta/negative style
+  optional?: boolean   // shows "(opcional)" in label
+  className?: string
+}
+```
+
+No box — border-bottom only. Label starts as placeholder text at body size; on focus or when value is non-empty, label transforms: translates up, scales to Label size (12px), uppercase, tracking-widest, `text-text-secondary`. Transition 200ms ease. Focus state: border-bottom transitions to `border-accent`. Error state: border-bottom `border-negative`, error message below.
+
+**`src/components/ui/StatusDot.tsx`** — NEW
+
+```typescript
+interface StatusDotProps {
+  className?: string
+}
+```
+
+Renders a 4px circle with `bg-accent` and `status-dot` CSS class (animation defined in globals.css). Always `aria-hidden="true"` — decorative indicator only.
+
+**`src/components/ui/TogglePills.tsx`** — NEW
+
+```typescript
+interface TogglePillsProps {
+  options: { value: string; label: string }[]
+  value: string
+  onChange: (value: string) => void
+}
+```
+
+Row of pill buttons with `gap-1`. Active: `bg-accent text-black font-semibold rounded-full`. Inactive: `bg-transparent text-text-secondary rounded-full`. Min height 40px. Press state: `scale(0.98)`.
+
+**`src/components/transactions/Numpad.tsx`** — NEW
+
+```typescript
+interface NumpadProps {
+  value: string
+  onChange: (value: string) => void
+}
+```
+
+4-column CSS grid. Row 1: `1`, `2`, `3`, Delete icon (Lucide). Row 2: `4`, `5`, `6`, `.`. Row 3: `7`, `8`, `9`, `00`. Row 4: empty, `0`, empty, empty. Each key: `bg-surface-elevated`, min 48px touch target, `font-mono` at 20px heading size. Press: `bg-surface-hover`, transition 100ms. Logic: appends digit, handles single decimal point, backspace deletes last character.
+
+---
+
+## Recommended Project Structure (Post-Migration)
+
+```
+src/
+├── app/
+│   ├── globals.css              # MODIFIED — full @theme replacement + animations
+│   └── layout.tsx               # MODIFIED — Satoshi + IBM Plex Mono font swap
+├── components/
+│   ├── ui/
+│   │   ├── Modal.tsx            # MODIFIED — new sheet header structure
+│   │   ├── DynamicIcon.tsx      # UNCHANGED
+│   │   ├── BatteryBar.tsx       # NEW
+│   │   ├── FloatingInput.tsx    # NEW
+│   │   ├── StatusDot.tsx        # NEW
+│   │   └── TogglePills.tsx      # NEW
+│   ├── layout/
+│   │   ├── MobileNav.tsx        # MODIFIED — icon-only + status dot
+│   │   ├── FAB.tsx              # MODIFIED — token swap, remove shadow
+│   │   ├── Sidebar.tsx          # MODIFIED — token swap
+│   │   ├── PageHeader.tsx       # MODIFIED — token swap
+│   │   └── MobileMoreSheet.tsx  # UNCHANGED (token swap only)
+│   ├── transactions/
+│   │   ├── TransactionForm.tsx  # MODIFIED — major restructure
+│   │   ├── Numpad.tsx           # NEW
+│   │   ├── TransactionRow.tsx   # MODIFIED
+│   │   └── TransactionFilters.tsx # MODIFIED
+│   ├── budgets/
+│   │   └── BudgetProgressList.tsx # MODIFIED — BatteryBar integration
+│   ├── dashboard/
+│   │   └── KPICard.tsx          # MODIFIED
+│   ├── charts/
+│   │   ├── TrendAreaChart.tsx   # MODIFIED — no grid, dots, 1.5px stroke
+│   │   ├── ExpenseDonutChart.tsx # MODIFIED
+│   │   └── BudgetBarChart.tsx   # MODIFIED — flat tops, no grid
+│   └── debts/
+│       └── DebtCard.tsx         # MODIFIED — BatteryBar integration
+```
+
+---
+
+## Architectural Patterns
+
+### Pattern 1: Token-First Migration
+
+**What:** Replace the entire `@theme` block in `globals.css` as step 1, before touching any component. After the token swap, pages will look broken (wrong colors) but all Tailwind utility classes that reference token names continue to work because the token names map correctly. Components can then be updated incrementally against stable tokens.
+
+**When to use:** Always first. Attempting to update components before tokens causes double-work.
+
+**Trade-offs:** Brief period where the app looks garbled (acceptable during development). No risk to data layer.
+
+**Example:**
+```css
+/* BEFORE */
+@theme {
+  --color-bg-primary: #0a0f1a;
+  --color-bg-card: #111827;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius-xl: 16px;
+  --shadow-glow: 0 0 20px rgba(34, 211, 238, 0.15);
+}
+
+/* AFTER */
+@theme {
+  --color-bg: #000000;
+  --color-surface: #0A0A0A;
+  --color-surface-elevated: #141414;
+  --font-mono: 'IBM Plex Mono', 'Fira Code', monospace;
+  --radius-xl: 24px;
+  /* shadow tokens deleted entirely */
+}
+```
+
+### Pattern 2: CSS Animations Centralized in globals.css
+
+**What:** All keyframe animations (`status-pulse`, `scanline-reveal`) are defined once in `globals.css`. Components reference them via CSS class names. No inline `style` tags for animations.
+
+**When to use:** All Glyph Finance signature animations. Centralizing respects `prefers-reduced-motion` from one location.
+
+**Trade-offs:** Classes must be non-purged by Tailwind (add to safelist or use in JSX to keep them in bundle).
+
+**Example:**
+```css
+/* globals.css */
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+@keyframes scanline-reveal {
+  0% { clip-path: inset(0 0 100% 0); }
+  100% { clip-path: inset(0 0 0% 0); }
+}
+
+.status-dot { animation: status-pulse 2.5s ease-in-out infinite; }
+.dot-matrix-bg {
+  background-image: url("data:image/svg+xml,%3Csvg width='8' height='8' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='4' cy='4' r='0.75' fill='%231E1E1E' fill-opacity='0.4'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 8px 8px;
+}
+.pixel-dissolve { animation: scanline-reveal 500ms steps(12, end) forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pixel-dissolve, .status-dot { animation: none; clip-path: none; }
+}
+```
+
+### Pattern 3: BatteryBar Thresholds via Props
+
+**What:** BatteryBar accepts optional `thresholds` prop to support different color breakpoints. Budget uses 80/100, credit utilization uses 30/70, debt ratio uses 35/50. Defaults to budget thresholds so most call sites need no extra props.
+
+**When to use:** Any time a progress indicator exists in the app.
+
+**Trade-offs:** BatteryBar internal logic has a mild branching complexity for the traffic-light coloring, but this is the right tradeoff vs having three different components.
+
+```typescript
+// Budget usage (default)
+<BatteryBar value={percentUsed} />
+
+// Credit card utilization
+<BatteryBar value={utilizationPercent} thresholds={{ warning: 31, danger: 71 }} />
+
+// Debt-to-income ratio
+<BatteryBar value={dtiPercent} thresholds={{ warning: 36, danger: 51 }} />
+```
+
+### Pattern 4: FloatingInput Requires Relative Container
+
+**What:** FloatingInput uses `position: absolute` for the label that floats above the input. The component renders its own `<div className="relative">` wrapper. The label and input are co-located siblings, not separate DOM elements.
+
+**When to use:** All form inputs. Replaces every `<input>` + `<label>` pair in the codebase.
+
+**Trade-offs:** Current forms use separate `<label htmlFor>` + `<input id>` patterns. FloatingInput merges these — callers pass `label` as a prop, not as a sibling DOM element. All form components need structural changes, not just class swaps.
+
+```tsx
+// BEFORE (current pattern in DebtForm, IncomeSourceForm, etc.)
+<label htmlFor="name" className="text-sm text-text-secondary">Nombre</label>
+<input id="name" className="border border-border rounded-lg bg-bg-input ..." />
+
+// AFTER
+<FloatingInput label="Nombre" value={name} onChange={setName} />
+```
 
 ---
 
 ## Data Flow
 
-### Read Path (Server Components)
+### Font Loading Flow
 
 ```
-1. User navigates to /movimientos
-2. Next.js renders app/movimientos/page.tsx (Server Component)
-3. Page calls Prisma directly:
-   - getCurrentPeriod()
-   - getTransactions({ periodId, filters })
-   - getCategories()
-   - getIncomeSources()
-4. Results contain BigInt fields
-5. Page calls serializeBigInts() on each result set
-6. Serialized data (BigInt -> String) passed as props to child components
-7. Client Components render, calling formatMoney(centsStr) for display
-```
-
-### Write Path (Server Actions)
-
-```
-1. User fills TransactionForm (Client Component)
-2. User input: "$150.75" -> toCents(150.75) -> "15075" (in the component)
-3. Form calls Server Action: createTransaction({ amount: "15075", ... })
-4. Server Action:
-   a. Validates with Zod (createTransactionSchema)
-   b. Checks period is not closed
-   c. Prisma create with BigInt(amount)
-   d. revalidatePath('/') 
-   e. revalidatePath('/movimientos')
-   e. revalidatePath('/presupuesto')
-5. Next.js re-renders affected Server Components with fresh data
-6. Client sees updated list + toast confirmation
-```
-
-### The Serialization Boundary
-
-This is the single most important architectural concept in the project. The boundary is a one-directional conversion wall:
-
-```
-PostgreSQL (bigint)
-       |
-  Prisma Client (JavaScript BigInt)
-       |
-  serializeBigInts() -- CONVERTS BigInt -> String
-       |
-  Server Component props / API Response (String)
-       |
-  Client Component (receives String, never BigInt)
-       |
-  formatMoney("15075") -> "$150.75" (display only)
-  toCents(150.75) -> "15075" (submission only)
-       |
-  Server Action receives String
-       |
-  BigInt("15075") -> Prisma write
-```
-
-**Rules:**
-- No Client Component ever sees a JavaScript `BigInt`
-- No business logic operates on floating point numbers
-- Conversion to/from display format happens ONLY in the presentation layer
-- `serializeBigInts()` is called in exactly one place per data path: the Server Component or API Route that first receives Prisma results
-
-### Dashboard Data Flow (Most Complex Read)
-
-The Dashboard is the most query-intensive page. All queries run in parallel:
-
-```
-app/page.tsx (Server Component)
-|
-+-- Promise.all([
-|     getDashboardKPIs(),         // 4 aggregation queries in parallel
-|     getCategoryExpenses(),       // 1 GROUP BY query for pie chart
-|     getBudgetVsSpent(),          // 1 JOIN + GROUP BY for bar chart
-|     getMonthlyTrend(),           // 1 query on MonthlySummary (6 months)
-|     getRecentTransactions(),     // 1 query with LIMIT 8
-|   ])
-|
-+-- serializeBigInts() on each result
-|
-+-- Props to children:
-    +-- <KPICards data={kpis} />                  (could be Server or Client)
-    +-- <ExpensePieChart data={expenses} />        (Client -- Recharts)
-    +-- <BudgetBarChart data={budget} />            (Client -- Recharts)
-    +-- <TrendAreaChart data={trend} />             (Client -- Recharts)
-    +-- <RecentTransactions data={txns} />          (Server Component)
-```
-
-### Period Close Data Flow (Most Complex Write)
-
-This is the most critical mutation -- a multi-table atomic transaction:
-
-```
-1. User clicks "Cerrar Abril 2026" on Historial page
-2. PeriodCloseModal shows preview (calculated from props already in Server Component)
-3. User confirms -> calls closePeriod Server Action
-
-closePeriod Server Action:
-|
-+-- Verify period is not already closed
-+-- prisma.$transaction(async (tx) => {
-|     // 1. Calculate totals
-|     totalIncome = SUM(Transaction.amount WHERE type=INCOME AND periodId)
-|     totalExpenses = SUM(Transaction.amount WHERE type=EXPENSE AND periodId)
-|     debtAtClose = SUM(Debt.currentBalance WHERE isActive=true)
-|
-|     // 2. Create MonthlySummary snapshot
-|     tx.monthlySummary.create({ data: { totalIncome, totalExpenses, ... } })
-|
-|     // 3. Close period
-|     tx.period.update({ where: { id }, data: { isClosed: true, closedAt: now() } })
-|
-|     // 4. Create next period if not exists
-|     tx.period.create({ data: { month: nextMonth, year: nextYear, ... } })
-|
-|     // 5. Copy budgets to next period
-|     budgets = tx.budget.findMany({ where: { periodId: id } })
-|     tx.budget.createMany({ data: budgets.map(b => ({ ...b, id: undefined, periodId: nextPeriod.id })) })
-|   })
-|
-+-- revalidatePath('/')
-+-- revalidatePath('/historial')
-+-- revalidatePath('/presupuesto')
-```
-
-### View Dependency Map
-
-When an entity changes, these views need revalidation:
-
-```
-Transaction mutation   -> /, /movimientos, /presupuesto
-Debt mutation          -> /, /deudas
-Budget mutation        -> /, /presupuesto
-IncomeSource mutation  -> /, /ingresos, /presupuesto
-Period close/reopen    -> /, /historial, /presupuesto
-```
-
----
-
-## Patterns to Follow
-
-### Pattern 1: Server Component Data Fetching with Parallel Queries
-
-**What:** Pages use `Promise.all` to run independent Prisma queries in parallel, then serialize results before passing to children.
-
-**When:** Any page that needs multiple independent data sources (Dashboard, Movimientos, Presupuesto).
-
-**Example:**
-
-```typescript
-// app/page.tsx (Server Component)
-import { prisma } from '@/lib/prisma'
-import { serializeBigInts } from '@/lib/serialize'
-
-export default async function DashboardPage() {
-  const [kpis, expenses, budgetVsSpent, trend, recentTxns] = await Promise.all([
-    getDashboardKPIs(),
-    getCategoryExpenses(),
-    getBudgetVsSpent(),
-    getMonthlyTrend(),
-    getRecentTransactions(),
-  ])
-
-  return (
-    <main>
-      <KPICards data={serializeBigInts(kpis)} />
-      <ExpensePieChart data={serializeBigInts(expenses)} />
-      <BudgetBarChart data={serializeBigInts(budgetVsSpent)} />
-      <TrendAreaChart data={serializeBigInts(trend)} />
-      <RecentTransactions data={serializeBigInts(recentTxns)} />
-    </main>
-  )
-}
-```
-
-### Pattern 2: Server Actions with Zod Validation
-
-**What:** All mutations go through Server Actions that validate input with Zod, execute Prisma writes, and revalidate affected paths.
-
-**When:** Every create/update/delete operation.
-
-**Example:**
-
-```typescript
-// actions/transactions.ts
-'use server'
-
-import { revalidatePath } from 'next/cache'
-import { prisma } from '@/lib/prisma'
-import { createTransactionSchema } from '@/lib/validators'
-
-export async function createTransaction(data: unknown) {
-  const validated = createTransactionSchema.safeParse(data)
-  if (!validated.success) {
-    return { error: validated.error.flatten().fieldErrors }
+layout.tsx
+  ↓ next/font loads Satoshi (local or via Google Fonts)
+  ↓ assigns CSS variable --font-satoshi to <html> element
+  ↓ next/font loads IBM_Plex_Mono
+  ↓ assigns CSS variable --font-ibm-plex-mono to <html> element
+globals.css
+  @theme inline {
+    --font-sans: var(--font-satoshi);     ← Tailwind font-sans utility
   }
-
-  const { amount, categoryId, date, type, ...rest } = validated.data
-
-  // Verify period is open
-  const period = await getCurrentPeriod()
-  if (period.isClosed) {
-    return { error: 'El periodo esta cerrado' }
+  @theme {
+    --font-mono: 'IBM Plex Mono', 'Fira Code', monospace;  ← Direct value
   }
-
-  await prisma.transaction.create({
-    data: {
-      amount: BigInt(amount),
-      categoryId,
-      date: new Date(date),
-      type,
-      periodId: period.id,
-      ...rest,
-    },
-  })
-
-  revalidatePath('/')
-  revalidatePath('/movimientos')
-  revalidatePath('/presupuesto')
-
-  return { success: true }
-}
 ```
 
-### Pattern 3: Dynamic Icon Rendering via Static Map
+The `@theme inline` pattern is critical — this is how next/font CSS variables become available to Tailwind's `font-sans` utility. The existing pattern for DM Sans already demonstrates this correctly; only the variable name and font family change.
 
-**What:** Category icons are stored as Lucide icon name strings in the database and resolved at render time via a static map. Avoids dynamic imports of the entire Lucide library.
+### Token Naming Migration Map
 
-**When:** Rendering any category-associated icon (transaction lists, category grids, chart legends).
+The token names change between v1.0 and v2.0. Both `globals.css` (defining tokens) and components (using Tailwind utilities derived from tokens) must be updated in sync.
 
-**Example:**
+| v1.0 Token | v2.0 Token | Class Change Required |
+|------------|------------|----------------------|
+| `--color-bg-primary` | `--color-bg` | `bg-bg-primary` → `bg-bg` |
+| `--color-bg-card` | `--color-surface` | `bg-bg-card` → `bg-surface` |
+| `--color-bg-card-hover` | `--color-surface-hover` | `bg-bg-card-hover` → `bg-surface-hover` |
+| `--color-bg-elevated` | `--color-surface-elevated` | `bg-bg-elevated` → `bg-surface-elevated` |
+| `--color-bg-input` | *(removed — inputs have no background)* | Remove `bg-bg-input` class |
+| `--color-border` | `--color-border-divider` | `border-border` → `border-border-divider` |
+| `--color-border-light` | *(removed)* | Remove all usage |
+| `--color-border-focus` | *(handled via --color-accent in focus-visible)* | No class change — covered by global rule |
+| `--color-text-muted` | `--color-text-tertiary` | `text-text-muted` → `text-text-tertiary` |
+| `--color-accent` | `--color-accent` (value changes: `#22d3ee` → `#CCFF00`) | No class change, value updates automatically |
+| `--color-positive` | `--color-positive` (value changes: `#34d399` → `#00E676`) | No class change |
+| `--color-negative` | `--color-negative` (value changes: `#f87171` → `#FF3333`) | No class change |
+| `--color-warning` | `--color-warning` (value changes: `#fb923c` → `#FF9100`) | No class change |
+| `--shadow-sm/md/lg/glow` | *(deleted entirely)* | All `shadow-*` classes removed from JSX |
+| `--radius-sm: 6px` | `--radius-sm: 8px` | Value increases, classes unchanged |
+| `--radius-md: 8px` | `--radius-md: 12px` | Value increases |
+| `--radius-lg: 12px` | `--radius-lg: 16px` | Value increases |
+| `--radius-xl: 16px` | `--radius-xl: 24px` | Value increases (modals most affected) |
+
+New tokens to add to `@theme`:
+- `--color-surface-hover: #1A1A1A`
+- `--color-dot-matrix: #1E1E1E`
+- `--color-accent-subtle: rgba(204, 255, 0, 0.12)`
+- `--color-positive-subtle: rgba(0, 230, 118, 0.12)`
+- `--color-negative-subtle: rgba(255, 51, 51, 0.12)`
+- `--color-warning-subtle: rgba(255, 145, 0, 0.12)`
+- `--color-info-subtle: rgba(68, 138, 255, 0.12)`
+- `--color-accent-hover: #B8E600`
+- `--color-info: #448AFF`
+- `--radius-full: 9999px`
+
+Category color tokens stay named `--color-cat-*` but values change to desaturated palette:
+- `--color-cat-food: #C88A5A` (was `#fb923c`)
+- `--color-cat-services: #7A9EC4` (was `#60a5fa`)
+- `--color-cat-entertainment: #9B89C4` (was `#a78bfa`)
+- `--color-cat-subscriptions: #C48AA3` (was `#f472b6`)
+- `--color-cat-transport: #C4A84E` (was `#fbbf24`)
+- `--color-cat-other: #8A9099` (was `#94a3b8`)
+
+### Chart Hardcoded Color Migration
+
+All three chart files use a `CHART_COLORS` object with hardcoded hex values that bypass the CSS variable system. These must be updated directly to new Glyph Finance values:
 
 ```typescript
-// components/ui/DynamicIcon.tsx
-import {
-  Utensils, Zap, Clapperboard, Smartphone,
-  Car, Package, Briefcase, Laptop, type LucideIcon
-} from 'lucide-react'
-
-const iconMap: Record<string, LucideIcon> = {
-  utensils: Utensils,
-  zap: Zap,
-  clapperboard: Clapperboard,
-  smartphone: Smartphone,
-  car: Car,
-  package: Package,
-  briefcase: Briefcase,
-  laptop: Laptop,
+// Applies to TrendAreaChart.tsx, ExpenseDonutChart.tsx, BudgetBarChart.tsx
+const CHART_COLORS = {
+  tooltipBg: '#141414',       // was #0a0f1a  (surface-elevated)
+  tooltipBorder: 'none',      // was #1e293b  (no decorative borders)
+  positive: '#00E676',        // was #34d399  (new positive)
+  negative: '#FF3333',        // was #f87171  (new negative)
+  accent: '#CCFF00',          // was #22d3ee  (chartreuse)
+  axis: '#666666',            // was #64748b  (text-tertiary)
+  // Remove: grid (CartesianGrid component removed from JSX)
 }
-
-interface DynamicIconProps {
-  name: string
-  size?: number
-  className?: string
-}
-
-export default function DynamicIcon({ name, size = 16, className }: DynamicIconProps) {
-  const Icon = iconMap[name] ?? Package
-  return <Icon size={size} className={className} />
-}
-```
-
-### Pattern 4: Automatic Period Resolution
-
-**What:** The current period is resolved (and created if missing) in the root layout or a shared data-fetching utility, ensuring every page always has a valid current period.
-
-**When:** App load, month boundary crossing.
-
-**Example:**
-
-```typescript
-// lib/periods.ts
-import { prisma } from '@/lib/prisma'
-
-export async function getCurrentPeriod() {
-  const now = new Date()
-  const month = now.getMonth() + 1
-  const year = now.getFullYear()
-
-  let period = await prisma.period.findUnique({
-    where: { month_year: { month, year } },
-  })
-
-  if (!period) {
-    period = await prisma.period.create({
-      data: {
-        month,
-        year,
-        startDate: new Date(year, month - 1, 1),
-        endDate: new Date(year, month, 0),
-        isClosed: false,
-      },
-    })
-  }
-
-  return period
-}
-```
-
-### Pattern 5: Prisma Client Singleton
-
-**What:** Single Prisma Client instance stored in `globalThis` to prevent connection pool exhaustion during Next.js hot reload in development.
-
-**When:** Always. This is the only way to import Prisma.
-
-**Example:**
-
-```typescript
-// lib/prisma.ts
-import { PrismaClient } from '@prisma/client'
-
-const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
-
-export const prisma = globalForPrisma.prisma || new PrismaClient()
-
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 ```
 
 ---
 
-## Anti-Patterns to Avoid
+## Build Order: Recommended Phase Sequence
 
-### Anti-Pattern 1: Fetching Data in Client Components
-
-**What:** Using `useEffect` + `fetch` in Client Components to load data.
-
-**Why bad:** Causes waterfalls, requires loading states the user sees, adds unnecessary client-side JavaScript, bypasses Server Component benefits, and requires manual serialization handling.
-
-**Instead:** Fetch in Server Components, pass serialized data as props. If a Client Component needs fresh data after a mutation, use `revalidatePath()` in the Server Action to trigger a Server Component re-render.
-
-### Anti-Pattern 2: Passing Raw Prisma Results to Client Components
-
-**What:** Returning Prisma query results directly as props without calling `serializeBigInts()`.
-
-**Why bad:** BigInt values crash `JSON.stringify` at the RSC serialization boundary. The error is "Do not know how to serialize a BigInt" and it breaks the entire page render.
-
-**Instead:** Always call `serializeBigInts()` on Prisma results before passing as props or returning from API Routes.
-
-### Anti-Pattern 3: Money Arithmetic with JavaScript `number`
-
-**What:** Using `Number()` on centavo strings to perform calculations like subtraction or percentage.
-
-**Why bad:** Floating point precision loss. `0.1 + 0.2 !== 0.3` in JavaScript. For financial calculations, even small errors compound.
-
-**Instead:** All arithmetic in Server Components, Server Actions, or SQL uses `BigInt`. The only place `Number()` appears is in `formatMoney()` for display-only formatting, where precision loss on a final display value is acceptable.
-
-### Anti-Pattern 4: Fat API Routes for Internal Mutations
-
-**What:** Creating REST API routes for every CRUD operation, then calling them with `fetch()` from Client Components.
-
-**Why bad:** Unnecessary HTTP overhead. Server Actions are called like functions and Next.js handles the transport. API Routes add boilerplate (request parsing, response formatting) that Server Actions handle automatically.
-
-**Instead:** Use Server Actions for all mutations called from your own UI. Reserve API Routes for external consumers (cron jobs, future integrations).
-
-### Anti-Pattern 5: Global State Management Libraries
-
-**What:** Adding Redux, Zustand, or similar for managing application state.
-
-**Why bad:** Server Components handle most data display. The few pieces of client state (form inputs, modal open/close, filter selections) are local to individual components. A global store adds complexity and bundle size for zero benefit in this architecture.
-
-**Instead:** React `useState` for local component state. URL search params for filter state that needs to survive navigation. Server Components for all data that comes from the database.
-
-### Anti-Pattern 6: Using `use cache` for Personal Data
-
-**What:** Applying the new `use cache` directive to pages or components that display personal financial data.
-
-**Why bad:** This app serves a single user with entirely personal, always-changing data. Caching responses would risk serving stale financial data. The `use cache` feature in Next.js 16 is designed for content that benefits from caching (blog posts, product catalogs) -- not real-time personal data.
-
-**Instead:** Let all pages render dynamically per-request. The data is fast to query (single-user, small dataset) and must always be fresh.
-
----
-
-## Key Architecture Decisions for Next.js 16
-
-### params is Now a Promise
-
-In Next.js 16 (since v15.0.0-RC), dynamic route `params` are a Promise and must be awaited:
-
-```typescript
-// API Route in Next.js 16
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const { id } = await params  // MUST await
-  // ...
-}
-```
-
-This applies to all dynamic route handlers and page components.
-
-### Server Functions (not Server Actions)
-
-Next.js 16 docs refer to these as "Server Functions" -- functions marked with `'use server'`. The term "Server Actions" is being phased out in the docs, but the functionality is identical. The project documentation uses both terms interchangeably.
-
-### `revalidatePath()` Behavior in Server Functions
-
-In Next.js 16, `revalidatePath()` called from a Server Function updates the UI immediately if the user is viewing the affected path. For other paths, it marks them for revalidation on next visit. This is the correct behavior for Centik's mutation -> revalidation pattern.
-
-### Default Dynamic Rendering for GET Route Handlers
-
-Since Next.js 15/16, GET Route Handlers default to dynamic (not static). This aligns with Centik's needs -- all data is personal and should be fresh.
-
----
-
-## Project Structure (Architecture View)
+Dependencies flow token layer → layout → primitives → feature components. This order allows testing each layer before building on it.
 
 ```
-src/
-├── app/
-│   ├── layout.tsx                    # Root layout: Sidebar, period resolution
-│   ├── loading.tsx                   # Root loading skeleton
-│   ├── page.tsx                      # Dashboard (Server Component)
-│   ├── movimientos/
-│   │   ├── page.tsx                  # Transactions (Server Component)
-│   │   └── loading.tsx               # Transactions skeleton
-│   ├── deudas/
-│   │   ├── page.tsx                  # Debts (Server Component)
-│   │   └── loading.tsx
-│   ├── presupuesto/
-│   │   ├── page.tsx                  # Budget (Server Component)
-│   │   └── loading.tsx
-│   ├── ingresos/
-│   │   ├── page.tsx                  # Income Sources (Server Component)
-│   │   └── loading.tsx
-│   ├── historial/
-│   │   ├── page.tsx                  # History (Server Component)
-│   │   └── loading.tsx
-│   └── api/
-│       ├── dashboard/
-│       │   ├── route.ts              # GET: KPIs + chart data
-│       │   └── trend/
-│       │       └── route.ts          # GET: 6-month trend
-│       └── cron/
-│           └── refresh-rates/
-│               └── route.ts          # POST: v2.0 rate refresh
-├── actions/
-│   ├── transactions.ts               # Transaction CRUD Server Functions
-│   ├── debts.ts                      # Debt CRUD Server Functions
-│   ├── budgets.ts                    # Budget upsert Server Functions
-│   ├── income-sources.ts             # Income Source CRUD Server Functions
-│   ├── categories.ts                 # Category creation Server Function
-│   └── periods.ts                    # Close/reopen period Server Functions
-├── components/
-│   ├── ui/                           # Reusable primitives
-│   │   ├── Button.tsx
-│   │   ├── Input.tsx
-│   │   ├── Modal.tsx
-│   │   ├── Card.tsx
-│   │   ├── ProgressBar.tsx
-│   │   ├── Badge.tsx
-│   │   ├── DynamicIcon.tsx
-│   │   └── Toast.tsx                 # Via sonner
-│   ├── layout/
-│   │   ├── Sidebar.tsx               # Desktop nav (Client Component)
-│   │   ├── MobileNav.tsx             # Bottom tab bar (Client Component)
-│   │   ├── Header.tsx                # Page header with period selector
-│   │   └── FAB.tsx                   # Floating action button (Client)
-│   ├── dashboard/
-│   │   ├── KPICards.tsx
-│   │   └── RecentTransactions.tsx
-│   ├── transactions/
-│   │   ├── TransactionForm.tsx       # Client Component
-│   │   ├── TransactionList.tsx       # Server Component
-│   │   └── TransactionFilters.tsx    # Client Component
-│   ├── debts/
-│   │   ├── DebtCard.tsx              # Client Component (inline edit)
-│   │   └── DebtForm.tsx              # Client Component
-│   ├── budgets/
-│   │   ├── BudgetTable.tsx           # Client Component (inline edit)
-│   │   └── BudgetProgress.tsx
-│   └── charts/
-│       ├── ExpensePieChart.tsx        # Client Component (Recharts)
-│       ├── BudgetBarChart.tsx         # Client Component (Recharts)
-│       └── TrendAreaChart.tsx         # Client Component (Recharts)
-├── lib/
-│   ├── prisma.ts                     # Singleton
-│   ├── serialize.ts                  # serializeBigInts()
-│   ├── utils.ts                      # formatMoney, toCents, etc.
-│   ├── validators.ts                 # Zod schemas
-│   ├── constants.ts                  # Colors, defaults
-│   └── periods.ts                    # getCurrentPeriod(), period utilities
-└── types/
-    └── index.ts                      # Shared TypeScript types
+Phase 1: Token foundation
+  Files: globals.css (full @theme replacement + animations)
+         layout.tsx (font swap: DM_Sans → Satoshi, JetBrains Mono → IBM Plex Mono)
+  Expected after: app uses new palette/radius, looks partially broken
+                  (token name mismatches between old CSS classes and new token names)
+  Unblocks: all subsequent phases
+
+Phase 2: Class name migration
+  Action: search-replace old token utility class names across all components
+          grep for: bg-bg-primary, bg-bg-card, bg-bg-elevated, border-border,
+                    text-text-muted, shadow-sm, shadow-md, shadow-lg, shadow-glow,
+                    bg-bg-input, border-border-light
+          Update hardcoded hex values in CHART_COLORS objects
+  Expected after: app looks visually correct with new palette (colors, sizes)
+  Unblocks: nothing blocked, but clears visual noise for subsequent phases
+
+Phase 3: New primitive components
+  Files: BatteryBar.tsx (with tests), FloatingInput.tsx (with tests),
+         StatusDot.tsx (with tests), TogglePills.tsx (with tests)
+  Zero side effects — new files, nothing imports them yet
+  Expected after: components exist and are tested in isolation
+  Unblocks: BudgetProgressList, DebtCard, MobileNav, TransactionForm
+
+Phase 4: Layout components
+  Files: MobileNav.tsx (icon-only, status dot), Sidebar.tsx (polish),
+         FAB.tsx (remove shadow, icon to text-black)
+  Expected after: navigation fully correct per spec
+
+Phase 5: Modal restructure
+  Files: Modal.tsx (new header structure, correct radius, no border, no shadow)
+  Expected after: all modals and bottom sheets correct per spec
+  Unblocks: TransactionForm (which lives inside Modal)
+
+Phase 6: TransactionForm redesign
+  Files: TransactionForm.tsx (bottom sheet layout, dot-matrix hero, amount display,
+         TogglePills, category grid, Numpad, FloatingInput for optional fields),
+         Numpad.tsx (NEW — created here alongside TransactionForm)
+  Most complex single-component change. Has existing tests — update tests alongside.
+  Expected after: transaction registration flow fully spec-compliant
+
+Phase 7: Progress bars
+  Files: BudgetProgressList.tsx, DebtCard.tsx,
+         any BudgetTable or progress usage in presupuesto page
+  Action: Replace all smooth bars with BatteryBar component
+  Expected after: all progress indicators are segmented battery-bar style
+
+Phase 8: Charts
+  Files: TrendAreaChart.tsx, ExpenseDonutChart.tsx, BudgetBarChart.tsx
+  Action: Update CHART_COLORS, remove CartesianGrid, adjust strokeWidth/dots/radius
+  Expected after: charts match minimal no-grid spec with 1.5px strokes
+
+Phase 9: Remaining feature components
+  Files: KPICard.tsx (font-mono values, no border, hero dot-matrix),
+         TransactionRow.tsx (font-mono amounts, +/- prefix colors),
+         TransactionFilters.tsx (pill chips),
+         IncomeSourceCard.tsx, IncomeSummaryCards.tsx,
+         AnnualPivotTable.tsx (table header uppercase tracking)
+  Expected after: all pages visually complete
+
+Phase 10: Visual QA
+  Action: Every page reviewed against STYLE_GUIDE.md spec
+          Focus rings, touch targets, contrast ratios
+          Update all affected unit tests
 ```
 
 ---
 
-## Scalability Considerations
+## Component Dependencies
 
-This app is a single-user personal finance tracker, so traditional scalability concerns (millions of users, horizontal scaling) do not apply. The relevant scaling dimensions are:
+```
+StatusDot ← MobileNav (active tab indicator)
+StatusDot ← PageHeader (active period indicator)
+BatteryBar ← BudgetProgressList
+BatteryBar ← DebtCard (credit utilization, different thresholds)
+BatteryBar ← presupuesto page BudgetTable (if progress bars exist there)
+FloatingInput ← TransactionForm (optional fields section)
+FloatingInput ← DebtForm
+FloatingInput ← IncomeSourceForm
+TogglePills ← TransactionForm (Gasto/Ingreso toggle)
+Numpad ← TransactionForm (amount entry)
+dot-matrix-bg (CSS class) ← KPICard hero variant
+dot-matrix-bg (CSS class) ← TransactionForm amount hero zone
+```
 
-| Concern | At Launch (1 month data) | At 1 year (12 months) | At 5 years (60 months) |
-|---------|------------------------|----------------------|----------------------|
-| Transaction volume | ~100 rows | ~1,200 rows | ~6,000 rows |
-| Query performance | Negligible | Negligible | Still negligible -- indexes handle this |
-| Period data | 1 MonthlySummary | 12 MonthlySummary | 60 MonthlySummary -- tiny table |
-| Chart data | 0-1 month trend | 6-month trend window | Still 6-month window (MonthlySummary) |
-| Database size | < 1 MB | < 10 MB | < 50 MB |
-| Client bundle | Fixed | Fixed | Fixed |
-
-**The only scaling concern is the v2.0 UnitRate table** if many value units are tracked with daily rate updates. At 3 units with daily rates, that is ~1,095 rows/year -- still trivial.
-
-**Performance optimization strategy is SQL aggregation**, not caching:
-- Dashboard KPIs use `SUM()`, `COUNT()` at the database level
-- Chart data is computed server-side as simple arrays
-- No N+1 queries -- use Prisma `include` and `select` deliberately
-- Composite indexes on `Transaction(periodId, date)` and `Budget(periodId, categoryId)` handle all common query patterns
+FloatingInput and BatteryBar have the widest fan-out — build and test them first (Phase 3) before migrating any feature components.
 
 ---
 
-## Build Order (Dependency-Driven)
+## Anti-Patterns
 
-The architecture imposes a strict build order because components at each layer depend on the layer below:
+### Anti-Pattern 1: Partial Token Migration with Hardcoded Hex Values
 
-```
-Phase 1: Infrastructure
-    Docker + PostgreSQL + Next.js config + Prisma setup + test configs
-    (No app code depends on anything else yet)
+**What people do:** Update `globals.css` but leave hardcoded hex values in components — specifically the `CHART_COLORS` objects in all three chart files and any `style={{ backgroundColor: '#0a0f1a' }}` inline styles.
 
-Phase 2: Database Schema + Seed
-    Prisma schema + migrations + seed script
-    (Depends on: Phase 1 infrastructure)
+**Why it's wrong:** Creates a split-brain state where the design system changes but scattered hardcoded values remain old colors. Charts look completely wrong while everything else updates.
 
-Phase 3: Foundation Libraries
-    lib/prisma.ts, lib/serialize.ts, lib/utils.ts, lib/validators.ts,
-    lib/constants.ts, types/index.ts
-    (Depends on: Phase 2 schema for types; 100% test coverage required)
+**Do this instead:** After updating `globals.css`, grep for all old hex values (`#0a0f1a`, `#111827`, `#1e293b`, `#22d3ee`, `#34d399`, `#f87171`, `#64748b`, `#64748b`) and update every occurrence in the same phase.
 
-Phase 4: Layout Shell
-    Root layout, Sidebar, MobileNav, Header, UI primitives (Button, Input,
-    Modal, Card, DynamicIcon)
-    (Depends on: Phase 3 for cn() utility, constants)
+### Anti-Pattern 2: Keeping Any Smooth Progress Bars
 
-Phase 5: Income Sources (Full Stack Validation)
-    Simplest CRUD entity -- validates the entire Server Component -> Server
-    Action -> Prisma -> revalidatePath pipeline works end to end.
-    (Depends on: Phase 3 validators, Phase 4 layout + UI primitives)
+**What people do:** Implement BatteryBar but only use it in new components, leaving existing smooth bars in `BudgetProgressList` and `DebtCard` unchanged.
 
-Phase 6: Categories + Transactions
-    Categories are mostly read (seeded). Transactions are the core loop --
-    form, list, filters. Most used feature in the app.
-    (Depends on: Phase 5 proves the CRUD pattern; categories needed for transactions)
+**Why it's wrong:** Two progress bar systems means visual inconsistency. Glyph Finance's identity requires 100% segmented bars everywhere.
 
-Phase 7: Dashboard
-    KPI cards + charts. Read-only, aggregation-heavy. Needs transaction data
-    to display anything meaningful.
-    (Depends on: Phase 6 for transaction data to aggregate)
+**Do this instead:** Migrate all three locations in Phase 7 as a single atomic change. There are only 3 files with progress bars.
 
-Phase 8: Debts
-    Independent CRUD with calculated fields (utilization, interest). Can be
-    built in parallel with Phase 7 in theory, but sequential is safer.
-    (Depends on: Phase 4 layout + Phase 3 foundation)
+### Anti-Pattern 3: Floating Labels via Classes on Existing Inputs
 
-Phase 9: Budget
-    Configuration + progress bars. Needs categories (Phase 6) and transaction
-    spending data (Phase 6) to show progress.
-    (Depends on: Phase 6 for category + transaction data)
+**What people do:** Apply underline styling to existing `<input>` elements via classes (e.g., `className="border-b border-border-divider bg-transparent"`) without implementing the floating label behavior.
 
-Phase 10: History + Period Close
-    The most complex mutation (atomic transaction). Needs MonthlySummary,
-    budgets, periods all working. Build last because it touches everything.
-    (Depends on: Phases 6, 8, 9 all complete)
+**Why it's wrong:** Underline inputs without floating labels lose label context while typing. The spec requires floating labels on every input.
 
-Phase 11: Polish
-    Accessibility, loading states, error boundaries, final QA.
-    (Depends on: All features complete)
-```
+**Do this instead:** Build FloatingInput as a proper component. The CSS transform requires a relative container wrapping both label and input — cannot be done with Tailwind classes on the input element alone.
 
-**Critical path:** Phase 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 (Dashboard requires transactions, transactions require the full stack). Phases 8 and 9 could theoretically run in parallel after Phase 6 but share the same developer, so sequential is practical.
+### Anti-Pattern 4: Implementing Numpad Before Bottom Sheet Layout
+
+**What people do:** Build Numpad in isolation before redesigning the TransactionForm bottom sheet structure.
+
+**Why it's wrong:** The Numpad's 4-row grid needs known container dimensions. Building it out of context causes sizing mistakes that require rework when placed in the actual bottom sheet.
+
+**Do this instead:** Establish the TransactionForm bottom sheet structure (sections, proportions: dot-matrix hero zone + category grid + numpad area) before sizing the Numpad keys.
+
+### Anti-Pattern 5: Modal Title Prop Driving Bottom Sheet Header
+
+**What people do:** Keep the existing `title` prop in Modal and try to style it to match the Glyph Finance spec, which has "X" on the left and "GUARDAR" on the right.
+
+**Why it's wrong:** The current Modal renders title as `<h2>` centered with close button on the right. The new spec has a fundamentally different header layout. Trying to fit it in the existing prop causes either a messy prop API or incorrect layouts.
+
+**Do this instead:** Add a `headerContent?: ReactNode` prop to Modal that replaces the default title/close layout entirely for the bottom sheet case. TransactionForm passes its own header JSX. The desktop modal can keep the standard title+X layout.
+
+---
+
+## Scaling Considerations
+
+| Scale | Architecture Adjustments |
+|-------|--------------------------|
+| Current: 1 user, ~100 files | Monolith is correct. No extraction needed. |
+| Token system growth | If token count grows significantly, extract to `tokens.css` imported into globals.css — not needed for this milestone |
+| Component library extraction | BatteryBar, FloatingInput, Numpad are generic enough to publish as a separate package if the project becomes an open-source design system — not in scope |
+
+---
+
+## Integration Points
+
+### External Services
+
+| Service | Integration Pattern | Notes |
+|---------|---------------------|-------|
+| next/font (Google) | `IBM_Plex_Mono` from `next/font/google` | IBM Plex Mono is on Google Fonts — HIGH confidence. Satoshi may require local font files if not available via Google Fonts — verify before Phase 1 |
+| Sonner toasts | `theme="dark"` already set | Toast appearance inherits page CSS — no changes needed |
+| Recharts | Hardcoded hex values in CHART_COLORS objects | Must update manually — Recharts does not use CSS variables |
+| Lucide React | `strokeWidth` prop on DynamicIcon | Update DynamicIcon.tsx default `strokeWidth` from `2` to `1.5` for all category icons |
+
+### Internal Boundaries
+
+| Boundary | Communication | Notes |
+|----------|---------------|-------|
+| globals.css → Tailwind utilities | `@theme` block defines token values; Tailwind generates utility classes | Token rename = class rename everywhere in JSX |
+| layout.tsx → globals.css | `@theme inline` requires font CSS variable on `<html>` | Font variable set via `className` on `<html>`, consumed by `@theme inline` — existing pattern, just swap variable name |
+| BatteryBar → lib/budget-shared.ts | `getBudgetColor()` returns thresholds — BatteryBar can accept thresholds as props instead | Recommendation: keep getBudgetColor() utility, expose thresholds as BatteryBar props for flexibility |
+| TransactionForm → Modal | Modal's header restructuring affects TransactionForm's close/save button placement | Solution: add `headerContent` prop to Modal or have TransactionForm render its own header outside Modal's built-in title area |
 
 ---
 
 ## Sources
 
-- Next.js 16 bundled documentation (`node_modules/next/dist/docs/`) -- HIGH confidence
-  - `01-app/03-api-reference/01-directives/use-cache.md` -- `use cache` available in v16 via `cacheComponents` config
-  - `01-app/03-api-reference/03-file-conventions/route.md` -- `params` is now a Promise since v15.0.0-RC
-  - `01-app/03-api-reference/04-functions/revalidatePath.md` -- revalidation behavior in Server Functions
-  - `01-app/02-guides/forms.md` -- `useActionState` for form validation pattern with Server Functions
-  - `01-app/02-guides/rendering-philosophy.md` -- component-level static/dynamic boundaries
-- [Prisma BigInt serialization discussion](https://github.com/prisma/prisma/discussions/9793) -- MEDIUM confidence
-- [Server Actions vs Route Handlers comparison](https://makerkit.dev/blog/tutorials/server-actions-vs-route-handlers) -- MEDIUM confidence
-- [Prisma + Next.js troubleshooting guide](https://www.prisma.io/docs/orm/more/troubleshooting/nextjs) -- HIGH confidence
-- Project documents: DFR.md, DATA_FLOW.md, STYLE_GUIDE.md, UX_RULES.md, CLAUDE.md -- authoritative (project-defined)
+- `/Users/freptar0/Desktop/Projects/centik/STYLE_GUIDE.md` — Glyph Finance design tokens, component specs, animation implementations (HIGH confidence — authoritative project doc)
+- `/Users/freptar0/Desktop/Projects/centik/UX_RULES.md` — Interaction patterns, layout rules, numpad spec, floating inputs (HIGH confidence — authoritative project doc)
+- `/Users/freptar0/Desktop/Projects/centik/.planning/PROJECT.md` — Active requirements, confirmed decisions (HIGH confidence)
+- Codebase inspection: `src/app/globals.css`, `src/app/layout.tsx`, `src/components/ui/Modal.tsx`, `src/components/layout/Sidebar.tsx`, `src/components/layout/MobileNav.tsx`, `src/components/layout/FAB.tsx`, `src/components/transactions/TransactionForm.tsx`, `src/components/budgets/BudgetProgressList.tsx`, `src/components/charts/TrendAreaChart.tsx`, `src/components/dashboard/KPICard.tsx` (HIGH confidence — direct source inspection)
+- Tailwind v4 `@theme` / `@theme inline` pattern (HIGH confidence — based on working implementation already in globals.css)
+
+---
+
+*Architecture research for: Glyph Finance design system implementation in existing Next.js 16 app*
+*Researched: 2026-04-06*

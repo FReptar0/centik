@@ -1,218 +1,212 @@
 # Project Research Summary
 
-**Project:** Centik (MisFinanzas)
-**Domain:** Single-user personal finance tracking (Mexican quincenal cycle)
-**Researched:** 2026-04-04
+**Project:** Centik (MisFinanzas) — Glyph Finance Design System v2.0
+**Domain:** Design system migration — pure visual rebrand of an existing, fully functional personal finance app
+**Researched:** 2026-04-06
 **Confidence:** HIGH
 
 ## Executive Summary
 
-Centik is a single-user personal finance web app with a specialized Mexican quincenal (biweekly) pay cycle. Research reveals that the scaffolded project already ships with versions substantially ahead of what the project documentation describes: Next.js 16.2.2 (not 14+), React 19.2.4, Tailwind CSS v4, and Prisma 7. These are not minor bumps — each has breaking changes that make the CLAUDE.md documentation a liability if followed without auditing. The single highest-priority action before any code is written is reconciling the installed versions against actual documentation, specifically Next.js 16 bundled docs at `node_modules/next/dist/docs/`.
+This is not a new product build. All business logic, data models, API routes, and pages exist and work correctly in v1.0. This milestone is a complete visual identity swap: replacing the cyan/dark-slate v1.0 skin with the Glyph Finance design language (OLED black, chartreuse accent, Satoshi typography, segmented battery-bar progress, underline inputs with floating labels, custom numpad). The underlying data layer — Prisma, PostgreSQL, server actions, API routes — is untouched. Every task is either a CSS token rename, a component structural change, or a new primitive component.
 
-The recommended architecture is Server Component-first with Server Actions for mutations, PostgreSQL with BigInt centavo storage, and no client-side state management. This is well-suited to the domain: it is an aggregation-heavy, single-user CRUD app where data freshness matters more than caching and where floating-point money errors are a correctness risk, not just a performance concern. The serialization boundary between PostgreSQL BigInt and client-consumed strings is the single most architecturally load-bearing concept in the codebase — every data path must pass through `serializeBigInts()` and this must be tested with non-zero values from day one.
+The recommended approach is strictly layer-by-layer: tokens first, then fonts, then new primitive components (BatteryBar, FloatingInput, StatusDot, TogglePills), then layout and navigation, then forms, then charts, then remaining feature components, ending with a full visual QA pass. Attempting to update components before the token layer is stable causes double work and a split-brain visual state that is hard to debug. The token swap itself is the riskiest single step: renaming CSS custom properties breaks all Tailwind utility classes derived from the old names, and the build will pass with zero errors while the app renders unstyled.
 
-The core risks are version-mismatch footguns (async `params`/`searchParams`/`cookies`/`headers`, removed `next lint`, CSS-first Tailwind, Prisma 7 `prisma.config.ts`), a Recharts 3.x + React 19 blank-chart bug that needs early validation, and the period-close atomic transaction which is the most critical mutation in the app. None of these are blockers — all have clear documented mitigations — but they must be addressed in the correct phases or they will cause expensive rewrites.
+The single largest risk is the Tailwind v4 token rename: 36+ component files reference old utility class names (`bg-bg-primary`, `text-text-muted`, `shadow-glow`) that disappear silently when tokens are renamed. This must be executed as one atomic change — rename tokens AND update all component class names in the same commit. The second major risk is the custom numpad in the transaction bottom sheet, which is the most complex new component and requires careful accessibility implementation (keyboard focus order, `<button>` elements, ARIA labels) to avoid trapping keyboard users.
 
 ## Key Findings
 
 ### Recommended Stack
 
-The project is already scaffolded with production-ready versions that need to be understood and used correctly rather than installed fresh. Prisma 7 introduces a `prisma.config.ts` that replaces both the `package.json` seed config and the `schema.prisma` datasource URL. Tailwind v4 eliminates `tailwind.config.ts` entirely in favor of a CSS `@theme` directive in `globals.css`. ESLint 9 uses flat config (`eslint.config.mjs`), and the `next lint` command is gone. All dynamic APIs (`params`, `searchParams`, `cookies`, `headers`) are now Promise types that must be awaited.
+No new npm packages are needed for this milestone. All three required capabilities — font loading, CSS animations, and token migration — are handled by tools already installed: Next.js 16.2.2 (`next/font/local`, `next/font/google`), Tailwind CSS 4.2.2 (`@theme`, `@theme inline`, `@keyframes`), and React 19.2.4 (the `key` prop re-mount trick for animation re-triggers).
 
-The one genuinely unresolved technical question is Recharts 3.x compatibility with React 19.2.4. There is an open GitHub issue (#6857) documenting blank chart rendering with no console error. The workaround is installing `react-is@^19.2.4` and/or adding a pnpm override. This must be validated with a test chart during Phase 1 scaffolding, with nivo or react-chartjs-2 as a ready fallback.
+**Core technologies (capability additions only):**
+- `next/font/local`: loads Satoshi variable font from `src/app/fonts/` — required because Satoshi is NOT on Google Fonts (Fontshare exclusive)
+- `next/font/google` (IBM_Plex_Mono): loads IBM Plex Mono automatically at build time — weights 400, 600, 700; no variable font available
+- Tailwind `@theme inline`: required for font variables; `@theme` (build-time) cannot see `next/font` CSS variables injected at runtime
+- CSS `@keyframes` inside `@theme`: generates `animate-status-pulse` and `animate-scanline-reveal` utility classes; keyframe name and duration must be on the same line (v4 requirement)
+- React `key` prop: re-triggers scanline animation on data refresh by forcing unmount + remount; no animation library needed
 
-**Core technologies:**
-- Next.js 16.2.2: Full-stack framework — already installed; breaking changes from 14+ docs require immediate reconciliation before Phase 1
-- React 19.2.4: UI library — stable Server Components and Server Actions; async dynamic APIs are a breaking change
-- PostgreSQL 16: Database — robust BigInt support, Docker-friendly, handles all dataset sizes this app will ever reach
-- Prisma 7.6: ORM — new `prisma.config.ts` format, TypeScript query engine, BigInt JSON fix in 7.3+
-- Tailwind CSS v4: Styling — CSS-first `@theme` config, 100x faster incremental builds, no JS config file
-- Zod 4.3: Validation — 14x faster, 57% smaller, minimal breaking changes from v3 patterns
-- Vitest 4.1 + Playwright 1.59: Testing — Vite-native unit tests, industry-standard E2E, both React 19 compatible
-- Recharts 3.8: Charts — needs `react-is@^19.2.4` workaround; must validate in Phase 1
-- sonner 2.0: Toast notifications — zero-config, no provider/context needed
-- lucide-react 1.7: Icons — 1500+ icons, tree-shakable, React 19 compatible; CLAUDE.md mandates exclusively
+**Critical non-npm step:** Satoshi font files (`Satoshi-Variable.woff2`, optionally `Satoshi-VariableItalic.woff2`) must be manually downloaded from https://www.fontshare.com/fonts/satoshi and placed in `src/app/fonts/`.
 
 ### Expected Features
 
-The feature set is defined by the existing DFR.md. Research confirms the dependency order is critical: categories and periods must exist (seeded) before transactions can be created, and transactions must exist before the dashboard displays anything meaningful. The quincenal-native budgeting is the clearest differentiator — no mainstream finance app handles Mexican pay cycles natively. The period close atomic transaction is the highest-complexity feature and must be built last when all other features are stable.
+**Must have (table stakes — v2.0 launch blockers):**
+- `@theme` token swap in `globals.css` — foundation; everything else fails without correct tokens
+- Satoshi + IBM Plex Mono via `next/font` — typography is 50% of the Glyph Finance identity
+- Pill-shaped buttons (`border-radius: 9999px`) — most visible component change across the entire app
+- Underline inputs with floating labels — every form in the app uses inputs; box inputs immediately break the visual spec
+- Segmented battery-bar progress (10 rectangles, traffic-light color) — replaces ALL smooth progress bars on budgets page and debt cards
+- Icon-only bottom nav with chartreuse status dot — text labels explicitly removed per spec
+- Minimal charts: no `CartesianGrid`, 1.5px stroke, 4px solid dot endpoints, area fill at 10-15% opacity
+- OLED black background and desaturated category colors — automatic once tokens are correct
+- No shadows anywhere — delete all four shadow token definitions and remove `shadow-*` from every component
 
-**Must have (table stakes):**
-- Transaction CRUD — core action; the entire app exists to record transactions; quick entry (<30s) is the key UX requirement
-- Category-based expense tracking — universal mental model; 6 expense + 2 income categories seeded
-- Monthly budget with progress bars — table stakes for any finance app; traffic light visual (green/orange/red) is low-effort high-value
-- Dashboard with KPIs and charts — first thing users see; drives all aggregation query design
-- Debt tracking — universal need; credit card utilization and loan progress
-- Income source management — simplest entity; validates full-stack pattern before complex features
-- Period management — auto-create, close with atomic snapshot, read-only for closed periods
-- Responsive layout with dark theme — mobile is how users check finances
+**Should have (v2.x polish — add after P1 verified):**
+- Dot-matrix SVG texture on dashboard hero balance card and analytics card
+- Pixel-dissolve scanline animation (`steps(12, end)`, NOT ease) on new transaction rows
+- Status dot pulse animation on period header
+- Custom numpad in transaction bottom sheet (HIGH complexity — can ship temporarily with OS keyboard)
+- Silenced "$" prefix display (smaller span in tertiary color) on all monetary amounts
+- Toggle pills for Gasto/Ingreso selector (partially exists; needs verification)
+- Bottom sheet drag handle visual (aesthetic affordance, no gesture logic)
 
-**Should have (differentiators):**
-- Quincenal-native budgeting — input in quincenal, auto-calculate monthly/semester/annual; unique to Mexican context
-- 30-second transaction entry — floating "+" button, smart defaults, 4 taps/clicks max
-- Budget traffic light system — pure presentation logic; <80% green, 80-100% orange, >100% red
-- Period close as atomic transaction — data integrity guarantee; most critical integration test in the app
-- Annual history pivot table — year-over-year financial narrative; rare in simple finance apps
-
-**Defer to v2+:**
-- ValueUnit/UnitRate/Asset entities — schema can be included but no UI/API in v1
-- Authentication — single user, not needed for MVP
-- CSV/PDF bank statement import — brittle, validate demand before building
-- Bank API connections — Mexican APIs unreliable, institutional agreements required
-- PWA/offline support — low priority for web-first personal tool
+**Defer to future milestone (P3):**
+- Drag-to-dismiss bottom sheet gesture — velocity calculation, pointer event tracking, scroll conflict
+- Pixel-dissolve on KPI card refresh — needs data revision tracking hook pattern first
+- Staggered scanline on chart re-render — Recharts animation interop complexity
 
 ### Architecture Approach
 
-The architecture follows a Server Component-first, Server Action-preferred pattern on Next.js 16 App Router. Pages are Server Components that run Prisma queries in parallel via `Promise.all`, call `serializeBigInts()` on results, and pass plain string-valued objects as props to child components. Client Components handle only interactive logic (forms, modals, charts, navigation toggles). All mutations flow through Server Actions that validate with Zod, write via Prisma, and call `revalidatePath()` for all affected routes. There are no client-side state management libraries — React `useState` for local state, URL search params for filter state. The `use cache` directive is explicitly NOT used because all data is personal and must always be fresh per-request.
+The migration is purely additive at the data layer and purely substitutive at the token layer. The architecture has four categories of work: (1) Token swap only — search-replace old CSS utility class names across 36+ files with no structural change; (2) Structural modifications — component logic or HTML structure changes in existing files (Modal, MobileNav, BudgetProgressList, DebtCard, KPICard, all charts, TransactionForm); (3) New primitive components — BatteryBar, FloatingInput, StatusDot, TogglePills (all in `src/components/ui/`), and Numpad (`src/components/transactions/`); (4) Unchanged — entire data layer (server actions, API routes, Prisma, PostgreSQL).
 
-**Major components:**
-1. Foundation libraries (`lib/`) — `prisma.ts`, `serialize.ts`, `utils.ts`, `validators.ts`, `constants.ts`; built and tested to 100% coverage first; all other layers depend on these
-2. Server Component pages (`app/`) — data fetching with parallel queries, serialization, prop passing; zero interactive logic
-3. Server Actions (`actions/`) — Zod validation, Prisma writes, `revalidatePath()` per entity; preferred over API routes for all internal UI mutations
-4. Client Components (`components/`) — forms, modals, charts, navigation; receive serialized props, never fetch data directly
-5. API Routes (`app/api/`) — only for external consumers (dashboard aggregation endpoint, future cron targets); not for internal UI mutations
-6. PostgreSQL via Prisma — BigInt centavos for all monetary values, Int basis points for rates, `$transaction` with explicit timeout for multi-table atomics
+**Major components to create:**
+1. `BatteryBar.tsx` — 10-segment rectangular progress bar with configurable warning/danger thresholds; `role="progressbar"` on container; `aria-hidden` on segments
+2. `FloatingInput.tsx` — underline-only input with absolutely positioned `<label>` that transforms on focus/fill; requires real `<label htmlFor>` not `placeholder`
+3. `StatusDot.tsx` — 4px chartreuse circle with `animate-status-pulse`, always `aria-hidden="true"`
+4. `TogglePills.tsx` — row of pill buttons; active state: chartreuse bg + black text
+5. `Numpad.tsx` — 4x4 CSS grid of `<button type="button">` elements; IBM Plex Mono 20px; custom digit/decimal/backspace state handlers
+
+**Key patterns:**
+- Token-first migration: replace entire `@theme` block before touching any component
+- CSS animations centralized in `globals.css` with `@media (prefers-reduced-motion: reduce)` override in one place
+- BatteryBar thresholds via props: default budget thresholds (80/100), overridable for credit utilization (31/71) and DTI (36/51)
+- FloatingInput requires a relative container wrapper — cannot be done with Tailwind classes on the bare `<input>` element
+- Recharts colors must be JavaScript hex values in `CHART_COLORS` constants, not CSS variable references — SVG does not inherit CSS custom properties
 
 ### Critical Pitfalls
 
-1. **Next.js 16 async dynamic APIs** — `params`, `searchParams`, `cookies`, and `headers` are all Promise types and must be awaited. Synchronous access throws at runtime with no helpful error. Also: `middleware.ts` is replaced by `proxy.ts`, `next lint` is removed (use `eslint .`), and do not enable `use cache`. Mitigate by reading `node_modules/next/dist/docs/` before Phase 1.
+1. **Token rename silently breaks all utility classes (Pitfall 7)** — When `--color-bg-primary` becomes `--color-bg`, the `bg-bg-primary` utility disappears from Tailwind's generated stylesheet. Build passes. App renders unstyled. Prevention: do the rename AND update all 36+ component files in one atomic commit; grep for all old token strings before declaring done.
 
-2. **Tailwind v4 + Prisma 7 configuration** — `tailwind.config.ts` is silently ignored in v4 (use `@theme` in CSS); `prisma.config.ts` replaces `package.json` seed config and `schema.prisma` datasource URL in Prisma 7. Both files must be created in Phase 1 before any application code. Missing either causes invisible failures.
+2. **Recharts ignores CSS variables (Pitfall 9)** — Recharts renders via SVG; SVG attributes do not traverse the CSS cascade. All three chart files use hardcoded `CHART_COLORS` hex constants referencing the old v1.0 palette. Token migration has zero effect on chart colors. Prevention: update `CHART_COLORS` in all three chart files to match new palette hex values directly.
 
-3. **BigInt serialization boundary leaks** — Zero-value seeds mask missing `serializeBigInts()` calls because `0n` serializes as the number `0`. Crashes appear in production with real data. Seed data must include non-zero monetary amounts from Phase 2. Every Prisma result must pass through `serializeBigInts()` before leaving the server boundary.
+3. **Satoshi requires local font files, not Google Fonts (Pitfall 8)** — `import { Satoshi } from 'next/font/google'` fails at build time with "module not found." Satoshi is only available via Fontshare. Prevention: use `next/font/local` with manually downloaded `Satoshi-Variable.woff2`.
 
-4. **Period close partial failure** — The most critical mutation: creates MonthlySummary, closes period, creates next period, copies budgets — all atomically. Must use `prisma.$transaction` with explicit timeout (`{ timeout: 15000 }`), unique constraint on `MonthlySummary.periodId`, and idempotency checks. The integration test for this is the most important test in the entire app.
+4. **Floating labels lose accessibility when using `placeholder` instead of `<label>` (Pitfall 13)** — The floating label animation can be implemented visually with `placeholder` but this is a WCAG failure: placeholder disappears on input, no persistent label context for screen readers. Prevention: always use real `<label htmlFor>` + `id` pair; use `placeholder=" "` (single space) as the CSS state machine trigger.
 
-5. **Recharts + React 19 blank charts** — Open GitHub issue (#6857). Charts render as blank white space with no console error. Fix: install `react-is@^19.2.4`, add pnpm override if needed. Validate with a test BarChart in Phase 1. Ready fallback: nivo (SSR-friendly, React 19 compatible).
+5. **Custom numpad traps keyboard focus (Pitfall 16)** — Implementing numpad keys as `<div>` elements removes them from tab order or creates unordered focus sequences. Prevention: use `<button type="button">` for every key; verify Tab navigation through entire bottom sheet form without mouse.
+
+6. **Shadow tokens must be explicitly deleted (Pitfall 10)** — Leaving shadow tokens in `@theme` while removing shadow classes from components leaves a design system contract gap; FAB and Modal retain a cyan glow. Prevention: delete all four shadow token definitions AND remove `shadow-*` from FAB, Modal, and TransactionFilters in one atomic change.
+
+7. **Tests assert old hex values and class names (Pitfall 15)** — `constants.test.ts` asserts `'#22d3ee'` and `'#fb923c'`; `FAB.test.tsx` asserts `shadow-lg shadow-glow`. These fail correctly after migration but can mask regressions if silenced with `it.skip()`. Prevention: update tests in the same commit as the code they test; never `it.skip()` in main branch.
 
 ## Implications for Roadmap
 
-Based on the architecture's strict dependency order and the critical pitfalls identified, here is the recommended phase structure:
+Based on research, the architecture enforces a strict dependency order: tokens must be stable before component work begins, and new primitives must exist before feature components can adopt them. The suggested phase structure maps directly to ARCHITECTURE.md's recommended build order.
 
-### Phase 1: Infrastructure + Scaffolding
-**Rationale:** Every subsequent phase depends on the toolchain being correct. The version mismatches (Next.js 16, Tailwind v4, Prisma 7, ESLint 9) must be resolved before any application code is written. A broken toolchain invalidates every downstream phase.
-**Delivers:** Working dev environment, passing `pnpm build`, passing `pnpm lint`, running `pnpm test` with zero tests, Docker Compose for dev and test DBs, `prisma.config.ts`, `eslint.config.mjs`, Tailwind `@theme` CSS config, Recharts validation chart to confirm React 19 compatibility.
-**Avoids:** Pitfall 1 (Next.js version mismatch), Pitfall 2 (Tailwind v4 config), Pitfall 3 (Prisma 7 config), Pitfall 7 (Recharts blank charts — validate here), Pitfall 8 (ESLint flat config), Pitfall 17 (test DB migration drift)
+### Phase 1: Token Foundation
+**Rationale:** Every other visual change is downstream of the CSS token layer. Component work done before tokens are correct requires rework. This is the highest-risk phase.
+**Delivers:** Complete `@theme` replacement in `globals.css`, font swap in `layout.tsx`, font files in `src/app/fonts/`, all `@keyframes` animations defined, all shadow tokens deleted, `@theme inline` pattern for font variables, `constants.ts` and `seed.ts` category colors updated to desaturated palette.
+**Addresses:** OLED black background, chartreuse accent, radius scale changes, animation keyframes registered
+**Avoids:** Pitfalls 7, 8, 10, 11, 15 — token rename atomicity, Satoshi local files, shadow deletion, constants.ts color updates, test synchronization
 
-### Phase 2: Database Schema + Seed
-**Rationale:** All application features require the schema to exist. Seed data provides categories, periods, income sources, debts, and budgets that are prerequisites for testing every other feature. Non-zero monetary seed values are required to expose BigInt serialization failures that zero values would hide.
-**Delivers:** Complete Prisma schema with all entities and relations, migrations, idempotent seed script with non-zero amounts for all BigInt monetary fields.
-**Uses:** Prisma 7 (`prisma.config.ts` seed configuration), PostgreSQL 16, `tsx` runner
-**Avoids:** Pitfall 4 (zero-value seeds hiding BigInt issues), Pitfall 11 (seed non-idempotency — use upsert), Pitfall 12 (period race condition — use upsert not find-then-create)
+### Phase 2: Class Name Migration
+**Rationale:** Once tokens are renamed, all existing components reference non-existent utility classes. This phase sweeps the codebase to restore visual correctness using the new token names. It is a search-replace operation, not a design task.
+**Delivers:** All 36+ component files updated to new Tailwind utility class names; hardcoded hex values in `CHART_COLORS` objects updated; build passes and app renders with new palette
+**Addresses:** Silent class name break from token rename (Pitfall 7)
+**Avoids:** Working on structural changes against an unstable token layer
 
-### Phase 3: Foundation Libraries
-**Rationale:** `lib/utils.ts`, `lib/serialize.ts`, `lib/validators.ts`, `lib/constants.ts`, and `types/index.ts` are used by every feature. Building and testing them to 100% coverage first means all subsequent phases stand on verified ground. The `toCents()` float contamination risk must be caught here with exhaustive edge case tests.
-**Delivers:** Bulletproof utility functions, complete Zod schemas, BigInt serializer, TypeScript types — all with 100% test coverage before any feature work begins.
-**Uses:** Zod 4.3, Vitest 4.1
-**Avoids:** Pitfall 6 (toCents float contamination — parse string without float intermediate), Pitfall 4 (BigInt serialization — tested with non-zero values)
+### Phase 3: New Primitive Components
+**Rationale:** BatteryBar and FloatingInput have the widest fan-out — consumed by 5+ feature components. Building and testing them in isolation before any consumer exists eliminates cascading rework.
+**Delivers:** `BatteryBar.tsx` (with tests), `FloatingInput.tsx` (with tests), `StatusDot.tsx` (with tests), `TogglePills.tsx` (with tests) — all tested in isolation, nothing imports them yet
+**Addresses:** Battery-bar progress everywhere, underline inputs with floating labels, toggle pills for binary selects, status dot animation
+**Avoids:** Pitfalls 12, 13 — BatteryBar ARIA, floating label accessibility
 
-### Phase 4: Layout Shell
-**Rationale:** Every page renders inside the root layout. Sidebar, mobile nav, and floating "+" button are prerequisites for testing all features in context. No data dependencies from the database, so this can be built immediately after the foundation library layer.
-**Delivers:** Root layout with Sidebar (desktop), MobileNav (mobile bottom tabs), Header, FAB button, UI primitives (Button, Input, Modal, Card, DynamicIcon, ProgressBar, Badge).
-**Uses:** Tailwind v4 `@theme` CSS config, lucide-react 1.7 (static icon map for DynamicIcon), clsx + tailwind-merge v3
-**Avoids:** Pitfall 13 (Lucide bundle size — static icon map, not dynamic imports)
+### Phase 4: Layout and Navigation
+**Rationale:** Navigation is the frame visible on every screen. Getting it right early establishes the visual baseline for all subsequent QA.
+**Delivers:** `MobileNav.tsx` (icon-only, StatusDot active indicator), `Sidebar.tsx` (token swap polish), `FAB.tsx` (remove shadow, icon to text-black), `PageHeader.tsx`
+**Addresses:** Icon-only bottom nav with status dot, no shadows on layout components
+**Avoids:** Shadow tokens persisting on FAB (Pitfall 10)
 
-### Phase 5: Income Sources CRUD
-**Rationale:** Income Sources is the simplest full-stack entity — one table, straightforward CRUD, no computed fields. Building it first validates the entire pattern: Server Component page → Server Action → Prisma → `revalidatePath()` → re-render. If anything is wrong with the architecture, it surfaces here at minimum cost.
-**Delivers:** Income Sources list page, create/edit/delete via Server Actions, Zod validation, BigInt serialization for `defaultAmount`.
-**Implements:** Server Component + Server Action pattern end-to-end; establishes centralized `revalidateAfterMutation` utility
-**Avoids:** Pitfall 9 (revalidation gaps — establish the pattern here before it becomes habitual to miss paths)
+### Phase 5: Modal Restructure
+**Rationale:** Modal drives the bottom sheet pattern used by TransactionForm. TransactionForm cannot be correctly redesigned until Modal's header API is settled (new `headerContent?: ReactNode` prop for custom X + GUARDAR layout).
+**Delivers:** `Modal.tsx` with new header structure (left X, right GUARDAR slot), correct `rounded-[24px]` radius, no border, no shadow
+**Addresses:** Bottom sheet header spec, modal radius and elevation
+**Avoids:** Trying to fit the new header layout into the existing `title` prop API (ARCHITECTURE.md Anti-Pattern 5)
 
-### Phase 6: Categories + Transactions
-**Rationale:** Transactions are the core feature — the entire app exists to record them. Categories are seeded but need a list view. Both entities are required for all subsequent features (Dashboard, Budget). This is the first E2E test target.
-**Delivers:** Categories list page (mostly read-only), Transaction page with form + list + filters, first Playwright E2E test for the transaction registration flow.
-**Uses:** TransactionForm (Client Component with `toCents` conversion), Server Actions, Zod `createTransactionSchema`
-**Avoids:** Closed period bypass (check `isClosed` before insert), Pitfall 9 (revalidate `/`, `/movimientos`, `/presupuesto`)
+### Phase 6: TransactionForm and Numpad
+**Rationale:** This is the most complex single-component change in the milestone. It depends on FloatingInput (Phase 3), TogglePills (Phase 3), and Modal (Phase 5) all being ready. The Numpad is built alongside TransactionForm because it needs the container dimensions to size correctly.
+**Delivers:** `TransactionForm.tsx` (bottom sheet layout, dot-matrix hero zone, amount display, category grid, FloatingInput optional fields), `Numpad.tsx` (custom 4x4 grid with correct state handlers)
+**Addresses:** Custom numpad, 30-second transaction flow, underline inputs in transaction form
+**Avoids:** Numpad keyboard trap (Pitfall 16), numpad built outside container context (ARCHITECTURE.md Anti-Pattern 4)
 
-### Phase 7: Dashboard
-**Rationale:** Dashboard requires transaction data to display anything meaningful, so it follows Phase 6. It is read-only aggregation — no mutations — making it lower risk than write-path features. All 5+ independent queries must run in parallel.
-**Delivers:** KPI cards (6 metrics), 3 Recharts charts (expense pie, budget bar, trend area), recent transactions list.
-**Uses:** Recharts 3.8 (validated in Phase 1), `Promise.all` parallel queries, `loading.tsx` skeleton
-**Avoids:** Pitfall 10 (N+1 queries — `Promise.all` for all dashboard queries), Pitfall 7 (Recharts blank charts — already validated)
+### Phase 7: Progress Bars
+**Rationale:** Atomic phase — all three smooth bar locations (BudgetProgressList, DebtCard utilization, DebtCard DTI) must change together to eliminate the mixed-bar inconsistency.
+**Delivers:** All smooth `<div>` progress bars replaced with `<BatteryBar>` in BudgetProgressList, DebtCard, and any other progress locations
+**Addresses:** Segmented battery-bar everywhere, correct threshold values per context (budget 80/100, credit utilization 31/71, DTI 36/51)
+**Avoids:** Mixing smooth and segmented bars (ARCHITECTURE.md Anti-Pattern 2)
 
-### Phase 8: Debts
-**Rationale:** Debts are an independent entity with no dependency on transactions or budgets. Can theoretically run in parallel with Phase 7 but sequential is simpler. Calculated fields (credit utilization, monthly interest) involve BigInt arithmetic edge cases that need careful testing.
-**Delivers:** Debt cards with inline balance editing, calculated fields (credit utilization %, monthly interest estimate), debt-to-income ratio contribution to Dashboard.
-**Avoids:** Pitfall 16 (integer division truncation — multiply before dividing: `balance * rate / 12 / 10000`)
+### Phase 8: Charts
+**Rationale:** Chart components require direct hex value updates in `CHART_COLORS` constants because Recharts ignores CSS variables. Clean, isolated phase — three files, no structural dependencies on other phases.
+**Delivers:** `TrendAreaChart.tsx`, `ExpenseDonutChart.tsx`, `BudgetBarChart.tsx` — updated CHART_COLORS, `<CartesianGrid>` removed, 1.5px stroke, 4px dot endpoints, correct inner radius for donut, flat bar tops
+**Addresses:** Minimal chart aesthetic, no grid lines
+**Avoids:** Pitfall 9 (Recharts CSS variable limitation)
 
-### Phase 9: Budget Configuration + Progress
-**Rationale:** Budget progress bars require transaction spending data (Phase 6) to display spent vs. budgeted. The quincenal input and traffic light visual are the core differentiators and should be built once the transaction loop is solid.
-**Delivers:** Budget configuration table with inline quincenal amount editing, progress bars with green/orange/red traffic light, budget vs. spent aggregation query (LEFT JOIN + COALESCE for zero-spend categories).
-**Avoids:** Budget vs. spent query returning null for categories with no transactions (use COALESCE)
+### Phase 9: Remaining Feature Components
+**Rationale:** Mop-up pass for feature components that need more than a token swap but do not fit earlier phases.
+**Delivers:** `KPICard.tsx` (font-mono values, dot-matrix opt-in, no border), `TransactionRow.tsx` (font-mono amounts, +/- prefix colors), `TransactionFilters.tsx` (pill filter chips), `IncomeSourceCard.tsx`, `IncomeSummaryCards.tsx`, `AnnualPivotTable.tsx` (uppercase tracking table headers)
+**Addresses:** Silenced "$" prefix pattern, filter chip pill shape, monospace tabular numbers throughout
 
-### Phase 10: History + Period Close
-**Rationale:** Period close is the most complex mutation — it touches MonthlySummary, Period, and Budget tables atomically. It requires all previous features to be working correctly because it snapshots their state. This is the last feature built and is gated on the most important integration test in the app.
-**Delivers:** Annual history pivot table (12-column from MonthlySummary), period close modal with preview, `closePeriod` Server Action with Prisma `$transaction`.
-**Avoids:** Pitfall 5 (partial failure — `$transaction` with `{ timeout: 15000 }`, idempotency check, unique constraint on `MonthlySummary.periodId`), Pitfall 15 (missing budget entries — reconcile ALL active expense categories against new period, create zero-amount entries for gaps)
-
-### Phase 11: Polish + Accessibility
-**Rationale:** After all features are functional, a dedicated pass for `loading.tsx` skeletons, error boundaries, accessibility attributes, edge case handling, and final `pnpm quality` clean sweep.
-**Delivers:** Complete `loading.tsx` for all routes, error boundaries, a11y audit, zero TypeScript errors, zero ESLint warnings, all tests passing.
-**Avoids:** Pitfall 14 (timezone edge cases — consistent UTC construction for all dates)
+### Phase 10: Visual QA
+**Rationale:** Every page reviewed against STYLE_GUIDE.md spec. Accessibility audit. Touch target verification. The "looks done but isn't" checklist from PITFALLS.md drives this phase.
+**Delivers:** Zero accessibility violations on axe audit, all focus rings visible in chartreuse, `prefers-reduced-motion` verified, loading skeletons updated, Sonner toast appearance verified
+**Addresses:** Full spec compliance verification
+**Avoids:** Shipping with partial migration (old tokens in loading.tsx files, wrong Sonner toast colors, missing reduced-motion overrides)
 
 ### Phase Ordering Rationale
 
-- **Foundation first (Phases 1-3):** Version mismatches and utility correctness errors are the most expensive to fix late. Resolving them in dedicated early phases is the lowest-risk highest-leverage sequencing decision.
-- **Dependency order enforced:** Each feature layer depends on what came before — layout needs utilities, income sources needs layout, transactions needs income sources to prove the pattern, dashboard needs transactions for data, budget needs transactions for spent amounts, history needs all of them.
-- **Period close last (Phase 10):** This mutation touches every entity. Building it last gives it the most stable, tested foundation. The integration test for period close is the most important test in the app and deserves to be written when all the entities it touches are fully stable.
-- **Infrastructure and schema separated (Phases 1-2):** Infrastructure must produce a passing `pnpm build` before schema work begins. A broken toolchain invalidates every migration attempt.
+- Token foundation must precede all component work because Tailwind generates utility class names from token keys — class names do not exist until tokens are defined
+- New primitive components (BatteryBar, FloatingInput) precede their consumers because building consumers against non-existent APIs wastes effort
+- Modal restructure precedes TransactionForm because TransactionForm lives inside Modal and its header API must be settled first
+- Charts are isolated because their Recharts constraint (no CSS variables) makes them independent of the token system — they could technically happen any time after Phase 2 but are cleanest as a dedicated phase
+- Visual QA is last because it validates the cumulative result of all 9 preceding phases
 
 ### Research Flags
 
-Phases likely needing deeper research during planning:
-- **Phase 1:** Next.js 16 bundled docs at `node_modules/next/dist/docs/` are the authoritative source for exact API signatures; must be read before any configuration decisions during `/gsd:plan-phase 1`
-- **Phase 7:** If Recharts + React 19 validation in Phase 1 fails even with the `react-is` workaround, Phase 7 needs research on nivo API and chart component patterns before planning
-- **Phase 10:** Prisma 7 `$transaction` API with mixed aggregation reads and writes needs verification of exact timeout/maxWait parameter syntax before implementation
+Phases with well-documented patterns (skip deeper research):
+- **Phase 1 (Token Foundation):** STACK.md provides exact CSS patterns; complete token rename map in STACK.md and ARCHITECTURE.md
+- **Phase 2 (Class Name Migration):** Mechanical search-replace; grep patterns documented in PITFALLS.md
+- **Phase 3 (Primitive Components):** Full TypeScript interfaces and behavioral specs already in ARCHITECTURE.md
+- **Phase 7 (Progress Bars):** BatteryBar props API fully specified; all three target files are known
+- **Phase 8 (Charts):** CHART_COLORS constants documented with exact new hex values; only three files affected
 
-Phases with standard patterns (skip research-phase):
-- **Phase 3:** Vitest + Zod 4 + TypeScript utility testing is extremely well-documented with established patterns
-- **Phase 5:** Income Sources CRUD is a textbook Server Component + Server Action implementation
-- **Phase 8:** Debt CRUD follows the same pattern as Phase 5; calculated fields are pure integer math
+Phases likely needing more attention during planning:
+- **Phase 6 (TransactionForm + Numpad):** Highest complexity in the milestone. Numpad state management (decimal handling, double-zero edge cases, backspace to empty string), category grid selection state, and bottom sheet section proportions are likely to surface unexpected sizing and layout issues. Budget extra planning time.
+- **Phase 5 (Modal Restructure):** The `headerContent?: ReactNode` API change affects every consumer of Modal. Audit all Modal call sites before planning to avoid missing any that need the new header pattern.
 
 ## Confidence Assessment
 
 | Area | Confidence | Notes |
 |------|------------|-------|
-| Stack | HIGH | All versions sourced from official release blogs and upgrade guides; installed versions confirmed from package.json |
-| Features | HIGH | Defined by existing DFR.md; research confirms dependency order and anti-features; no surprises or conflicts |
-| Architecture | HIGH | Sourced from Next.js 16 bundled docs (authoritative); Prisma official guides; Server Component patterns are stable and well-established |
-| Pitfalls | HIGH | Critical pitfalls sourced from official upgrade guides; only Recharts + React 19 issue is MEDIUM confidence (open unresolved GitHub issue) |
+| Stack | HIGH | Official Next.js and Tailwind v4 docs confirm all patterns; Satoshi availability on Fontshare confirmed directly |
+| Features | HIGH | Authoritative source: STYLE_GUIDE.md and UX_RULES.md written by project owner — no ambiguity about spec |
+| Architecture | HIGH | Codebase directly inspected; all affected files enumerated; component interfaces fully specified |
+| Pitfalls | HIGH | Verified against official docs and GitHub issues; v4 keyframe formatting quirk confirmed in issue tracker |
 
 **Overall confidence:** HIGH
 
 ### Gaps to Address
 
-- **Recharts 3.x + React 19 compatibility:** The `react-is` workaround is documented but not confirmed resolved. Validate with a rendered test chart in Phase 1 before committing to Recharts. Nivo is the ready fallback — build the fallback plan before it is needed.
-- **Prisma 7 `$transaction` API with aggregations inside the transaction:** The period close action runs `SUM()` aggregations inside a `$transaction`. Confirm exact Prisma 7 API for mixing read aggregations and writes in a single interactive transaction during Phase 10 planning.
-- **`toCents()` string-based parsing implementation:** Research recommends parsing peso strings by splitting on the decimal point rather than using `parseFloat`. The exact implementation must be designed and exhaustively tested in Phase 3 — the `Math.round(pesos * 100)` approach in CLAUDE.md is the float-contaminated pattern to replace.
-- **Tailwind v4 custom `@theme` variables with `tailwind-merge`:** `tailwind-merge` v3.5 supports Tailwind v4, but custom `@theme` color variables may require explicit merge configuration to deduplicate correctly. Test in Phase 3 with the `cn()` utility.
+- **Income category colors for Glyph Finance:** STYLE_GUIDE.md specifies 6 expense category colors in the desaturated palette but does not explicitly list new colors for income categories (Empleo, Freelance). These must be determined before the Phase 1 atomic commit that updates `constants.ts`, `constants.test.ts`, and `seed.ts` together. Suggested resolution: derive from the same desaturation approach applied to expense categories, or use neutral values consistent with the existing income green (#00E676 positive semantic color).
+
+- **Loading.tsx file inventory:** PITFALLS.md notes that `loading.tsx` files are frequently missed in visual migrations (they still reference old `bg-bg-card` tokens). The full list of `loading.tsx` files in the app should be audited during Phase 10 planning to ensure they are included in the migration sweep.
+
+- **Numpad container sizing:** The 4x4 Numpad grid specifies 48px minimum touch targets, but the exact proportions of the transaction bottom sheet (dot-matrix hero zone height, category grid row count, numpad area height) need to be validated visually in Phase 5 before final key sizing is locked in Phase 6.
 
 ## Sources
 
 ### Primary (HIGH confidence)
-- Next.js 16 Release Blog — breaking changes, proxy.ts, async params
-- Next.js 16 Upgrade Guide — migration patterns, removed commands
-- Next.js 16 bundled docs (`node_modules/next/dist/docs/`) — authoritative source for installed version; forms guide, rendering philosophy, route handlers, revalidatePath behavior
-- Prisma 7 Release Announcement + Upgrade Guide — prisma.config.ts, seed config, auto-generate removal
-- Prisma 7.3 BigInt JSON Fix — BigInt precision in JSON aggregation
-- Prisma Config Reference — `defineConfig` API, datasource, seed command
-- Tailwind CSS v4 Release + Upgrade Guide — `@theme` directive, breaking class renames, no content array
-- Zod v4 Release Notes — performance improvements, API compatibility with v3
-- Vitest 4.0 Release — stable Browser Mode, React 19 compatibility
-- Playwright 1.59 Release Notes — standard E2E patterns
-- Next.js ESLint Configuration docs — flat config, `eslint-config-next` format
-- Prisma seeding docs — explicit seed invocation in Prisma 7
-- Project documents: DFR.md, DATA_FLOW.md, STYLE_GUIDE.md, UX_RULES.md, CLAUDE.md — authoritative project spec
+- `STYLE_GUIDE.md` — Glyph Finance v1.1, complete token map, component specs, animation implementations
+- `UX_RULES.md` — Glyph Finance v1.1, interaction patterns, numpad spec, floating label behavior
+- [Next.js Font Optimization Docs](https://nextjs.org/docs/app/getting-started/fonts) — `next/font/local` array src, CSS variable pattern
+- [Tailwind CSS v4 Animation Docs](https://tailwindcss.com/docs/animation) — `@theme` + `@keyframes`, `--animate-*` naming
+- [Fontshare — Satoshi](https://www.fontshare.com/fonts/satoshi) — confirmed NOT on Google Fonts; free commercial license
+- [Google Fonts — IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono) — confirmed available; weights 400/600/700; no variable font
+- Codebase direct inspection: `src/app/globals.css`, `src/app/layout.tsx`, all chart and form components
 
 ### Secondary (MEDIUM confidence)
-- Recharts React 19 Issue #6857 (open) — blank chart rendering bug and `react-is` workaround
-- Recharts 3.0 Migration Guide — external dependency removal
-- Prisma BigInt serialization discussion #9793 — serialization boundary patterns
-- Server Actions vs Route Handlers comparison (makerkit.dev) — when to use each
-
-### Tertiary (LOW confidence)
-- None identified — all significant findings have HIGH or MEDIUM confidence sources
+- [Tailwind v4 @theme vs @theme inline discussion](https://github.com/tailwindlabs/tailwindcss/discussions/18560) — next/font variables require `@theme inline`; aligns with working implementation in existing globals.css
+- [Tailwind v4 keyframe formatting issue](https://github.com/tailwindlabs/tailwindcss/issues/16227) — same-line requirement for `--animate-*` + keyframe name in v4.2.x
 
 ---
-*Research completed: 2026-04-04*
+*Research completed: 2026-04-06*
 *Ready for roadmap: yes*
