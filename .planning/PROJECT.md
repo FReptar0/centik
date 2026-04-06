@@ -33,7 +33,19 @@ A single user can register a financial transaction in under 30 seconds and immed
 
 ### Active
 
-- [ ] Implement Glyph Finance design in code (tokens, components, animations)
+- [ ] Implement Glyph Finance @theme tokens in globals.css (colors, fonts, radius)
+- [ ] Swap DM Sans → Satoshi, JetBrains Mono → IBM Plex Mono (next/font)
+- [ ] Implement pill-shaped buttons, underline inputs, floating labels across all forms
+- [ ] Implement segmented battery-bar progress replacing smooth bars
+- [ ] Implement minimal charts (no grid, dot endpoints, 1.5px stroke)
+- [ ] Implement icon-only bottom nav with dot indicator
+- [ ] Implement dot-matrix texture, status dot, pixel-dissolve animations
+- [ ] Implement custom numpad for transaction bottom sheet
+- [ ] Visual QA: 10/10 pixel-perfect match to STYLE_GUIDE.md specs
+- [ ] Update all existing tests for new design tokens and component changes
+
+### Backlog
+
 - [ ] System of value units (UDI, UMA, USD) with configurable rate providers
 - [ ] Asset/investment tracking (PPR, CETES, funds) with MXN conversion
 - [ ] Authentication (NextAuth/Clerk) for multi-user support
@@ -96,4 +108,17 @@ A single user can register a financial transaction in under 30 seconds and immed
 | Docs-only v1.1 milestone | Design system documented before implementation, Stitch validation first | — Pending |
 
 ---
-*Last updated: 2026-04-06 after v1.1 milestone*
+## Current Milestone: v2.0 Glyph Finance Implementation
+
+**Goal:** Implement the Glyph Finance design system in code across all pages and components. Every token, component, animation, and interaction pattern from STYLE_GUIDE.md and UX_RULES.md must be faithfully translated to working code. 10/10 quality bar — anything slightly off is fully wrong.
+
+**Target features:**
+- Replace all design tokens (globals.css @theme) with Glyph Finance palette
+- Swap fonts (DM Sans → Satoshi, JetBrains Mono → IBM Plex Mono)
+- Implement all component changes (pill buttons, underline inputs, battery-bar, minimal charts)
+- Implement signature elements (dot-matrix, status dot, pixel-dissolve scanline)
+- Implement UX patterns (icon-only nav, custom numpad, bottom sheet with drag handle)
+- Full visual QA pass — every page must match specs exactly
+
+---
+*Last updated: 2026-04-06 after v2.0 milestone start*

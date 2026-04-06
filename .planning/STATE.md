@@ -1,17 +1,18 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: Glyph Finance Design System
-status: completed
-stopped_at: Completed 16-01-PLAN.md
-last_updated: "2026-04-06T20:28:35.275Z"
-last_activity: 2026-04-06 -- Completed 16-01 CLAUDE.md Glyph Finance token synchronization
+milestone: v2.0
+milestone_name: Glyph Finance Implementation
+current_plan: Not started
+status: defining_requirements
+stopped_at: null
+last_updated: "2026-04-06"
+last_activity: 2026-04-06
 progress:
-  total_phases: 5
-  completed_phases: 5
-  total_plans: 9
-  completed_plans: 9
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -21,16 +22,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-06)
 
 **Core value:** A single user can register a financial transaction in under 30 seconds and immediately see how it impacts their budget, debt ratio, and savings rate across all views.
-**Current focus:** Phase 16 - Reference Sync (v1.1 Glyph Finance Design System) -- COMPLETE
+**Current focus:** Defining requirements for v2.0 Glyph Finance Implementation
 
 ## Current Position
 
-Phase: 16 of 16 (Reference Synchronization) -- COMPLETE
-Plan: 1 of 1 in current phase (all complete)
-Status: Phase 16 complete, v1.1 milestone complete
-Last activity: 2026-04-06 -- Completed 16-01 CLAUDE.md Glyph Finance token synchronization
-
-Progress: [██████████] 100% (9/9 plans)
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-04-06 — Milestone v2.0 started
 
 ## Performance Metrics
 
