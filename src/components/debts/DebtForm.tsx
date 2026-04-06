@@ -24,6 +24,19 @@ const DEBT_TYPE_DISPLAY: Record<string, string> = {
 
 const DEBT_TYPE_VALUES = Object.values(DebtType)
 
+/** Format a numeric string with commas for display */
+function formatAmountDisplay(value: string): string {
+  if (!value) return ''
+  const num = parseFloat(value)
+  if (isNaN(num)) return value
+  return num.toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+}
+
+/** Strip commas and non-numeric chars (except one decimal point) */
+function cleanAmountInput(value: string): string {
+  return value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')
+}
+
 export default function DebtForm({ isOpen, onClose, debt }: DebtFormProps) {
   const title = debt ? 'Editar Deuda' : 'Nueva Deuda'
 
@@ -433,25 +446,32 @@ function AmountField({
   isTouched,
   onRevalidate,
 }: AmountFieldProps) {
+  const [displayValue, setDisplayValue] = useState(() => formatAmountDisplay(value))
+
   return (
     <FormField label={label} htmlFor={id} error={error}>
       <div className="relative">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-sm">
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-sm pointer-events-none">
           $
         </span>
         <input
           id={id}
           type="text"
           inputMode="decimal"
-          value={value}
+          value={displayValue}
           onChange={(e) => {
-            const v = e.target.value
-            onChange(v)
+            const cleaned = cleanAmountInput(e.target.value)
+            onChange(cleaned)
+            setDisplayValue(cleaned)
             if (isTouched && onRevalidate) {
-              setTimeout(() => onRevalidate(v), 0)
+              setTimeout(() => onRevalidate(cleaned), 0)
             }
           }}
-          onBlur={onFieldBlur}
+          onFocus={() => setDisplayValue(value)}
+          onBlur={() => {
+            setDisplayValue(formatAmountDisplay(value))
+            onFieldBlur?.()
+          }}
           placeholder="0.00"
           className={cn(
             inputClass,

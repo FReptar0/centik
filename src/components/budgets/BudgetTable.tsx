@@ -18,6 +18,11 @@ function centsToPesos(cents: string): string {
   return (num / 100).toString()
 }
 
+/** Strip commas and non-numeric chars (except one decimal point) */
+function cleanAmountInput(value: string): string {
+  return value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')
+}
+
 /** Safely calculates a multiplied amount for display, returning "--" on invalid input */
 function calculateMultiplied(pesosValue: string, multiplier: number): string {
   if (!pesosValue.trim()) return formatMoney('0')
@@ -105,17 +110,21 @@ export default function BudgetTable({ budgets, onSave, isClosed }: BudgetTablePr
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <div className="flex items-center justify-end">
-                      <span className="mr-1 text-sm text-text-muted">$</span>
+                    <div className="relative ml-auto w-28">
+                      <span className="absolute left-2 top-1/2 -translate-y-1/2 text-text-muted text-xs pointer-events-none">
+                        $
+                      </span>
                       <input
                         type="text"
                         inputMode="decimal"
                         value={pesoValue}
-                        onChange={(e) => handleChange(budget.categoryId, e.target.value)}
+                        onChange={(e) =>
+                          handleChange(budget.categoryId, cleanAmountInput(e.target.value))
+                        }
                         disabled={isClosed}
                         placeholder="0"
                         className={cn(
-                          'w-24 rounded-lg border border-border bg-bg-input px-2 py-1.5 text-right text-sm text-text-primary tabular-nums',
+                          'w-full rounded-lg border border-border bg-bg-input pl-5 pr-2 py-1.5 text-right text-sm text-text-primary tabular-nums',
                           'focus:border-border-focus focus:outline-none focus:shadow-[0_0_20px_rgba(34,211,238,0.15)]',
                           'transition-colors duration-200',
                           isClosed && 'cursor-not-allowed opacity-50',

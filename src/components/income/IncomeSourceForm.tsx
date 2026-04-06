@@ -24,6 +24,19 @@ const TYPE_DISPLAY: Record<string, string> = {
 
 const FREQUENCY_VALUES = Object.values(Frequency)
 
+/** Format a numeric string with commas for display */
+function formatAmountDisplay(value: string): string {
+  if (!value) return ''
+  const num = parseFloat(value)
+  if (isNaN(num)) return value
+  return num.toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+}
+
+/** Strip commas and non-numeric chars (except one decimal point) */
+function cleanAmountInput(value: string): string {
+  return value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')
+}
+
 export default function IncomeSourceForm({ isOpen, onClose, source }: IncomeSourceFormProps) {
   const isEditing = !!source
   const title = isEditing ? 'Editar fuente de ingreso' : 'Nueva fuente de ingreso'
@@ -51,9 +64,9 @@ function IncomeSourceFormContent({ source, onClose }: FormContentProps) {
   const isEditing = !!source
 
   const [name, setName] = useState(source?.name ?? '')
-  const [amount, setAmount] = useState(
-    source ? (Number(source.defaultAmount) / 100).toString() : '',
-  )
+  const rawAmountInit = source ? (Number(source.defaultAmount) / 100).toString() : ''
+  const [amount, setAmount] = useState(rawAmountInit)
+  const [displayAmount, setDisplayAmount] = useState(() => formatAmountDisplay(rawAmountInit))
   const [frequency, setFrequency] = useState<string>(source?.frequency ?? 'QUINCENAL')
   const [type, setType] = useState<string>(source?.type ?? 'EMPLOYMENT')
   const [errors, setErrors] = useState<Record<string, string[]>>({})
@@ -167,23 +180,28 @@ function IncomeSourceFormContent({ source, onClose }: FormContentProps) {
           Monto por defecto
         </label>
         <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-sm">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-sm pointer-events-none">
             $
           </span>
           <input
             id="income-amount"
             type="text"
             inputMode="decimal"
-            value={amount}
+            value={displayAmount}
             onChange={(e) => {
-              const v = e.target.value
-              setAmount(v)
+              const cleaned = cleanAmountInput(e.target.value)
+              setAmount(cleaned)
+              setDisplayAmount(cleaned)
               if (touched.has('defaultAmount')) {
-                const payload = { ...getFormPayload(), defaultAmount: toCents(v || '0') }
+                const payload = { ...getFormPayload(), defaultAmount: toCents(cleaned || '0') }
                 setTimeout(() => validateField('defaultAmount', payload), 0)
               }
             }}
-            onBlur={() => handleBlur('defaultAmount')}
+            onFocus={() => setDisplayAmount(amount)}
+            onBlur={() => {
+              setDisplayAmount(formatAmountDisplay(amount))
+              handleBlur('defaultAmount')
+            }}
             placeholder="0.00"
             className={cn(
               'w-full rounded-lg border bg-bg-input pl-7 pr-3 py-2.5 text-sm text-text-primary text-right',

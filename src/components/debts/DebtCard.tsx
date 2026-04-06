@@ -31,6 +31,11 @@ const SEMANTIC_TRACK = {
   negative: 'bg-negative/12',
 } as const
 
+/** Strip commas and non-numeric chars (except one decimal point) */
+function cleanAmountInput(value: string): string {
+  return value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')
+}
+
 export default function DebtCard({ debt, onEdit }: DebtCardProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [isEditingBalance, setIsEditingBalance] = useState(false)
@@ -144,7 +149,7 @@ export default function DebtCard({ debt, onEdit }: DebtCardProps) {
               className="relative"
               onClick={(e) => e.stopPropagation()}
             >
-              <span className="absolute left-2 top-1/2 -translate-y-1/2 text-text-muted text-sm">
+              <span className="absolute left-2 top-1/2 -translate-y-1/2 text-text-muted text-sm pointer-events-none">
                 $
               </span>
               <input
@@ -152,7 +157,7 @@ export default function DebtCard({ debt, onEdit }: DebtCardProps) {
                 type="text"
                 inputMode="decimal"
                 value={balanceInput}
-                onChange={(e) => setBalanceInput(e.target.value)}
+                onChange={(e) => setBalanceInput(cleanAmountInput(e.target.value))}
                 onKeyDown={handleBalanceKeyDown}
                 onBlur={saveBalance}
                 className={cn(

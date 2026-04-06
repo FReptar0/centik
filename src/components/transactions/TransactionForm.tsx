@@ -12,6 +12,19 @@ import { PAYMENT_METHODS_DISPLAY } from '@/lib/constants'
 import { TransactionType } from '@/types'
 import type { Category, SerializedIncomeSource, SerializedTransaction } from '@/types'
 
+/** Format a numeric string with commas for display */
+function formatAmountDisplay(value: string): string {
+  if (!value) return ''
+  const num = parseFloat(value)
+  if (isNaN(num)) return value
+  return num.toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+}
+
+/** Strip commas and non-numeric chars (except one decimal point) */
+function cleanAmountInput(value: string): string {
+  return value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')
+}
+
 interface TransactionFormProps {
   isOpen: boolean
   onClose: () => void
@@ -67,9 +80,9 @@ function TransactionFormContent({
   const [type, setType] = useState<string>(
     transaction?.type ?? TransactionType.EXPENSE,
   )
-  const [amount, setAmount] = useState(
-    transaction ? (Number(transaction.amount) / 100).toString() : '',
-  )
+  const rawAmountInit = transaction ? (Number(transaction.amount) / 100).toString() : ''
+  const [amount, setAmount] = useState(rawAmountInit)
+  const [displayAmount, setDisplayAmount] = useState(() => formatAmountDisplay(rawAmountInit))
   const [categoryId, setCategoryId] = useState<string | null>(
     transaction?.categoryId ?? null,
   )
@@ -216,7 +229,7 @@ function TransactionFormContent({
           Monto
         </label>
         <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-2xl font-bold">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-2xl font-bold pointer-events-none">
             $
           </span>
           <input
@@ -224,16 +237,21 @@ function TransactionFormContent({
             type="text"
             inputMode="decimal"
             autoFocus
-            value={amount}
+            value={displayAmount}
             onChange={(e) => {
-              const v = e.target.value
-              setAmount(v)
+              const cleaned = cleanAmountInput(e.target.value)
+              setAmount(cleaned)
+              setDisplayAmount(cleaned)
               if (touched.has('amount')) {
-                const payload = { ...getFormPayload(), amount: toCents(v || '0') }
+                const payload = { ...getFormPayload(), amount: toCents(cleaned || '0') }
                 setTimeout(() => validateField('amount', payload), 0)
               }
             }}
-            onBlur={() => handleBlur('amount')}
+            onFocus={() => setDisplayAmount(amount)}
+            onBlur={() => {
+              setDisplayAmount(formatAmountDisplay(amount))
+              handleBlur('amount')
+            }}
             placeholder="0.00"
             className={cn(
               'w-full rounded-lg border bg-bg-input pl-10 pr-3 py-3 text-2xl font-bold text-text-primary text-right',
