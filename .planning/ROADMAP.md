@@ -51,7 +51,7 @@ See `.planning/milestones/v1.0-ROADMAP.md` for full phase details.
 **Plans**: 2 plans
 
 Plans:
-- [ ] 12-01: Color palette, elevation hierarchy, and shadow replacement in STYLE_GUIDE.md
+- [x] 12-01: Color palette, elevation hierarchy, and shadow replacement in STYLE_GUIDE.md
 - [ ] 12-02: Typography system, spacing scale, radius values, and Tailwind @theme config in STYLE_GUIDE.md
 
 ### Phase 13: Component Specifications
@@ -121,7 +121,7 @@ Phases execute in numeric order: 12 -> 13 -> 14 -> 15 -> 16
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 1-11 | v1.0 | 27/27 | Complete | 2026-04-06 |
-| 12. Design Tokens | v1.1 | 0/2 | Not started | - |
+| 12. Design Tokens | v1.1 | 1/2 | In Progress | - |
 | 13. Component Specifications | v1.1 | 0/2 | Not started | - |
 | 14. Signature Visual Identity | v1.1 | 0/2 | Not started | - |
 | 15. UX Interaction Patterns | v1.1 | 0/2 | Not started | - |
