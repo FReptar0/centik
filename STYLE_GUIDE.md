@@ -364,11 +364,53 @@ Border-radius: 12px
 - Font-size: 11px, font-weight 600
 - Variantes semanticas: usan fondo sutil + texto del color semantico
 
-### Progress Bars
+### Progress Bars (Battery-Bar)
 
-- Contenedor: fondo del color semantico al 12% de opacidad, border-radius `--radius-full`, altura 6px (compacto) o 8px (detallado)
-- Barra de progreso: color solido, mismo border-radius, transicion de width 500ms ease
-- Colores: verde (< 80%), naranja (80-100%), rojo (> 100%)
+Reemplaza TODAS las barras de progreso continuas/suaves en la app. Cada indicador de porcentaje (progreso de presupuesto, utilizacion de credito, avance de deuda) usa este estilo segmentado tipo battery-bar.
+
+**Estructura:**
+
+- **Contenedor:** Fondo a color semantico al 12% de opacidad. Altura: 6px (variante compacta) o 8px (variante detallada). Ancho completo del padre.
+- **Segmentos:** Siempre exactamente 10 segmentos rectangulares. Cada segmento = 10% del total. 2px gaps entre segmentos. Los segmentos son rectangulos planos (sin border-radius).
+- **Direccion de llenado:** Izquierda a derecha.
+
+**Sistema de colores semaforo (traffic-light):**
+
+Aplicado por segmento segun la posicion en el rango de llenado:
+
+- `--color-accent` (#CCFF00, chartreuse) para segmentos que representan < 80% de llenado
+- `--color-warning` (#FF9100, naranja) para segmentos que representan 80-99% de llenado
+- `--color-negative` (#FF3333, rojo) para segmentos que representan 100%+ de llenado
+
+**Comportamiento de overflow (100%+):** Los 10 segmentos se llenan con `--color-negative` (rojo). Se muestra el exceso como texto a la derecha de la barra: "+15%" en `--color-negative` a nivel Meta (11px). Esto hace inmediatamente claro que el presupuesto/limite ha sido excedido sin necesidad de un indicador separado.
+
+**Ejemplos:**
+
+- 45% presupuesto gastado: 4 segmentos chartreuse llenos, 1 medio lleno chartreuse, 5 vacios
+- 85% presupuesto gastado: 8 segmentos chartreuse, luego el 9no segmento en naranja (cruzando umbral del 80%), 1 vacio
+- 110% sobre presupuesto: 10 segmentos en rojo + texto "+10%"
+
+**Nota:** Los segmentos parcialmente llenos muestran ancho parcial dentro del espacio del segmento. El gap entre segmentos siempre se mantiene.
+
+**CSS conceptual del contenedor:**
+
+```css
+display: flex;
+gap: 2px;
+align-items: center;
+background: {color-semantico al 12% opacidad};
+padding: 2px;
+```
+
+**CSS conceptual de segmento individual:**
+
+```css
+flex: 1;
+height: 100%;
+background: {color basado en posicion en sistema semaforo};
+border-radius: 0; /* rectangulos planos */
+transition: background-color 300ms ease;
+```
 
 ### Charts (Recharts)
 
