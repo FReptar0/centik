@@ -191,9 +191,9 @@ No dejar secciones en blanco. Un empty state bien diseñado guía al usuario.
 ### 6.1 Breakpoints
 
 ```
-Mobile:    < 768px    → Layout de una columna, bottom tab bar
+Mobile:    < 768px    → Layout de una columna, bottom tab bar (icon-only, seccion 3.2)
 Tablet:    768-1023px → Layout de una columna, sidebar colapsable
-Desktop:   ≥ 1024px   → Sidebar fija + contenido principal
+Desktop:   >=1024px   → Sidebar fija + contenido principal
 ```
 
 ### 6.2 Adaptaciones por Breakpoint
@@ -202,18 +202,21 @@ Desktop:   ≥ 1024px   → Sidebar fija + contenido principal
 - Mobile: Grid de 2 columnas
 - Tablet: Grid de 3 columnas
 - Desktop: Grid de 3-4 columnas (flex-wrap)
+- KPI cards usan `--color-surface-elevated` con padding 24px. Montos en IBM Plex Mono (`--font-mono`). Referencia: STYLE_GUIDE.md > Componentes Base > Cards.
 
-**Gráficas:**
+**Graficas:**
 - Mobile: Apiladas verticalmente, ancho completo
-- Desktop: Grid de 2 columnas donde la composición lo permita
+- Desktop: Grid de 2 columnas donde la composicion lo permita
+- Graficas sin grid lines, stroke 1.5px, puntos solidos de 4px en endpoints. Referencia: STYLE_GUIDE.md > Componentes Base > Charts.
 
 **Tablas:**
-- Mobile: Convertir a card list (cada fila se vuelve una card vertical)
-- Desktop: Tabla horizontal estándar
+- Mobile: Convertir a card list (cada fila se vuelve una card vertical). Cards sin bordes, fondo `--color-surface-elevated`. Referencia: STYLE_GUIDE.md > Componentes Base > Cards.
+- Desktop: Tabla horizontal estandar. Headers en nivel Label (12px, uppercase, letter-spacing +2px, `--color-text-secondary`). Referencia: STYLE_GUIDE.md > Componentes Base > Tablas.
 
 **Formularios (modales):**
-- Mobile: Bottom sheet que sube desde abajo, altura máxima 90vh
-- Desktop: Modal centrado, max-width 480px
+- Mobile: bottom sheet (85vh) con drag handle, desliza desde abajo. Referencia: STYLE_GUIDE.md > Componentes Base > Modales > Mobile.
+- Desktop: modal centrado, max-width 480px, fondo `--color-surface-elevated`, border-radius `--radius-xl` (24px). Referencia: STYLE_GUIDE.md > Componentes Base > Modales > Desktop.
+- Todos los inputs: underline-only con floating labels. Referencia: STYLE_GUIDE.md > Componentes Base > Inputs.
 
 **Sidebar:**
 - Mobile: Oculta, se muestra como overlay desde la izquierda
@@ -221,7 +224,7 @@ Desktop:   ≥ 1024px   → Sidebar fija + contenido principal
 
 ### 6.3 Touch Targets
 
-En móvil, todo elemento interactivo tiene un área de tap mínima de 44×44px (guideline de Apple). Esto incluye íconos de acción en tablas, botones de navegación y chips de filtro.
+En movil, todo elemento interactivo tiene un area de tap minima de 44x44px (guideline de Apple). Esto incluye iconos de accion en tablas, botones de navegacion y chips de filtro. Botones pill usan min-height 48px (tamano lg) en mobile para mejor area de tap. Referencia: STYLE_GUIDE.md > Componentes Base > Buttons > Tamanos.
 
 ---
 
@@ -229,35 +232,37 @@ En móvil, todo elemento interactivo tiene un área de tap mínima de 44×44px (
 
 ### 7.1 Estructura
 
-- Label arriba del input (no placeholder como label)
-- Label: font-size 12px, font-weight 500, color `text-secondary`, letter-spacing 0.5px
-- Gap entre label y input: 6px
+Todos los inputs usan el patron underline-only con floating labels. Referencia: STYLE_GUIDE.md > Componentes Base > Inputs.
+
+- **Floating label:** La label comienza como texto placeholder sobre la linea en `--color-text-tertiary`. En focus o cuando tiene contenido: la label flota hacia arriba y transiciona a nivel Label (12px, uppercase, letter-spacing +2px, `--color-text-secondary`). Referencia: STYLE_GUIDE.md > Componentes Base > Inputs > Floating labels.
 - Gap entre campos: 14px
-- Los campos opcionales se marcan con "(opcional)" en el label, no con asterisco en los obligatorios
-- Agrupar campos relacionados con separadores visuales sutiles (1px `border-default`)
+- Campos opcionales: marcados con "(opcional)" en el label, no con asterisco en los obligatorios
+- Agrupacion: separadores de 1px `--color-border-divider` entre grupos de campos relacionados
 
-### 7.2 Validación
+### 7.2 Validacion
 
-- Validar en blur (cuando el usuario sale del campo) y en change después del primer error
+- Validar en blur (cuando el usuario sale del campo) y en change despues del primer error
 - No validar en cada keystroke — es molesto
-- Mostrar error inmediatamente debajo del campo problemático
-- No deshabilitar el botón de submit por errores de validación — permitir el intento y mostrar todos los errores
+- Mostrar error inmediatamente debajo del campo problematico
+- No deshabilitar el boton de submit por errores de validacion — permitir el intento y mostrar todos los errores
 - Para montos: aceptar input con o sin comas, normalizar al parsear
+- **Estado error:** la linea inferior del input cambia a `--color-negative`. Mensaje de error debajo en nivel Meta (11px, `--color-negative`). Referencia: STYLE_GUIDE.md > Componentes Base > Inputs > Estado error.
 
 ### 7.3 Inputs de Monto
 
-- `inputMode="decimal"` para teclado numérico en móvil
-- Prefijo "$" visual (no parte del value)
-- Alinear el texto a la derecha
+- `inputMode="decimal"` para teclado numerico en movil
+- Prefijo "$" visual en `--color-text-tertiary` a tamano menor, posicionado al inicio de la linea underline. Estatico, no flota
+- Digitos en IBM Plex Mono (`--font-mono`), alineados a la derecha
 - Formatear con comas al salir del campo (blur)
-- No permitir caracteres no numéricos (excepto punto decimal)
-- Máximo 2 decimales
+- No permitir caracteres no numericos (excepto punto decimal)
+- Maximo 2 decimales
+- Referencia: STYLE_GUIDE.md > Componentes Base > Inputs > Inputs de montos
 
-### 7.4 Selects y Categorías
+### 7.4 Selects y Categorias
 
-- Para listas cortas (< 6 opciones): radio group visual o grid de botones, no dropdown
-- Para categorías de gasto: grid de 3 columnas con ícono + label, selección por tap/click con highlight visual
-- Para listas largas: dropdown con búsqueda integrada
+- **Listas cortas (< 6 opciones):** radio group visual con botones pill (referencia: STYLE_GUIDE.md > Componentes Base > Buttons > Toggle pills) o grid de botones, no dropdown
+- **Categorias de gasto:** grid circular de iconos (4 columnas). Cada icono en contenedor circular de 40px con fondo de color de categoria al 12%. Seleccion: ring de 2px `--color-accent` alrededor del circulo. Label debajo en nivel Meta (11px, `--color-text-secondary`). Referencia: STYLE_GUIDE.md > Iconografia > Contenedores de Icono
+- **Listas largas:** dropdown con busqueda integrada
 
 ---
 
