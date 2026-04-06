@@ -219,7 +219,7 @@ Base de 4px con ajustes para la estetica Glyph Finance:
 ### Escala de Radios
 
 ```
---radius-sm:   8px     → Badges, tags, elementos pequenos
+--radius-sm:   8px     → Tags, elementos pequenos, contenedores de icono
 --radius-md:   12px    → Botones, inputs
 --radius-lg:   16px    → Cards
 --radius-xl:   24px    → Modales
@@ -369,6 +369,8 @@ Border-radius: 12px
 
 ### Modales
 
+**Desktop:**
+
 - Overlay: `rgba(0, 0, 0, 0.7)` con `backdrop-filter: blur(4px)`
 - Container: `--color-surface-elevated`, sin borde decorativo, border-radius `--radius-xl`, padding 28px
 - Max-width: 480px para formularios, 640px para vistas amplias
@@ -376,21 +378,61 @@ Border-radius: 12px
 - Animacion de entrada: fade in + scale desde 0.95 (200ms ease-out)
 - Boton de cerrar (X) siempre en la esquina superior derecha
 
+**Mobile (bottom sheet):**
+
+- Se desliza hacia arriba desde la parte inferior de la pantalla.
+- Altura: 85% de la altura de pantalla (`85vh`).
+- Overlay: `rgba(0, 0, 0, 0.7)` con `backdrop-filter: blur(4px)`.
+- Container: `--color-surface-elevated`, sin borde, border-radius `--radius-xl` (24px) solo en esquinas superiores (esquinas inferiores cuadradas, al ras del borde de pantalla).
+- Padding: 24px.
+- Handle indicator: 4px de alto, 40px de ancho, `--color-border-divider` centrado en la parte superior con 12px de margen superior.
+
 ### Tablas
 
-- Header: fondo `--color-bg`, texto `--color-text-secondary`, font-weight 500, font-size 12px, text-transform uppercase, letter-spacing 0.5px
-- Filas: borde inferior 1px `--color-border-divider`
-- Hover: `--color-surface-hover`
-- Celdas de montos: alineadas a la derecha, `tabular-nums`
-- Celdas de texto: alineadas a la izquierda
-- Padding: 12px 16px
+**Header row:**
+
+- Fondo: `--color-bg` (#000000).
+- Estilo de texto: nivel Label (12px, uppercase, letter-spacing +2px, font-weight 500).
+- Color de texto: `--color-text-secondary`.
+
+**Body rows:**
+
+- Sin fondos alternados entre filas. Todas las filas en la misma superficie.
+- Borde inferior: 1px `--color-border-divider` (#222222) como separador en cada fila.
+- Estado hover: fondo `--color-surface-hover` (#1A1A1A).
+
+**Formato de celdas:**
+
+- Montos: alineados a la derecha, `font-variant-numeric: tabular-nums`, IBM Plex Mono.
+- Texto: alineado a la izquierda, Satoshi.
+- Padding: 12px vertical, 16px horizontal.
+
+**Variante compacta** (para mobile o datos densos):
+
+- Padding: 8px vertical, 12px horizontal.
+- Font-size: 12px para celdas del body.
 
 ### Badges
 
-- Padding: 2px 8px
-- Border-radius: `--radius-sm`
-- Font-size: 11px, font-weight 600
-- Variantes semanticas: usan fondo sutil + texto del color semantico
+**Forma:** Pill-shaped, `border-radius: --radius-full` (9999px). Consistente con la forma pill de los botones.
+
+**Tamano:**
+
+- Padding: 2px 8px.
+- Font-size: 11px, font-weight 600, uppercase.
+
+**Variantes semanticas** (fondo sutil + texto solido):
+
+| Variante | Fondo | Texto | Uso |
+|----------|-------|-------|-----|
+| Accent | `--color-accent-subtle` | `--color-accent` | Links "VER TODO", elementos destacados |
+| Positive | `--color-positive-subtle` | `--color-positive` | Tags de ingreso, tendencia positiva |
+| Negative | `--color-negative-subtle` | `--color-negative` | Tags de gasto, tendencia negativa |
+| Warning | `--color-warning-subtle` | `--color-warning` | Alertas, presupuesto cerca del limite |
+| Info | `--color-info-subtle` | `--color-info` | Informacion neutral, periodos |
+| Neutral | `rgba(232, 232, 232, 0.08)` | `--color-text-secondary` | Categorias, etiquetas genericas |
+
+**Patron "VER TODO":** Usar variante Accent con flecha derecha. Texto en chartreuse, uppercase, nivel Meta. Ejemplo: `VER TODO ->` como badge pill que actua como link.
 
 ### Progress Bars (Battery-Bar)
 
