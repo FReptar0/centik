@@ -48,7 +48,7 @@ See `.planning/milestones/v1.0-ROADMAP.md` for full phase details.
   3. STYLE_GUIDE.md spacing and radius section documents the new scale (20-24px card padding, 12px gaps, 16px margins, 16px card radius, 12px button radius, 24px modal radius)
   4. STYLE_GUIDE.md elevation section replaces decorative borders and shadows with background-shift depth hierarchy (#000000 -> #0A0A0A -> #141414) and no visible card borders
   5. STYLE_GUIDE.md Tailwind config section contains a complete CSS @theme block with all Glyph Finance tokens ready for copy-paste into the codebase
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
 - [ ] 12-01: Color palette, elevation hierarchy, and shadow replacement in STYLE_GUIDE.md
