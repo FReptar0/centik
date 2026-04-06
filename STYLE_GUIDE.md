@@ -414,4 +414,94 @@ Abril 2026     → Titulos de periodo
 
 ## Configuracion Tailwind
 
-[Completar en Plan 12-02]
+Tailwind v4 usa configuracion CSS-first via bloques `@theme`. Este bloque contiene **todos** los tokens del sistema de diseno Glyph Finance, listo para copiar en `src/app/globals.css`.
+
+### Bloque @theme Principal
+
+```css
+@theme {
+  /* Fondos */
+  --color-bg: #000000;
+  --color-surface: #0A0A0A;
+  --color-surface-elevated: #141414;
+  --color-surface-hover: #1A1A1A;
+
+  /* Bordes */
+  --color-border-divider: #222222;
+
+  /* Textura */
+  --color-dot-matrix: #1E1E1E;
+
+  /* Texto */
+  --color-text-primary: #E8E8E8;
+  --color-text-secondary: #999999;
+  --color-text-tertiary: #666666;
+  --color-text-disabled: #444444;
+
+  /* Acento */
+  --color-accent: #CCFF00;
+  --color-accent-hover: #B8E600;
+  --color-accent-subtle: rgba(204, 255, 0, 0.12);
+
+  /* Semanticos */
+  --color-positive: #00E676;
+  --color-positive-subtle: rgba(0, 230, 118, 0.12);
+  --color-negative: #FF3333;
+  --color-negative-subtle: rgba(255, 51, 51, 0.12);
+  --color-warning: #FF9100;
+  --color-warning-subtle: rgba(255, 145, 0, 0.12);
+  --color-info: #448AFF;
+  --color-info-subtle: rgba(68, 138, 255, 0.12);
+
+  /* Categorias (desaturadas) */
+  --color-cat-food: #C88A5A;
+  --color-cat-services: #7A9EC4;
+  --color-cat-entertainment: #9B89C4;
+  --color-cat-subscriptions: #C48AA3;
+  --color-cat-transport: #C4A84E;
+  --color-cat-other: #8A9099;
+
+  /* Tipografia */
+  --font-mono: 'IBM Plex Mono', 'Fira Code', monospace;
+
+  /* Radios */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+}
+```
+
+### Bloque @theme inline (next/font)
+
+```css
+@theme inline {
+  --font-sans: var(--font-satoshi);
+}
+```
+
+El bloque `@theme inline` es necesario para inyectar la variable CSS generada por `next/font`. Satoshi se carga via `next/font/google` o `next/font/local` en el layout raiz, lo que genera una variable CSS `--font-satoshi`. El `@theme inline` conecta esa variable con el token `--font-sans` de Tailwind.
+
+### Estilos Globales
+
+Los siguientes estilos se aplican en `globals.css` fuera de los bloques `@theme`:
+
+```css
+:focus-visible {
+  outline: 2px solid var(--color-accent, #CCFF00);
+  outline-offset: 2px;
+  border-radius: inherit;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+}
+```
+
+### Notas de Implementacion
+
+- **CSS-first:** Este enfoque reemplaza el antiguo `tailwind.config.ts` con JavaScript. En Tailwind v4, toda la configuracion vive en CSS.
+- **Sin sombras en @theme:** No existen tokens de sombra. La elevacion es puramente cambio de fondo (background-shift).
+- **Colores de categoria:** Los valores hex son las versiones desaturadas. Para fondos de contenedores de icono, usar el color de categoria al 15% de opacidad en codigo de componente (e.g., `rgba(200, 138, 90, 0.15)` para Comida).
+- **Fuente sans:** Se define en `@theme inline` (no en el bloque principal) porque depende de la variable CSS inyectada por `next/font` en runtime.
