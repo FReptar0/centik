@@ -151,38 +151,38 @@ Este es el flujo mas critico de toda la app. Debe completarse en menos de 30 seg
 
 ### 5.1 Empty States
 
-Cuando una sección no tiene datos, mostrar:
-- Ícono grande (32px) en `text-muted` relacionado a la sección
-- Texto descriptivo corto explicando qué va aquí
-- CTA (botón primary) para la acción que resuelve el estado vacío
+Cuando una seccion no tiene datos, mostrar:
+- Icono (24px) en `--color-text-tertiary` relacionado a la seccion. Referencia: STYLE_GUIDE.md > Iconografia > Tamanos.
+- Texto descriptivo corto explicando que va aqui
+- CTA (boton pill primary) para la accion que resuelve el estado vacio. Referencia: STYLE_GUIDE.md > Componentes Base > Buttons.
 
 Ejemplo para Movimientos sin transacciones:
 ```
-[ícono Receipt, 32px, text-muted]
+[icono Receipt, 24px, --color-text-tertiary]
 "Sin movimientos este mes"
-[Botón: "Registrar primer movimiento"]
+[Boton pill: "Registrar primer movimiento"]
 ```
 
-No dejar secciones en blanco. Un empty state bien diseñado guía al usuario.
+No dejar secciones en blanco. Un empty state bien disenado guia al usuario.
 
 ### 5.2 Loading States
 
-- **Page level:** Skeleton screens que replican la estructura de la página (cards grises pulsando, barras de texto placeholder)
-- **Component level:** Skeleton del componente específico (ej: chart area con gradiente pulsante)
+- **Page level:** Skeleton screens que replican la estructura de la pagina (shapes en `--color-surface-elevated` pulsando, barras de texto placeholder)
+- **Component level:** Skeleton del componente especifico (ej: chart area con gradiente pulsante en `--color-surface-elevated`)
 - **Inline:** Para actualizaciones de datos parciales, atenuar el contenido al 50% de opacidad con `pointer-events: none`
-- **Buttons:** Al procesar, el botón muestra spinner inline (16px) y deshabilita el click. El texto cambia a "Guardando..." o similar
+- **Buttons:** Al procesar, el boton muestra spinner inline (16px) y deshabilita el click. El texto cambia a "Guardando..." o similar
 
 ### 5.3 Error States
 
-- **Form validation:** Mensaje de error debajo del input en `text-negative`, font-size 12px. El borde del input cambia a `color-negative`
-- **API errors:** Toast notification con fondo rojo sutil, duración 5 segundos, con botón "Reintentar" si aplica
+- **Form validation:** Mensaje de error debajo del input en `--color-negative`, nivel Meta (11px). La linea inferior del input cambia a `--color-negative`. Referencia: STYLE_GUIDE.md > Componentes Base > Inputs > Estado error.
+- **API errors:** Toast notification con fondo `--color-negative-subtle`, duracion 5 segundos, con boton "Reintentar" si aplica
 - **Not found:** Pantalla completa con empty state y CTA para volver
 
 ### 5.4 Success States
 
-- **Mutations (crear/editar/eliminar):** Toast notification con fondo verde sutil, duración 3 segundos
-- **Formato del toast:** ícono de check + texto corto que confirma la acción ("Gasto registrado: Comida -$150.00")
-- No usar modales de éxito — son disruptivos para el flujo
+- **Mutations (crear/editar/eliminar):** Toast notification con fondo `--color-positive-subtle`, duracion 3 segundos
+- **Formato del toast:** icono de check + texto corto que confirma la accion ("Gasto registrado: Comida -$150.00")
+- No usar modales de exito — son disruptivos para el flujo
 
 ---
 
@@ -294,40 +294,41 @@ Después de tap:  [...texto del item...]  [¿Eliminar? Sí / No]
 ### 8.3 Transiciones y Animaciones
 
 - **Principio:** Las animaciones comunican cambio de estado, no decoran
-- Duración base: 200ms para micro-interacciones, 300ms para cambios de layout, 500ms para progress bars
+- Duracion base: 200ms para micro-interacciones, 300ms para cambios de layout, 500ms para progress bars
 - Easing: `ease-out` para entradas, `ease-in` para salidas
-- Los montos que cambian (KPIs) no animan el número — el cambio debe ser instantáneo para transmitir precisión
-- Las barras de progreso sí animan su width (500ms ease) al cargar datos
-- Los modales: fade in overlay (200ms) + scale container desde 0.95 (200ms)
-- Las cards en listas: no necesitan animación de entrada en carga normal; sí al agregar un nuevo item (slide in + fade, 300ms)
+- Los montos que cambian (KPIs) no animan el numero — el cambio debe ser instantaneo para transmitir precision
+- Las barras de progreso (battery-bar) si animan su llenado de segmentos (500ms ease) al cargar datos
+- **Modales desktop:** fade in overlay (200ms) + scale container desde 0.95 (200ms ease-out)
+- **Modales mobile:** slide-up desde abajo (300ms ease-out). Referencia: STYLE_GUIDE.md > Componentes Base > Modales > Mobile.
+- Las cards en listas: no necesitan animacion de entrada en carga normal; al agregar un nuevo item, usar efecto pixel-dissolve (revelacion por scanlines). Referencia: STYLE_GUIDE.md > Identidad Visual > Micro-Animacion Pixel-Dissolve.
 
 ---
 
 ## 9. Accesibilidad (a11y)
 
-### 9.1 Requisitos Mínimos
+### 9.1 Requisitos Minimos
 
-- Contraste WCAG AA: los colores de texto sobre fondos oscuros ya cumplen (verificar con herramienta)
-- Focus visible: todo elemento interactivo tiene un focus ring visible (`--shadow-glow` con outline de 2px `accent`)
-- Focus order: lógico, de arriba-abajo y izquierda-derecha
+- Contraste WCAG AA: los colores de texto sobre fondos oscuros ya cumplen (verificar con herramienta). Referencia: STYLE_GUIDE.md > Paleta de Color > Ratios de contraste verificados.
+- Focus visible: todo elemento interactivo tiene un focus ring visible — outline de 2px `--color-accent` con outline-offset de 2px. Sin sombra glow, sin resplandor. Referencia: STYLE_GUIDE.md > Elevacion > Focus Rings.
+- Focus order: logico, de arriba-abajo y izquierda-derecha
 - Tab navigation: todos los controles son alcanzables por teclado
 - Escape cierra modales y dropdowns
 - Enter o Space activan botones
 
-### 9.2 Semántica HTML
+### 9.2 Semantica HTML
 
 - Usar `<nav>` para la sidebar y bottom bar
 - Usar `<main>` para el contenido principal
 - Usar `<section>` con `aria-labelledby` para agrupar secciones del dashboard
 - Las tablas usan `<table>`, `<thead>`, `<tbody>`, `<th scope="col">` correctamente
 - Los formularios usan `<label>` asociados a inputs con `htmlFor`
-- Los íconos decorativos llevan `aria-hidden="true"`
-- Los íconos funcionales llevan `aria-label` descriptivo
+- Los iconos decorativos llevan `aria-hidden="true"`
+- Los iconos funcionales llevan `aria-label` descriptivo
 
 ### 9.3 Screen Readers
 
-- Los montos incluyen `aria-label` con el valor completo en texto ("Mil quinientos pesos con setenta y cinco centavos")... no, esto es excesivo. Basta con que el formato sea parseable: "$1,500.75" es suficiente
-- Las barras de progreso tienen `role="progressbar"` con `aria-valuenow`, `aria-valuemin`, `aria-valuemax`
+- Los montos incluyen `aria-label` con el formato parseable: "$1,500.75" es suficiente
+- Las barras de progreso (battery-bar) tienen `role="progressbar"` con `aria-valuenow`, `aria-valuemin`, `aria-valuemax`
 - Los toasts usan `role="status"` y `aria-live="polite"`
 
 ---
