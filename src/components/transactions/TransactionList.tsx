@@ -30,12 +30,15 @@ export default function TransactionList({
       <div className="flex flex-col items-center justify-center py-16 text-center">
         <DynamicIcon
           name="arrow-left-right"
-          size={48}
-          className="text-text-muted mb-4"
+          size={32}
+          className="text-text-muted mb-3"
           aria-hidden="true"
         />
         <p className="text-text-secondary text-lg">
           Sin movimientos este mes
+        </p>
+        <p className="mt-1 text-sm text-text-muted">
+          Usa el boton + para registrar tu primer movimiento
         </p>
       </div>
     )

@@ -35,6 +35,7 @@ import {
   Percent,
   BarChart3,
   PieChart,
+  Tag,
   type LucideProps,
 } from 'lucide-react'
 import { type ComponentType } from 'react'
@@ -71,6 +72,8 @@ export const ICON_MAP: Record<string, ComponentType<LucideProps>> = {
   // Chart empty state icons
   'bar-chart-3': BarChart3,
   'pie-chart': PieChart,
+  // Empty state icons
+  tag: Tag,
   // Extra icons for custom categories
   home: Home,
   receipt: Receipt,

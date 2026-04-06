@@ -49,7 +49,7 @@ export default function BudgetSummaryRow({ budgets, quincenalIncome }: BudgetSum
             {formatMoney(absStr)}
           </span>
         </div>
-        <p className="mt-1 text-xs text-text-muted">
+        <p className="mt-1 text-xs tabular-nums text-text-muted">
           Mensual: {formatMoney(monthlyDiff)} {isPositive ? 'sobrante' : 'faltante'}
         </p>
       </div>

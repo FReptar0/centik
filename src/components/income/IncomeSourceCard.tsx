@@ -75,7 +75,7 @@ export default function IncomeSourceCard({ source, onEdit }: IncomeSourceCardPro
             <span className="text-sm text-accent">(estimado)</span>
           )}
         </div>
-        <p className="text-sm text-text-secondary mt-1">
+        <p className="text-sm tabular-nums text-text-secondary mt-1">
           Mensual: {formatMoney(monthlyAmount)}
         </p>
       </div>

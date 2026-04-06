@@ -16,8 +16,8 @@ export default function IncomeSourceList({ sources, onEdit, onAdd }: IncomeSourc
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <DynamicIcon
           name="banknote"
-          size={48}
-          className="text-text-muted mb-4"
+          size={32}
+          className="text-text-muted mb-3"
           aria-hidden="true"
         />
         <p className="text-text-secondary text-lg mb-4">

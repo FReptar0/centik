@@ -24,9 +24,9 @@ export default function CategoryList({ categories, onAdd }: CategoryListProps) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <DynamicIcon
-          name="settings"
-          size={48}
-          className="text-text-muted mb-4"
+          name="tag"
+          size={32}
+          className="text-text-muted mb-3"
           aria-hidden="true"
         />
         <p className="text-text-secondary text-lg mb-4">

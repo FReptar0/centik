@@ -163,7 +163,7 @@ export default function ExpenseDonutChart({ data }: ExpenseDonutChartProps) {
               style={{ backgroundColor: d.color }}
             />
             <span className="text-xs text-text-secondary">{d.name}</span>
-            <span className="text-xs text-text-muted">
+            <span className="text-xs tabular-nums text-text-muted">
               {formatMoney(d.total)}
             </span>
           </div>
