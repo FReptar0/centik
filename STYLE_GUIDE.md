@@ -220,13 +220,13 @@ Base de 4px con ajustes para la estetica Glyph Finance:
 
 ```
 --radius-sm:   8px     → Tags, elementos pequenos, contenedores de icono
---radius-md:   12px    → Botones, inputs
+--radius-md:   12px    → Inputs, tooltips, contenedores medios
 --radius-lg:   16px    → Cards
 --radius-xl:   24px    → Modales
 --radius-full: 9999px  → Elementos circulares, badges tipo pill
 ```
 
-Todos los radios han aumentado respecto al sistema anterior. Los botones ahora son 12px (ligeramente pill), cards 16px (mas redondeadas), modales 24px (significativamente mas redondeadas). El efecto general es una interfaz moderna sin llegar a ser burbujeante.
+Todos los radios han aumentado respecto al sistema anterior. Los botones usan `--radius-full` (9999px, capsulas completas), badges usan `--radius-full` (pill), inputs 12px, cards 16px (mas redondeadas), modales 24px (significativamente mas redondeadas). El efecto general es una interfaz moderna sin llegar a ser burbujeante.
 
 ---
 
