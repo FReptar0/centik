@@ -577,13 +577,138 @@ Todos los numeros financieros usan IBM Plex Mono (`--font-mono`) con signo de pe
 Especificacion completa en **Tipografia > Numeros Financieros**.
 
 ### 4. Iconos de Categoria (Pixel-Art)
-<!-- Phase 14 Plan 02 -->
+
+Estetica de iconos inspirada en pixel-art 8x8 — simples, geometricos, instantaneamente reconocibles a tamanos pequenos. Los iconos deben sentirse como si pertenecieran a la interfaz glyph de Nothing Phone, no a una app generica.
+
+**Libreria:** Lucide React (sin set de iconos custom). La estetica pixel-art se logra a traves de la seleccion de iconos y parametros de renderizado, no con una fuente custom.
+
+**Guia de seleccion de iconos:**
+
+- Preferir iconos geometricos y angulares sobre organicos/curvos
+- Preferir variantes de trazo delgado (thin-stroke) sobre variantes llenas (filled)
+- Preferir iconos con lineas rectas y angulos rectos cuando esten disponibles
+- Ejemplos "on-brand" de Lucide: `Utensils` (geometrico), `Zap` (angular), `Briefcase` (rectangular), `Car` (silueta simple)
+- Evitar: iconos con curvas excesivas, detalle ornamentado o formas organicas
+
+**Reglas de renderizado:**
+
+- `stroke-width: 1.5` (mas delgado que el default de Lucide de 2, sensacion mas precisa)
+- `shape-rendering: crispEdges` en el elemento SVG para renderizado alineado a pixeles sin suavizado anti-aliasing
+- Color del icono: color de categoria (solido) de la paleta desaturada
+
+**Contenedor (ya especificado en Iconografia):**
+
+- Fondo: color de categoria al 12% de opacidad
+- Tamano: 36x36px (listas), 40x40px (cards)
+- Border-radius: 12px
+- Referencia cruzada: especificacion de contenedor en **Iconografia > Contenedores de Icono**
 
 ### 5. Status Dot (Indicador de Estado)
-<!-- Phase 14 Plan 02 -->
+
+Indicador LED pequeno que comunica estado "activo" o "en vivo" sin texto. Inspirado en los indicadores LED de la interfaz glyph de Nothing Phone.
+
+**Estrategia de colocacion:**
+
+- Indicador de periodo actual en el selector de periodo — un dot junto al periodo activo senala "este es el periodo en vivo"
+- Item de navegacion activo en la barra de tabs inferior — un dot debajo del icono activo reemplaza etiquetas de texto
+- KPI cards mostrando datos en tiempo real o actualizados recientemente — un dot cerca del valor senala frescura de datos
+
+Usar con moderacion. Maximo 2-3 dots visibles en cualquier pantalla. El uso excesivo diluye la senal.
+
+**Especificacion visual:**
+
+- Tamano: 4px circulo solido
+- Color: `--color-accent` (#CCFF00, chartreuse)
+- Sin glow, sin sombra, sin ring — solo el dot (consistente con la filosofia de elevacion sin sombras)
+
+**Animacion:** Pulso continuo sutil. El dot respira lentamente — nunca frenetico, nunca llamando la atencion. Comunica "vivo" no "urgente."
+
+**Implementacion CSS (listo para copiar):**
+
+```css
+@keyframes status-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.85);
+  }
+}
+
+.status-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+  animation: status-pulse 2.5s ease-in-out infinite;
+}
+```
+
+**Duracion:** Ciclo de 2.5s — lo suficientemente lento para sentirse calmo, lo suficientemente rapido para ser notado.
 
 ### 6. Micro-Animacion Pixel-Dissolve
-<!-- Phase 14 Plan 02 -->
+
+Efecto de revelacion por scanlines que hace que los datos aparezcan como si fueran renderizados por una impresora dot-matrix o un escaneo CRT. Se usa cuando datos nuevos aparecen en pantalla — KPIs actualizandose, graficas re-renderizandose, datos frescos de transacciones cargando.
+
+**Descripcion visual:** El elemento se renderiza de arriba hacia abajo en scanlines horizontales. El contenido aparece en franjas horizontales delgadas de arriba hacia abajo, como si fuera impreso linea por linea. El efecto debe sentirse mecanico, preciso y retro — como un cabezal de impresora moviendose sobre el papel.
+
+**Contextos de activacion:**
+
+- Valores de KPI cards actualizandose despues de un refresh de datos
+- Graficas re-renderizandose despues de un cambio de periodo
+- Nueva transaccion apareciendo en una lista
+- Carga inicial de pagina (primer pintado de componentes con muchos datos)
+
+**NO usar para:** transiciones de navegacion, apertura/cierre de modales, interacciones de botones, estados hover.
+
+**Timing:**
+
+- Duracion: 400-600ms (default 500ms)
+- Funcion de timing: `steps(12, end)` — progresion escalonada para sensacion mecanica, NO easing suave
+- 12 pasos = 12 scanlines a traves de la altura del elemento
+
+**Implementacion CSS (listo para copiar):**
+
+Enfoque: CSS `clip-path` con animacion escalonada para revelar contenido en franjas horizontales.
+
+```css
+@keyframes scanline-reveal {
+  0% {
+    clip-path: inset(0 0 100% 0);
+  }
+  100% {
+    clip-path: inset(0 0 0% 0);
+  }
+}
+
+.pixel-dissolve {
+  animation: scanline-reveal 500ms steps(12, end) forwards;
+}
+
+/* Variante para refresh de datos (elemento ya visible, re-trigger) */
+.pixel-dissolve-refresh {
+  animation: none;
+}
+.pixel-dissolve-refresh.updating {
+  animation: scanline-reveal 500ms steps(12, end) forwards;
+}
+```
+
+**Composabilidad:** La animacion se aplica al elemento completo. Para KPI cards, aplicar al contenedor del valor. Para graficas, aplicar al wrapper de la grafica. Para items de lista, aplicar a elementos individuales de fila.
+
+**Movimiento reducido:** Respetar `prefers-reduced-motion`. Cuando se prefiere movimiento reducido, omitir la animacion completamente — el contenido aparece inmediatamente.
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  .pixel-dissolve,
+  .pixel-dissolve-refresh.updating {
+    animation: none;
+    clip-path: none;
+  }
+}
+```
 
 ---
 
