@@ -119,14 +119,14 @@ Requirements for initial release. Each maps to roadmap phases.
 ### UX & Polish
 
 - [x] **UX-01**: Toast notifications for all mutations (success: 3s green, error: 5s red)
-- [ ] **UX-02**: Skeleton loading states for all pages (no generic spinners)
-- [ ] **UX-03**: Empty states with icon, descriptive text, and CTA for all sections
+- [x] **UX-02**: Skeleton loading states for all pages (no generic spinners)
+- [x] **UX-03**: Empty states with icon, descriptive text, and CTA for all sections
 - [ ] **UX-04**: Form validation on blur with error messages below inputs
 - [ ] **UX-05**: Amount inputs: numeric keyboard on mobile, "$" prefix, right-aligned, comma formatting on blur
-- [ ] **UX-06**: Focus-visible rings on all interactive elements (a11y)
-- [ ] **UX-07**: Semantic HTML: nav, main, section with aria-labelledby, proper table markup
-- [ ] **UX-08**: All monetary amounts use tabular-nums for column alignment
-- [ ] **UX-09**: Loading.tsx Suspense boundaries on each page route
+- [x] **UX-06**: Focus-visible rings on all interactive elements (a11y)
+- [x] **UX-07**: Semantic HTML: nav, main, section with aria-labelledby, proper table markup
+- [x] **UX-08**: All monetary amounts use tabular-nums for column alignment
+- [x] **UX-09**: Loading.tsx Suspense boundaries on each page route
 
 ## v2 Requirements
 
@@ -247,14 +247,14 @@ Deferred to future release. Tracked but not in current roadmap.
 | HIST-05 | Phase 10 | Complete |
 | HIST-06 | Phase 10 | Complete |
 | UX-01 | Phase 11 | Complete |
-| UX-02 | Phase 11 | Pending |
-| UX-03 | Phase 11 | Pending |
+| UX-02 | Phase 11 | Complete |
+| UX-03 | Phase 11 | Complete |
 | UX-04 | Phase 11 | Pending |
 | UX-05 | Phase 11 | Pending |
-| UX-06 | Phase 11 | Pending |
-| UX-07 | Phase 11 | Pending |
-| UX-08 | Phase 11 | Pending |
-| UX-09 | Phase 11 | Pending |
+| UX-06 | Phase 11 | Complete |
+| UX-07 | Phase 11 | Complete |
+| UX-08 | Phase 11 | Complete |
+| UX-09 | Phase 11 | Complete |
 
 **Coverage:**
 - v1 requirements: 72 total
