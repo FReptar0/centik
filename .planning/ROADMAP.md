@@ -196,12 +196,12 @@ Plans:
   3. All sections with no data show empty states with descriptive icon, text, and call-to-action button
   4. Amount inputs show numeric keyboard on mobile, "$" prefix, right-aligned text, and comma formatting on blur
   5. All interactive elements have visible focus rings, semantic HTML uses nav/main/section with aria-labelledby, and monetary amounts use tabular-nums
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 11-01: TBD
-- [ ] 11-02: TBD
-- [ ] 11-03: TBD
+- [ ] 11-01-PLAN.md -- Install sonner, add Toaster to root layout, add toast notifications to all Server Action result handlers across 11 client components
+- [ ] 11-02-PLAN.md -- Blur validation on all forms (validate on blur, re-validate on change after first error), amount input polish ($ prefix, right-align, comma formatting)
+- [ ] 11-03-PLAN.md -- Global focus-visible rings, semantic HTML fixes (aria-labelledby, scope=col), empty state completeness audit, tabular-nums audit
 
 ## Progress
 
