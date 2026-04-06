@@ -127,7 +127,13 @@ export default function BudgetBarChart({ data }: BudgetBarChartProps) {
             axisLine={false}
             tickLine={false}
           />
-          <XAxis type="number" hide />
+          <XAxis
+            type="number"
+            tick={{ fill: CHART_COLORS.axis, fontSize: 11 }}
+            axisLine={false}
+            tickLine={false}
+            tickFormatter={(v: number) => `$${(v / 1000).toFixed(0)}K`}
+          />
           <Tooltip
             content={<CustomTooltip />}
             cursor={{ fill: 'rgba(255,255,255,0.03)' }}
@@ -136,11 +142,13 @@ export default function BudgetBarChart({ data }: BudgetBarChartProps) {
             dataKey="budgetNum"
             fill={CHART_COLORS.budgetMuted}
             radius={[0, 4, 4, 0]}
+            barSize={12}
             name="Presupuesto"
           />
           <Bar
             dataKey="spentNum"
             radius={[0, 4, 4, 0]}
+            barSize={12}
             name="Gastado"
           >
             {chartData.map((entry) => (

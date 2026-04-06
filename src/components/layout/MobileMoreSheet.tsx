@@ -23,27 +23,25 @@ export default function MobileMoreSheet({
     return pathname.startsWith(href)
   }
 
+  if (!isOpen) return null
+
   return (
     <>
       {/* Backdrop */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm"
-          onClick={onClose}
-          aria-hidden="true"
-        />
-      )}
+      <div
+        className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm md:hidden"
+        onClick={onClose}
+        aria-hidden="true"
+      />
 
       {/* Sheet */}
       <div
         className={cn(
-          'fixed inset-x-0 bottom-0 z-50',
+          'fixed inset-x-0 bottom-0 z-50 md:hidden',
           'bg-bg-card rounded-t-xl border-t border-border',
-          'transform transition-transform duration-300 ease-out',
-          isOpen ? 'translate-y-0' : 'translate-y-full',
         )}
         role="dialog"
-        aria-modal={isOpen}
+        aria-modal="true"
         aria-label="Menu adicional"
       >
         {/* Drag handle indicator */}
