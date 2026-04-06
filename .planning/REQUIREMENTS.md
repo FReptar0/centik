@@ -10,10 +10,10 @@ Requirements for Glyph Finance design system overhaul. Docs-only milestone — n
 ### Design Tokens
 
 - [x] **TOKENS-01**: STYLE_GUIDE.md color palette replaced with Glyph Finance tokens (OLED #000000 bg, #0A0A0A secondary, #141414 surface, #222222 borders, #E8E8E8 text, #CCFF00 accent, #FF3333 negative, #00E676 positive, #1E1E1E dot-matrix)
-- [ ] **TOKENS-02**: STYLE_GUIDE.md typography updated to monospaced numbers (JetBrains Mono/Space Mono) + geometric sans headings (Outfit/Satoshi), with 3-level hierarchy (Display, Body, Meta) and uppercase letterspaced metadata
-- [ ] **TOKENS-03**: STYLE_GUIDE.md spacing and radius updated (20-24px card padding, 12px gaps, 16px margins, 16px card radius, 12px button radius, 24px modal radius)
+- [x] **TOKENS-02**: STYLE_GUIDE.md typography updated to monospaced numbers (JetBrains Mono/Space Mono) + geometric sans headings (Outfit/Satoshi), with 3-level hierarchy (Display, Body, Meta) and uppercase letterspaced metadata
+- [x] **TOKENS-03**: STYLE_GUIDE.md spacing and radius updated (20-24px card padding, 12px gaps, 16px margins, 16px card radius, 12px button radius, 24px modal radius)
 - [x] **TOKENS-04**: STYLE_GUIDE.md shadows replaced with elevation-only hierarchy (no decorative borders, bg shift for depth: #000000 → #0A0A0A → #141414)
-- [ ] **TOKENS-05**: STYLE_GUIDE.md Tailwind config section updated with new Glyph Finance CSS @theme tokens
+- [x] **TOKENS-05**: STYLE_GUIDE.md Tailwind config section updated with new Glyph Finance CSS @theme tokens
 
 ### Components
 
@@ -83,10 +83,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | TOKENS-01 | Phase 12 | Complete |
-| TOKENS-02 | Phase 12 | Pending |
-| TOKENS-03 | Phase 12 | Pending |
+| TOKENS-02 | Phase 12 | Complete |
+| TOKENS-03 | Phase 12 | Complete |
 | TOKENS-04 | Phase 12 | Complete |
-| TOKENS-05 | Phase 12 | Pending |
+| TOKENS-05 | Phase 12 | Complete |
 | COMP-01 | Phase 13 | Pending |
 | COMP-02 | Phase 13 | Pending |
 | COMP-03 | Phase 13 | Pending |

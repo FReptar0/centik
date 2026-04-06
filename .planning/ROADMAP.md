@@ -30,7 +30,7 @@ See `.planning/milestones/v1.0-ROADMAP.md` for full phase details.
 
 **Milestone Goal:** Replace the current cyan/dark design system documentation with a Nothing OS-inspired "Glyph Finance" aesthetic across all reference documents. No code changes -- docs-only milestone establishing the visual language for future implementation.
 
-- [ ] **Phase 12: Design Tokens** - Replace STYLE_GUIDE.md foundational sections with Glyph Finance color palette, typography, spacing, elevation, and Tailwind config
+- [x] **Phase 12: Design Tokens** - Replace STYLE_GUIDE.md foundational sections with Glyph Finance color palette, typography, spacing, elevation, and Tailwind config (completed 2026-04-06)
 - [ ] **Phase 13: Component Specifications** - Update all component specs in STYLE_GUIDE.md to reflect new tokens (cards, buttons, progress bars, charts, inputs, tables, badges)
 - [ ] **Phase 14: Signature Visual Identity** - Document the six distinctive Glyph Finance visual elements that differentiate it from generic dark themes
 - [ ] **Phase 15: UX Interaction Patterns** - Update UX_RULES.md with new navigation model, amount display, transaction flow, responsive patterns, and form patterns
@@ -121,7 +121,7 @@ Phases execute in numeric order: 12 -> 13 -> 14 -> 15 -> 16
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 1-11 | v1.0 | 27/27 | Complete | 2026-04-06 |
-| 12. Design Tokens | v1.1 | 1/2 | In Progress | - |
+| 12. Design Tokens | 2/2 | Complete   | 2026-04-06 | - |
 | 13. Component Specifications | v1.1 | 0/2 | Not started | - |
 | 14. Signature Visual Identity | v1.1 | 0/2 | Not started | - |
 | 15. UX Interaction Patterns | v1.1 | 0/2 | Not started | - |
