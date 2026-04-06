@@ -118,7 +118,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### UX & Polish
 
-- [ ] **UX-01**: Toast notifications for all mutations (success: 3s green, error: 5s red)
+- [x] **UX-01**: Toast notifications for all mutations (success: 3s green, error: 5s red)
 - [ ] **UX-02**: Skeleton loading states for all pages (no generic spinners)
 - [ ] **UX-03**: Empty states with icon, descriptive text, and CTA for all sections
 - [ ] **UX-04**: Form validation on blur with error messages below inputs
@@ -246,7 +246,7 @@ Deferred to future release. Tracked but not in current roadmap.
 | HIST-04 | Phase 10 | Complete |
 | HIST-05 | Phase 10 | Complete |
 | HIST-06 | Phase 10 | Complete |
-| UX-01 | Phase 11 | Pending |
+| UX-01 | Phase 11 | Complete |
 | UX-02 | Phase 11 | Pending |
 | UX-03 | Phase 11 | Pending |
 | UX-04 | Phase 11 | Pending |
