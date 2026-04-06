@@ -2,7 +2,7 @@
 
 ## What This Is
 
-Centik is an open-source personal finance tracking web app designed for the Mexican quincenal (biweekly) pay cycle. It combines debt tracking, variable income management (employment + freelance), category-based budgeting, and annual history visualization in a single dark-themed interface. Manual entry with smart UX — no bank connections, no scraping.
+Centik is an open-source personal finance tracking web app designed for the Mexican quincenal (biweekly) pay cycle. It provides a complete financial dashboard with 6 KPIs and 3 charts, quick transaction registration (<30 seconds), debt tracking with health indicators, quincenal budgeting with traffic-light progress bars, income management, and annual history with atomic period close. Dark-themed, responsive (desktop sidebar + mobile bottom tabs), single-user, manual entry — no bank connections.
 
 ## Core Value
 
@@ -12,78 +12,74 @@ A single user can register a financial transaction in under 30 seconds and immed
 
 ### Validated
 
-(None yet — ship to validate)
+- ✓ Dashboard with 6 KPIs + 3 Recharts charts + recent transactions — v1.0
+- ✓ Quick transaction registration (<30 seconds via FAB modal) — v1.0
+- ✓ Transaction CRUD with filterable list, URL-persisted filters, "Cargar más" pagination — v1.0
+- ✓ Credit card debt tracking (utilization bar, dates, estimated interest) — v1.0
+- ✓ Personal loan tracking (progress bar, remaining months, total remaining) — v1.0
+- ✓ Manual debt balance updates (inline edit) — v1.0
+- ✓ Quincenal budget input with auto-calculated monthly/semester/annual views — v1.0
+- ✓ Budget progress bars with traffic light system — v1.0
+- ✓ Income source management with frequency-based monthly equivalents — v1.0
+- ✓ Annual history pivot table with atomic period close ($transaction across 5 tables) — v1.0
+- ✓ Read-only mode for closed periods with ghost reopen button — v1.0
+- ✓ Auto-create current period on app load — v1.0
+- ✓ Category management with preset icon/color pickers — v1.0
+- ✓ Dark mode UI with cyan accent, responsive sidebar/bottom tabs — v1.0
+- ✓ Toast notifications (sonner), blur validation, focus rings, semantic HTML, tabular-nums — v1.0
 
 ### Active
 
-- [ ] Dashboard with 6 KPIs (monthly income, expenses, available, total debt, savings rate, debt-to-income ratio)
-- [ ] Dashboard charts: budget vs spent bar chart, 6-month trend area chart, expense distribution donut chart
-- [ ] Dashboard recent transactions (last 8 movements)
-- [ ] Quick transaction registration (<30 seconds, 4 taps/clicks)
-- [ ] Transaction CRUD with filterable list (category, type, date range, payment method)
-- [ ] Credit card debt tracking (utilization, cut-off/payment dates, estimated monthly interest)
-- [ ] Personal loan tracking (% paid, remaining months, total remaining)
-- [ ] Manual debt balance updates
-- [ ] Quincenal budget input with auto-calculated monthly/semester/annual views
-- [ ] Budget progress bars with traffic light system (green <80%, orange 80-100%, red >100%)
-- [ ] Income source management with frequency (quincenal, monthly, weekly, variable)
-- [ ] Automatic monthly equivalent calculation for all income frequencies
-- [ ] Annual history pivot table (12 months: income, expenses, savings, savings rate, debt at close, debt payments)
-- [ ] Period close as atomic transaction (snapshot MonthlySummary, create next period, copy budgets)
-- [ ] Read-only mode for closed periods with reopen option
-- [ ] Auto-create current period on app load
-- [ ] Predefined expense categories with Lucide icons (Comida, Servicios, Entretenimiento, Suscripciones, Transporte, Otros)
-- [ ] Predefined income categories (Empleo, Freelance)
-- [ ] Custom category creation
-- [ ] Dark mode UI with cyan accent (#22d3ee)
-- [ ] Responsive layout: sidebar (desktop) / bottom tab bar (mobile)
-- [ ] Floating "+" button for quick transaction entry (always visible)
+- [ ] System of value units (UDI, UMA, USD) with configurable rate providers
+- [ ] Asset/investment tracking (PPR, CETES, funds) with MXN conversion
+- [ ] Authentication (NextAuth/Clerk) for multi-user support
+- [ ] PWA with offline support
 
 ### Out of Scope
 
 - Bank API connections — manual entry only, bank APIs in Mexico are unreliable
-- Multi-user authentication — single user in MVP, architecture supports future multi-tenant
 - AI/ML features — no predictions, recommendations, or automated categorization
-- Statement scraping — no PDF/CSV import in v1
-- Complex investments (options, futures) — simple asset tracking in v2 only
-- Real-time chat or notifications — not needed for single-user finance app
-- SSG/ISR — all pages are dynamic (personal data)
-- Client-side state management (Redux, Zustand) — React state + server components suffice
+- Statement scraping — no PDF/CSV import
+- Complex investments (options, futures, rebalancing)
+- Light mode — dark-only is the design decision
+- Real-time notifications — not needed for single-user
 
 ## Context
 
-- **Target market:** Mexican personal finance, quincenal pay cycle is the standard
-- **Monetization:** None — open source project, code quality and documentation are priorities
-- **Existing documentation:** DFR.md (entities, API routes, business rules), STYLE_GUIDE.md (design system), UX_RULES.md (interaction patterns), DATA_FLOW.md (queries, mutations, revalidation)
-- **v2 planned modules:** ValueUnit/UnitRate/Asset entities for investment tracking (UDI, UMA, USD); authentication via NextAuth/Clerk; PWA offline support
-- **All monetary values stored as BigInt centavos** — critical architectural decision to eliminate floating point errors
-- **Interest rates stored as Int basis points** (4500 = 45.00%)
-- **Existing codebase:** Next.js project scaffolded via Create Next App, no application code yet
+- **Shipped:** v1.0 MVP with 13,696 lines of TypeScript across 102 source files
+- **Tech stack (actual):** Next.js 16.2.2 + React 19.2.4 + Tailwind v4 + Prisma 7 + Recharts + Zod v4 + Vitest + npm
+- **Tests:** 394 unit tests passing, 100% coverage on src/lib/
+- **Database:** 10 Prisma models (7 MVP + 3 v2 stubs), idempotent seed with realistic demo data
+- **Target market:** Mexican personal finance, quincenal pay cycle
+- **Monetization:** None — open source, code quality and documentation are priorities
+- **Documentation:** DFR.md, STYLE_GUIDE.md, UX_RULES.md, DATA_FLOW.md all remain as reference
 
 ## Constraints
 
-- **Tech stack:** Next.js 14+ App Router, TypeScript strict, PostgreSQL/Docker, Prisma, Tailwind CSS, Recharts, Zod, Vitest+Playwright, pnpm — all decided, non-negotiable
-- **Quality:** Zero `any` in TypeScript, zero skipped tests, every endpoint Zod-validated, full Quality Loop (build→lint→format→test) before every commit
-- **Monetary:** All money as BigInt centavos, never float. Conversion only at presentation layer
-- **Iconography:** Lucide React exclusively, no emojis anywhere in UI
-- **Serialization:** BigInt→String via serializeBigInts() for all JSON responses
-- **Security:** Zod validation on every endpoint, Prisma parameterized queries only, no secrets in code
-- **Open source:** Code must be readable, well-documented, contributor-friendly. Files <300 lines, functions <50 lines
+- **Tech stack:** Next.js 16 App Router, TypeScript strict, PostgreSQL/Docker, Prisma 7, Tailwind v4 CSS-first, Recharts, Zod v4, Vitest+Playwright, npm
+- **Quality:** Zero `any`, zero skipped tests, every endpoint Zod-validated, Quality Loop before every commit
+- **Monetary:** All money as BigInt centavos, never float. toCents() uses string-split parsing (no float contamination)
+- **Iconography:** Lucide React exclusively, no emojis. DynamicIcon with static import map (~30 icons)
+- **Serialization:** BigInt→String via serializeBigInts() at Server Component boundary
+- **i18n:** Spanish by default (nav labels, Zod messages), i18n-ready structure (constants files)
+- **Open source:** Files <300 lines, functions <50 lines (2 components slightly exceed — noted for refactor)
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| BigInt centavos for all money | Eliminates floating point errors entirely; integer arithmetic only | — Pending |
-| Basis points for interest rates | 4500 = 45.00%, two decimal precision without floats | — Pending |
-| No auth in MVP | Single user app, complexity not justified for personal use | — Pending |
-| Dark mode only (no light toggle) | Finance apps benefit from calm, dark aesthetic; reduces scope | — Pending |
-| Manual debt balance updates | No bank connections; user updates saldo manually | — Pending |
-| Quincenal as budget input unit | Matches Mexican pay cycle; auto-calculate monthly/annual | — Pending |
-| Period = calendar month | Simple, universal; first day to last day of month | — Pending |
-| Server Components by default | Data-heavy app; minimize client JS; charts are Client Components | — Pending |
-| Server Actions over API routes | Preferred for mutations; API routes only when Actions don't fit | — Pending |
-| Lucide React, no emojis | Professional look for open source; dynamic icon rendering by name from DB | — Pending |
+| BigInt centavos for all money | Eliminates floating point errors entirely | ✓ Good |
+| Basis points for interest rates | 4500 = 45.00%, two decimal precision without floats | ✓ Good |
+| No auth in MVP | Single user app, complexity not justified | ✓ Good |
+| Dark mode only | Finance apps benefit from calm aesthetic; reduces scope | ✓ Good |
+| npm over pnpm | User preference despite CLAUDE.md specifying pnpm | ✓ Good |
+| toCents() string-split parsing | Prevents float contamination at the input boundary | ✓ Good |
+| Tailwind v4 CSS @theme | No tailwind.config.ts needed, native dark palette | ✓ Good |
+| Server Actions over API routes | Less boilerplate, better type safety for mutations | ✓ Good |
+| Inline budget copy in $transaction | copyBudgetsFromPreviousPeriod uses external Prisma instance — inline for atomicity | ✓ Good |
+| Zod v4 Spanish messages | { error: "..." } syntax, z.locales.es() fallback | ✓ Good |
+| Period state via URL params | Compatible with Server Component data fetching, bookmarkable | ✓ Good |
+| FAB separate from tab bar | Avoids confusion about [+] context — always means "new transaction" | ✓ Good |
 
 ---
-*Last updated: 2026-04-04 after initialization*
+*Last updated: 2026-04-06 after v1.0 milestone*
