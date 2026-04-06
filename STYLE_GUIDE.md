@@ -520,6 +520,73 @@ transition: background-color 300ms ease;
 
 ---
 
+## Identidad Visual
+
+Las seis firmas visuales que diferencian a Glyph Finance de cualquier tema oscuro generico. Inspiradas en la interfaz glyph de Nothing OS, la estetica de impresion dot-matrix y la precision de terminales financieras clasicas. Un desarrollador que lea esta seccion entiende los elementos de identidad sin necesidad de buscar en otras secciones del documento — cada firma incluye su especificacion completa o una referencia directa a donde esta documentada.
+
+### 1. Textura Dot-Matrix
+
+Textura sutil de puntos en cuadricula que se aplica como fondo en cards premium. Inspirada en papel de impresion dot-matrix y la estetica retro-futurista de Nothing OS.
+
+**Contextos de uso:** Hero cards EXCLUSIVAMENTE — card de balance del dashboard y card de comparacion de analytics. NO se aplica a todas las cards elevadas, NO a headers de seccion. Es un indicador premium, no un patron universal.
+
+**Especificacion de cuadricula:**
+
+- Patron: cuadricula de 8x8 pixeles con puntos pequenos
+- Color de punto: `--color-dot-matrix` (#1E1E1E) al 40% de opacidad
+- Cobertura: superficie completa de la card como textura de fondo
+- Efecto: "Un susurro, no un grito" — textura apenas visible que recompensa la inspeccion cercana
+
+**Implementacion CSS (listo para copiar):**
+
+Enfoque 1 — SVG background-image (preferido):
+
+```css
+.dot-matrix-bg {
+  background-image: url("data:image/svg+xml,%3Csvg width='8' height='8' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='4' cy='4' r='0.75' fill='%231E1E1E' fill-opacity='0.4'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 8px 8px;
+}
+```
+
+Enfoque 2 — CSS radial-gradient (fallback):
+
+```css
+.dot-matrix-bg {
+  background-image: radial-gradient(circle, rgba(30, 30, 30, 0.4) 0.75px, transparent 0.75px);
+  background-size: 8px 8px;
+}
+```
+
+**Nota de composicion:** La textura dot-matrix se superpone SOBRE el fondo `--color-surface-elevated` de la card. Aplicar via pseudo-elemento (`::before` con `position: absolute; inset: 0; pointer-events: none`) o como capa adicional de background para que no interfiera con el contenido de la card.
+
+### 2. Indicador Battery-Bar (Segmentado)
+
+Barra de progreso segmentada con 10 segmentos rectangulares separados por gaps de 2px. Colores semaforo: chartreuse (`--color-accent`) por debajo del 80%, naranja (`--color-warning`) entre 80-99%, rojo (`--color-negative`) al 100% o mas. Indicador visual para progreso de presupuesto, utilizacion de credito y avance de pago de deuda.
+
+**Uso:** Presupuestos, utilizacion de credito, progreso de pago de deudas.
+
+Especificacion completa en **Componentes Base > Progress Bars (Battery-Bar)**.
+
+### 3. Display Financiero Monoespaciado
+
+Todos los numeros financieros usan IBM Plex Mono (`--font-mono`) con signo de peso silenciado a menor tamano en `--color-text-tertiary` y digitos codificados por color segun direccion: positivos en `--color-positive`, negativos en `--color-negative`, neutros en `--color-text-primary`.
+
+**Regla de layout:** Signo "$" alineado a la izquierda y silenciado en `--color-text-tertiary`. Digitos alineados a la derecha en `--color-text-primary`. Siempre `font-variant-numeric: tabular-nums` para alineacion en columnas.
+
+Especificacion completa en **Tipografia > Numeros Financieros**.
+
+### 4. Iconos de Categoria (Pixel-Art)
+<!-- Phase 14 Plan 02 -->
+
+### 5. Status Dot (Indicador de Estado)
+<!-- Phase 14 Plan 02 -->
+
+### 6. Micro-Animacion Pixel-Dissolve
+<!-- Phase 14 Plan 02 -->
+
+---
+
 ## Formato de Montos
 
 ### Display General
