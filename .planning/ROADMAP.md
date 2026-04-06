@@ -93,7 +93,7 @@ Plans:
   2. Amount display section documents monospaced numbers, muted smaller dollar sign, off-white digits, and color-coding by direction -- consistent with SIG-03 spec
   3. Transaction flow section documents bottom sheet modal (85% screen height), category circular icon grid with accent ring selection, and optional custom dark numpad
   4. Responsive patterns and form patterns sections reference new component specs (pill buttons, underline inputs in modals, uppercase letterspaced labels, circular category grid) with no leftover references to the old design system
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
 - [ ] 15-01: Navigation model, amount display rules, and transaction flow in UX_RULES.md
