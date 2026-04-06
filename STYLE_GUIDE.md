@@ -133,13 +133,100 @@ La profundidad se comunica unicamente a traves de la diferencia de luminosidad e
 
 ## Tipografia
 
-[Completar en Plan 12-02]
+### Familias Tipograficas
+
+El sistema usa dos familias complementarias:
+
+```
+--font-sans: 'Satoshi', system-ui, -apple-system, sans-serif
+--font-mono: 'IBM Plex Mono', 'Fira Code', monospace
+```
+
+- **Satoshi** — Sans-serif geometrica para titulos, cuerpo de texto y etiquetas. Reemplaza DM Sans. Se carga via `next/font` (local o Google Fonts).
+- **IBM Plex Mono** — Monoespaciada para TODOS los numeros financieros en toda la app: tablas, listas, cards, inputs, KPIs, badges. Reemplaza JetBrains Mono. Se carga via `next/font/google` o `next/font/local`.
+
+### Jerarquia de 5 Niveles
+
+| Nivel   | Tamano      | Fuente          | Peso            | Uso                                              |
+|---------|-------------|-----------------|-----------------|--------------------------------------------------|
+| Display | 36px / 40px | Satoshi Bold    | 700             | Numeros hero en KPIs, totales del dashboard. Maximo 1-2 por pagina. |
+| Heading | 20px / 28px | Satoshi Semibold| 600             | Titulos de pagina, headers de seccion, titulos de cards. |
+| Body    | 14px / 20px | Satoshi Regular/Medium | 400 o 500 | Texto principal, descripciones, contenido de tablas. |
+| Label   | 12px / 16px | Satoshi Medium  | 500             | Etiquetas de formulario, headers de columnas, categorias de metadata. Uppercase, letter-spacing +2px, `--color-text-secondary`. |
+| Meta    | 11px / 14px | Satoshi Regular | 400             | Timestamps, IDs, informacion auxiliar. `--color-text-tertiary`. |
+
+### Numeros Financieros
+
+Todos los numeros financieros usan **IBM Plex Mono** con las siguientes reglas:
+
+- **Peso:** 600 (Semibold) o 700 (Bold) segun contexto
+- **Alineacion:** Siempre `font-variant-numeric: tabular-nums` para alineacion en columnas
+- **Signo de peso:** El "$" se muestra a un tamano menor y en `--color-text-tertiary` (silenciado). En un monto Display de 36px, el "$" se renderiza a ~24px y silenciado
+- **Colores segun contexto:**
+  - Montos positivos: `--color-positive`
+  - Montos negativos: `--color-negative`
+  - Montos neutros: `--color-text-primary` (#E8E8E8)
+
+### Estilo de Metadata y Etiquetas
+
+Las etiquetas, headers de columna y subtitulos de seccion siguen un estilo consistente:
+
+```
+text-transform: uppercase
+letter-spacing: +2px (equivalente a tracking-widest)
+Nivel: Label (12px) o Meta (11px)
+Color: --color-text-secondary o --color-text-tertiary
+```
+
+Se usa para: etiquetas de formulario, headers de columna en tablas, subtitulos de seccion, texto de badges.
+
+### Reglas Tipograficas
+
+- Las etiquetas y descripciones siempre tienen **menos peso visual** que el valor que describen
+- **No usar ALL CAPS** en texto de cuerpo — solo para el nivel Label/metadata (maximo 3 palabras)
+- **Line-height minimo** de 1.4 para bloques de texto legible
+- Nunca mezclar Satoshi y IBM Plex Mono en la misma linea de texto (excepto cuando un monto aparece inline en una oracion)
 
 ---
 
 ## Espaciado y Radios
 
-[Completar en Plan 12-02]
+### Escala de Espaciado
+
+Base de 4px con ajustes para la estetica Glyph Finance:
+
+| Token | Valor | Uso |
+|-------|-------|-----|
+| 1     | 4px   | Espaciado inline minimo |
+| 2     | 8px   | Gap icono-a-texto, padding interno de badges |
+| 3     | 12px  | Gap entre elementos en listas compactas, gap de grid entre cards |
+| 4     | 16px  | Margenes de pagina (mobile), gap titulo de seccion a contenido |
+| 5     | 20px  | Padding interno de cards (estandar) |
+| 6     | 24px  | Padding interno de cards (generoso, para KPI cards), separacion de secciones dentro de cards |
+| 8     | 32px  | Separacion entre cards o secciones de pagina |
+
+### Reglas de Espaciado
+
+| Contexto                  | Valor       |
+|---------------------------|-------------|
+| Cards: padding interno    | 20px (estandar), 24px (KPI cards generosas) |
+| Grid de cards: gap        | 12px        |
+| Margenes de pagina        | 16px (mobile), 24px (desktop) |
+| Celdas de tabla           | 12px vertical, 16px horizontal |
+| Gap vertical en formularios | 14px      |
+| Padding de modales        | 24px        |
+
+### Escala de Radios
+
+```
+--radius-sm:   8px     → Badges, tags, elementos pequenos
+--radius-md:   12px    → Botones, inputs
+--radius-lg:   16px    → Cards
+--radius-xl:   24px    → Modales
+--radius-full: 9999px  → Elementos circulares, badges tipo pill
+```
+
+Todos los radios han aumentado respecto al sistema anterior. Los botones ahora son 12px (ligeramente pill), cards 16px (mas redondeadas), modales 24px (significativamente mas redondeadas). El efecto general es una interfaz moderna sin llegar a ser burbujeante.
 
 ---
 
