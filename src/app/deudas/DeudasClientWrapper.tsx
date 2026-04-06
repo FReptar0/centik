@@ -33,7 +33,7 @@ export default function DeudasClientWrapper({ debts, monthlyIncome }: DeudasClie
   }
 
   return (
-    <div>
+    <div className="max-w-4xl">
       <PageHeader
         title="Deudas"
         action={

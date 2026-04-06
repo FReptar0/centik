@@ -112,9 +112,15 @@ function CategoryRow({ category }: CategoryRowProps) {
         />
       </div>
 
-      {/* Name + type badge */}
+      {/* Name + color dot + type badge */}
       <div className="flex-1 min-w-0">
-        <p className="font-medium text-text-primary truncate">{category.name}</p>
+        <div className="flex items-center gap-2">
+          <span
+            className="inline-block h-2.5 w-2.5 rounded-full shrink-0"
+            style={{ backgroundColor: category.color }}
+          />
+          <p className="font-medium text-text-primary truncate">{category.name}</p>
+        </div>
         <span
           className={cn(
             'text-[11px] font-semibold uppercase tracking-wide',

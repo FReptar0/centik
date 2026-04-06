@@ -23,7 +23,7 @@ export default function ConfiguracionClientWrapper({ categories }: Configuracion
   }
 
   return (
-    <div>
+    <div className="max-w-3xl">
       <PageHeader
         title="Configuracion"
         action={

@@ -95,12 +95,22 @@ export async function getDashboardKPIs(periodId: string): Promise<DashboardKPIs>
     )
   }
 
-  // Derived: debtToIncomeRatio = totalDebt / income * 10000 (basis points)
+  // Derived: debtToIncomeRatio = monthly debt payments / income * 100
+  // Uses minimumPayment (credit cards) + monthlyPayment (loans) — standard DTI
+  const activeDebts = await prisma.debt.findMany({
+    where: { isActive: true },
+    select: { minimumPayment: true, monthlyPayment: true },
+  })
+  let totalMonthlyPayments = BigInt(0)
+  for (const debt of activeDebts) {
+    if (debt.minimumPayment) totalMonthlyPayments += debt.minimumPayment
+    if (debt.monthlyPayment) totalMonthlyPayments += debt.monthlyPayment
+  }
+
   let debtToIncomeRatio = 0
-  if (monthlyEstimatedIncome > BigInt(0)) {
-    debtToIncomeRatio = Number(
-      (totalDebt * BigInt(10000)) / monthlyEstimatedIncome,
-    )
+  if (monthlyEstimatedIncome > BigInt(0) && totalMonthlyPayments > BigInt(0)) {
+    debtToIncomeRatio =
+      Number((totalMonthlyPayments * BigInt(10000)) / monthlyEstimatedIncome) / 100
   }
 
   return {

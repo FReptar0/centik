@@ -24,10 +24,10 @@ function getSavingsRateColor(rate: number): KPICardProps['color'] {
   return 'warning'
 }
 
-/** Determines color for debt-to-income ratio based on thresholds */
+/** Determines color for debt-to-income ratio based on thresholds (percentage) */
 function getDebtToIncomeColor(ratio: number): KPICardProps['color'] {
-  if (ratio < 3000) return 'positive'
-  if (ratio <= 5000) return 'warning'
+  if (ratio < 35) return 'positive'
+  if (ratio <= 50) return 'warning'
   return 'negative'
 }
 
@@ -65,7 +65,7 @@ export default function KPIGrid({ kpis }: KPIGridProps) {
     },
     {
       label: 'Deuda/Ingreso',
-      value: formatRate(kpis.debtToIncomeRatio),
+      value: `${kpis.debtToIncomeRatio.toFixed(1)}%`,
       icon: 'percent',
       color: getDebtToIncomeColor(kpis.debtToIncomeRatio),
     },

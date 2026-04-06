@@ -109,7 +109,7 @@ export default function MovimientosClientWrapper({
   }
 
   return (
-    <div>
+    <div className="max-w-4xl">
       <PageHeader
         title="Movimientos"
         periodSelector={<PeriodSelector isClosed={periodIsClosed} />}

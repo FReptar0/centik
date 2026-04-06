@@ -23,7 +23,7 @@ const CHART_COLORS = {
   axis: '#64748b',
   tooltipBg: '#0a0f1a',
   tooltipBorder: '#1e293b',
-  budgetMuted: '#334155',
+  budgetMuted: '#475569',
 }
 
 interface ChartDataPoint {

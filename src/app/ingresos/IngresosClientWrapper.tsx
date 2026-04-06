@@ -32,7 +32,7 @@ export default function IngresosClientWrapper({ sources }: IngresosClientWrapper
   }
 
   return (
-    <div>
+    <div className="max-w-4xl">
       <PageHeader
         title="Ingresos"
         action={
