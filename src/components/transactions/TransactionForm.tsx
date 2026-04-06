@@ -6,6 +6,7 @@ import { ChevronDown } from 'lucide-react'
 import Modal from '@/components/ui/Modal'
 import DynamicIcon from '@/components/ui/DynamicIcon'
 import { cn, toCents } from '@/lib/utils'
+import { createTransactionSchema } from '@/lib/validators'
 import { createTransaction, updateTransaction } from '@/app/movimientos/actions'
 import { PAYMENT_METHODS_DISPLAY } from '@/lib/constants'
 import { TransactionType } from '@/types'
@@ -90,7 +91,45 @@ function TransactionFormContent({
     transaction?.incomeSourceId ?? '',
   )
   const [errors, setErrors] = useState<Record<string, string[]>>({})
+  const [touched, setTouched] = useState<Set<string>>(new Set())
   const [submitting, setSubmitting] = useState(false)
+
+  function getFormPayload() {
+    return {
+      type,
+      amount: toCents(amount || '0'),
+      categoryId: categoryId ?? '',
+      date,
+      description: description.trim() || undefined,
+      paymentMethod: paymentMethod ?? undefined,
+      notes: notes.trim() || undefined,
+      incomeSourceId: incomeSourceId || undefined,
+    }
+  }
+
+  function validateField(fieldName: string, data: Record<string, unknown>) {
+    const result = createTransactionSchema.safeParse(data)
+    if (result.success) {
+      setErrors((prev) => {
+        const next = { ...prev }
+        delete next[fieldName]
+        return next
+      })
+    } else {
+      const fieldErrors = result.error.issues
+        .filter((issue) => issue.path[0] === fieldName)
+        .map((issue) => issue.message)
+      setErrors((prev) => ({
+        ...prev,
+        [fieldName]: fieldErrors.length > 0 ? fieldErrors : prev[fieldName] ?? [],
+      }))
+    }
+  }
+
+  function handleBlur(fieldName: string) {
+    setTouched((prev) => new Set(prev).add(fieldName))
+    validateField(fieldName, getFormPayload())
+  }
 
   const filteredCategories = categories.filter((cat) => {
     if (type === TransactionType.EXPENSE) {
@@ -186,7 +225,15 @@ function TransactionFormContent({
             inputMode="decimal"
             autoFocus
             value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+            onChange={(e) => {
+              const v = e.target.value
+              setAmount(v)
+              if (touched.has('amount')) {
+                const payload = { ...getFormPayload(), amount: toCents(v || '0') }
+                setTimeout(() => validateField('amount', payload), 0)
+              }
+            }}
+            onBlur={() => handleBlur('amount')}
             placeholder="0.00"
             className={cn(
               'w-full rounded-lg border bg-bg-input pl-10 pr-3 py-3 text-2xl font-bold text-text-primary text-right',

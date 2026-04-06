@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import Modal from '@/components/ui/Modal'
 import { cn, toCents } from '@/lib/utils'
 import { createIncomeSource, updateIncomeSource } from '@/app/ingresos/actions'
+import { createIncomeSourceSchema } from '@/lib/validators'
 import { FREQUENCY_DISPLAY, INCOME_SOURCE_TYPES } from '@/lib/constants'
 import { Frequency } from '@/types'
 import type { SerializedIncomeSource } from '@/types'
@@ -56,7 +57,41 @@ function IncomeSourceFormContent({ source, onClose }: FormContentProps) {
   const [frequency, setFrequency] = useState<string>(source?.frequency ?? 'QUINCENAL')
   const [type, setType] = useState<string>(source?.type ?? 'EMPLOYMENT')
   const [errors, setErrors] = useState<Record<string, string[]>>({})
+  const [touched, setTouched] = useState<Set<string>>(new Set())
   const [submitting, setSubmitting] = useState(false)
+
+  function getFormPayload() {
+    return {
+      name: name.trim(),
+      defaultAmount: toCents(amount || '0'),
+      frequency,
+      type,
+    }
+  }
+
+  function validateField(fieldName: string, data: Record<string, unknown>) {
+    const result = createIncomeSourceSchema.safeParse(data)
+    if (result.success) {
+      setErrors((prev) => {
+        const next = { ...prev }
+        delete next[fieldName]
+        return next
+      })
+    } else {
+      const fieldErrors = result.error.issues
+        .filter((issue) => issue.path[0] === fieldName)
+        .map((issue) => issue.message)
+      setErrors((prev) => ({
+        ...prev,
+        [fieldName]: fieldErrors.length > 0 ? fieldErrors : prev[fieldName] ?? [],
+      }))
+    }
+  }
+
+  function handleBlur(fieldName: string) {
+    setTouched((prev) => new Set(prev).add(fieldName))
+    validateField(fieldName, getFormPayload())
+  }
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault()
@@ -100,7 +135,15 @@ function IncomeSourceFormContent({ source, onClose }: FormContentProps) {
           id="income-name"
           type="text"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            const v = e.target.value
+            setName(v)
+            if (touched.has('name')) {
+              const payload = { ...getFormPayload(), name: v.trim() }
+              setTimeout(() => validateField('name', payload), 0)
+            }
+          }}
+          onBlur={() => handleBlur('name')}
           placeholder="Ej. TerSoft"
           className={cn(
             'w-full rounded-lg border bg-bg-input px-3 py-2.5 text-sm text-text-primary',
@@ -132,7 +175,15 @@ function IncomeSourceFormContent({ source, onClose }: FormContentProps) {
             type="text"
             inputMode="decimal"
             value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+            onChange={(e) => {
+              const v = e.target.value
+              setAmount(v)
+              if (touched.has('defaultAmount')) {
+                const payload = { ...getFormPayload(), defaultAmount: toCents(v || '0') }
+                setTimeout(() => validateField('defaultAmount', payload), 0)
+              }
+            }}
+            onBlur={() => handleBlur('defaultAmount')}
             placeholder="0.00"
             className={cn(
               'w-full rounded-lg border bg-bg-input pl-7 pr-3 py-2.5 text-sm text-text-primary text-right',

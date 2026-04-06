@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import Modal from '@/components/ui/Modal'
 import DynamicIcon from '@/components/ui/DynamicIcon'
 import { cn } from '@/lib/utils'
+import { createCategorySchema } from '@/lib/validators'
 import { createCategory } from '@/app/configuracion/actions'
 
 interface CategoryFormProps {
@@ -66,7 +67,36 @@ function CategoryFormContent({ onClose }: FormContentProps) {
   const [icon, setIcon] = useState('')
   const [color, setColor] = useState('')
   const [errors, setErrors] = useState<Record<string, string[]>>({})
+  const [touched, setTouched] = useState<Set<string>>(new Set())
   const [submitting, setSubmitting] = useState(false)
+
+  function getFormPayload() {
+    return { name: name.trim(), icon, color, type: 'EXPENSE' as const }
+  }
+
+  function validateField(fieldName: string, data: Record<string, unknown>) {
+    const result = createCategorySchema.safeParse(data)
+    if (result.success) {
+      setErrors((prev) => {
+        const next = { ...prev }
+        delete next[fieldName]
+        return next
+      })
+    } else {
+      const fieldErrors = result.error.issues
+        .filter((issue) => issue.path[0] === fieldName)
+        .map((issue) => issue.message)
+      setErrors((prev) => ({
+        ...prev,
+        [fieldName]: fieldErrors.length > 0 ? fieldErrors : prev[fieldName] ?? [],
+      }))
+    }
+  }
+
+  function handleBlur(fieldName: string) {
+    setTouched((prev) => new Set(prev).add(fieldName))
+    validateField(fieldName, getFormPayload())
+  }
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault()
@@ -108,7 +138,15 @@ function CategoryFormContent({ onClose }: FormContentProps) {
           id="category-name"
           type="text"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            const v = e.target.value
+            setName(v)
+            if (touched.has('name')) {
+              const payload = { ...getFormPayload(), name: v.trim() }
+              setTimeout(() => validateField('name', payload), 0)
+            }
+          }}
+          onBlur={() => handleBlur('name')}
           placeholder="Ej. Mascotas"
           className={cn(
             'w-full rounded-lg border bg-bg-input px-3 py-2.5 text-sm text-text-primary',

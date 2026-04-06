@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import Modal from '@/components/ui/Modal'
 import { cn, toCents } from '@/lib/utils'
+import { createDebtSchema } from '@/lib/validators'
 import { createDebt, updateDebt } from '@/app/deudas/actions'
 import { DebtType } from '@/types'
 import type { SerializedDebt } from '@/types'
@@ -69,9 +70,55 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
   const [remainingMonths, setRemainingMonths] = useState(debt?.remainingMonths?.toString() ?? '')
 
   const [errors, setErrors] = useState<Record<string, string[]>>({})
+  const [touched, setTouched] = useState<Set<string>>(new Set())
   const [submitting, setSubmitting] = useState(false)
 
   const isCreditCard = type === 'CREDIT_CARD'
+
+  function getDebtPayload(): Record<string, unknown> {
+    const rateBps = Math.round(parseFloat(annualRate || '0') * 100)
+    const payload: Record<string, unknown> = {
+      name: name.trim(),
+      type,
+      currentBalance: toCents(currentBalance || '0'),
+      annualRate: rateBps,
+    }
+    if (type === 'CREDIT_CARD') {
+      if (creditLimit) payload.creditLimit = toCents(creditLimit)
+      if (minimumPayment) payload.minimumPayment = toCents(minimumPayment)
+      if (cutOffDay) payload.cutOffDay = parseInt(cutOffDay, 10)
+      if (paymentDueDay) payload.paymentDueDay = parseInt(paymentDueDay, 10)
+    } else {
+      if (originalAmount) payload.originalAmount = toCents(originalAmount)
+      if (monthlyPayment) payload.monthlyPayment = toCents(monthlyPayment)
+      if (remainingMonths) payload.remainingMonths = parseInt(remainingMonths, 10)
+    }
+    return payload
+  }
+
+  function validateField(fieldName: string, data: Record<string, unknown>) {
+    const result = createDebtSchema.safeParse(data)
+    if (result.success) {
+      setErrors((prev) => {
+        const next = { ...prev }
+        delete next[fieldName]
+        return next
+      })
+    } else {
+      const fieldErrors = result.error.issues
+        .filter((issue) => issue.path[0] === fieldName)
+        .map((issue) => issue.message)
+      setErrors((prev) => ({
+        ...prev,
+        [fieldName]: fieldErrors.length > 0 ? fieldErrors : prev[fieldName] ?? [],
+      }))
+    }
+  }
+
+  function handleBlur(fieldName: string) {
+    setTouched((prev) => new Set(prev).add(fieldName))
+    validateField(fieldName, getDebtPayload())
+  }
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault()
@@ -122,7 +169,15 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
           id="debt-name"
           type="text"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            const v = e.target.value
+            setName(v)
+            if (touched.has('name')) {
+              const payload = { ...getDebtPayload(), name: v.trim() }
+              setTimeout(() => validateField('name', payload), 0)
+            }
+          }}
+          onBlur={() => handleBlur('name')}
           placeholder="Ej. BBVA Oro"
           className={cn(inputClass, errors.name ? 'border-negative' : 'border-border')}
         />
@@ -160,6 +215,12 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
         value={currentBalance}
         onChange={setCurrentBalance}
         error={errors.currentBalance}
+        onFieldBlur={() => handleBlur('currentBalance')}
+        isTouched={touched.has('currentBalance')}
+        onRevalidate={(v) => {
+          const payload = { ...getDebtPayload(), currentBalance: toCents(v || '0') }
+          validateField('currentBalance', payload)
+        }}
       />
 
       {/* Annual Rate */}
@@ -170,7 +231,15 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
             type="text"
             inputMode="decimal"
             value={annualRate}
-            onChange={(e) => setAnnualRate(e.target.value)}
+            onChange={(e) => {
+              const v = e.target.value
+              setAnnualRate(v)
+              if (touched.has('annualRate')) {
+                const payload = { ...getDebtPayload(), annualRate: Math.round(parseFloat(v || '0') * 100) }
+                setTimeout(() => validateField('annualRate', payload), 0)
+              }
+            }}
+            onBlur={() => handleBlur('annualRate')}
             placeholder="45.00"
             className={cn(
               inputClass,
@@ -193,6 +262,12 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
             value={creditLimit}
             onChange={setCreditLimit}
             error={errors.creditLimit}
+            onFieldBlur={() => handleBlur('creditLimit')}
+            isTouched={touched.has('creditLimit')}
+            onRevalidate={(v) => {
+              const payload = { ...getDebtPayload(), creditLimit: toCents(v || '0') }
+              validateField('creditLimit', payload)
+            }}
           />
           <AmountField
             label="Pago minimo"
@@ -200,6 +275,12 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
             value={minimumPayment}
             onChange={setMinimumPayment}
             error={errors.minimumPayment}
+            onFieldBlur={() => handleBlur('minimumPayment')}
+            isTouched={touched.has('minimumPayment')}
+            onRevalidate={(v) => {
+              const payload = { ...getDebtPayload(), minimumPayment: toCents(v || '0') }
+              validateField('minimumPayment', payload)
+            }}
           />
           <div className="grid grid-cols-2 gap-3">
             <FormField label="Dia de corte" htmlFor="debt-cutoff" error={errors.cutOffDay}>
@@ -239,6 +320,12 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
             value={originalAmount}
             onChange={setOriginalAmount}
             error={errors.originalAmount}
+            onFieldBlur={() => handleBlur('originalAmount')}
+            isTouched={touched.has('originalAmount')}
+            onRevalidate={(v) => {
+              const payload = { ...getDebtPayload(), originalAmount: toCents(v || '0') }
+              validateField('originalAmount', payload)
+            }}
           />
           <AmountField
             label="Mensualidad"
@@ -246,6 +333,12 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
             value={monthlyPayment}
             onChange={setMonthlyPayment}
             error={errors.monthlyPayment}
+            onFieldBlur={() => handleBlur('monthlyPayment')}
+            isTouched={touched.has('monthlyPayment')}
+            onRevalidate={(v) => {
+              const payload = { ...getDebtPayload(), monthlyPayment: toCents(v || '0') }
+              validateField('monthlyPayment', payload)
+            }}
           />
           <FormField
             label="Meses restantes"
@@ -325,9 +418,21 @@ interface AmountFieldProps {
   value: string
   onChange: (v: string) => void
   error?: string[]
+  onFieldBlur?: () => void
+  isTouched?: boolean
+  onRevalidate?: (v: string) => void
 }
 
-function AmountField({ label, id, value, onChange, error }: AmountFieldProps) {
+function AmountField({
+  label,
+  id,
+  value,
+  onChange,
+  error,
+  onFieldBlur,
+  isTouched,
+  onRevalidate,
+}: AmountFieldProps) {
   return (
     <FormField label={label} htmlFor={id} error={error}>
       <div className="relative">
@@ -339,7 +444,14 @@ function AmountField({ label, id, value, onChange, error }: AmountFieldProps) {
           type="text"
           inputMode="decimal"
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => {
+            const v = e.target.value
+            onChange(v)
+            if (isTouched && onRevalidate) {
+              setTimeout(() => onRevalidate(v), 0)
+            }
+          }}
+          onBlur={onFieldBlur}
           placeholder="0.00"
           className={cn(
             inputClass,
