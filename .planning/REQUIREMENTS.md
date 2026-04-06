@@ -44,7 +44,7 @@ Requirements for Glyph Finance design system overhaul. Docs-only milestone — n
 
 ### References
 
-- [ ] **REF-01**: CLAUDE.md styling section updated to reference Glyph Finance tokens (colors, fonts, radius, spacing) instead of current cyan/dark palette
+- [x] **REF-01**: CLAUDE.md styling section updated to reference Glyph Finance tokens (colors, fonts, radius, spacing) instead of current cyan/dark palette
 
 ## v2 Requirements
 
@@ -105,7 +105,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | UX-03 | Phase 15 | Complete |
 | UX-04 | Phase 15 | Complete |
 | UX-05 | Phase 15 | Complete |
-| REF-01 | Phase 16 | Pending |
+| REF-01 | Phase 16 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 24 total
