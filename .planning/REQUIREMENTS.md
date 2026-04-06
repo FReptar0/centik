@@ -20,10 +20,10 @@ Requirements for Glyph Finance design system overhaul. Docs-only milestone — n
 - [x] **COMP-01**: Card specs updated (no visible borders, #141414 surface on #000000, 1px #222222 separator when stacked)
 - [x] **COMP-02**: Button specs updated to pill-shaped with accent fill for primary, ghost/outline for secondary
 - [x] **COMP-03**: Progress bar specs replaced with segmented battery-bar style (10 rectangular segments, 2px gaps, chartreuse fill)
-- [ ] **COMP-04**: Chart specs updated (no grid lines, dot endpoints, 1.5px stroke in accent, minimal axis labels)
-- [ ] **COMP-05**: Input specs updated (underline-only style for modal/sheet forms, standard style for desktop forms)
-- [ ] **COMP-06**: Table specs updated to match new elevation model and color tokens
-- [ ] **COMP-07**: Badge specs updated with new color palette and pill styling
+- [x] **COMP-04**: Chart specs updated (no grid lines, dot endpoints, 1.5px stroke in accent, minimal axis labels)
+- [x] **COMP-05**: Input specs updated (underline-only style for modal/sheet forms, standard style for desktop forms)
+- [x] **COMP-06**: Table specs updated to match new elevation model and color tokens
+- [x] **COMP-07**: Badge specs updated with new color palette and pill styling
 
 ### Signature Details
 
@@ -90,10 +90,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | COMP-01 | Phase 13 | Complete |
 | COMP-02 | Phase 13 | Complete |
 | COMP-03 | Phase 13 | Complete |
-| COMP-04 | Phase 13 | Pending |
-| COMP-05 | Phase 13 | Pending |
-| COMP-06 | Phase 13 | Pending |
-| COMP-07 | Phase 13 | Pending |
+| COMP-04 | Phase 13 | Complete |
+| COMP-05 | Phase 13 | Complete |
+| COMP-06 | Phase 13 | Complete |
+| COMP-07 | Phase 13 | Complete |
 | SIG-01 | Phase 14 | Pending |
 | SIG-02 | Phase 14 | Pending |
 | SIG-03 | Phase 14 | Pending |
