@@ -180,7 +180,7 @@ Plans:
   2. Period close button triggers atomic transaction: calculates totals, creates MonthlySummary, marks period closed, creates next period, copies budgets
   3. Confirmation modal shows preview of totals before close, and closed periods display lock icon with read-only banner
   4. User can reopen a closed period (deletes MonthlySummary, unlocks editing)
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
 - [ ] 10-01-PLAN.md -- History data queries (getMonthlySummariesForYear, getAvailableYears, getClosePeriodPreview) + closePeriod/reopenPeriod Server Actions with TDD tests
@@ -219,5 +219,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 7. Dashboard | 2/2 | Complete   | 2026-04-05 |
 | 8. Debts | 2/2 | Complete   | 2026-04-05 |
 | 9. Budget Configuration + Progress | 2/2 | Complete   | 2026-04-05 |
-| 10. History + Period Close | 0/2 | Not started | - |
+| 10. History + Period Close | 1/2 | In Progress|  |
 | 11. Polish + Accessibility | 0/3 | Not started | - |
