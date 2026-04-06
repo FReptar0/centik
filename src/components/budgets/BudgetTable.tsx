@@ -63,19 +63,19 @@ export default function BudgetTable({ budgets, onSave, isClosed }: BudgetTablePr
         <table className="w-full">
           <thead>
             <tr className="border-b border-border">
-              <th className="bg-bg-primary px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
+              <th scope="col" className="bg-bg-primary px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
                 Categoria
               </th>
-              <th className="bg-bg-primary px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary">
+              <th scope="col" className="bg-bg-primary px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary">
                 Quincenal
               </th>
-              <th className="bg-bg-primary px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary">
+              <th scope="col" className="bg-bg-primary px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary">
                 Mensual
               </th>
-              <th className="hidden bg-bg-primary px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary md:table-cell">
+              <th scope="col" className="hidden bg-bg-primary px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary md:table-cell">
                 Semestral
               </th>
-              <th className="hidden bg-bg-primary px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary md:table-cell">
+              <th scope="col" className="hidden bg-bg-primary px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary md:table-cell">
                 Anual
               </th>
             </tr>

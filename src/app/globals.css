@@ -56,6 +56,18 @@
   --font-sans: var(--font-dm-sans);
 }
 
+/* Accessibility: visible focus rings (UX_RULES.md 9.1) */
+:focus-visible {
+  outline: 2px solid var(--color-accent, #22d3ee);
+  outline-offset: 2px;
+  border-radius: inherit;
+}
+
+/* Remove default focus outline for mouse users */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
 body {
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);

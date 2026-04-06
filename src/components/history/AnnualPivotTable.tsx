@@ -59,7 +59,7 @@ export default function AnnualPivotTable({
         <thead>
           <tr className="border-b border-border bg-bg-primary">
             {/* Sticky first column header */}
-            <th className="sticky left-0 z-10 bg-bg-primary px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
+            <th scope="col" className="sticky left-0 z-10 bg-bg-primary px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
               Metrica
             </th>
             {SHORT_MONTHS.map((monthName, idx) => {
@@ -71,6 +71,7 @@ export default function AnnualPivotTable({
               return (
                 <th
                   key={monthName}
+                  scope="col"
                   className="px-3 py-3 text-center text-xs font-medium uppercase tracking-wide text-text-secondary"
                 >
                   <div className="flex flex-col items-center gap-1">
@@ -112,7 +113,7 @@ export default function AnnualPivotTable({
                 </th>
               )
             })}
-            <th className="px-3 py-3 text-center text-xs font-medium uppercase tracking-wide text-accent">
+            <th scope="col" className="px-3 py-3 text-center text-xs font-medium uppercase tracking-wide text-accent">
               Total Anual
             </th>
           </tr>
@@ -121,9 +122,9 @@ export default function AnnualPivotTable({
           {ROW_LABELS.map((label) => (
             <tr key={label} className="border-b border-border last:border-b-0">
               {/* Sticky first column */}
-              <td className="sticky left-0 z-10 bg-bg-card px-4 py-3 text-sm font-medium text-text-primary whitespace-nowrap">
+              <th scope="row" className="sticky left-0 z-10 bg-bg-card px-4 py-3 text-left text-sm font-medium text-text-primary whitespace-nowrap">
                 {label}
-              </td>
+              </th>
               {data.map((slot, idx) => (
                 <td
                   key={idx}

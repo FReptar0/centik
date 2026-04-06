@@ -44,17 +44,26 @@ export default async function HomePage({ searchParams }: PageProps) {
         closedBanner={period.isClosed}
       />
 
-      <KPIGrid kpis={kpis} />
+      <section aria-labelledby="kpi-heading">
+        <h2 id="kpi-heading" className="sr-only">Indicadores clave</h2>
+        <KPIGrid kpis={kpis} />
+      </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <BudgetBarChart data={budgetVsSpent} />
-        <ExpenseDonutChart data={categoryExpenses} />
-      </div>
+      <section aria-labelledby="charts-heading">
+        <h2 id="charts-heading" className="sr-only">Graficas</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <BudgetBarChart data={budgetVsSpent} />
+          <ExpenseDonutChart data={categoryExpenses} />
+        </div>
+      </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <TrendAreaChart data={trend} />
-        <RecentTransactions transactions={recentTransactions} />
-      </div>
+      <section aria-labelledby="recent-heading">
+        <h2 id="recent-heading" className="sr-only">Tendencia y movimientos recientes</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <TrendAreaChart data={trend} />
+          <RecentTransactions transactions={recentTransactions} />
+        </div>
+      </section>
     </div>
   )
 }

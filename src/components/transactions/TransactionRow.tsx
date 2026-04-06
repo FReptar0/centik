@@ -77,6 +77,7 @@ export default function TransactionRow({ transaction, onEdit }: TransactionRowPr
           name={transaction.category.icon}
           size={20}
           style={{ color: transaction.category.color }}
+          aria-hidden="true"
         />
       </div>
 

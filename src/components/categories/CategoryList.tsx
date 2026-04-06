@@ -108,6 +108,7 @@ function CategoryRow({ category }: CategoryRowProps) {
           name={category.icon}
           size={18}
           style={{ color: category.color }}
+          aria-hidden="true"
         />
       </div>
 
