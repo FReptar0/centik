@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { DM_Sans } from 'next/font/google'
+import { Toaster } from 'sonner'
 import Sidebar from '@/components/layout/Sidebar'
 import MobileNav from '@/components/layout/MobileNav'
 import FAB from '@/components/layout/FAB'
@@ -33,6 +34,14 @@ export default function RootLayout({
         </div>
         <MobileNav />
         <FAB />
+        <Toaster
+          position="top-right"
+          toastOptions={{ duration: 3000, className: 'text-sm' }}
+          theme="dark"
+          richColors
+          visibleToasts={3}
+          closeButton
+        />
       </body>
     </html>
   )
