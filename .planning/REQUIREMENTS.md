@@ -36,9 +36,9 @@ Requirements for Glyph Finance design system overhaul. Docs-only milestone — n
 
 ### UX Patterns
 
-- [ ] **UX-01**: UX_RULES.md navigation updated — bottom tab bar icon-only (no text labels) with small dot indicator for active state, circular accent-filled Add button
-- [ ] **UX-02**: UX_RULES.md amount display updated — monospaced numbers, muted smaller dollar sign, off-white digits, color-coded by direction
-- [ ] **UX-03**: UX_RULES.md transaction flow updated — bottom sheet modal (85% screen height), category circular icon grid with accent ring selection, custom dark numpad option
+- [x] **UX-01**: UX_RULES.md navigation updated — bottom tab bar icon-only (no text labels) with small dot indicator for active state, circular accent-filled Add button
+- [x] **UX-02**: UX_RULES.md amount display updated — monospaced numbers, muted smaller dollar sign, off-white digits, color-coded by direction
+- [x] **UX-03**: UX_RULES.md transaction flow updated — bottom sheet modal (85% screen height), category circular icon grid with accent ring selection, custom dark numpad option
 - [ ] **UX-04**: UX_RULES.md responsive patterns updated for new component specs, navigation model, and elevation hierarchy
 - [ ] **UX-05**: UX_RULES.md form patterns updated (underline inputs in modals, uppercase letterspaced labels, circular category grid selector)
 
@@ -100,9 +100,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SIG-04 | Phase 14 | Complete |
 | SIG-05 | Phase 14 | Complete |
 | SIG-06 | Phase 14 | Complete |
-| UX-01 | Phase 15 | Pending |
-| UX-02 | Phase 15 | Pending |
-| UX-03 | Phase 15 | Pending |
+| UX-01 | Phase 15 | Complete |
+| UX-02 | Phase 15 | Complete |
+| UX-03 | Phase 15 | Complete |
 | UX-04 | Phase 15 | Pending |
 | UX-05 | Phase 15 | Pending |
 | REF-01 | Phase 16 | Pending |
