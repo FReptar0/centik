@@ -313,15 +313,43 @@ Border-radius: 12px
 
 ### Inputs
 
-- Fondo: `--color-surface`
-- Borde: 1px `--color-border-divider`, en focus cambia a `--color-accent` con outline solido
-- Texto: `--color-text-primary`
-- Placeholder: `--color-text-tertiary`
-- Padding: 10px 12px
-- Border-radius: `--radius-md`
-- Font-size: 14px
-- Los inputs de montos llevan un prefijo "$" fijo en `--color-text-tertiary`
-- Los inputs de porcentaje llevan un sufijo "%" fijo
+**Estilo:** Underline-only para TODOS los inputs en todos los formularios. Solo borde inferior, sin caja/rectangulo completo.
+
+**Estructura:**
+
+- Fondo: transparente. Sin fill de `--color-surface`. La linea se asienta directamente sobre la superficie donde esta el formulario.
+- Borde inferior: 1px `--color-border-divider` (#222222) en estado default.
+- Texto: `--color-text-primary` (#E8E8E8). Font-size 14px nivel Body.
+- Padding: 10px 0 (padding vertical, sin padding horizontal ya que no hay caja).
+
+**Floating labels:**
+
+- La label comienza como texto placeholder sobre la linea en `--color-text-tertiary`.
+- En focus o cuando tiene contenido: la label flota hacia arriba sobre el input, transiciona a estilo Label (12px, uppercase, letter-spacing +2px, `--color-text-secondary`).
+- Transicion: 200ms ease para la animacion de flotacion.
+
+**Estado focus:**
+
+- La linea inferior transiciona de `--color-border-divider` a `--color-accent` (#CCFF00, chartreuse).
+- Transicion: 200ms ease.
+- Focus ring: outline estandar de 2px `--color-accent` segun spec global de focus ring.
+
+**Estado error:**
+
+- Color de linea inferior: `--color-negative` (#FF3333).
+- Mensaje de error debajo del input en nivel Meta (11px, `--color-negative`).
+
+**Inputs de montos:**
+
+- Prefijo "$" mostrado en `--color-text-tertiary` a un tamano ligeramente menor, posicionado al inicio de la linea. El prefijo es estatico (no flota). Digitos del monto en IBM Plex Mono.
+
+**Inputs de porcentaje:**
+
+- Sufijo "%" mostrado en `--color-text-tertiary`, posicionado al final de la linea. Sufijo estatico.
+
+**Inputs de select/dropdown:**
+
+- Mismo estilo de underline. Icono chevron (16px, `--color-text-tertiary`) al extremo derecho de la linea.
 
 ### Cards
 
@@ -412,16 +440,41 @@ border-radius: 0; /* rectangulos planos */
 transition: background-color 300ms ease;
 ```
 
-### Charts (Recharts)
+### Charts
 
-- Fondo del contenedor: `--color-surface-elevated`
-- Grid lines: `--color-border-divider`, dashed (3 3)
-- Axis ticks: `--color-text-tertiary`, font-size 11px
-- Axis lines: ocultas
-- Tooltip: fondo `--color-bg`, borde `--color-border-divider`, border-radius `--radius-md`, font-size 12px
-- Gradientes en AreaChart: color solido al 30% en top, 0% en bottom
-- Stroke width: 2px para lineas, no outline en barras
-- Bar border-radius: 4px en esquinas superiores
+**Contenedor:** Fondo `--color-surface-elevated`. Padding 20px. Border-radius `--radius-lg`.
+
+**Line/Area charts:**
+
+- Stroke width: 1.5px (reducido de 2px para sensacion minimal).
+- Dot endpoints: puntos solidos de 4px en cada data point. Mismo color que el stroke de la linea.
+- Area fill: gradiente desde color de stroke al 10-15% de opacidad en la parte superior a 0% en la inferior. Sutil, no dominante.
+- No grid lines. Eliminar todas las referencias a CartesianGrid.
+- Axis labels: minimos. X-axis muestra solo etiquetas de fecha de inicio y fin para series temporales. Sin etiquetas en Y-axis. Valores visibles solo en hover/tooltip.
+- Axis ticks: `--color-text-tertiary`, 11px, nivel Meta.
+- Axis lines: ocultas.
+
+**Bar charts:**
+
+- Barras rectangulares, sin border-radius (tops planos). Relleno geometrico limpio.
+- Ancho de barra: mas delgado que default — aproximadamente 60% del espacio disponible para mostrar gaps entre barras.
+- Sin outlines ni strokes en barras.
+
+**Donut charts:**
+
+- Anillo mas delgado (innerRadius ~70% de outerRadius) para sensacion minimal.
+- Sin labels dentro del donut. Texto central para total/resumen si es necesario.
+
+**Estrategia de color:**
+
+- Graficas de serie unica: `--color-accent` (#CCFF00, chartreuse).
+- Graficas multi-serie: usar colores de categoria de la paleta desaturada.
+- Ingreso vs gasto: `--color-positive` para ingreso, `--color-negative` para gasto.
+
+**Tooltips:**
+
+- Tooltip flotante estilo card. Fondo: `--color-surface-elevated`. Sin borde (elevacion via background-shift). Border-radius: `--radius-md`. Font-size: 12px nivel Body.
+- Montos en tooltip usan IBM Plex Mono (display financiero monoespaciado).
 
 ---
 
