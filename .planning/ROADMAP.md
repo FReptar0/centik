@@ -122,7 +122,7 @@ Phases execute in numeric order: 12 -> 13 -> 14 -> 15 -> 16
 |-------|-----------|----------------|--------|-----------|
 | 1-11 | v1.0 | 27/27 | Complete | 2026-04-06 |
 | 12. Design Tokens | 2/2 | Complete    | 2026-04-06 | - |
-| 13. Component Specifications | 2/2 | Complete   | 2026-04-06 | - |
+| 13. Component Specifications | 2/2 | Complete    | 2026-04-06 | - |
 | 14. Signature Visual Identity | v1.1 | 0/2 | Not started | - |
 | 15. UX Interaction Patterns | v1.1 | 0/2 | Not started | - |
 | 16. Reference Synchronization | v1.1 | 0/1 | Not started | - |
