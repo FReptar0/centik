@@ -288,12 +288,14 @@ Border-radius: 12px
 
 **Variantes:**
 
-| Variante | Fondo | Texto | Uso |
-|----------|-------|-------|-----|
-| Primary | `--color-accent` | `--color-bg` | Accion principal (Guardar, Registrar) |
-| Secondary | `transparent` + border `--color-border-divider` | `--color-text-secondary` | Accion secundaria (Cancelar, Filtrar) |
-| Danger | `#dc2626` | `white` | Acciones destructivas (Eliminar) |
-| Ghost | `transparent` | `--color-text-secondary` | Acciones terciarias, links en tablas |
+| Variante | Fondo | Texto | Borde | Uso |
+|----------|-------|-------|-------|-----|
+| Primary | `--color-accent` (#CCFF00) | `#000000` (negro puro) | none | Accion principal (Guardar, Registrar) |
+| Secondary | `transparent` | `--color-text-secondary` | 1px `--color-border-divider` | Accion secundaria (Cancelar, Filtrar) |
+| Danger | `--color-negative` (#FF3333) | `#FFFFFF` (blanco) | none | Acciones destructivas (Eliminar) |
+| Ghost | `transparent` | `--color-text-secondary` | none | Acciones terciarias, links en tablas |
+| Toggle (active) | `--color-accent` (#CCFF00) | `#000000` (negro puro) | none | Expense/Income toggle, periodo activo |
+| Toggle (inactive) | `transparent` | `--color-text-secondary` | none | Toggle no seleccionado |
 
 **Tamanos:**
 
@@ -303,7 +305,11 @@ Border-radius: 12px
 | md | 10px 18px | 14px | 40px |
 | lg | 12px 24px | 16px | 48px |
 
-Todos los botones: border-radius `--radius-md`, font-weight 600, gap de 6px entre icono y texto, transition 200ms.
+**Forma:** Todos los botones usan `border-radius: --radius-full` (9999px) — forma capsule/pill verdadera, no rectangulo redondeado.
+
+**Interaccion:** `transition: all 200ms`, font-weight 600, gap 6px icono-a-texto. Estado de presion: `transform: scale(0.98)` para sensacion de switch tactil. Focus: 2px `--color-accent` outline segun spec de focus ring.
+
+**Toggle pills:** Variante nueva para selectores binarios o multi-opcion (Expense/Income, Week/Month/Year). Estado activo: fondo chartreuse con texto negro. Estado inactivo: ghost/transparente con texto secundario. Agrupar toggles en fila con gap de 4px.
 
 ### Inputs
 
@@ -319,13 +325,19 @@ Todos los botones: border-radius `--radius-md`, font-weight 600, gap de 6px entr
 
 ### Cards
 
-- Fondo: `--color-surface-elevated`
-- Sin borde decorativo visible (la elevacion viene del contraste de fondo)
-- Border-radius: `--radius-xl`
-- Padding: 20px
-- Sin sombra
+**Superficie:** `--color-surface-elevated` (#141414) sobre `--color-bg` (#000000). Sin bordes visibles, sin sombra. La elevacion se comunica unicamente por el contraste de fondo.
 
-Las cards interactivas (clickables) agregan `cursor-pointer` y en hover cambian a `--color-surface-hover`.
+**Border-radius:** `--radius-lg` (16px).
+
+**Padding:** 20px estandar, 24px para KPI/hero cards.
+
+**Cards interactivas:** `cursor-pointer`, hover a `--color-surface-hover`.
+
+**Cards apiladas (stacked):** Separador de 1px `--color-border-divider` (#222222) entre cards adyacentes para legibilidad de listas. Esta es una concesion pragmatica — la regla de "sin lineas" es aspiracional pero la legibilidad de listas requiere separadores sutiles.
+
+**Cards de scroll horizontal:** Cards oscuras pequenas en fila para categorias — icono + nombre uppercase + monto monoespaciado. Fondo `--color-surface-elevated`, sin borde.
+
+**Hero/balance cards:** Pueden incluir patron de textura dot-matrix como acento visual (detallado en Phase 14).
 
 ### Modales
 
