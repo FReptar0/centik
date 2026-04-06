@@ -63,7 +63,7 @@ Plans:
   2. Button spec documents pill-shaped primary (accent fill, dark text), ghost secondary, and outline tertiary variants with the new radius
   3. Progress bar spec documents segmented battery-bar style (10 rectangular segments, 2px gaps, chartreuse fill) replacing continuous bars
   4. Chart, input, table, and badge specs all reference Glyph Finance tokens exclusively -- no leftover cyan/dark palette references remain in STYLE_GUIDE.md
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
 - [ ] 13-01: Card, button, and progress bar component specs
