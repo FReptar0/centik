@@ -10,8 +10,8 @@ export interface ExpenseDonutChartProps {
 }
 
 const CHART_COLORS = {
-  tooltipBg: '#0a0f1a',
-  tooltipBorder: '#1e293b',
+  tooltipBg: '#141414',
+  tooltipBorder: '#222222',
 }
 
 interface ChartDataPoint {
@@ -74,7 +74,7 @@ function CenterLabel({
       <tspan
         x={viewBox.cx}
         dy="-8"
-        fill="#64748b"
+        fill="#666666"
         fontSize="11"
       >
         Total

@@ -19,11 +19,11 @@ export interface BudgetBarChartProps {
 }
 
 const CHART_COLORS = {
-  grid: '#1e293b',
-  axis: '#64748b',
-  tooltipBg: '#0a0f1a',
-  tooltipBorder: '#1e293b',
-  budgetMuted: '#475569',
+  grid: '#222222',
+  axis: '#666666',
+  tooltipBg: '#141414',
+  tooltipBorder: '#222222',
+  budgetMuted: '#444444',
 }
 
 interface ChartDataPoint {

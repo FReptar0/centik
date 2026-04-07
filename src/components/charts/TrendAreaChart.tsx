@@ -19,12 +19,12 @@ export interface TrendAreaChartProps {
 }
 
 const CHART_COLORS = {
-  grid: '#1e293b',
-  axis: '#64748b',
-  tooltipBg: '#0a0f1a',
-  tooltipBorder: '#1e293b',
-  positive: '#34d399',
-  negative: '#f87171',
+  grid: '#222222',
+  axis: '#666666',
+  tooltipBg: '#141414',
+  tooltipBorder: '#222222',
+  positive: '#00E676',
+  negative: '#FF3333',
 }
 
 interface ChartDataPoint {
