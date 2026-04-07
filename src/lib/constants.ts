@@ -13,14 +13,14 @@ interface DefaultCategory {
  * 6 expense categories + 2 income categories.
  */
 export const DEFAULT_CATEGORIES: readonly DefaultCategory[] = [
-  { name: 'Comida', icon: 'utensils', color: '#fb923c', type: 'EXPENSE' },
-  { name: 'Servicios', icon: 'zap', color: '#60a5fa', type: 'EXPENSE' },
-  { name: 'Entretenimiento', icon: 'clapperboard', color: '#a78bfa', type: 'EXPENSE' },
-  { name: 'Suscripciones', icon: 'smartphone', color: '#f472b6', type: 'EXPENSE' },
-  { name: 'Transporte', icon: 'car', color: '#fbbf24', type: 'EXPENSE' },
-  { name: 'Otros', icon: 'package', color: '#94a3b8', type: 'EXPENSE' },
-  { name: 'Empleo', icon: 'briefcase', color: '#34d399', type: 'INCOME' },
-  { name: 'Freelance', icon: 'laptop', color: '#22d3ee', type: 'INCOME' },
+  { name: 'Comida', icon: 'utensils', color: '#C88A5A', type: 'EXPENSE' },
+  { name: 'Servicios', icon: 'zap', color: '#7A9EC4', type: 'EXPENSE' },
+  { name: 'Entretenimiento', icon: 'clapperboard', color: '#9B89C4', type: 'EXPENSE' },
+  { name: 'Suscripciones', icon: 'smartphone', color: '#C48AA3', type: 'EXPENSE' },
+  { name: 'Transporte', icon: 'car', color: '#C4A84E', type: 'EXPENSE' },
+  { name: 'Otros', icon: 'package', color: '#8A9099', type: 'EXPENSE' },
+  { name: 'Empleo', icon: 'briefcase', color: '#6BAF8E', type: 'INCOME' },
+  { name: 'Freelance', icon: 'laptop', color: '#7AACB8', type: 'INCOME' },
 ] as const
 
 /** Maps category names to their hex color values */

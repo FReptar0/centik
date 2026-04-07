@@ -3,26 +3,26 @@ import { CategoryType, Frequency, DebtType } from '../generated/prisma/client'
 // --- Category seed data (DFR 2.3) ---
 
 export const CATEGORIES = [
-  { name: 'Comida', icon: 'utensils', color: '#fb923c', type: CategoryType.EXPENSE, sortOrder: 1 },
-  { name: 'Servicios', icon: 'zap', color: '#60a5fa', type: CategoryType.EXPENSE, sortOrder: 2 },
+  { name: 'Comida', icon: 'utensils', color: '#C88A5A', type: CategoryType.EXPENSE, sortOrder: 1 },
+  { name: 'Servicios', icon: 'zap', color: '#7A9EC4', type: CategoryType.EXPENSE, sortOrder: 2 },
   {
     name: 'Entretenimiento',
     icon: 'clapperboard',
-    color: '#a78bfa',
+    color: '#9B89C4',
     type: CategoryType.EXPENSE,
     sortOrder: 3,
   },
   {
     name: 'Suscripciones',
     icon: 'smartphone',
-    color: '#f472b6',
+    color: '#C48AA3',
     type: CategoryType.EXPENSE,
     sortOrder: 4,
   },
-  { name: 'Transporte', icon: 'car', color: '#fbbf24', type: CategoryType.EXPENSE, sortOrder: 5 },
-  { name: 'Otros', icon: 'package', color: '#94a3b8', type: CategoryType.EXPENSE, sortOrder: 6 },
-  { name: 'Empleo', icon: 'briefcase', color: '#34d399', type: CategoryType.INCOME, sortOrder: 7 },
-  { name: 'Freelance', icon: 'laptop', color: '#22d3ee', type: CategoryType.INCOME, sortOrder: 8 },
+  { name: 'Transporte', icon: 'car', color: '#C4A84E', type: CategoryType.EXPENSE, sortOrder: 5 },
+  { name: 'Otros', icon: 'package', color: '#8A9099', type: CategoryType.EXPENSE, sortOrder: 6 },
+  { name: 'Empleo', icon: 'briefcase', color: '#6BAF8E', type: CategoryType.INCOME, sortOrder: 7 },
+  { name: 'Freelance', icon: 'laptop', color: '#7AACB8', type: CategoryType.INCOME, sortOrder: 8 },
 ] as const
 
 // --- Budget amounts per expense category (quincenal, in centavos) ---

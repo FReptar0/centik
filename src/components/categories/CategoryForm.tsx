@@ -35,14 +35,14 @@ const PRESET_ICONS = [
 
 /** Preset colors available for custom categories */
 const PRESET_COLORS = [
-  '#fb923c',
-  '#60a5fa',
-  '#a78bfa',
-  '#f472b6',
-  '#fbbf24',
-  '#94a3b8',
-  '#34d399',
-  '#22d3ee',
+  '#C88A5A',
+  '#7A9EC4',
+  '#9B89C4',
+  '#C48AA3',
+  '#C4A84E',
+  '#8A9099',
+  '#6BAF8E',
+  '#7AACB8',
   '#8b5cf6',
   '#ef4444',
 ] as const

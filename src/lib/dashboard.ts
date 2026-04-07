@@ -154,7 +154,7 @@ export async function getCategoryExpenses(periodId: string): Promise<CategoryExp
       return {
         name: cat?.name ?? 'Desconocido',
         icon: cat?.icon ?? 'package',
-        color: cat?.color ?? '#94a3b8',
+        color: cat?.color ?? '#8A9099',
         total: (g._sum.amount ?? BigInt(0)).toString(),
       }
     })
