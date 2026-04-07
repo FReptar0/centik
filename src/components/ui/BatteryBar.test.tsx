@@ -9,7 +9,10 @@ afterEach(() => {
 describe('BatteryBar', () => {
   it('renders exactly 10 segment elements', () => {
     const { container } = render(<BatteryBar value={50} />)
-    const segments = container.querySelectorAll('[data-testid^="segment-"]')
+    // Use CSS selector that matches segment-N but not segment-fill-N
+    const segments = container.querySelectorAll(
+      '[data-testid^="segment-"]:not([data-testid^="segment-fill-"])',
+    )
     expect(segments).toHaveLength(10)
   })
 
