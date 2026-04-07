@@ -22,7 +22,7 @@ export default function BudgetSummaryRow({ budgets, quincenalIncome }: BudgetSum
   const monthlyDiff = ((isPositive ? difference : -difference) * BigInt(2)).toString()
 
   return (
-    <div className="rounded-xl border border-border bg-bg-card p-5">
+    <div className="rounded-xl border border-border-divider bg-surface-elevated p-5">
       {/* Income vs Budget */}
       <div className="flex items-center justify-between gap-4">
         <div>
@@ -40,7 +40,7 @@ export default function BudgetSummaryRow({ budgets, quincenalIncome }: BudgetSum
       </div>
 
       {/* Surplus / Deficit */}
-      <div className="mt-3 border-t border-border pt-3">
+      <div className="mt-3 border-t border-border-divider pt-3">
         <div className="flex items-center justify-between">
           <span className={cn('text-sm font-semibold', isPositive ? 'text-positive' : 'text-negative')}>
             {isPositive ? 'Sobrante' : 'Faltante'}
@@ -49,7 +49,7 @@ export default function BudgetSummaryRow({ budgets, quincenalIncome }: BudgetSum
             {formatMoney(absStr)}
           </span>
         </div>
-        <p className="mt-1 text-xs tabular-nums text-text-muted">
+        <p className="mt-1 text-xs tabular-nums text-text-tertiary">
           Mensual: {formatMoney(monthlyDiff)} {isPositive ? 'sobrante' : 'faltante'}
         </p>
       </div>

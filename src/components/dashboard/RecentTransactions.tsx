@@ -22,7 +22,7 @@ export default function RecentTransactions({
 }: RecentTransactionsProps) {
   if (transactions.length === 0) {
     return (
-      <div className="bg-bg-card border border-border rounded-xl p-5">
+      <div className="bg-surface-elevated border border-border-divider rounded-xl p-5">
         <h3 className="text-lg font-semibold text-text-primary mb-4">
           Ultimos Movimientos
         </h3>
@@ -30,11 +30,11 @@ export default function RecentTransactions({
           <DynamicIcon
             name="receipt"
             size={32}
-            className="text-text-muted mb-3"
+            className="text-text-tertiary mb-3"
             aria-hidden="true"
           />
           <p className="text-text-secondary text-sm">Sin movimientos</p>
-          <p className="text-text-muted text-xs mt-1">
+          <p className="text-text-tertiary text-xs mt-1">
             Registra tu primer movimiento con el boton +
           </p>
         </div>
@@ -43,7 +43,7 @@ export default function RecentTransactions({
   }
 
   return (
-    <div className="bg-bg-card border border-border rounded-xl p-5">
+    <div className="bg-surface-elevated border border-border-divider rounded-xl p-5">
       <h3 className="text-lg font-semibold text-text-primary mb-4">
         Ultimos Movimientos
       </h3>
@@ -75,7 +75,7 @@ export default function RecentTransactions({
                 <p className="text-sm font-medium text-text-primary truncate">
                   {displayName}
                 </p>
-                <p className="text-xs text-text-muted">
+                <p className="text-xs text-text-tertiary">
                   {formatShortDate(txn.date)}
                 </p>
               </div>
@@ -96,7 +96,7 @@ export default function RecentTransactions({
       </div>
 
       {/* "Ver todos" link */}
-      <div className="mt-4 pt-3 border-t border-border">
+      <div className="mt-4 pt-3 border-t border-border-divider">
         <Link
           href="/movimientos"
           className="text-accent text-sm font-medium hover:text-accent-hover transition-colors duration-200"

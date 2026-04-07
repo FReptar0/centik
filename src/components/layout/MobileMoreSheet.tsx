@@ -38,7 +38,7 @@ export default function MobileMoreSheet({
       <div
         className={cn(
           'fixed inset-x-0 bottom-0 z-50 md:hidden',
-          'bg-bg-card rounded-t-xl border-t border-border',
+          'bg-surface-elevated rounded-t-xl border-t border-border-divider',
         )}
         role="dialog"
         aria-modal="true"
@@ -63,7 +63,7 @@ export default function MobileMoreSheet({
                   'text-sm font-medium transition-all duration-200',
                   active
                     ? 'text-accent'
-                    : 'text-text-secondary hover:text-text-primary hover:bg-bg-card-hover',
+                    : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover',
                 )}
               >
                 <DynamicIcon name={item.icon} size={20} aria-hidden="true" />

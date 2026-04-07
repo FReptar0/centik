@@ -127,7 +127,7 @@ export default function DebtCard({ debt, onEdit }: DebtCardProps) {
   }, [debt.id])
 
   return (
-    <div className="rounded-xl border border-border bg-bg-card p-5 transition-all duration-200">
+    <div className="rounded-xl border border-border-divider bg-surface-elevated p-5 transition-all duration-200">
       {/* Header row: icon, name, balance, chevron */}
       <div
         className="flex items-center justify-between cursor-pointer"
@@ -149,7 +149,7 @@ export default function DebtCard({ debt, onEdit }: DebtCardProps) {
               className="relative"
               onClick={(e) => e.stopPropagation()}
             >
-              <span className="absolute left-2 top-1/2 -translate-y-1/2 text-text-muted text-sm pointer-events-none">
+              <span className="absolute left-2 top-1/2 -translate-y-1/2 text-text-tertiary text-sm pointer-events-none">
                 $
               </span>
               <input
@@ -161,8 +161,7 @@ export default function DebtCard({ debt, onEdit }: DebtCardProps) {
                 onKeyDown={handleBalanceKeyDown}
                 onBlur={saveBalance}
                 className={cn(
-                  'w-32 rounded-lg border border-border-focus bg-bg-input pl-6 pr-2 py-1 text-sm text-text-primary text-right',
-                  'focus:outline-none focus:shadow-[0_0_20px_rgba(34,211,238,0.15)]',
+                  'w-32 rounded-lg border border-border-divider bg-transparent pl-6 pr-2 py-1 text-sm text-text-primary text-right',
                   isSaving && 'opacity-50',
                 )}
               />
@@ -185,16 +184,16 @@ export default function DebtCard({ debt, onEdit }: DebtCardProps) {
           )}
 
           {isExpanded ? (
-            <ChevronUp size={18} className="text-text-muted" aria-hidden="true" />
+            <ChevronUp size={18} className="text-text-tertiary" aria-hidden="true" />
           ) : (
-            <ChevronDown size={18} className="text-text-muted" aria-hidden="true" />
+            <ChevronDown size={18} className="text-text-tertiary" aria-hidden="true" />
           )}
         </div>
       </div>
 
       {/* Expanded section */}
       {isExpanded && (
-        <div className="mt-4 pt-4 border-t border-border space-y-4">
+        <div className="mt-4 pt-4 border-t border-border-divider space-y-4">
           {isCreditCard ? (
             <CreditCardDetails debt={debt} metrics={metrics} />
           ) : (
@@ -224,14 +223,14 @@ export default function DebtCard({ debt, onEdit }: DebtCardProps) {
               <>
                 <button
                   onClick={() => onEdit(debt)}
-                  className="rounded-md p-2 text-text-muted transition-colors duration-200 hover:text-text-primary hover:bg-bg-card-hover"
+                  className="rounded-md p-2 text-text-tertiary transition-colors duration-200 hover:text-text-primary hover:bg-surface-hover"
                   aria-label="Editar"
                 >
                   <Pencil size={16} />
                 </button>
                 <button
                   onClick={() => setConfirmingDelete(true)}
-                  className="rounded-md p-2 text-text-muted transition-colors duration-200 hover:text-negative hover:bg-negative/10"
+                  className="rounded-md p-2 text-text-tertiary transition-colors duration-200 hover:text-negative hover:bg-negative/10"
                   aria-label="Eliminar"
                 >
                   <Trash2 size={16} />

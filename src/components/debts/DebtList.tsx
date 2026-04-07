@@ -16,7 +16,7 @@ export default function DebtList({ debts, onEdit, onAdd }: DebtListProps) {
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <CreditCard
           size={32}
-          className="text-text-muted mb-3"
+          className="text-text-tertiary mb-3"
           aria-hidden="true"
         />
         <p className="text-text-secondary text-lg mb-4">Sin deudas registradas</p>

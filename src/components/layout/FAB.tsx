@@ -42,7 +42,7 @@ export default function FAB() {
           'fixed z-40',
           'bottom-20 right-4 md:bottom-6 md:right-6',
           'flex h-12 w-12 items-center justify-center',
-          'rounded-full bg-accent shadow-lg shadow-glow',
+          'rounded-full bg-accent',
           'hover:bg-accent-hover hover:scale-105',
           'active:scale-95',
           'transition-all duration-200',

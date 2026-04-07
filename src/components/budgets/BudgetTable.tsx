@@ -67,20 +67,20 @@ export default function BudgetTable({ budgets, onSave, isClosed }: BudgetTablePr
       <div className="overflow-x-auto overflow-y-visible">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-border">
-              <th scope="col" className="bg-bg-primary px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
+            <tr className="border-b border-border-divider">
+              <th scope="col" className="bg-bg px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
                 Categoria
               </th>
-              <th scope="col" className="bg-bg-primary px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary">
+              <th scope="col" className="bg-bg px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary">
                 Quincenal
               </th>
-              <th scope="col" className="bg-bg-primary px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary">
+              <th scope="col" className="bg-bg px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary">
                 Mensual
               </th>
-              <th scope="col" className="hidden bg-bg-primary px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary lg:table-cell">
+              <th scope="col" className="hidden bg-bg px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary lg:table-cell">
                 Semestral
               </th>
-              <th scope="col" className="hidden bg-bg-primary px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary 2xl:table-cell">
+              <th scope="col" className="hidden bg-bg px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary 2xl:table-cell">
                 Anual
               </th>
             </tr>
@@ -90,7 +90,7 @@ export default function BudgetTable({ budgets, onSave, isClosed }: BudgetTablePr
               const pesoValue = editValues[budget.categoryId] ?? ''
 
               return (
-                <tr key={budget.categoryId} className="border-b border-border">
+                <tr key={budget.categoryId} className="border-b border-border-divider">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       <div
@@ -111,7 +111,7 @@ export default function BudgetTable({ budgets, onSave, isClosed }: BudgetTablePr
                   </td>
                   <td className="px-4 py-3">
                     <div className="relative ml-auto w-28">
-                      <span className="absolute left-2 top-1/2 -translate-y-1/2 text-text-muted text-xs pointer-events-none">
+                      <span className="absolute left-2 top-1/2 -translate-y-1/2 text-text-tertiary text-xs pointer-events-none">
                         $
                       </span>
                       <input
@@ -124,8 +124,7 @@ export default function BudgetTable({ budgets, onSave, isClosed }: BudgetTablePr
                         disabled={isClosed}
                         placeholder="0"
                         className={cn(
-                          'w-full rounded-lg border border-border bg-bg-input pl-5 pr-2 py-1.5 text-right text-sm text-text-primary tabular-nums',
-                          'focus:border-border-focus focus:outline-none focus:shadow-[0_0_20px_rgba(34,211,238,0.15)]',
+                          'w-full rounded-lg border border-border-divider bg-transparent pl-5 pr-2 py-1.5 text-right text-sm text-text-primary tabular-nums',
                           'transition-colors duration-200',
                           isClosed && 'cursor-not-allowed opacity-50',
                         )}

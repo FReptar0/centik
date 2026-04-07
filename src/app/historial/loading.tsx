@@ -3,17 +3,17 @@ export default function HistorialLoading() {
   return (
     <div className="space-y-6">
       {/* Title skeleton */}
-      <div className="h-8 w-32 bg-bg-card rounded-lg animate-pulse" />
+      <div className="h-8 w-32 bg-surface-elevated rounded-lg animate-pulse" />
 
       {/* Year selector skeleton */}
       <div className="flex justify-center">
-        <div className="h-8 w-36 bg-bg-card rounded-lg animate-pulse" />
+        <div className="h-8 w-36 bg-surface-elevated rounded-lg animate-pulse" />
       </div>
 
       {/* Table skeleton: header row + 6 data rows */}
-      <div className="overflow-hidden rounded-xl border border-border bg-bg-card">
+      <div className="overflow-hidden rounded-xl border border-border-divider bg-surface-elevated">
         {/* Header row */}
-        <div className="flex gap-1 border-b border-border bg-bg-primary p-3">
+        <div className="flex gap-1 border-b border-border-divider bg-bg p-3">
           <div className="h-4 w-20 bg-border rounded animate-pulse" />
           {Array.from({ length: 13 }).map((_, i) => (
             <div
@@ -27,7 +27,7 @@ export default function HistorialLoading() {
         {Array.from({ length: 6 }).map((_, row) => (
           <div
             key={row}
-            className="flex gap-1 border-b border-border last:border-b-0 p-3"
+            className="flex gap-1 border-b border-border-divider last:border-b-0 p-3"
           >
             <div className="h-4 w-20 bg-border/50 rounded animate-pulse" />
             {Array.from({ length: 13 }).map((_, col) => (

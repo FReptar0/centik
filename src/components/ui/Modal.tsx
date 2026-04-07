@@ -55,7 +55,7 @@ export default function Modal({
         className={cn(
           'fixed inset-x-0 bottom-0 z-50 md:hidden',
           'max-h-[90vh] overflow-y-auto',
-          'bg-bg-card border-t border-border rounded-t-xl',
+          'bg-surface-elevated border-t border-border-divider rounded-t-xl',
           'transform transition-transform duration-300 ease-out',
         )}
         role="dialog"
@@ -72,7 +72,7 @@ export default function Modal({
             <h2 className="text-lg font-semibold text-text-primary">{title}</h2>
             <button
               onClick={onClose}
-              className="rounded-md p-1 text-text-muted transition-colors duration-200 hover:text-text-primary"
+              className="rounded-md p-1 text-text-tertiary transition-colors duration-200 hover:text-text-primary"
               aria-label="Cerrar"
             >
               <X size={20} />
@@ -95,7 +95,7 @@ export default function Modal({
         <div
           className={cn(
             'relative w-full overflow-y-auto',
-            'max-h-[85vh] rounded-xl border border-border bg-bg-card p-7 shadow-md',
+            'max-h-[85vh] rounded-xl border border-border-divider bg-surface-elevated p-7',
             'transition-all duration-200',
             maxWidth,
           )}
@@ -107,7 +107,7 @@ export default function Modal({
               </h2>
               <button
                 onClick={onClose}
-                className="rounded-md p-1 text-text-muted transition-colors duration-200 hover:text-text-primary"
+                className="rounded-md p-1 text-text-tertiary transition-colors duration-200 hover:text-text-primary"
                 aria-label="Cerrar"
               >
                 <X size={20} />

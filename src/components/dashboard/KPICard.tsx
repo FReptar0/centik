@@ -31,7 +31,7 @@ const bgColorMap: Record<SemanticColor, string> = {
 
 export default function KPICard({ label, value, icon, color, subtitle }: KPICardProps) {
   return (
-    <div className="rounded-xl border border-border bg-bg-card p-5 transition-all duration-200">
+    <div className="rounded-xl border border-border-divider bg-surface-elevated p-5 transition-all duration-200">
       <div className="mb-3 flex items-center gap-3">
         <div
           className={cn(
@@ -47,7 +47,7 @@ export default function KPICard({ label, value, icon, color, subtitle }: KPICard
       </p>
       <p className="text-sm font-medium text-text-secondary">{label}</p>
       {subtitle ? (
-        <p className="mt-1 text-xs text-text-muted">{subtitle}</p>
+        <p className="mt-1 text-xs text-text-tertiary">{subtitle}</p>
       ) : null}
     </div>
   )

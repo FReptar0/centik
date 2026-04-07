@@ -22,7 +22,7 @@ export default function DebtSummaryCards({ debts, monthlyIncome }: DebtSummaryCa
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
       {/* Total Debt */}
-      <div className="rounded-xl border border-border bg-bg-card p-5">
+      <div className="rounded-xl border border-border-divider bg-surface-elevated p-5">
         <p className="text-sm text-text-secondary mb-1">Deuda Total</p>
         <p className="text-2xl font-bold tabular-nums text-negative">
           {formatMoney(summary.totalDebt)}
@@ -30,7 +30,7 @@ export default function DebtSummaryCards({ debts, monthlyIncome }: DebtSummaryCa
       </div>
 
       {/* Monthly Payments */}
-      <div className="rounded-xl border border-border bg-bg-card p-5">
+      <div className="rounded-xl border border-border-divider bg-surface-elevated p-5">
         <p className="text-sm text-text-secondary mb-1">Pagos Mensuales</p>
         <p className="text-2xl font-bold tabular-nums text-text-primary">
           {formatMoney(summary.totalMonthlyPayments)}
@@ -38,7 +38,7 @@ export default function DebtSummaryCards({ debts, monthlyIncome }: DebtSummaryCa
       </div>
 
       {/* Debt-to-Income Ratio */}
-      <div className="rounded-xl border border-border bg-bg-card p-5">
+      <div className="rounded-xl border border-border-divider bg-surface-elevated p-5">
         <p className="text-sm text-text-secondary mb-1">Relacion Deuda/Ingreso</p>
         <p className={cn('text-2xl font-bold tabular-nums', SEMANTIC_TEXT[dtiColor])}>
           {summary.debtToIncomeRatio.toFixed(1)}%

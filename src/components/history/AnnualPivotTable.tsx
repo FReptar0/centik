@@ -54,12 +54,12 @@ export default function AnnualPivotTable({
   const annualTotals = computeAnnualTotals(data)
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-border bg-bg-card">
+    <div className="overflow-x-auto rounded-xl border border-border-divider bg-surface-elevated">
       <table className="w-full min-w-[900px] text-sm">
         <thead>
-          <tr className="border-b border-border bg-bg-primary">
+          <tr className="border-b border-border-divider bg-bg">
             {/* Sticky first column header */}
-            <th scope="col" className="sticky left-0 z-10 bg-bg-primary px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
+            <th scope="col" className="sticky left-0 z-10 bg-bg px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
               Metrica
             </th>
             {SHORT_MONTHS.map((monthName, idx) => {
@@ -120,9 +120,9 @@ export default function AnnualPivotTable({
         </thead>
         <tbody>
           {ROW_LABELS.map((label) => (
-            <tr key={label} className="border-b border-border last:border-b-0">
+            <tr key={label} className="border-b border-border-divider last:border-b-0">
               {/* Sticky first column */}
-              <th scope="row" className="sticky left-0 z-10 bg-bg-card px-4 py-3 text-left text-sm font-medium text-text-primary whitespace-nowrap">
+              <th scope="row" className="sticky left-0 z-10 bg-surface-elevated px-4 py-3 text-left text-sm font-medium text-text-primary whitespace-nowrap">
                 {label}
               </th>
               {data.map((slot, idx) => (
@@ -151,7 +151,7 @@ function renderCellValue(
   slot: MonthSummarySlot,
 ): React.ReactNode {
   if (!slot.data) {
-    return <span className="text-text-muted">--</span>
+    return <span className="text-text-tertiary">--</span>
   }
 
   const summary = slot.data
@@ -194,7 +194,7 @@ function renderCellValue(
         </span>
       )
     default:
-      return <span className="text-text-muted">--</span>
+      return <span className="text-text-tertiary">--</span>
   }
 }
 
@@ -252,7 +252,7 @@ function renderAnnualTotal(
   totals: AnnualTotals,
 ): React.ReactNode {
   if (!totals.hasData) {
-    return <span className="text-text-muted">--</span>
+    return <span className="text-text-tertiary">--</span>
   }
 
   switch (label) {
@@ -297,6 +297,6 @@ function renderAnnualTotal(
         </span>
       )
     default:
-      return <span className="text-text-muted">--</span>
+      return <span className="text-text-tertiary">--</span>
   }
 }

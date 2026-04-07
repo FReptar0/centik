@@ -41,11 +41,11 @@ export default function BudgetProgressList({ budgets }: BudgetProgressListProps)
         <DynamicIcon
           name="piggy-bank"
           size={32}
-          className="mb-3 text-text-muted"
+          className="mb-3 text-text-tertiary"
           aria-hidden="true"
         />
         <p className="text-sm font-medium text-text-secondary">Sin presupuesto configurado</p>
-        <p className="mt-1 text-xs text-text-muted">
+        <p className="mt-1 text-xs text-text-tertiary">
           Configura montos quincenales para ver el avance
         </p>
       </div>
@@ -81,7 +81,7 @@ export default function BudgetProgressList({ budgets }: BudgetProgressListProps)
               </div>
               <span className="text-sm tabular-nums text-text-secondary">
                 {formatMoney(budget.spent)}{' '}
-                <span className="text-text-muted">/</span>{' '}
+                <span className="text-text-tertiary">/</span>{' '}
                 {formatMoney(monthlyBudget)}
               </span>
             </div>

@@ -149,11 +149,10 @@ function CategoryFormContent({ onClose }: FormContentProps) {
           onBlur={() => handleBlur('name')}
           placeholder="Ej. Mascotas"
           className={cn(
-            'w-full rounded-lg border bg-bg-input px-3 py-2.5 text-sm text-text-primary',
-            'placeholder:text-text-muted',
+            'w-full rounded-lg border bg-transparent px-3 py-2.5 text-sm text-text-primary',
+            'placeholder:text-text-tertiary',
             'transition-colors duration-200',
-            'focus:outline-none focus:border-border-focus focus:shadow-[0_0_20px_rgba(34,211,238,0.15)]',
-            errors.name ? 'border-negative' : 'border-border',
+            errors.name ? 'border-negative' : 'border-border-divider',
           )}
         />
         {errors.name && (
@@ -177,7 +176,7 @@ function CategoryFormContent({ onClose }: FormContentProps) {
                 'transition-all duration-200',
                 icon === iconName
                   ? 'bg-accent/15 border-accent ring-1 ring-accent'
-                  : 'bg-bg-input border-border hover:border-border-light',
+                  : 'bg-transparent border-border-divider',
               )}
             >
               <DynamicIcon
@@ -190,7 +189,7 @@ function CategoryFormContent({ onClose }: FormContentProps) {
               <span
                 className={cn(
                   'text-[10px] truncate max-w-full',
-                  icon === iconName ? 'text-accent' : 'text-text-muted',
+                  icon === iconName ? 'text-accent' : 'text-text-tertiary',
                 )}
               >
                 {iconName}

@@ -121,7 +121,7 @@ export default function TransactionFilters({
 
   const chipActive = 'bg-accent/15 text-accent border-accent'
   const chipInactive =
-    'bg-bg-card text-text-secondary border-border hover:border-border-light'
+    'bg-surface-elevated text-text-secondary border-border-divider'
 
   return (
     <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-4">
@@ -178,7 +178,7 @@ export default function TransactionFilters({
             className={cn(
               'absolute top-full left-0 mt-1 z-10',
               'w-56 max-h-64 overflow-y-auto',
-              'bg-bg-card border border-border rounded-xl shadow-lg p-2',
+              'bg-surface-elevated border border-border-divider rounded-xl p-2',
             )}
           >
             {categories.map((cat) => (
@@ -189,7 +189,7 @@ export default function TransactionFilters({
                 className={cn(
                   'flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm text-left',
                   'transition-colors duration-200',
-                  'hover:bg-bg-card-hover',
+                  'hover:bg-surface-hover',
                   activeFilters.categoryId === cat.id &&
                     'bg-accent/10 text-accent',
                 )}
@@ -208,7 +208,7 @@ export default function TransactionFilters({
 
       {/* Date range inputs */}
       <div className="flex items-center gap-1.5 shrink-0">
-        <label className="text-xs text-text-muted sr-only" htmlFor="filter-start">
+        <label className="text-xs text-text-tertiary sr-only" htmlFor="filter-start">
           Desde
         </label>
         <input
@@ -219,14 +219,13 @@ export default function TransactionFilters({
           placeholder="Desde"
           aria-label="Desde"
           className={cn(
-            'rounded-lg border bg-bg-card px-3 py-2 text-sm text-text-secondary',
+            'rounded-lg border bg-surface-elevated px-3 py-2 text-sm text-text-secondary',
             'transition-colors duration-200',
-            'focus:outline-none focus:border-border-focus focus:shadow-[0_0_20px_rgba(34,211,238,0.15)]',
-            activeFilters.startDate ? 'border-accent text-accent' : 'border-border',
+            activeFilters.startDate ? 'border-accent text-accent' : 'border-border-divider',
           )}
         />
-        <span className="text-text-muted text-xs">-</span>
-        <label className="text-xs text-text-muted sr-only" htmlFor="filter-end">
+        <span className="text-text-tertiary text-xs">-</span>
+        <label className="text-xs text-text-tertiary sr-only" htmlFor="filter-end">
           Hasta
         </label>
         <input
@@ -237,10 +236,9 @@ export default function TransactionFilters({
           placeholder="Hasta"
           aria-label="Hasta"
           className={cn(
-            'rounded-lg border bg-bg-card px-3 py-2 text-sm text-text-secondary',
+            'rounded-lg border bg-surface-elevated px-3 py-2 text-sm text-text-secondary',
             'transition-colors duration-200',
-            'focus:outline-none focus:border-border-focus focus:shadow-[0_0_20px_rgba(34,211,238,0.15)]',
-            activeFilters.endDate ? 'border-accent text-accent' : 'border-border',
+            activeFilters.endDate ? 'border-accent text-accent' : 'border-border-divider',
           )}
         />
       </div>
@@ -274,7 +272,7 @@ export default function TransactionFilters({
           <div
             className={cn(
               'absolute top-full left-0 mt-1 z-10',
-              'w-48 bg-bg-card border border-border rounded-xl shadow-lg p-2',
+              'w-48 bg-surface-elevated border border-border-divider rounded-xl p-2',
             )}
           >
             {Object.entries(PAYMENT_METHODS_DISPLAY).map(([key, label]) => (
@@ -285,7 +283,7 @@ export default function TransactionFilters({
                 className={cn(
                   'flex items-center w-full px-3 py-2 rounded-lg text-sm text-left',
                   'transition-colors duration-200',
-                  'hover:bg-bg-card-hover text-text-primary',
+                  'hover:bg-surface-hover text-text-primary',
                   activeFilters.paymentMethod === key &&
                     'bg-accent/10 text-accent',
                 )}

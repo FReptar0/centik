@@ -200,7 +200,7 @@ function TransactionFormContent({
             'flex-1 rounded-lg border px-3 py-2.5 text-sm font-semibold transition-colors duration-200',
             type === TransactionType.EXPENSE
               ? 'bg-accent/15 text-accent border-accent'
-              : 'bg-bg-input text-text-secondary border-border hover:border-border-light',
+              : 'bg-transparent text-text-secondary border-border-divider',
           )}
         >
           Gasto
@@ -213,7 +213,7 @@ function TransactionFormContent({
             'flex-1 rounded-lg border px-3 py-2.5 text-sm font-semibold transition-colors duration-200',
             type === TransactionType.INCOME
               ? 'bg-accent/15 text-accent border-accent'
-              : 'bg-bg-input text-text-secondary border-border hover:border-border-light',
+              : 'bg-transparent text-text-secondary border-border-divider',
           )}
         >
           Ingreso
@@ -229,7 +229,7 @@ function TransactionFormContent({
           Monto
         </label>
         <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-2xl font-bold pointer-events-none">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-tertiary text-2xl font-bold pointer-events-none">
             $
           </span>
           <input
@@ -254,11 +254,10 @@ function TransactionFormContent({
             }}
             placeholder="0.00"
             className={cn(
-              'w-full rounded-lg border bg-bg-input pl-10 pr-3 py-3 text-2xl font-bold text-text-primary text-right',
-              'placeholder:text-text-muted',
+              'w-full rounded-lg border bg-transparent pl-10 pr-3 py-3 text-2xl font-bold text-text-primary text-right',
+              'placeholder:text-text-tertiary',
               'transition-colors duration-200',
-              'focus:outline-none focus:border-border-focus focus:shadow-[0_0_20px_rgba(34,211,238,0.15)]',
-              errors.amount ? 'border-negative' : 'border-border',
+              errors.amount ? 'border-negative' : 'border-border-divider',
             )}
           />
         </div>
@@ -283,7 +282,7 @@ function TransactionFormContent({
                 'flex flex-col items-center gap-1.5 rounded-lg border p-3 transition-colors duration-200',
                 categoryId === cat.id
                   ? 'ring-2 ring-accent bg-accent/10 border-accent'
-                  : 'border-border hover:border-border-light',
+                  : 'border-border-divider',
               )}
             >
               <div
@@ -337,11 +336,10 @@ function TransactionFormContent({
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Ej. Almuerzo en restaurante"
               className={cn(
-                'w-full rounded-lg border bg-bg-input px-3 py-2.5 text-sm text-text-primary',
-                'placeholder:text-text-muted',
+                'w-full rounded-lg border bg-transparent px-3 py-2.5 text-sm text-text-primary',
+                'placeholder:text-text-tertiary',
                 'transition-colors duration-200',
-                'focus:outline-none focus:border-border-focus focus:shadow-[0_0_20px_rgba(34,211,238,0.15)]',
-                'border-border',
+                'border-border-divider',
               )}
             />
           </div>
@@ -364,7 +362,7 @@ function TransactionFormContent({
                       'rounded-lg border px-3 py-2 text-sm font-medium transition-colors duration-200',
                       paymentMethod === key
                         ? 'bg-accent/15 text-accent border-accent'
-                        : 'bg-bg-input text-text-secondary border-border hover:border-border-light',
+                        : 'bg-transparent text-text-secondary border-border-divider',
                     )}
                   >
                     {label}
@@ -388,11 +386,10 @@ function TransactionFormContent({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               className={cn(
-                'w-full rounded-lg border bg-bg-input px-3 py-2.5 text-sm text-text-primary',
-                'placeholder:text-text-muted resize-none',
+                'w-full rounded-lg border bg-transparent px-3 py-2.5 text-sm text-text-primary',
+                'placeholder:text-text-tertiary resize-none',
                 'transition-colors duration-200',
-                'focus:outline-none focus:border-border-focus focus:shadow-[0_0_20px_rgba(34,211,238,0.15)]',
-                'border-border',
+                'border-border-divider',
               )}
             />
           </div>
@@ -411,10 +408,9 @@ function TransactionFormContent({
               value={date}
               onChange={(e) => setDate(e.target.value)}
               className={cn(
-                'w-full rounded-lg border bg-bg-input px-3 py-2.5 text-sm text-text-primary',
+                'w-full rounded-lg border bg-transparent px-3 py-2.5 text-sm text-text-primary',
                 'transition-colors duration-200',
-                'focus:outline-none focus:border-border-focus focus:shadow-[0_0_20px_rgba(34,211,238,0.15)]',
-                'border-border',
+                'border-border-divider',
               )}
             />
           </div>
@@ -433,10 +429,9 @@ function TransactionFormContent({
                 value={incomeSourceId}
                 onChange={(e) => setIncomeSourceId(e.target.value)}
                 className={cn(
-                  'w-full rounded-lg border bg-bg-input px-3 py-2.5 text-sm text-text-primary',
+                  'w-full rounded-lg border bg-transparent px-3 py-2.5 text-sm text-text-primary',
                   'transition-colors duration-200',
-                  'focus:outline-none focus:border-border-focus focus:shadow-[0_0_20px_rgba(34,211,238,0.15)]',
-                  'border-border',
+                  'border-border-divider',
                 )}
               >
                 <option value="">Sin fuente</option>

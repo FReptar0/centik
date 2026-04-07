@@ -55,7 +55,7 @@ export default function PeriodSelector({ isClosed = false }: PeriodSelectorProps
         className={cn(
           'p-1.5 rounded-md',
           'text-text-secondary hover:text-text-primary',
-          'hover:bg-bg-card-hover',
+          'hover:bg-surface-hover',
           'transition-colors duration-200',
         )}
       >
@@ -82,7 +82,7 @@ export default function PeriodSelector({ isClosed = false }: PeriodSelectorProps
         className={cn(
           'p-1.5 rounded-md',
           'text-text-secondary hover:text-text-primary',
-          'hover:bg-bg-card-hover',
+          'hover:bg-surface-hover',
           'transition-colors duration-200',
           isCurrentPeriod && 'opacity-30 cursor-not-allowed hover:bg-transparent hover:text-text-secondary',
         )}

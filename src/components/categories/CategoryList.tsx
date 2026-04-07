@@ -26,7 +26,7 @@ export default function CategoryList({ categories, onAdd }: CategoryListProps) {
         <DynamicIcon
           name="tag"
           size={32}
-          className="text-text-muted mb-3"
+          className="text-text-tertiary mb-3"
           aria-hidden="true"
         />
         <p className="text-text-secondary text-lg mb-4">
@@ -95,7 +95,7 @@ function CategoryRow({ category }: CategoryRowProps) {
   return (
     <div
       className={cn(
-        'flex items-center gap-4 rounded-xl border border-border bg-bg-card p-4',
+        'flex items-center gap-4 rounded-xl border border-border-divider bg-surface-elevated p-4',
         'transition-all duration-200',
       )}
     >
@@ -155,7 +155,7 @@ function CategoryRow({ category }: CategoryRowProps) {
           ) : (
             <button
               onClick={() => setConfirmingDelete(true)}
-              className="rounded-md p-2 text-text-muted transition-colors duration-200 hover:text-negative hover:bg-negative/10"
+              className="rounded-md p-2 text-text-tertiary transition-colors duration-200 hover:text-negative hover:bg-negative/10"
               aria-label="Eliminar"
             >
               <Trash2 size={16} />

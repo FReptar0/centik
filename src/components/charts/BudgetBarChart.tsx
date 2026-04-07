@@ -65,7 +65,7 @@ function CustomTooltip({
       <p className="text-text-secondary">
         Gastado: {formatMoney(data.spentStr)}
       </p>
-      <p className="text-text-muted mt-1">{percentUsed}% usado</p>
+      <p className="text-text-tertiary mt-1">{percentUsed}% usado</p>
     </div>
   )
 }
@@ -73,7 +73,7 @@ function CustomTooltip({
 export default function BudgetBarChart({ data }: BudgetBarChartProps) {
   if (data.length === 0) {
     return (
-      <div className="bg-bg-card border border-border rounded-xl p-5">
+      <div className="bg-surface-elevated border border-border-divider rounded-xl p-5">
         <h3 className="text-lg font-semibold text-text-primary mb-4">
           Presupuesto vs Gastado
         </h3>
@@ -81,13 +81,13 @@ export default function BudgetBarChart({ data }: BudgetBarChartProps) {
           <DynamicIcon
             name="bar-chart-3"
             size={32}
-            className="text-text-muted mb-3"
+            className="text-text-tertiary mb-3"
             aria-hidden="true"
           />
           <p className="text-text-secondary text-sm">
             Sin datos de presupuesto
           </p>
-          <p className="text-text-muted text-xs mt-1">
+          <p className="text-text-tertiary text-xs mt-1">
             Configura tu presupuesto en la seccion de Presupuesto
           </p>
         </div>
@@ -105,7 +105,7 @@ export default function BudgetBarChart({ data }: BudgetBarChartProps) {
   }))
 
   return (
-    <div className="bg-bg-card border border-border rounded-xl p-5">
+    <div className="bg-surface-elevated border border-border-divider rounded-xl p-5">
       <h3 className="text-lg font-semibold text-text-primary mb-4">
         Presupuesto vs Gastado
       </h3>

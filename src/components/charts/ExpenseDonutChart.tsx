@@ -49,7 +49,7 @@ function CustomTooltip({
       <p className="text-text-secondary">
         {formatMoney(data.originalTotal)}
       </p>
-      <p className="text-text-muted mt-1">{percentage}%</p>
+      <p className="text-text-tertiary mt-1">{percentage}%</p>
     </div>
   )
 }
@@ -95,7 +95,7 @@ function CenterLabel({
 export default function ExpenseDonutChart({ data }: ExpenseDonutChartProps) {
   if (data.length === 0) {
     return (
-      <div className="bg-bg-card border border-border rounded-xl p-5">
+      <div className="bg-surface-elevated border border-border-divider rounded-xl p-5">
         <h3 className="text-lg font-semibold text-text-primary mb-4">
           Distribucion de Gastos
         </h3>
@@ -103,11 +103,11 @@ export default function ExpenseDonutChart({ data }: ExpenseDonutChartProps) {
           <DynamicIcon
             name="pie-chart"
             size={32}
-            className="text-text-muted mb-3"
+            className="text-text-tertiary mb-3"
             aria-hidden="true"
           />
           <p className="text-text-secondary text-sm">Sin gastos este mes</p>
-          <p className="text-text-muted text-xs mt-1">
+          <p className="text-text-tertiary text-xs mt-1">
             Registra movimientos para ver la distribucion
           </p>
         </div>
@@ -128,7 +128,7 @@ export default function ExpenseDonutChart({ data }: ExpenseDonutChartProps) {
     .toString()
 
   return (
-    <div className="bg-bg-card border border-border rounded-xl p-5">
+    <div className="bg-surface-elevated border border-border-divider rounded-xl p-5">
       <h3 className="text-lg font-semibold text-text-primary mb-4">
         Distribucion de Gastos
       </h3>
@@ -163,7 +163,7 @@ export default function ExpenseDonutChart({ data }: ExpenseDonutChartProps) {
               style={{ backgroundColor: d.color }}
             />
             <span className="text-xs text-text-secondary">{d.name}</span>
-            <span className="text-xs tabular-nums text-text-muted">
+            <span className="text-xs tabular-nums text-text-tertiary">
               {formatMoney(d.total)}
             </span>
           </div>

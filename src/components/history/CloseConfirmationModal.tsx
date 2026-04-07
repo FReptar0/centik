@@ -80,7 +80,7 @@ export default function CloseConfirmationModal({
               {Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}
-                  className="rounded-lg bg-bg-elevated p-3 space-y-2"
+                  className="rounded-lg bg-surface p-3 space-y-2"
                 >
                   <div className="h-3 w-16 bg-border rounded animate-pulse" />
                   <div className="h-5 w-24 bg-border rounded animate-pulse" />
@@ -91,7 +91,7 @@ export default function CloseConfirmationModal({
         </div>
 
         {/* Consequence text */}
-        <p className="text-sm text-text-muted italic">
+        <p className="text-sm text-text-tertiary italic">
           Las transacciones de este mes quedaran bloqueadas
         </p>
 
@@ -102,7 +102,7 @@ export default function CloseConfirmationModal({
             onClick={onClose}
             disabled={isLoading}
             className={cn(
-              'rounded-lg border border-border-light px-4 py-2',
+              'rounded-lg border px-4 py-2',
               'text-sm font-semibold text-text-secondary',
               'transition-colors duration-200 hover:text-text-primary',
             )}
@@ -146,7 +146,7 @@ interface PreviewItemProps {
 /** Single metric card in the preview grid */
 function PreviewItem({ label, value, colorClass }: PreviewItemProps) {
   return (
-    <div className="rounded-lg bg-bg-elevated p-3">
+    <div className="rounded-lg bg-surface p-3">
       <p className="text-xs text-text-secondary mb-1">{label}</p>
       <p className={cn('text-base font-semibold tabular-nums', colorClass)}>
         {value}

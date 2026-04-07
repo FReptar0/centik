@@ -192,7 +192,7 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
           }}
           onBlur={() => handleBlur('name')}
           placeholder="Ej. BBVA Oro"
-          className={cn(inputClass, errors.name ? 'border-negative' : 'border-border')}
+          className={cn(inputClass, errors.name ? 'border-negative' : 'border-border-divider')}
         />
       </FormField>
 
@@ -211,7 +211,7 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
                 'rounded-lg border px-3 py-2 text-sm font-medium transition-colors duration-200',
                 type === t
                   ? 'bg-accent/15 text-accent border-accent'
-                  : 'bg-bg-input text-text-secondary border-border hover:border-border-light',
+                  : 'bg-transparent text-text-secondary border-border-divider',
               )}
             >
               {DEBT_TYPE_DISPLAY[t] ?? t}
@@ -257,10 +257,10 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
             className={cn(
               inputClass,
               'pr-8',
-              errors.annualRate ? 'border-negative' : 'border-border',
+              errors.annualRate ? 'border-negative' : 'border-border-divider',
             )}
           />
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted text-sm">
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-text-tertiary text-sm">
             %
           </span>
         </div>
@@ -305,7 +305,7 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
                 value={cutOffDay}
                 onChange={(e) => setCutOffDay(e.target.value)}
                 placeholder="15"
-                className={cn(inputClass, errors.cutOffDay ? 'border-negative' : 'border-border')}
+                className={cn(inputClass, errors.cutOffDay ? 'border-negative' : 'border-border-divider')}
               />
             </FormField>
             <FormField label="Dia de pago" htmlFor="debt-due" error={errors.paymentDueDay}>
@@ -319,7 +319,7 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
                 placeholder="5"
                 className={cn(
                   inputClass,
-                  errors.paymentDueDay ? 'border-negative' : 'border-border',
+                  errors.paymentDueDay ? 'border-negative' : 'border-border-divider',
                 )}
               />
             </FormField>
@@ -367,7 +367,7 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
               placeholder="36"
               className={cn(
                 inputClass,
-                errors.remainingMonths ? 'border-negative' : 'border-border',
+                errors.remainingMonths ? 'border-negative' : 'border-border-divider',
               )}
             />
           </FormField>
@@ -397,10 +397,9 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
 // --- Shared form primitives ---
 
 const inputClass = [
-  'w-full rounded-lg border bg-bg-input px-3 py-2.5 text-sm text-text-primary',
-  'placeholder:text-text-muted',
+  'w-full rounded-lg border bg-transparent px-3 py-2.5 text-sm text-text-primary',
+  'placeholder:text-text-tertiary',
   'transition-colors duration-200',
-  'focus:outline-none focus:border-border-focus focus:shadow-[0_0_20px_rgba(34,211,238,0.15)]',
 ].join(' ')
 
 interface FormFieldProps {
@@ -451,7 +450,7 @@ function AmountField({
   return (
     <FormField label={label} htmlFor={id} error={error}>
       <div className="relative">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-sm pointer-events-none">
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-tertiary text-sm pointer-events-none">
           $
         </span>
         <input
@@ -476,7 +475,7 @@ function AmountField({
           className={cn(
             inputClass,
             'pl-7 text-right',
-            error ? 'border-negative' : 'border-border',
+            error ? 'border-negative' : 'border-border-divider',
           )}
         />
       </div>

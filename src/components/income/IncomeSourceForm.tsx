@@ -159,11 +159,10 @@ function IncomeSourceFormContent({ source, onClose }: FormContentProps) {
           onBlur={() => handleBlur('name')}
           placeholder="Ej. TerSoft"
           className={cn(
-            'w-full rounded-lg border bg-bg-input px-3 py-2.5 text-sm text-text-primary',
-            'placeholder:text-text-muted',
+            'w-full rounded-lg border bg-transparent px-3 py-2.5 text-sm text-text-primary',
+            'placeholder:text-text-tertiary',
             'transition-colors duration-200',
-            'focus:outline-none focus:border-border-focus focus:shadow-[0_0_20px_rgba(34,211,238,0.15)]',
-            errors.name ? 'border-negative' : 'border-border',
+            errors.name ? 'border-negative' : 'border-border-divider',
           )}
         />
         {errors.name && (
@@ -180,7 +179,7 @@ function IncomeSourceFormContent({ source, onClose }: FormContentProps) {
           Monto por defecto
         </label>
         <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-sm pointer-events-none">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-tertiary text-sm pointer-events-none">
             $
           </span>
           <input
@@ -204,11 +203,10 @@ function IncomeSourceFormContent({ source, onClose }: FormContentProps) {
             }}
             placeholder="0.00"
             className={cn(
-              'w-full rounded-lg border bg-bg-input pl-7 pr-3 py-2.5 text-sm text-text-primary text-right',
-              'placeholder:text-text-muted',
+              'w-full rounded-lg border bg-transparent pl-7 pr-3 py-2.5 text-sm text-text-primary text-right',
+              'placeholder:text-text-tertiary',
               'transition-colors duration-200',
-              'focus:outline-none focus:border-border-focus focus:shadow-[0_0_20px_rgba(34,211,238,0.15)]',
-              errors.defaultAmount ? 'border-negative' : 'border-border',
+              errors.defaultAmount ? 'border-negative' : 'border-border-divider',
             )}
           />
         </div>
@@ -232,7 +230,7 @@ function IncomeSourceFormContent({ source, onClose }: FormContentProps) {
                 'rounded-lg border px-3 py-2 text-sm font-medium transition-colors duration-200',
                 frequency === freq
                   ? 'bg-accent/15 text-accent border-accent'
-                  : 'bg-bg-input text-text-secondary border-border hover:border-border-light',
+                  : 'bg-transparent text-text-secondary border-border-divider',
               )}
             >
               {FREQUENCY_DISPLAY[freq] ?? freq}
@@ -259,7 +257,7 @@ function IncomeSourceFormContent({ source, onClose }: FormContentProps) {
                 'rounded-lg border px-3 py-2 text-sm font-medium transition-colors duration-200',
                 type === t
                   ? 'bg-accent/15 text-accent border-accent'
-                  : 'bg-bg-input text-text-secondary border-border hover:border-border-light',
+                  : 'bg-transparent text-text-secondary border-border-divider',
               )}
             >
               {TYPE_DISPLAY[t] ?? t}

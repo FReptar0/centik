@@ -64,7 +64,7 @@ export default function TransactionRow({ transaction, onEdit }: TransactionRowPr
   return (
     <div
       className={cn(
-        'flex items-center gap-3 bg-bg-card rounded-xl p-4 border border-border',
+        'flex items-center gap-3 bg-surface-elevated rounded-xl p-4 border border-border-divider',
         'transition-all duration-200',
       )}
     >
@@ -86,7 +86,7 @@ export default function TransactionRow({ transaction, onEdit }: TransactionRowPr
         <p className="text-sm font-medium text-text-primary truncate">
           {displayName}
         </p>
-        <p className="text-xs text-text-muted">{formattedDate}</p>
+        <p className="text-xs text-text-tertiary">{formattedDate}</p>
       </div>
 
       {/* Amount + actions */}
@@ -121,14 +121,14 @@ export default function TransactionRow({ transaction, onEdit }: TransactionRowPr
             </span>
             <button
               onClick={() => onEdit(transaction)}
-              className="rounded-md p-2 text-text-muted transition-colors duration-200 hover:text-text-primary hover:bg-bg-card-hover"
+              className="rounded-md p-2 text-text-tertiary transition-colors duration-200 hover:text-text-primary hover:bg-surface-hover"
               aria-label="Editar"
             >
               <Pencil size={16} />
             </button>
             <button
               onClick={() => setConfirmingDelete(true)}
-              className="rounded-md p-2 text-text-muted transition-colors duration-200 hover:text-negative hover:bg-negative/10"
+              className="rounded-md p-2 text-text-tertiary transition-colors duration-200 hover:text-negative hover:bg-negative/10"
               aria-label="Eliminar"
             >
               <Trash2 size={16} />

@@ -31,13 +31,13 @@ export default function TransactionList({
         <DynamicIcon
           name="arrow-left-right"
           size={32}
-          className="text-text-muted mb-3"
+          className="text-text-tertiary mb-3"
           aria-hidden="true"
         />
         <p className="text-text-secondary text-lg">
           Sin movimientos este mes
         </p>
-        <p className="mt-1 text-sm text-text-muted">
+        <p className="mt-1 text-sm text-text-tertiary">
           Usa el boton + para registrar tu primer movimiento
         </p>
       </div>
@@ -58,10 +58,10 @@ export default function TransactionList({
           onClick={onLoadMore}
           disabled={isLoadingMore}
           className={cn(
-            'mt-4 w-full rounded-xl border border-border bg-bg-card py-3',
+            'mt-4 w-full rounded-xl border border-border-divider bg-surface-elevated py-3',
             'text-sm font-medium text-text-secondary',
             'transition-colors duration-200',
-            'hover:bg-bg-card-hover hover:text-text-primary',
+            'hover:bg-surface-hover hover:text-text-primary',
             'disabled:opacity-50 disabled:cursor-not-allowed',
           )}
         >

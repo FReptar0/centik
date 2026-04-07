@@ -17,7 +17,7 @@ export default function IncomeSourceList({ sources, onEdit, onAdd }: IncomeSourc
         <DynamicIcon
           name="banknote"
           size={32}
-          className="text-text-muted mb-3"
+          className="text-text-tertiary mb-3"
           aria-hidden="true"
         />
         <p className="text-text-secondary text-lg mb-4">

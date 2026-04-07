@@ -54,7 +54,7 @@ export default function IncomeSourceCard({ source, onEdit }: IncomeSourceCardPro
 
   return (
     <div className={cn(
-      'rounded-xl border border-border bg-bg-card p-5',
+      'rounded-xl border border-border-divider bg-surface-elevated p-5',
       'transition-all duration-200',
     )}>
       {/* Top row: name + type badge */}
@@ -112,14 +112,14 @@ export default function IncomeSourceCard({ source, onEdit }: IncomeSourceCardPro
             <>
               <button
                 onClick={() => onEdit(source)}
-                className="rounded-md p-2 text-text-muted transition-colors duration-200 hover:text-text-primary hover:bg-bg-card-hover"
+                className="rounded-md p-2 text-text-tertiary transition-colors duration-200 hover:text-text-primary hover:bg-surface-hover"
                 aria-label="Editar"
               >
                 <Pencil size={16} />
               </button>
               <button
                 onClick={() => setConfirmingDelete(true)}
-                className="rounded-md p-2 text-text-muted transition-colors duration-200 hover:text-negative hover:bg-negative/10"
+                className="rounded-md p-2 text-text-tertiary transition-colors duration-200 hover:text-negative hover:bg-negative/10"
                 aria-label="Eliminar"
               >
                 <Trash2 size={16} />

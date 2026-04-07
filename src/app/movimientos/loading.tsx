@@ -5,10 +5,10 @@ export default function MovimientosLoading() {
       {/* Header skeleton */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <div className="h-8 w-48 bg-bg-card rounded-lg animate-pulse" />
-          <div className="h-10 w-28 bg-bg-card rounded-lg animate-pulse" />
+          <div className="h-8 w-48 bg-surface-elevated rounded-lg animate-pulse" />
+          <div className="h-10 w-28 bg-surface-elevated rounded-lg animate-pulse" />
         </div>
-        <div className="h-5 w-32 bg-bg-card rounded-lg animate-pulse" />
+        <div className="h-5 w-32 bg-surface-elevated rounded-lg animate-pulse" />
       </div>
 
       {/* Filter chips skeleton */}
@@ -16,7 +16,7 @@ export default function MovimientosLoading() {
         {Array.from({ length: 5 }).map((_, i) => (
           <div
             key={i}
-            className="h-9 rounded-lg bg-bg-card animate-pulse shrink-0"
+            className="h-9 rounded-lg bg-surface-elevated animate-pulse shrink-0"
             style={{ width: `${60 + i * 12}px` }}
           />
         ))}
@@ -27,7 +27,7 @@ export default function MovimientosLoading() {
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
-            className="h-16 bg-bg-card rounded-xl animate-pulse"
+            className="h-16 bg-surface-elevated rounded-xl animate-pulse"
           />
         ))}
       </div>

@@ -29,7 +29,7 @@ export default function MobileNav() {
         className={cn(
           'fixed bottom-0 inset-x-0 z-40 md:hidden',
           'flex h-16 items-center justify-around',
-          'bg-bg-card border-t border-border',
+          'bg-surface-elevated border-t border-border-divider',
         )}
       >
         {MOBILE_TAB_ITEMS.map((item) => {

@@ -20,7 +20,7 @@ export default function Sidebar() {
       className={cn(
         'fixed inset-y-0 left-0 z-30',
         'hidden md:flex md:w-16 lg:w-60',
-        'flex-col bg-bg-card border-r border-border',
+        'flex-col bg-surface-elevated border-r border-border-divider',
       )}
     >
       {/* App name header */}
@@ -50,7 +50,7 @@ export default function Sidebar() {
                 'md:justify-center md:px-0 lg:justify-start lg:gap-3 lg:px-3',
                 active
                   ? 'bg-accent/15 text-accent'
-                  : 'text-text-secondary hover:text-text-primary hover:bg-bg-card-hover',
+                  : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover',
               )}
             >
               <DynamicIcon name={item.icon} size={18} aria-hidden="true" />
@@ -59,7 +59,7 @@ export default function Sidebar() {
               {/* Tooltip for tablet: visible on hover, hidden on desktop */}
               <span
                 className={cn(
-                  'absolute left-full ml-2 rounded-md bg-bg-elevated px-2 py-1',
+                  'absolute left-full ml-2 rounded-md bg-surface px-2 py-1',
                   'text-xs text-text-primary whitespace-nowrap',
                   'opacity-0 pointer-events-none',
                   'group-hover:opacity-100 lg:hidden',
