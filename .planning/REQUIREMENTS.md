@@ -23,7 +23,7 @@ Requirements for Glyph Finance code implementation. 10/10 quality bar -- anythin
 
 ### New Components
 
-- [ ] **COMP-01**: BatteryBar component -- 10 rectangular segments, 2px gaps, traffic-light colors (chartreuse <80%, orange 80-99%, red 100%+), ARIA progressbar attributes
+- [x] **COMP-01**: BatteryBar component -- 10 rectangular segments, 2px gaps, traffic-light colors (chartreuse <80%, orange 80-99%, red 100%+), ARIA progressbar attributes
 - [x] **COMP-02**: FloatingInput component -- underline-only, transparent background, floating label (placeholder -> uppercase Label style on focus), chartreuse focus underline, error state
 - [x] **COMP-03**: StatusDot component -- 4px solid chartreuse circle, CSS animation (status-pulse), configurable placement
 - [x] **COMP-04**: TogglePills component -- active (chartreuse fill, black text), inactive (ghost), used for Expense/Income and period selectors
@@ -97,7 +97,7 @@ Deferred to future milestones.
 | MIGRATE-01 | Phase 17 | Complete |
 | MIGRATE-02 | Phase 17 | Complete |
 | MIGRATE-03 | Phase 17 | Complete |
-| COMP-01 | Phase 18 | Pending |
+| COMP-01 | Phase 18 | Complete |
 | COMP-02 | Phase 18 | Complete |
 | COMP-03 | Phase 18 | Complete |
 | COMP-04 | Phase 18 | Complete |
