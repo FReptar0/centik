@@ -159,7 +159,7 @@ Phases execute in numeric order: 17 -> 18 -> 19 -> 20 -> 21 -> 22
 |-------|-----------|----------------|--------|-----------|
 | 1-11 | v1.0 | 27/27 | Complete | 2026-04-06 |
 | 12-16 | v1.1 | 9/9 | Complete | 2026-04-06 |
-| 17. Token Foundation + Class Migration | 3/3 | Complete   | 2026-04-07 | - |
+| 17. Token Foundation + Class Migration | 3/3 | Complete    | 2026-04-07 | - |
 | 18. New Primitive Components | v2.0 | 0/TBD | Not started | - |
 | 19. Layout, Navigation + Global Updates | v2.0 | 0/TBD | Not started | - |
 | 20. Feature Component Updates | v2.0 | 0/TBD | Not started | - |
