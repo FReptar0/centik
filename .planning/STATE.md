@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Glyph Finance Implementation
 current_plan: Not started
-status: defining_requirements
+status: ready_to_plan
 stopped_at: null
 last_updated: "2026-04-06"
 last_activity: 2026-04-06
 progress:
-  total_phases: 0
+  total_phases: 6
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -22,21 +22,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-06)
 
 **Core value:** A single user can register a financial transaction in under 30 seconds and immediately see how it impacts their budget, debt ratio, and savings rate across all views.
-**Current focus:** Defining requirements for v2.0 Glyph Finance Implementation
+**Current focus:** Phase 17 -- Token Foundation + Class Migration
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-04-06 — Milestone v2.0 started
+Phase: 17 of 22 (Token Foundation + Class Migration)
+Plan: 0 of TBD in current phase
+Status: Ready to plan
+Last activity: 2026-04-06 -- Roadmap created for v2.0 milestone (6 phases, 39 requirements)
+
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
-**Velocity (v1.0 reference):**
-- Total plans completed: 27
-- Average duration: ~5 min
-- Total execution time: ~2.3 hours
+**Velocity (v1.0 + v1.1 reference):**
+- Total plans completed: 36 (27 v1.0 + 9 v1.1)
+- Average duration: ~4 min
+- Total execution time: ~2.5 hours
 
 **By Phase (v1.1):**
 
@@ -44,21 +46,14 @@ Last activity: 2026-04-06 — Milestone v2.0 started
 |-------|-------|-------|----------|
 | 12 | 2 | 4min | 2min |
 | 13 | 2 | 4min | 2min |
+| 14 | 2 | 4min | 2min |
+| 15 | 2 | 5min | 2.5min |
+| 16 | 1 | 1min | 1min |
 
 **Recent Trend:**
-- Last 5 plans: 2min, 2min, 2min, 2min (new milestone)
-- Trend: Stable
-
-*Updated after each plan completion*
-| Phase 12 P01 | 2min | 2 tasks | 1 files |
-| Phase 12 P02 | 2min | 3 tasks | 1 files |
-| Phase 13 P01 | 2min | 2 tasks | 1 files |
-| Phase 13 P02 | 2min | 2 tasks | 1 files |
-| Phase 14 P01 | 2min | 2 tasks | 1 files |
-| Phase 14 P02 | 2min | 2 tasks | 1 files |
-| Phase 15 P01 | 2min | 2 tasks | 1 files |
-| Phase 15 P02 | 3min | 2 tasks | 1 files |
-| Phase 16 P01 | 1min | 2 tasks | 1 files |
+- v1.1 plans averaged 2min (docs-only)
+- v2.0 will be slower (code implementation, Quality Loop enforcement)
+- Trend: Expect 5-15min per plan for code phases
 
 ## Accumulated Context
 
@@ -67,37 +62,13 @@ Last activity: 2026-04-06 — Milestone v2.0 started
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- [Roadmap v1.1]: 5 phases (12-16) for 24 requirements; phases follow natural category boundaries (tokens -> components -> signature -> UX -> reference sync)
-- [Roadmap v1.1]: Phases 13 and 14 can parallelize (both depend only on Phase 12, write to different sections)
-- [Roadmap v1.1]: Docs-only milestone -- no code changes, all output is STYLE_GUIDE.md + UX_RULES.md + CLAUDE.md updates
-- [12-01]: Replaced cyan (#22d3ee) with chartreuse (#CCFF00) as accent color
-- [12-01]: Eliminated all shadow tokens; pure background-shift elevation hierarchy
-- [12-01]: Desaturated category colors ~30-40% for monochromatic harmony
-- [12-02]: 5-level type hierarchy (Display 36px, Heading 20px, Body 14px, Label 12px uppercase, Meta 11px)
-- [12-02]: IBM Plex Mono for ALL financial numbers; Satoshi for headings/body
-- [12-02]: Increased radius scale: 12px buttons, 16px cards, 24px modals
-- [12-02]: Complete @theme block with all 27 color tokens, font-mono, and 4 radius values
-- [13-01]: Buttons use true capsule/pill shape (radius-full 9999px) instead of rounded rectangle
-- [13-01]: Danger button uses --color-negative (#FF3333) with white text (replaces #dc2626)
-- [13-01]: Battery-bar replaces all smooth progress bars: 10 rectangular segments, traffic-light colors
-- [13-01]: Stacked cards use 1px separator as pragmatic concession for list readability
-- [13-02]: All inputs underline-only with transparent background and floating labels
-- [13-02]: Charts use 1.5px stroke, 4px dots, no grid lines, card-style tooltips
-- [13-02]: Badges use radius-full (pill) matching button pill shape for consistency
-- [13-02]: Mobile modals use bottom sheet pattern (85vh, handle indicator, top-corner radius)
-- [Phase 14]: Dot-matrix uses pseudo-element overlay to avoid interfering with card content
-- [Phase 14]: Two CSS approaches for dot-matrix: SVG data URI (preferred) and radial-gradient (fallback)
-- [14-02]: Category icons use stroke-width 1.5 and crispEdges for pixel-aligned rendering
-- [14-02]: Status dot continuous 2.5s pulse -- calm, not frantic
-- [14-02]: Pixel-dissolve uses clip-path with steps(12, end) for mechanical scanline feel
-- [14-02]: Reduced motion completely disables pixel-dissolve for accessibility
-- [Phase 15]: 4x2 category grid over horizontal scroll for all-visible transaction categories
-- [Phase 15]: Custom 4x4 numpad with backspace in column 4, decimal and 00 keys for transaction input
-- [Phase 15]: Empty state icons reduced from 32px to 24px to match STYLE_GUIDE.md icon size spec
-- [Phase 15]: Focus ring uses outline-only pattern (2px --color-accent, no glow/shadow) standardized across all sections
-- [Phase 15]: Mobile modals use slide-up (300ms), desktop uses fade+scale (200ms) - distinct animation patterns
-- [Phase 15]: New list items use pixel-dissolve animation for brand consistency
-- [16-01]: CLAUDE.md Styling Guidelines and Seed Data synchronized with Glyph Finance tokens from STYLE_GUIDE.md
+- [Roadmap v2.0]: 6 phases (17-22) for 39 requirements; token swap + class migration atomic in Phase 17
+- [Roadmap v2.0]: Custom numpad + TransactionForm isolated to Phase 21 (highest complexity)
+- [Roadmap v2.0]: Recharts chart colors updated as hardcoded hex (CSS variables ignored by SVG)
+- [Roadmap v2.0]: Visual QA as final phase -- validates cumulative result of all 5 preceding phases
+- [Research]: Satoshi must load via next/font/local (not on Google Fonts)
+- [Research]: @theme inline required for font variables (runtime injection)
+- [Research]: Token rename silently breaks classes -- must be atomic with class migration
 
 ### Pending Todos
 
@@ -105,10 +76,11 @@ None yet.
 
 ### Blockers/Concerns
 
-None.
+- Satoshi font files must be manually downloaded from Fontshare before Phase 17 execution
+- Income category colors for Glyph Finance not explicitly specified in STYLE_GUIDE.md (needs resolution in Phase 17 planning)
 
 ## Session Continuity
 
-Last session: 2026-04-06T20:08:34.131Z
-Stopped at: Completed 16-01-PLAN.md
+Last session: 2026-04-06
+Stopped at: Roadmap created for v2.0 milestone
 Resume file: None
