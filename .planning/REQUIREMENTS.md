@@ -18,7 +18,7 @@ Requirements for Glyph Finance code implementation. 10/10 quality bar -- anythin
 ### Class Migration
 
 - [ ] **MIGRATE-01**: All 36+ component files updated with new Tailwind utility class names matching renamed tokens (bg-primary -> bg, bg-card -> surface-elevated, text-muted -> text-tertiary, etc.)
-- [ ] **MIGRATE-02**: constants.ts updated with new hex values for all color constants
+- [x] **MIGRATE-02**: constants.ts updated with new hex values for all color constants
 - [ ] **MIGRATE-03**: All existing tests updated to assert new token names, class names, and hex values (zero test failures after migration)
 
 ### New Components
@@ -59,7 +59,7 @@ Requirements for Glyph Finance code implementation. 10/10 quality bar -- anythin
 
 ### Test Updates
 
-- [ ] **TEST-01**: All existing unit tests pass with new design tokens (394 tests, zero failures)
+- [x] **TEST-01**: All existing unit tests pass with new design tokens (394 tests, zero failures)
 - [ ] **TEST-02**: New unit tests for BatteryBar (segments, colors, overflow, ARIA), FloatingInput (states, validation, floating behavior), TogglePills (active/inactive, callback)
 - [ ] **TEST-03**: New unit tests for Numpad (digit input, decimal, backspace, 00, max amount)
 - [ ] **TEST-04**: New unit tests for StatusDot (renders, animation class, reduced-motion)
@@ -95,7 +95,7 @@ Deferred to future milestones.
 | TOKEN-04 | Phase 17 | Complete |
 | TOKEN-05 | Phase 17 | Complete |
 | MIGRATE-01 | Phase 17 | Pending |
-| MIGRATE-02 | Phase 17 | Pending |
+| MIGRATE-02 | Phase 17 | Complete |
 | MIGRATE-03 | Phase 17 | Pending |
 | COMP-01 | Phase 18 | Pending |
 | COMP-02 | Phase 18 | Pending |
@@ -124,7 +124,7 @@ Deferred to future milestones.
 | QA-06 | Phase 22 | Pending |
 | QA-07 | Phase 22 | Pending |
 | QA-08 | Phase 22 | Pending |
-| TEST-01 | Phase 17 | Pending |
+| TEST-01 | Phase 17 | Complete |
 | TEST-02 | Phase 18 | Pending |
 | TEST-03 | Phase 21 | Pending |
 | TEST-04 | Phase 18 | Pending |
