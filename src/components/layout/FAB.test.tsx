@@ -4,7 +4,7 @@ import FAB from './FAB'
 
 const mockGetTransactionFormData = vi.fn().mockResolvedValue({
   categories: [
-    { id: 'cat-1', name: 'Comida', icon: 'utensils', color: '#fb923c', type: 'EXPENSE', isDefault: true, isActive: true, sortOrder: 1, createdAt: new Date(), updatedAt: new Date() },
+    { id: 'cat-1', name: 'Comida', icon: 'utensils', color: '#C88A5A', type: 'EXPENSE', isDefault: true, isActive: true, sortOrder: 1, createdAt: new Date(), updatedAt: new Date() },
   ],
   incomeSources: [],
 })

@@ -37,7 +37,7 @@ describe('DEFAULT_CATEGORIES', () => {
       expect(typeof cat.name).toBe('string')
       expect(typeof cat.icon).toBe('string')
       expect(typeof cat.color).toBe('string')
-      expect(cat.color).toMatch(/^#[0-9a-f]{6}$/)
+      expect(cat.color).toMatch(/^#[0-9a-fA-F]{6}$/)
     }
   })
 
@@ -60,9 +60,9 @@ describe('CATEGORY_COLORS', () => {
   })
 
   it('maps each category name to its hex color', () => {
-    expect(CATEGORY_COLORS['Comida']).toBe('#fb923c')
-    expect(CATEGORY_COLORS['Empleo']).toBe('#34d399')
-    expect(CATEGORY_COLORS['Freelance']).toBe('#22d3ee')
+    expect(CATEGORY_COLORS['Comida']).toBe('#C88A5A')
+    expect(CATEGORY_COLORS['Empleo']).toBe('#6BAF8E')
+    expect(CATEGORY_COLORS['Freelance']).toBe('#7AACB8')
   })
 })
 

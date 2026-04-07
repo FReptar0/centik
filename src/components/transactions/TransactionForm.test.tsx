@@ -30,7 +30,7 @@ function makeCategory(overrides: Partial<Category> = {}): Category {
     id: 'cat-expense-1',
     name: 'Comida',
     icon: 'utensils',
-    color: '#fb923c',
+    color: '#C88A5A',
     type: 'EXPENSE',
     isDefault: true,
     isActive: true,
@@ -69,14 +69,14 @@ const incomeCategories: Category[] = [
     name: 'Empleo',
     icon: 'briefcase',
     type: 'INCOME',
-    color: '#34d399',
+    color: '#6BAF8E',
   }),
   makeCategory({
     id: 'cat-inc-2',
     name: 'Freelance',
     icon: 'laptop',
     type: 'INCOME',
-    color: '#22d3ee',
+    color: '#7AACB8',
   }),
 ]
 

@@ -31,7 +31,7 @@ function makeTxn(id: string): TransactionWithCategory {
     notes: null,
     createdAt: new Date('2026-04-01'),
     updatedAt: new Date('2026-04-01'),
-    category: { name: 'Comida', icon: 'utensils', color: '#fb923c' },
+    category: { name: 'Comida', icon: 'utensils', color: '#C88A5A' },
   }
 }
 

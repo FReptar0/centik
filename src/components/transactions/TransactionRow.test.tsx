@@ -37,7 +37,7 @@ function makeTransaction(
     notes: null,
     createdAt: new Date('2026-04-01'),
     updatedAt: new Date('2026-04-01'),
-    category: { name: 'Comida', icon: 'utensils', color: '#fb923c' },
+    category: { name: 'Comida', icon: 'utensils', color: '#C88A5A' },
     ...overrides,
   }
 }
@@ -68,7 +68,7 @@ describe('TransactionRow', () => {
     const txn = makeTransaction({
       type: 'INCOME',
       amount: '5000000',
-      category: { name: 'Empleo', icon: 'briefcase', color: '#34d399' },
+      category: { name: 'Empleo', icon: 'briefcase', color: '#6BAF8E' },
     })
     render(<TransactionRow transaction={txn} onEdit={vi.fn()} />)
 

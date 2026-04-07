@@ -25,7 +25,7 @@ vi.mock('next/cache', () => ({
 const validData = {
   name: 'Mascotas',
   icon: 'heart',
-  color: '#f472b6',
+  color: '#C48AA3',
   type: 'EXPENSE' as const,
 }
 
@@ -48,7 +48,7 @@ describe('createCategory', () => {
       data: {
         name: 'Mascotas',
         icon: 'heart',
-        color: '#f472b6',
+        color: '#C48AA3',
         type: 'EXPENSE',
         isDefault: false,
         sortOrder: 6,
@@ -72,7 +72,7 @@ describe('createCategory', () => {
     const result = await createCategory({
       name: '',
       icon: 'heart',
-      color: '#f472b6',
+      color: '#C48AA3',
       type: 'EXPENSE',
     })
 

@@ -12,6 +12,7 @@ const mockGroupBy = vi.fn()
 const mockFindMany = vi.fn()
 
 const mockDebtAggregate = vi.fn()
+const mockDebtFindMany = vi.fn()
 const mockIncomeSourceFindMany = vi.fn()
 
 const mockBudgetFindMany = vi.fn()
@@ -29,6 +30,7 @@ vi.mock('@/lib/prisma', () => ({
     },
     debt: {
       aggregate: (...args: unknown[]) => mockDebtAggregate(...args),
+      findMany: (...args: unknown[]) => mockDebtFindMany(...args),
     },
     incomeSource: {
       findMany: (...args: unknown[]) => mockIncomeSourceFindMany(...args),
@@ -61,6 +63,11 @@ describe('getDashboardKPIs', () => {
       .mockResolvedValueOnce({ _sum: { amount: BigInt(3000000) } }) // income transactions
     // Debt: 10000000
     mockDebtAggregate.mockResolvedValue({ _sum: { currentBalance: BigInt(10000000) } })
+    // Monthly payments: credit card min 75000 + loan 350000 = 425000
+    mockDebtFindMany.mockResolvedValue([
+      { minimumPayment: BigInt(75000), monthlyPayment: null },
+      { minimumPayment: null, monthlyPayment: BigInt(350000) },
+    ])
 
     const result = await getDashboardKPIs('period-1')
 
@@ -71,8 +78,8 @@ describe('getDashboardKPIs', () => {
     expect(result.totalDebt).toBe('10000000')
     // savingsRate = (5000000 - 1500000) / 5000000 * 10000 = 7000
     expect(result.savingsRate).toBe(7000)
-    // debtToIncomeRatio = 10000000 / 5000000 * 10000 = 20000
-    expect(result.debtToIncomeRatio).toBe(20000)
+    // debtToIncomeRatio = (425000 * 10000 / 5000000) / 100 = 8.5
+    expect(result.debtToIncomeRatio).toBe(8.5)
   })
 
   it('returns zero rates when income is zero', async () => {
@@ -81,6 +88,7 @@ describe('getDashboardKPIs', () => {
       .mockResolvedValueOnce({ _sum: { amount: null } })
       .mockResolvedValueOnce({ _sum: { amount: null } })
     mockDebtAggregate.mockResolvedValue({ _sum: { currentBalance: null } })
+    mockDebtFindMany.mockResolvedValue([])
 
     const result = await getDashboardKPIs('period-1')
 
@@ -100,6 +108,7 @@ describe('getDashboardKPIs', () => {
       .mockResolvedValueOnce({ _sum: { amount: BigInt(0) } })
       .mockResolvedValueOnce({ _sum: { amount: BigInt(0) } })
     mockDebtAggregate.mockResolvedValue({ _sum: { currentBalance: BigInt(0) } })
+    mockDebtFindMany.mockResolvedValue([])
 
     const result = await getDashboardKPIs('period-1')
 
@@ -116,6 +125,7 @@ describe('getDashboardKPIs', () => {
       .mockResolvedValueOnce({ _sum: { amount: BigInt(0) } })
       .mockResolvedValueOnce({ _sum: { amount: BigInt(0) } })
     mockDebtAggregate.mockResolvedValue({ _sum: { currentBalance: BigInt(0) } })
+    mockDebtFindMany.mockResolvedValue([])
 
     const result = await getDashboardKPIs('period-1')
 
@@ -132,6 +142,7 @@ describe('getDashboardKPIs', () => {
       .mockResolvedValueOnce({ _sum: { amount: BigInt(500000) } })
       .mockResolvedValueOnce({ _sum: { amount: BigInt(0) } })
     mockDebtAggregate.mockResolvedValue({ _sum: { currentBalance: BigInt(0) } })
+    mockDebtFindMany.mockResolvedValue([])
 
     const result = await getDashboardKPIs('period-1')
 
@@ -152,8 +163,8 @@ describe('getCategoryExpenses', () => {
       { categoryId: 'cat-2', _sum: { amount: BigInt(1200000) } },
     ])
     mockCategoryFindMany.mockResolvedValue([
-      { id: 'cat-1', name: 'Comida', icon: 'utensils', color: '#fb923c' },
-      { id: 'cat-2', name: 'Servicios', icon: 'zap', color: '#60a5fa' },
+      { id: 'cat-1', name: 'Comida', icon: 'utensils', color: '#C88A5A' },
+      { id: 'cat-2', name: 'Servicios', icon: 'zap', color: '#7A9EC4' },
     ])
 
     const result = await getCategoryExpenses('period-1')
@@ -163,7 +174,7 @@ describe('getCategoryExpenses', () => {
     expect(result[0].name).toBe('Servicios')
     expect(result[0].total).toBe('1200000')
     expect(result[0].icon).toBe('zap')
-    expect(result[0].color).toBe('#60a5fa')
+    expect(result[0].color).toBe('#7A9EC4')
     expect(result[1].name).toBe('Comida')
     expect(result[1].total).toBe('500000')
   })
@@ -187,12 +198,12 @@ describe('getBudgetVsSpent', () => {
       {
         categoryId: 'cat-1',
         quincenalAmount: BigInt(250000),
-        category: { name: 'Comida', color: '#fb923c' },
+        category: { name: 'Comida', color: '#C88A5A' },
       },
       {
         categoryId: 'cat-2',
         quincenalAmount: BigInt(100000),
-        category: { name: 'Servicios', color: '#60a5fa' },
+        category: { name: 'Servicios', color: '#7A9EC4' },
       },
     ])
     mockGroupBy.mockResolvedValue([
@@ -291,7 +302,7 @@ describe('getRecentTransactions', () => {
         incomeSourceId: null,
         paymentMethod: 'DEBITO',
         notes: null,
-        category: { name: 'Comida', icon: 'utensils', color: '#fb923c' },
+        category: { name: 'Comida', icon: 'utensils', color: '#C88A5A' },
       },
     ])
 
@@ -301,7 +312,7 @@ describe('getRecentTransactions', () => {
     expect(result[0].amount).toBe('150075')
     expect(result[0].category.name).toBe('Comida')
     expect(result[0].category.icon).toBe('utensils')
-    expect(result[0].category.color).toBe('#fb923c')
+    expect(result[0].category.color).toBe('#C88A5A')
   })
 
   it('passes correct take and orderBy to Prisma', async () => {
