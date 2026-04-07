@@ -80,11 +80,12 @@ Plans:
   3. StatusDot renders as a 4px chartreuse circle with a continuous 2.5s pulse animation, and the animation is disabled when `prefers-reduced-motion` is active
   4. TogglePills renders a row of pill-shaped options where active state shows chartreuse fill with black text, and inactive shows ghost styling -- clicking triggers the `onChange` callback
   5. All new component tests pass (segments, colors, overflow, ARIA for BatteryBar; states, validation, floating behavior for FloatingInput; render, animation, reduced-motion for StatusDot; active/inactive, callback for TogglePills)
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 18-01: TBD
-- [ ] 18-02: TBD
+- [ ] 18-01-PLAN.md -- BatteryBar segmented progress bar component + tests
+- [ ] 18-02-PLAN.md -- FloatingInput underline input with floating labels + tests
+- [ ] 18-03-PLAN.md -- StatusDot pulsing indicator + TogglePills selector + tests
 
 ### Phase 19: Layout, Navigation + Global Component Updates
 **Goal**: The app frame (navigation, modals, cards, buttons, badges, icons) matches Glyph Finance specs on every screen -- pill buttons, borderless cards, icon-only bottom nav with status dot, bottom sheet modals, dot-matrix texture on hero cards
@@ -160,7 +161,7 @@ Phases execute in numeric order: 17 -> 18 -> 19 -> 20 -> 21 -> 22
 | 1-11 | v1.0 | 27/27 | Complete | 2026-04-06 |
 | 12-16 | v1.1 | 9/9 | Complete | 2026-04-06 |
 | 17. Token Foundation + Class Migration | 3/3 | Complete    | 2026-04-07 | - |
-| 18. New Primitive Components | v2.0 | 0/TBD | Not started | - |
+| 18. New Primitive Components | v2.0 | 0/3 | Planning | - |
 | 19. Layout, Navigation + Global Updates | v2.0 | 0/TBD | Not started | - |
 | 20. Feature Component Updates | v2.0 | 0/TBD | Not started | - |
 | 21. TransactionForm + Custom Numpad | v2.0 | 0/TBD | Not started | - |
