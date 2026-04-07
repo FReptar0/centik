@@ -17,9 +17,9 @@ Requirements for Glyph Finance code implementation. 10/10 quality bar -- anythin
 
 ### Class Migration
 
-- [ ] **MIGRATE-01**: All 36+ component files updated with new Tailwind utility class names matching renamed tokens (bg-primary -> bg, bg-card -> surface-elevated, text-muted -> text-tertiary, etc.)
+- [x] **MIGRATE-01**: All 36+ component files updated with new Tailwind utility class names matching renamed tokens (bg-primary -> bg, bg-card -> surface-elevated, text-muted -> text-tertiary, etc.)
 - [x] **MIGRATE-02**: constants.ts updated with new hex values for all color constants
-- [ ] **MIGRATE-03**: All existing tests updated to assert new token names, class names, and hex values (zero test failures after migration)
+- [x] **MIGRATE-03**: All existing tests updated to assert new token names, class names, and hex values (zero test failures after migration)
 
 ### New Components
 
@@ -94,9 +94,9 @@ Deferred to future milestones.
 | TOKEN-03 | Phase 17 | Complete |
 | TOKEN-04 | Phase 17 | Complete |
 | TOKEN-05 | Phase 17 | Complete |
-| MIGRATE-01 | Phase 17 | Pending |
+| MIGRATE-01 | Phase 17 | Complete |
 | MIGRATE-02 | Phase 17 | Complete |
-| MIGRATE-03 | Phase 17 | Pending |
+| MIGRATE-03 | Phase 17 | Complete |
 | COMP-01 | Phase 18 | Pending |
 | COMP-02 | Phase 18 | Pending |
 | COMP-03 | Phase 18 | Pending |

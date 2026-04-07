@@ -44,7 +44,7 @@ See `.planning/milestones/v1.1-ROADMAP.md` for full phase details.
 
 **Milestone Goal:** Implement the Glyph Finance design system in working code. Every token, component, animation, and interaction from STYLE_GUIDE.md and UX_RULES.md faithfully translated. 10/10 quality bar.
 
-- [ ] **Phase 17: Token Foundation + Class Migration** - Replace @theme tokens, swap fonts, rename all utility classes across 36+ files, update constants and tests atomically
+- [x] **Phase 17: Token Foundation + Class Migration** - Replace @theme tokens, swap fonts, rename all utility classes across 36+ files, update constants and tests atomically (completed 2026-04-07)
 - [ ] **Phase 18: New Primitive Components** - Build and test BatteryBar, FloatingInput, StatusDot, TogglePills in isolation
 - [ ] **Phase 19: Layout, Navigation + Global Component Updates** - Pill buttons, borderless cards, icon-only nav, bottom sheet modals, dot-matrix, StatusDot placement, icon tuning
 - [ ] **Phase 20: Feature Component Updates** - BatteryBar replacing progress bars, chart visual overhaul, monetary amount display styling
@@ -159,7 +159,7 @@ Phases execute in numeric order: 17 -> 18 -> 19 -> 20 -> 21 -> 22
 |-------|-----------|----------------|--------|-----------|
 | 1-11 | v1.0 | 27/27 | Complete | 2026-04-06 |
 | 12-16 | v1.1 | 9/9 | Complete | 2026-04-06 |
-| 17. Token Foundation + Class Migration | 2/3 | In Progress|  | - |
+| 17. Token Foundation + Class Migration | 3/3 | Complete   | 2026-04-07 | - |
 | 18. New Primitive Components | v2.0 | 0/TBD | Not started | - |
 | 19. Layout, Navigation + Global Updates | v2.0 | 0/TBD | Not started | - |
 | 20. Feature Component Updates | v2.0 | 0/TBD | Not started | - |
