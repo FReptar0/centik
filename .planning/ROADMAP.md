@@ -63,11 +63,12 @@ See `.planning/milestones/v1.1-ROADMAP.md` for full phase details.
   3. No shadow appears anywhere in the app -- FAB, modals, cards, and filters all use background-shift elevation only
   4. All 394+ existing tests pass with updated token names, class names, and hex values (zero failures, zero skipped)
   5. `npm run build` completes with zero errors and zero warnings
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 17-01: TBD
-- [ ] 17-02: TBD
+- [ ] 17-01-PLAN.md -- Token foundation: replace @theme block, swap fonts, add animations
+- [ ] 17-02-PLAN.md -- Constants + chart colors + test hex value updates
+- [ ] 17-03-PLAN.md -- Class name migration across 36+ component files
 
 ### Phase 18: New Primitive Components
 **Goal**: Four reusable UI primitives (BatteryBar, FloatingInput, StatusDot, TogglePills) exist in `src/components/ui/`, fully tested in isolation, ready for adoption by feature components
@@ -158,7 +159,7 @@ Phases execute in numeric order: 17 -> 18 -> 19 -> 20 -> 21 -> 22
 |-------|-----------|----------------|--------|-----------|
 | 1-11 | v1.0 | 27/27 | Complete | 2026-04-06 |
 | 12-16 | v1.1 | 9/9 | Complete | 2026-04-06 |
-| 17. Token Foundation + Class Migration | v2.0 | 0/TBD | Not started | - |
+| 17. Token Foundation + Class Migration | v2.0 | 0/3 | Planning complete | - |
 | 18. New Primitive Components | v2.0 | 0/TBD | Not started | - |
 | 19. Layout, Navigation + Global Updates | v2.0 | 0/TBD | Not started | - |
 | 20. Feature Component Updates | v2.0 | 0/TBD | Not started | - |
