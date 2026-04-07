@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Glyph Finance Implementation
 current_phase: 18
-current_plan: Not started
-status: planning
-stopped_at: Phase 18 context gathered
-last_updated: "2026-04-07T20:01:31.130Z"
+current_plan: 3
+status: verifying
+stopped_at: Completed 18-03-PLAN.md
+last_updated: "2026-04-07T20:40:31.438Z"
 last_activity: 2026-04-07
 progress:
   total_phases: 6
-  completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
-  percent: 0
+  completed_phases: 2
+  total_plans: 6
+  completed_plans: 6
+  percent: 66
 ---
 
 # Project State
@@ -23,17 +23,17 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-06)
 
 **Core value:** A single user can register a financial transaction in under 30 seconds and immediately see how it impacts their budget, debt ratio, and savings rate across all views.
-**Current focus:** Phase 17 -- Token Foundation + Class Migration
+**Current focus:** Phase 18 -- New Primitive Components
 
 ## Current Position
 
 **Current Phase:** 18
-**Current Plan:** Not started
+**Current Plan:** 3
 **Total Plans in Phase:** 3
-**Status:** Ready to plan
+**Status:** Phase complete — ready for verification
 **Last Activity:** 2026-04-07
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██████░░░░] 66%
 
 ## Performance Metrics
 
@@ -59,6 +59,8 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 17 P01 | 3min | 3 tasks | 4 files |
 | Phase 17 P02 | 5min | 3 tasks | 15 files |
 | Phase 17 P03 | 3min | 1 tasks | 37 files |
+| Phase 18 P02 | 14min | 1 task (TDD) | 2 files |
+| Phase 18 P03 | 14min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -78,6 +80,10 @@ Recent decisions affecting current work:
 - [Phase 17]: Kept @theme inline only for --font-sans; --font-mono uses direct value in main @theme block
 - [Phase 17]: Income category colors: Empleo #6BAF8E (muted sage), Freelance #7AACB8 (muted teal) for Glyph Finance palette harmony
 - [Phase 17]: Included BudgetBarChart and ExpenseDonutChart in class migration (not in plan file list but contained old tokens)
+- [Phase 18]: FloatingInput label shifts left-5 to left-0 when prefix present and transitioning to float
+- [Phase 18]: Optional indicator "(opcional)" only shown when label is in floating state
+- [Phase 18]: StatusDot kept as server-compatible function component (no use client) since it has no state or event handlers
+- [Phase 18]: TogglePills uses role=radiogroup/radio + aria-checked for single-select accessibility pattern
 
 ### Pending Todos
 
@@ -90,6 +96,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-07T20:01:31.120Z
-Stopped at: Phase 18 context gathered
-Resume file: .planning/phases/18-new-primitive-components/18-CONTEXT.md
+Last session: 2026-04-07T20:40:31.435Z
+Stopped at: Completed 18-03-PLAN.md
+Resume file: None

@@ -24,9 +24,9 @@ Requirements for Glyph Finance code implementation. 10/10 quality bar -- anythin
 ### New Components
 
 - [ ] **COMP-01**: BatteryBar component -- 10 rectangular segments, 2px gaps, traffic-light colors (chartreuse <80%, orange 80-99%, red 100%+), ARIA progressbar attributes
-- [ ] **COMP-02**: FloatingInput component -- underline-only, transparent background, floating label (placeholder -> uppercase Label style on focus), chartreuse focus underline, error state
-- [ ] **COMP-03**: StatusDot component -- 4px solid chartreuse circle, CSS animation (status-pulse), configurable placement
-- [ ] **COMP-04**: TogglePills component -- active (chartreuse fill, black text), inactive (ghost), used for Expense/Income and period selectors
+- [x] **COMP-02**: FloatingInput component -- underline-only, transparent background, floating label (placeholder -> uppercase Label style on focus), chartreuse focus underline, error state
+- [x] **COMP-03**: StatusDot component -- 4px solid chartreuse circle, CSS animation (status-pulse), configurable placement
+- [x] **COMP-04**: TogglePills component -- active (chartreuse fill, black text), inactive (ghost), used for Expense/Income and period selectors
 - [ ] **COMP-05**: Numpad component -- custom dark 4x4 grid, monospaced IBM Plex Mono numbers, backspace icon, decimal/00 keys, 48px min touch targets
 
 ### Component Updates
@@ -60,9 +60,9 @@ Requirements for Glyph Finance code implementation. 10/10 quality bar -- anythin
 ### Test Updates
 
 - [x] **TEST-01**: All existing unit tests pass with new design tokens (394 tests, zero failures)
-- [ ] **TEST-02**: New unit tests for BatteryBar (segments, colors, overflow, ARIA), FloatingInput (states, validation, floating behavior), TogglePills (active/inactive, callback)
+- [x] **TEST-02**: New unit tests for BatteryBar (segments, colors, overflow, ARIA), FloatingInput (states, validation, floating behavior), TogglePills (active/inactive, callback)
 - [ ] **TEST-03**: New unit tests for Numpad (digit input, decimal, backspace, 00, max amount)
-- [ ] **TEST-04**: New unit tests for StatusDot (renders, animation class, reduced-motion)
+- [x] **TEST-04**: New unit tests for StatusDot (renders, animation class, reduced-motion)
 
 ## v3.0 Requirements
 
@@ -98,9 +98,9 @@ Deferred to future milestones.
 | MIGRATE-02 | Phase 17 | Complete |
 | MIGRATE-03 | Phase 17 | Complete |
 | COMP-01 | Phase 18 | Pending |
-| COMP-02 | Phase 18 | Pending |
-| COMP-03 | Phase 18 | Pending |
-| COMP-04 | Phase 18 | Pending |
+| COMP-02 | Phase 18 | Complete |
+| COMP-03 | Phase 18 | Complete |
+| COMP-04 | Phase 18 | Complete |
 | COMP-05 | Phase 21 | Pending |
 | UPDATE-01 | Phase 19 | Pending |
 | UPDATE-02 | Phase 19 | Pending |
@@ -125,9 +125,9 @@ Deferred to future milestones.
 | QA-07 | Phase 22 | Pending |
 | QA-08 | Phase 22 | Pending |
 | TEST-01 | Phase 17 | Complete |
-| TEST-02 | Phase 18 | Pending |
+| TEST-02 | Phase 18 | Complete |
 | TEST-03 | Phase 21 | Pending |
-| TEST-04 | Phase 18 | Pending |
+| TEST-04 | Phase 18 | Complete |
 
 **Coverage:**
 - v2.0 requirements: 39 total
