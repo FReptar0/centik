@@ -3,61 +3,70 @@
 **Defined:** 2026-04-06
 **Core Value:** A single user can register a financial transaction in under 30 seconds and immediately see how it impacts their budget, debt ratio, and savings rate across all views.
 
-## v1.1 Requirements
+## v2.0 Requirements
 
-Requirements for Glyph Finance design system overhaul. Docs-only milestone — no code changes.
+Requirements for Glyph Finance code implementation. 10/10 quality bar — anything slightly off is fully wrong.
 
-### Design Tokens
+### Token Foundation
 
-- [x] **TOKENS-01**: STYLE_GUIDE.md color palette replaced with Glyph Finance tokens (OLED #000000 bg, #0A0A0A secondary, #141414 surface, #222222 borders, #E8E8E8 text, #CCFF00 accent, #FF3333 negative, #00E676 positive, #1E1E1E dot-matrix)
-- [x] **TOKENS-02**: STYLE_GUIDE.md typography updated to monospaced numbers (JetBrains Mono/Space Mono) + geometric sans headings (Outfit/Satoshi), with 3-level hierarchy (Display, Body, Meta) and uppercase letterspaced metadata
-- [x] **TOKENS-03**: STYLE_GUIDE.md spacing and radius updated (20-24px card padding, 12px gaps, 16px margins, 16px card radius, 12px button radius, 24px modal radius)
-- [x] **TOKENS-04**: STYLE_GUIDE.md shadows replaced with elevation-only hierarchy (no decorative borders, bg shift for depth: #000000 → #0A0A0A → #141414)
-- [x] **TOKENS-05**: STYLE_GUIDE.md Tailwind config section updated with new Glyph Finance CSS @theme tokens
+- [ ] **TOKEN-01**: globals.css @theme block replaced with all Glyph Finance color tokens (#000000 bg, #CCFF00 accent, desaturated categories, semantic colors)
+- [ ] **TOKEN-02**: Satoshi font loaded via next/font/local (Satoshi-Variable.woff2 from Fontshare), IBM Plex Mono via next/font/google, both injected into @theme
+- [ ] **TOKEN-03**: @keyframes animations added to @theme (status-pulse 2.5s, scanline-reveal 500ms steps(12,end)) with prefers-reduced-motion override
+- [ ] **TOKEN-04**: All shadow tokens removed (--shadow-sm/md/lg/glow), focus rings use solid outline only
+- [ ] **TOKEN-05**: Radius scale updated (--radius-sm 8px, --radius-md 12px, --radius-lg 16px, --radius-xl 24px, --radius-full 9999px)
 
-### Components
+### Class Migration
 
-- [x] **COMP-01**: Card specs updated (no visible borders, #141414 surface on #000000, 1px #222222 separator when stacked)
-- [x] **COMP-02**: Button specs updated to pill-shaped with accent fill for primary, ghost/outline for secondary
-- [x] **COMP-03**: Progress bar specs replaced with segmented battery-bar style (10 rectangular segments, 2px gaps, chartreuse fill)
-- [x] **COMP-04**: Chart specs updated (no grid lines, dot endpoints, 1.5px stroke in accent, minimal axis labels)
-- [x] **COMP-05**: Input specs updated (underline-only style for modal/sheet forms, standard style for desktop forms)
-- [x] **COMP-06**: Table specs updated to match new elevation model and color tokens
-- [x] **COMP-07**: Badge specs updated with new color palette and pill styling
+- [ ] **MIGRATE-01**: All 36+ component files updated with new Tailwind utility class names matching renamed tokens (bg-primary → bg, bg-card → surface-elevated, text-muted → text-tertiary, etc.)
+- [ ] **MIGRATE-02**: constants.ts updated with new hex values for all color constants
+- [ ] **MIGRATE-03**: All existing tests updated to assert new token names, class names, and hex values (zero test failures after migration)
 
-### Signature Details
+### New Components
 
-- [x] **SIG-01**: Dot-matrix texture specification documented (pixel-grid pattern at 40% #1E1E1E opacity for section headers/card accents)
-- [x] **SIG-02**: Segmented battery-bar indicator specification documented (10 rectangular segments for budget/utilization progress)
-- [x] **SIG-03**: Monospaced financial data display spec documented (left-aligned muted dollar sign at smaller size, right-aligned off-white digits)
-- [x] **SIG-04**: Category icon style spec updated (8x8 pixel-art inspired, simple geometric, recognizable at small size)
-- [x] **SIG-05**: Status dot animation spec documented (accent-colored pulsing glow dot near live/updating data)
-- [x] **SIG-06**: Glyph-style micro-animation spec documented (pixel-dissolve fade-in effect for element rendering)
+- [ ] **COMP-01**: BatteryBar component — 10 rectangular segments, 2px gaps, traffic-light colors (chartreuse <80%, orange 80-99%, red 100%+), ARIA progressbar attributes
+- [ ] **COMP-02**: FloatingInput component — underline-only, transparent background, floating label (placeholder → uppercase Label style on focus), chartreuse focus underline, error state
+- [ ] **COMP-03**: StatusDot component — 4px solid chartreuse circle, CSS animation (status-pulse), configurable placement
+- [ ] **COMP-04**: TogglePills component — active (chartreuse fill, black text), inactive (ghost), used for Expense/Income and period selectors
+- [ ] **COMP-05**: Numpad component — custom dark 4x4 grid, monospaced IBM Plex Mono numbers, backspace icon, decimal/00 keys, 48px min touch targets
 
-### UX Patterns
+### Component Updates
 
-- [x] **UX-01**: UX_RULES.md navigation updated — bottom tab bar icon-only (no text labels) with small dot indicator for active state, circular accent-filled Add button
-- [x] **UX-02**: UX_RULES.md amount display updated — monospaced numbers, muted smaller dollar sign, off-white digits, color-coded by direction
-- [x] **UX-03**: UX_RULES.md transaction flow updated — bottom sheet modal (85% screen height), category circular icon grid with accent ring selection, custom dark numpad option
-- [x] **UX-04**: UX_RULES.md responsive patterns updated for new component specs, navigation model, and elevation hierarchy
-- [x] **UX-05**: UX_RULES.md form patterns updated (underline inputs in modals, uppercase letterspaced labels, circular category grid selector)
+- [ ] **UPDATE-01**: All buttons converted to pill shape (border-radius: 9999px), danger uses #FF3333, secondary keeps subtle border, 98% scale press interaction
+- [ ] **UPDATE-02**: All cards use borderless elevation (no visible borders), stacked cards use 1px #222222 separator, hero cards get dot-matrix texture background
+- [ ] **UPDATE-03**: All progress bars replaced with BatteryBar component across budget, debt utilization, and debt payoff views
+- [ ] **UPDATE-04**: All charts updated — no grid lines, 1.5px stroke, 4px dot endpoints, hardcoded CHART_COLORS updated to Glyph Finance hex values
+- [ ] **UPDATE-05**: Bottom navigation converted to icon-only (no text labels), 4px chartreuse dot indicator 8px below active icon, inactive icons in --color-text-secondary
+- [ ] **UPDATE-06**: Mobile modals use bottom sheet pattern (85vh, drag handle, top-corner radius), desktop modals centered with --radius-xl
+- [ ] **UPDATE-07**: Transaction form restructured — bottom sheet with dot-matrix hero amount, toggle pills, circular 4x2 category grid with accent ring, custom numpad, checkmark save animation
+- [ ] **UPDATE-08**: All inputs across app replaced with FloatingInput (underline-only, floating labels)
+- [ ] **UPDATE-09**: All badges converted to pill shape (radius-full), semantic color variants
+- [ ] **UPDATE-10**: Dot-matrix texture implemented as CSS pseudo-element on hero cards (8x8 SVG data URI, 40% opacity)
+- [ ] **UPDATE-11**: Pixel-dissolve scanline animation implemented for data refresh moments (@keyframes scanline-reveal, clip-path inset, steps(12,end))
+- [ ] **UPDATE-12**: StatusDot placed on current period indicator and nav active state
+- [ ] **UPDATE-13**: DynamicIcon default strokeWidth set to 1.5px, shape-rendering: crispEdges for pixel-aligned rendering
+- [ ] **UPDATE-14**: All monetary amounts display with muted smaller "$" in --color-text-tertiary, IBM Plex Mono, color-coded by direction
 
-### References
+### Visual QA
 
-- [x] **REF-01**: CLAUDE.md styling section updated to reference Glyph Finance tokens (colors, fonts, radius, spacing) instead of current cyan/dark palette
+- [ ] **QA-01**: Dashboard page matches STYLE_GUIDE.md — KPIs, charts, recent transactions, hero balance card with dot-matrix
+- [ ] **QA-02**: Transactions page matches — list with new tokens, filters, FAB triggers bottom sheet with numpad
+- [ ] **QA-03**: Debts page matches — cards with battery-bar utilization, inline editing, metrics
+- [ ] **QA-04**: Budget page matches — battery-bar progress per category, traffic-light colors, configuration table
+- [ ] **QA-05**: Income page matches — source cards, frequency display, monospaced amounts
+- [ ] **QA-06**: History page matches — pivot table with new tokens, period close flow
+- [ ] **QA-07**: Navigation matches — icon-only bottom tabs with dot, sidebar with new tokens, FAB styling
+- [ ] **QA-08**: All pages WCAG 2.1 AA accessible — contrast ratios verified, focus rings visible, screen reader attributes on new components
 
-## v2 Requirements
+### Test Updates
+
+- [ ] **TEST-01**: All existing unit tests pass with new design tokens (394 tests, zero failures)
+- [ ] **TEST-02**: New unit tests for BatteryBar (segments, colors, overflow, ARIA), FloatingInput (states, validation, floating behavior), TogglePills (active/inactive, callback)
+- [ ] **TEST-03**: New unit tests for Numpad (digit input, decimal, backspace, 00, max amount)
+- [ ] **TEST-04**: New unit tests for StatusDot (renders, animation class, reduced-motion)
+
+## v3.0 Requirements
 
 Deferred to future milestones.
-
-### Implementation
-
-- **IMPL-01**: Implement Glyph Finance tokens in Tailwind CSS @theme
-- **IMPL-02**: Implement component redesign across all pages
-- **IMPL-03**: Add dot-matrix texture CSS/SVG patterns
-- **IMPL-04**: Add segmented progress bar component
-- **IMPL-05**: Add pixel-dissolve micro-animations
-- **IMPL-06**: Integrate monospaced font for all financial figures
 
 ### Features
 
@@ -70,48 +79,61 @@ Deferred to future milestones.
 
 | Feature | Reason |
 |---------|--------|
-| Code changes to components | Docs-only milestone — implementation deferred to v1.2+ after Stitch validation |
-| App name change | Keeping Centik/MisFinanzas — Glyph Finance is the design system name only |
-| Light mode | Dark-only remains the design decision (OLED black reinforces this) |
-| Custom icon font | Using Lucide React with pixel-art styling guidance, not building a custom font |
-| Screen-by-screen Stitch prompts in docs | User-facing Stitch workflow stays separate from reference docs |
+| Light mode | Dark-only is the design decision — OLED black reinforces this |
+| Custom icon font | Using Lucide React with pixel-art styling guidance |
+| Storybook / component playground | Not needed for MVP — visual QA against STYLE_GUIDE.md is sufficient |
+| Gradient backgrounds | Glyph Finance prohibits gradients on surfaces |
+| Smooth progress bars | Replaced by segmented battery-bar everywhere |
 
 ## Traceability
 
-Which phases cover which requirements. Updated during roadmap creation.
-
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| TOKENS-01 | Phase 12 | Complete |
-| TOKENS-02 | Phase 12 | Complete |
-| TOKENS-03 | Phase 12 | Complete |
-| TOKENS-04 | Phase 12 | Complete |
-| TOKENS-05 | Phase 12 | Complete |
-| COMP-01 | Phase 13 | Complete |
-| COMP-02 | Phase 13 | Complete |
-| COMP-03 | Phase 13 | Complete |
-| COMP-04 | Phase 13 | Complete |
-| COMP-05 | Phase 13 | Complete |
-| COMP-06 | Phase 13 | Complete |
-| COMP-07 | Phase 13 | Complete |
-| SIG-01 | Phase 14 | Complete |
-| SIG-02 | Phase 14 | Complete |
-| SIG-03 | Phase 14 | Complete |
-| SIG-04 | Phase 14 | Complete |
-| SIG-05 | Phase 14 | Complete |
-| SIG-06 | Phase 14 | Complete |
-| UX-01 | Phase 15 | Complete |
-| UX-02 | Phase 15 | Complete |
-| UX-03 | Phase 15 | Complete |
-| UX-04 | Phase 15 | Complete |
-| UX-05 | Phase 15 | Complete |
-| REF-01 | Phase 16 | Complete |
+| TOKEN-01 | — | Pending |
+| TOKEN-02 | — | Pending |
+| TOKEN-03 | — | Pending |
+| TOKEN-04 | — | Pending |
+| TOKEN-05 | — | Pending |
+| MIGRATE-01 | — | Pending |
+| MIGRATE-02 | — | Pending |
+| MIGRATE-03 | — | Pending |
+| COMP-01 | — | Pending |
+| COMP-02 | — | Pending |
+| COMP-03 | — | Pending |
+| COMP-04 | — | Pending |
+| COMP-05 | — | Pending |
+| UPDATE-01 | — | Pending |
+| UPDATE-02 | — | Pending |
+| UPDATE-03 | — | Pending |
+| UPDATE-04 | — | Pending |
+| UPDATE-05 | — | Pending |
+| UPDATE-06 | — | Pending |
+| UPDATE-07 | — | Pending |
+| UPDATE-08 | — | Pending |
+| UPDATE-09 | — | Pending |
+| UPDATE-10 | — | Pending |
+| UPDATE-11 | — | Pending |
+| UPDATE-12 | — | Pending |
+| UPDATE-13 | — | Pending |
+| UPDATE-14 | — | Pending |
+| QA-01 | — | Pending |
+| QA-02 | — | Pending |
+| QA-03 | — | Pending |
+| QA-04 | — | Pending |
+| QA-05 | — | Pending |
+| QA-06 | — | Pending |
+| QA-07 | — | Pending |
+| QA-08 | — | Pending |
+| TEST-01 | — | Pending |
+| TEST-02 | — | Pending |
+| TEST-03 | — | Pending |
+| TEST-04 | — | Pending |
 
 **Coverage:**
-- v1.1 requirements: 24 total
-- Mapped to phases: 24
-- Unmapped: 0
+- v2.0 requirements: 39 total
+- Mapped to phases: 0
+- Unmapped: 39 (awaiting roadmap)
 
 ---
 *Requirements defined: 2026-04-06*
-*Last updated: 2026-04-06 after roadmap creation*
+*Last updated: 2026-04-06 after initial definition*
