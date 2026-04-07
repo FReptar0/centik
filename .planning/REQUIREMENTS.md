@@ -9,11 +9,11 @@ Requirements for Glyph Finance code implementation. 10/10 quality bar -- anythin
 
 ### Token Foundation
 
-- [ ] **TOKEN-01**: globals.css @theme block replaced with all Glyph Finance color tokens (#000000 bg, #CCFF00 accent, desaturated categories, semantic colors)
-- [ ] **TOKEN-02**: Satoshi font loaded via next/font/local (Satoshi-Variable.woff2 from Fontshare), IBM Plex Mono via next/font/google, both injected into @theme
-- [ ] **TOKEN-03**: @keyframes animations added to @theme (status-pulse 2.5s, scanline-reveal 500ms steps(12,end)) with prefers-reduced-motion override
-- [ ] **TOKEN-04**: All shadow tokens removed (--shadow-sm/md/lg/glow), focus rings use solid outline only
-- [ ] **TOKEN-05**: Radius scale updated (--radius-sm 8px, --radius-md 12px, --radius-lg 16px, --radius-xl 24px, --radius-full 9999px)
+- [x] **TOKEN-01**: globals.css @theme block replaced with all Glyph Finance color tokens (#000000 bg, #CCFF00 accent, desaturated categories, semantic colors)
+- [x] **TOKEN-02**: Satoshi font loaded via next/font/local (Satoshi-Variable.woff2 from Fontshare), IBM Plex Mono via next/font/google, both injected into @theme
+- [x] **TOKEN-03**: @keyframes animations added to @theme (status-pulse 2.5s, scanline-reveal 500ms steps(12,end)) with prefers-reduced-motion override
+- [x] **TOKEN-04**: All shadow tokens removed (--shadow-sm/md/lg/glow), focus rings use solid outline only
+- [x] **TOKEN-05**: Radius scale updated (--radius-sm 8px, --radius-md 12px, --radius-lg 16px, --radius-xl 24px, --radius-full 9999px)
 
 ### Class Migration
 
@@ -89,11 +89,11 @@ Deferred to future milestones.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| TOKEN-01 | Phase 17 | Pending |
-| TOKEN-02 | Phase 17 | Pending |
-| TOKEN-03 | Phase 17 | Pending |
-| TOKEN-04 | Phase 17 | Pending |
-| TOKEN-05 | Phase 17 | Pending |
+| TOKEN-01 | Phase 17 | Complete |
+| TOKEN-02 | Phase 17 | Complete |
+| TOKEN-03 | Phase 17 | Complete |
+| TOKEN-04 | Phase 17 | Complete |
+| TOKEN-05 | Phase 17 | Complete |
 | MIGRATE-01 | Phase 17 | Pending |
 | MIGRATE-02 | Phase 17 | Pending |
 | MIGRATE-03 | Phase 17 | Pending |

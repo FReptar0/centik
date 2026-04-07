@@ -2,15 +2,17 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Glyph Finance Implementation
-status: planning
-stopped_at: Phase 17 context gathered
-last_updated: "2026-04-07T18:22:14.956Z"
-last_activity: 2026-04-06 -- Roadmap created for v2.0 milestone (6 phases, 39 requirements)
+current_phase: 17 of 22 (Token Foundation + Class Migration)
+current_plan: 2
+status: executing
+stopped_at: Completed 17-01-PLAN.md
+last_updated: "2026-04-07T18:52:44.388Z"
+last_activity: 2026-04-07
 progress:
   total_phases: 6
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 3
+  completed_plans: 1
   percent: 0
 ---
 
@@ -25,10 +27,11 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 
 ## Current Position
 
-Phase: 17 of 22 (Token Foundation + Class Migration)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-04-06 -- Roadmap created for v2.0 milestone (6 phases, 39 requirements)
+**Current Phase:** 17 of 22 (Token Foundation + Class Migration)
+**Current Plan:** 2
+**Total Plans in Phase:** 3
+**Status:** Ready to execute
+**Last Activity:** 2026-04-07
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -53,6 +56,7 @@ Progress: [░░░░░░░░░░] 0%
 - v1.1 plans averaged 2min (docs-only)
 - v2.0 will be slower (code implementation, Quality Loop enforcement)
 - Trend: Expect 5-15min per plan for code phases
+| Phase 17 P01 | 3min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -68,6 +72,8 @@ Recent decisions affecting current work:
 - [Research]: Satoshi must load via next/font/local (not on Google Fonts)
 - [Research]: @theme inline required for font variables (runtime injection)
 - [Research]: Token rename silently breaks classes -- must be atomic with class migration
+- [Phase 17]: Downloaded Satoshi fonts via Fontshare CSS API (bypassed JS-driven download page)
+- [Phase 17]: Kept @theme inline only for --font-sans; --font-mono uses direct value in main @theme block
 
 ### Pending Todos
 
@@ -80,6 +86,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-07T18:22:14.921Z
-Stopped at: Phase 17 context gathered
-Resume file: .planning/phases/17-token-foundation-class-migration/17-CONTEXT.md
+Last session: 2026-04-07T18:52:44.384Z
+Stopped at: Completed 17-01-PLAN.md
+Resume file: None
