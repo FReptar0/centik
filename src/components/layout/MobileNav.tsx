@@ -5,11 +5,12 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { MoreHorizontal } from 'lucide-react'
 import DynamicIcon from '@/components/ui/DynamicIcon'
+import StatusDot from '@/components/ui/StatusDot'
 import { MOBILE_TAB_ITEMS, MORE_MENU_ITEMS } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 import MobileMoreSheet from './MobileMoreSheet'
 
-/** Mobile bottom tab bar with 5 items (4 nav + "Mas" overflow) */
+/** Mobile bottom tab bar with icon-only items (4 nav + "Mas" overflow) */
 export default function MobileNav() {
   const pathname = usePathname()
   const [isMoreOpen, setIsMoreOpen] = useState(false)
@@ -38,14 +39,15 @@ export default function MobileNav() {
             <Link
               key={item.href}
               href={item.href}
+              aria-label={item.label}
               className={cn(
-                'flex flex-col items-center justify-center gap-1',
+                'relative flex flex-col items-center justify-center',
                 'min-w-[48px] min-h-[44px]',
-                active ? 'text-accent' : 'text-text-secondary',
+                'text-text-secondary',
               )}
             >
               <DynamicIcon name={item.icon} size={20} aria-hidden="true" />
-              <span className="text-[10px] font-medium">{item.label}</span>
+              {active && <StatusDot className="absolute -bottom-1" />}
             </Link>
           )
         })}
@@ -53,15 +55,17 @@ export default function MobileNav() {
         {/* "Mas" overflow button */}
         <button
           type="button"
+          data-testid="mas-button"
           onClick={() => setIsMoreOpen(true)}
+          aria-label="Mas"
           className={cn(
-            'flex flex-col items-center justify-center gap-1',
+            'relative flex flex-col items-center justify-center',
             'min-w-[48px] min-h-[44px]',
-            isMoreActive ? 'text-accent' : 'text-text-secondary',
+            'text-text-secondary',
           )}
         >
           <MoreHorizontal size={20} aria-hidden="true" />
-          <span className="text-[10px] font-medium">Mas</span>
+          {isMoreActive && <StatusDot className="absolute -bottom-1" />}
         </button>
       </nav>
 

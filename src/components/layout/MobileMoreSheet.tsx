@@ -46,7 +46,7 @@ export default function MobileMoreSheet({
       >
         {/* Drag handle indicator */}
         <div className="flex justify-center py-3">
-          <div className="h-1 w-10 rounded-full bg-border-light" />
+          <div className="h-1 w-10 bg-border-divider" />
         </div>
 
         {/* Menu items */}
