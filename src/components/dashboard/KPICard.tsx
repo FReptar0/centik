@@ -11,6 +11,7 @@ export interface KPICardProps {
   icon: string
   color: SemanticColor
   subtitle?: string
+  hero?: boolean
 }
 
 const textColorMap: Record<SemanticColor, string> = {
@@ -29,26 +30,31 @@ const bgColorMap: Record<SemanticColor, string> = {
   info: 'bg-info/15',
 }
 
-export default function KPICard({ label, value, icon, color, subtitle }: KPICardProps) {
+export default function KPICard({ label, value, icon, color, subtitle, hero }: KPICardProps) {
   return (
-    <div className="rounded-xl border border-border-divider bg-surface-elevated p-5 transition-all duration-200">
-      <div className="mb-3 flex items-center gap-3">
-        <div
-          className={cn(
-            'flex h-10 w-10 items-center justify-center rounded-lg',
-            bgColorMap[color],
-          )}
-        >
-          <DynamicIcon name={icon} size={24} className={textColorMap[color]} />
+    <div className={cn(
+      'rounded-lg bg-surface-elevated p-5 transition-all duration-200',
+      hero && 'dot-matrix-hero',
+    )}>
+      <div className="relative z-[2]">
+        <div className="mb-3 flex items-center gap-3">
+          <div
+            className={cn(
+              'flex h-10 w-10 items-center justify-center rounded-lg',
+              bgColorMap[color],
+            )}
+          >
+            <DynamicIcon name={icon} size={24} className={textColorMap[color]} />
+          </div>
         </div>
+        <p className={cn('text-2xl font-bold tabular-nums', textColorMap[color])}>
+          {value}
+        </p>
+        <p className="text-sm font-medium text-text-secondary">{label}</p>
+        {subtitle ? (
+          <p className="mt-1 text-xs text-text-tertiary">{subtitle}</p>
+        ) : null}
       </div>
-      <p className={cn('text-2xl font-bold tabular-nums', textColorMap[color])}>
-        {value}
-      </p>
-      <p className="text-sm font-medium text-text-secondary">{label}</p>
-      {subtitle ? (
-        <p className="mt-1 text-xs text-text-tertiary">{subtitle}</p>
-      ) : null}
     </div>
   )
 }

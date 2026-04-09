@@ -77,7 +77,7 @@ function CustomTooltip({
 export default function TrendAreaChart({ data }: TrendAreaChartProps) {
   if (data.length === 0) {
     return (
-      <div className="bg-surface-elevated border border-border-divider rounded-xl p-5">
+      <div className="bg-surface-elevated rounded-lg p-5">
         <h3 className="text-lg font-semibold text-text-primary mb-4">
           Tendencia 6 Meses
         </h3>
@@ -109,7 +109,7 @@ export default function TrendAreaChart({ data }: TrendAreaChartProps) {
   }))
 
   return (
-    <div className="bg-surface-elevated border border-border-divider rounded-xl p-5">
+    <div className="bg-surface-elevated rounded-lg p-5">
       <h3 className="text-lg font-semibold text-text-primary mb-4">
         Tendencia 6 Meses
       </h3>

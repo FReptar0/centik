@@ -54,13 +54,13 @@ export default function IncomeSourceCard({ source, onEdit }: IncomeSourceCardPro
 
   return (
     <div className={cn(
-      'rounded-xl border border-border-divider bg-surface-elevated p-5',
+      'rounded-lg bg-surface-elevated p-5',
       'transition-all duration-200',
     )}>
       {/* Top row: name + type badge */}
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-lg font-semibold text-text-primary">{source.name}</h3>
-        <span className="text-[11px] uppercase tracking-wide px-2 py-0.5 rounded-sm bg-accent/15 text-accent">
+        <span className="text-[11px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-accent-subtle text-accent">
           {source.type === 'EMPLOYMENT' ? 'Empleo' : source.type === 'FREELANCE' ? 'Freelance' : 'Otro'}
         </span>
       </div>
@@ -84,8 +84,8 @@ export default function IncomeSourceCard({ source, onEdit }: IncomeSourceCardPro
       <div className="flex items-center justify-between">
         <span className={cn(
           'text-[11px] font-semibold uppercase tracking-wide',
-          'px-2 py-0.5 rounded-sm',
-          'bg-positive/15 text-positive',
+          'px-2 py-0.5 rounded-full',
+          'bg-positive-subtle text-positive',
         )}>
           {FREQUENCY_DISPLAY[source.frequency] ?? source.frequency}
         </span>

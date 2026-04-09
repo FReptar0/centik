@@ -22,7 +22,7 @@ export default function RecentTransactions({
 }: RecentTransactionsProps) {
   if (transactions.length === 0) {
     return (
-      <div className="bg-surface-elevated border border-border-divider rounded-xl p-5">
+      <div className="bg-surface-elevated rounded-lg p-5">
         <h3 className="text-lg font-semibold text-text-primary mb-4">
           Ultimos Movimientos
         </h3>
@@ -43,7 +43,7 @@ export default function RecentTransactions({
   }
 
   return (
-    <div className="bg-surface-elevated border border-border-divider rounded-xl p-5">
+    <div className="bg-surface-elevated rounded-lg p-5">
       <h3 className="text-lg font-semibold text-text-primary mb-4">
         Ultimos Movimientos
       </h3>

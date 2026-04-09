@@ -22,7 +22,7 @@ export default function BudgetSummaryRow({ budgets, quincenalIncome }: BudgetSum
   const monthlyDiff = ((isPositive ? difference : -difference) * BigInt(2)).toString()
 
   return (
-    <div className="rounded-xl border border-border-divider bg-surface-elevated p-5">
+    <div className="rounded-lg bg-surface-elevated p-5">
       {/* Income vs Budget */}
       <div className="flex items-center justify-between gap-4">
         <div>

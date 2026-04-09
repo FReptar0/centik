@@ -22,7 +22,7 @@ export default function IncomeSummaryCards({ sources }: IncomeSummaryCardsProps)
       {SUMMARY_ITEMS.map(({ key, label, Icon }) => (
         <div
           key={key}
-          className="rounded-xl border border-border-divider bg-surface-elevated p-5"
+          className="rounded-lg bg-surface-elevated p-5"
         >
           <div className="flex items-center gap-2 mb-2">
             <Icon size={16} className="text-positive" aria-hidden="true" />

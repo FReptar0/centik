@@ -14,9 +14,9 @@ interface CategoryListProps {
 }
 
 const TYPE_DISPLAY: Record<string, { label: string; className: string }> = {
-  EXPENSE: { label: 'Gasto', className: 'bg-negative/15 text-negative' },
-  INCOME: { label: 'Ingreso', className: 'bg-positive/15 text-positive' },
-  BOTH: { label: 'Ambos', className: 'bg-info/15 text-info' },
+  EXPENSE: { label: 'Gasto', className: 'bg-negative-subtle text-negative' },
+  INCOME: { label: 'Ingreso', className: 'bg-positive-subtle text-positive' },
+  BOTH: { label: 'Ambos', className: 'bg-info-subtle text-info' },
 }
 
 export default function CategoryList({ categories, onAdd }: CategoryListProps) {
@@ -95,7 +95,7 @@ function CategoryRow({ category }: CategoryRowProps) {
   return (
     <div
       className={cn(
-        'flex items-center gap-4 rounded-xl border border-border-divider bg-surface-elevated p-4',
+        'flex items-center gap-4 rounded-lg bg-surface-elevated p-4',
         'transition-all duration-200',
       )}
     >
@@ -124,7 +124,7 @@ function CategoryRow({ category }: CategoryRowProps) {
         <span
           className={cn(
             'text-[11px] font-semibold uppercase tracking-wide',
-            'px-1.5 py-0.5 rounded-sm inline-block mt-0.5',
+            'px-2 py-0.5 rounded-full inline-block mt-0.5',
             typeInfo.className,
           )}
         >

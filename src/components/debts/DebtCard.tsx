@@ -127,7 +127,7 @@ export default function DebtCard({ debt, onEdit }: DebtCardProps) {
   }, [debt.id])
 
   return (
-    <div className="rounded-xl border border-border-divider bg-surface-elevated p-5 transition-all duration-200">
+    <div className="rounded-lg bg-surface-elevated p-5 transition-all duration-200">
       {/* Header row: icon, name, balance, chevron */}
       <div
         className="flex items-center justify-between cursor-pointer"

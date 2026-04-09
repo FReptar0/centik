@@ -95,7 +95,7 @@ function CenterLabel({
 export default function ExpenseDonutChart({ data }: ExpenseDonutChartProps) {
   if (data.length === 0) {
     return (
-      <div className="bg-surface-elevated border border-border-divider rounded-xl p-5">
+      <div className="bg-surface-elevated rounded-lg p-5">
         <h3 className="text-lg font-semibold text-text-primary mb-4">
           Distribucion de Gastos
         </h3>
@@ -128,7 +128,7 @@ export default function ExpenseDonutChart({ data }: ExpenseDonutChartProps) {
     .toString()
 
   return (
-    <div className="bg-surface-elevated border border-border-divider rounded-xl p-5">
+    <div className="bg-surface-elevated rounded-lg p-5">
       <h3 className="text-lg font-semibold text-text-primary mb-4">
         Distribucion de Gastos
       </h3>
