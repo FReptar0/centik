@@ -94,5 +94,11 @@ interface DynamicIconProps extends LucideProps {
 /** Renders a Lucide icon by its DB string name, falling back to Package */
 export default function DynamicIcon({ name, ...props }: DynamicIconProps) {
   const IconComponent = ICON_MAP[name] ?? Package
-  return <IconComponent {...props} />
+  return (
+    <IconComponent
+      strokeWidth={1.5}
+      style={{ shapeRendering: 'crispEdges', ...props.style }}
+      {...props}
+    />
+  )
 }

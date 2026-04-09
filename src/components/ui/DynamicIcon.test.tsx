@@ -60,4 +60,27 @@ describe('DynamicIcon', () => {
       expect(ICON_MAP[icon]).toBeDefined()
     }
   })
+
+  it('applies default strokeWidth of 1.5', () => {
+    const { container } = render(<DynamicIcon name="utensils" />)
+    const svg = container.querySelector('svg')
+    expect(svg).not.toBeNull()
+    expect(svg?.getAttribute('stroke-width')).toBe('1.5')
+  })
+
+  it('applies crispEdges shape-rendering', () => {
+    const { container } = render(<DynamicIcon name="utensils" />)
+    const svg = container.querySelector('svg')
+    expect(svg).not.toBeNull()
+    expect(svg?.style.shapeRendering).toBe('crispedges')
+  })
+
+  it('allows strokeWidth override', () => {
+    const { container } = render(
+      <DynamicIcon name="utensils" strokeWidth={2} />,
+    )
+    const svg = container.querySelector('svg')
+    expect(svg).not.toBeNull()
+    expect(svg?.getAttribute('stroke-width')).toBe('2')
+  })
 })
