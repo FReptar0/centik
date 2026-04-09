@@ -91,4 +91,26 @@ describe('Sidebar', () => {
       expect(link.className).not.toContain('text-accent')
     }
   })
+
+  it('active item shows StatusDot indicator', () => {
+    vi.mocked(usePathname).mockReturnValue('/')
+    render(<Sidebar />)
+    const links = screen.getAllByRole('link', { name: /Inicio/ })
+    const activeLink = links.find(
+      (link) => link.className.includes('bg-accent'),
+    )
+    expect(activeLink).toBeDefined()
+    const dot = activeLink!.querySelector('.bg-accent.animate-status-pulse')
+    expect(dot).not.toBeNull()
+  })
+
+  it('inactive item does not show StatusDot indicator', () => {
+    vi.mocked(usePathname).mockReturnValue('/')
+    render(<Sidebar />)
+    const links = screen.getAllByRole('link', { name: /Deudas/ })
+    for (const link of links) {
+      const dot = link.querySelector('.animate-status-pulse')
+      expect(dot).toBeNull()
+    }
+  })
 })

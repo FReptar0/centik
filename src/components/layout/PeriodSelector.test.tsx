@@ -2,9 +2,10 @@ import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, cleanup } from '@testing-library/react'
 
 const mockPush = vi.fn()
+const mockUseSearchParams = vi.fn(() => new URLSearchParams())
 
 vi.mock('next/navigation', () => ({
-  useSearchParams: vi.fn(() => new URLSearchParams()),
+  useSearchParams: () => mockUseSearchParams(),
   useRouter: vi.fn(() => ({ push: mockPush })),
   usePathname: vi.fn(() => '/'),
 }))
@@ -14,6 +15,7 @@ import PeriodSelector from './PeriodSelector'
 afterEach(() => {
   cleanup()
   mockPush.mockClear()
+  mockUseSearchParams.mockReturnValue(new URLSearchParams())
 })
 
 describe('PeriodSelector', () => {
@@ -54,5 +56,27 @@ describe('PeriodSelector', () => {
     const buttons = screen.getAllByRole('button')
     const rightArrow = buttons[buttons.length - 1]
     expect(rightArrow.hasAttribute('disabled')).toBe(true)
+  })
+
+  it('shows StatusDot when viewing current period', () => {
+    render(<PeriodSelector />)
+    const periodText = screen.getByText(
+      new RegExp(new Date().getFullYear().toString()),
+    )
+    const container = periodText.closest('span')
+    expect(container).not.toBeNull()
+    const dot = container!.querySelector('.bg-accent.animate-status-pulse')
+    expect(dot).not.toBeNull()
+  })
+
+  it('does not show StatusDot when viewing past period', () => {
+    mockUseSearchParams.mockReturnValue(
+      new URLSearchParams('month=1&year=2024'),
+    )
+    render(<PeriodSelector />)
+    const container = screen.getByText(/Enero 2024/).closest('span')
+    expect(container).not.toBeNull()
+    const dot = container!.querySelector('.animate-status-pulse')
+    expect(dot).toBeNull()
   })
 })

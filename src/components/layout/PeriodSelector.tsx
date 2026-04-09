@@ -2,6 +2,7 @@
 
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { ChevronLeft, ChevronRight, Lock } from 'lucide-react'
+import StatusDot from '@/components/ui/StatusDot'
 import { MONTH_NAMES_ES } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
@@ -72,6 +73,7 @@ export default function PeriodSelector({ isClosed = false }: PeriodSelectorProps
           />
         )}
         {MONTH_NAMES_ES[month - 1]} {year}
+        {isCurrentPeriod && <StatusDot />}
       </span>
 
       <button

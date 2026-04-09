@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import DynamicIcon from '@/components/ui/DynamicIcon'
+import StatusDot from '@/components/ui/StatusDot'
 import { SIDEBAR_NAV_ITEMS } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
@@ -56,6 +57,16 @@ export default function Sidebar() {
               <DynamicIcon name={item.icon} size={18} aria-hidden="true" />
               {/* Label: hidden on tablet, visible on desktop */}
               <span className="hidden lg:inline">{item.label}</span>
+              {/* StatusDot: desktop inline after label, tablet absolute next to icon */}
+              {active && (
+                <StatusDot
+                  className={cn(
+                    'lg:ml-auto',
+                    'md:absolute md:-right-0.5 md:top-2.5',
+                    'lg:relative lg:right-auto lg:top-auto',
+                  )}
+                />
+              )}
               {/* Tooltip for tablet: visible on hover, hidden on desktop */}
               <span
                 className={cn(
