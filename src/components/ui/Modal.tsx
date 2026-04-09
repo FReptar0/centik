@@ -10,6 +10,7 @@ interface ModalProps {
   children: React.ReactNode
   title?: string
   maxWidth?: string
+  headerContent?: React.ReactNode
 }
 
 /**
@@ -24,6 +25,7 @@ export default function Modal({
   children,
   title,
   maxWidth = 'max-w-[480px]',
+  headerContent,
 }: ModalProps) {
   useEffect(() => {
     if (!isOpen) return
@@ -54,8 +56,8 @@ export default function Modal({
       <div
         className={cn(
           'fixed inset-x-0 bottom-0 z-50 md:hidden',
-          'max-h-[90vh] overflow-y-auto',
-          'bg-surface-elevated border-t border-border-divider rounded-t-xl',
+          'max-h-[85vh] overflow-y-auto',
+          'bg-surface-elevated rounded-t-[24px]',
           'transform transition-transform duration-300 ease-out',
         )}
         role="dialog"
@@ -64,21 +66,25 @@ export default function Modal({
       >
         {/* Drag handle indicator */}
         <div className="flex justify-center py-3">
-          <div className="h-1 w-10 rounded-full bg-border-light" />
+          <div className="h-1 w-10 bg-border-divider" />
         </div>
 
-        {title && (
-          <div className="flex items-center justify-between px-7 pb-4">
-            <h2 className="text-lg font-semibold text-text-primary">{title}</h2>
-            <button
-              onClick={onClose}
-              className="rounded-md p-1 text-text-tertiary transition-colors duration-200 hover:text-text-primary"
-              aria-label="Cerrar"
-            >
-              <X size={20} />
-            </button>
-          </div>
-        )}
+        {headerContent
+          ? headerContent
+          : title && (
+              <div className="flex items-center justify-between px-7 pb-4">
+                <h2 className="text-lg font-semibold text-text-primary">
+                  {title}
+                </h2>
+                <button
+                  onClick={onClose}
+                  className="rounded-md p-1 text-text-tertiary transition-colors duration-200 hover:text-text-primary"
+                  aria-label="Cerrar"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+            )}
 
         <div className="px-7 pb-7">{children}</div>
       </div>
@@ -95,25 +101,27 @@ export default function Modal({
         <div
           className={cn(
             'relative w-full overflow-y-auto',
-            'max-h-[85vh] rounded-xl border border-border-divider bg-surface-elevated p-7',
+            'max-h-[85vh] rounded-[24px] bg-surface-elevated p-7',
             'transition-all duration-200',
             maxWidth,
           )}
         >
-          {title && (
-            <div className="mb-5 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-text-primary">
-                {title}
-              </h2>
-              <button
-                onClick={onClose}
-                className="rounded-md p-1 text-text-tertiary transition-colors duration-200 hover:text-text-primary"
-                aria-label="Cerrar"
-              >
-                <X size={20} />
-              </button>
-            </div>
-          )}
+          {headerContent
+            ? headerContent
+            : title && (
+                <div className="mb-5 flex items-center justify-between">
+                  <h2 className="text-lg font-semibold text-text-primary">
+                    {title}
+                  </h2>
+                  <button
+                    onClick={onClose}
+                    className="rounded-md p-1 text-text-tertiary transition-colors duration-200 hover:text-text-primary"
+                    aria-label="Cerrar"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+              )}
 
           {children}
         </div>

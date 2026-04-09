@@ -80,4 +80,49 @@ describe('Modal', () => {
     const closeButtons = screen.getAllByRole('button', { name: /cerrar/i })
     expect(closeButtons.length).toBeGreaterThanOrEqual(1)
   })
+
+  it('renders headerContent when provided instead of title', () => {
+    render(
+      <Modal
+        isOpen={true}
+        onClose={() => {}}
+        title="Should Not Render"
+        headerContent={<div data-testid="custom-header">Custom Header</div>}
+      >
+        <p>Content</p>
+      </Modal>,
+    )
+    const customHeaders = screen.getAllByTestId('custom-header')
+    expect(customHeaders.length).toBeGreaterThanOrEqual(1)
+    expect(screen.queryByText('Should Not Render')).toBeNull()
+  })
+
+  it('mobile sheet has 85vh max height', () => {
+    const { container } = render(
+      <Modal isOpen={true} onClose={() => {}}>
+        <p>Content</p>
+      </Modal>,
+    )
+    // The mobile sheet is the div with role="dialog" that has md:hidden
+    const dialogs = container.querySelectorAll('[role="dialog"]')
+    const mobileSheet = Array.from(dialogs).find((el) =>
+      el.className.includes('md:hidden'),
+    )
+    expect(mobileSheet).toBeDefined()
+    expect(mobileSheet?.className).toContain('max-h-[85vh]')
+  })
+
+  it('mobile sheet has 24px top border radius', () => {
+    const { container } = render(
+      <Modal isOpen={true} onClose={() => {}}>
+        <p>Content</p>
+      </Modal>,
+    )
+    const dialogs = container.querySelectorAll('[role="dialog"]')
+    const mobileSheet = Array.from(dialogs).find((el) =>
+      el.className.includes('md:hidden'),
+    )
+    expect(mobileSheet).toBeDefined()
+    expect(mobileSheet?.className).toContain('rounded-t-[24px]')
+  })
 })
