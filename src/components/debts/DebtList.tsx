@@ -22,7 +22,7 @@ export default function DebtList({ debts, onEdit, onAdd }: DebtListProps) {
         <p className="text-text-secondary text-lg mb-4">Sin deudas registradas</p>
         <button
           onClick={onAdd}
-          className="bg-accent text-bg-primary font-semibold rounded-lg px-4 py-2 transition-colors duration-200 hover:bg-accent-hover"
+          className="bg-accent text-black font-semibold rounded-full px-4 py-2 transition-all duration-200 hover:bg-accent-hover active:scale-[0.98]"
         >
           Agregar deuda
         </button>

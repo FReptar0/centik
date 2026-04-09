@@ -34,7 +34,7 @@ export default function CategoryList({ categories, onAdd }: CategoryListProps) {
         </p>
         <button
           onClick={onAdd}
-          className="bg-accent text-bg-primary font-semibold rounded-lg px-4 py-2 transition-colors duration-200 hover:bg-accent-hover"
+          className="bg-accent text-black font-semibold rounded-full px-4 py-2 transition-all duration-200 hover:bg-accent-hover active:scale-[0.98]"
         >
           Agregar categoria
         </button>
@@ -155,7 +155,7 @@ function CategoryRow({ category }: CategoryRowProps) {
           ) : (
             <button
               onClick={() => setConfirmingDelete(true)}
-              className="rounded-md p-2 text-text-tertiary transition-colors duration-200 hover:text-negative hover:bg-negative/10"
+              className="rounded-full p-2 text-text-tertiary transition-all duration-200 hover:text-negative hover:bg-negative/10 active:scale-[0.98]"
               aria-label="Eliminar"
             >
               <Trash2 size={16} />

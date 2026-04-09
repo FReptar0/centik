@@ -223,14 +223,14 @@ export default function DebtCard({ debt, onEdit }: DebtCardProps) {
               <>
                 <button
                   onClick={() => onEdit(debt)}
-                  className="rounded-md p-2 text-text-tertiary transition-colors duration-200 hover:text-text-primary hover:bg-surface-hover"
+                  className="rounded-full p-2 text-text-tertiary transition-all duration-200 hover:text-text-primary hover:bg-surface-hover active:scale-[0.98]"
                   aria-label="Editar"
                 >
                   <Pencil size={16} />
                 </button>
                 <button
                   onClick={() => setConfirmingDelete(true)}
-                  className="rounded-md p-2 text-text-tertiary transition-colors duration-200 hover:text-negative hover:bg-negative/10"
+                  className="rounded-full p-2 text-text-tertiary transition-all duration-200 hover:text-negative hover:bg-negative/10 active:scale-[0.98]"
                   aria-label="Eliminar"
                 >
                   <Trash2 size={16} />

@@ -208,7 +208,7 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
               type="button"
               onClick={() => setType(t)}
               className={cn(
-                'rounded-lg border px-3 py-2 text-sm font-medium transition-colors duration-200',
+                'rounded-full border px-3 py-2 text-sm font-medium transition-all duration-200 active:scale-[0.98]',
                 type === t
                   ? 'bg-accent/15 text-accent border-accent'
                   : 'bg-transparent text-text-secondary border-border-divider',
@@ -382,8 +382,8 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
         type="submit"
         disabled={submitting}
         className={cn(
-          'w-full rounded-lg bg-accent py-2.5 text-sm font-semibold text-bg-primary',
-          'transition-colors duration-200',
+          'w-full rounded-full bg-accent py-2.5 text-sm font-semibold text-black',
+          'transition-all duration-200 active:scale-[0.98]',
           'hover:bg-accent-hover',
           'disabled:opacity-50 disabled:cursor-not-allowed',
         )}

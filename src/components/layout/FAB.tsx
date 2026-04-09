@@ -44,14 +44,14 @@ export default function FAB() {
           'flex h-12 w-12 items-center justify-center',
           'rounded-full bg-accent',
           'hover:bg-accent-hover hover:scale-105',
-          'active:scale-95',
+          'active:scale-[0.98]',
           'transition-all duration-200',
         )}
       >
         {loading ? (
-          <Loader2 size={24} className="text-bg-primary animate-spin" />
+          <Loader2 size={24} className="text-black animate-spin" />
         ) : (
-          <Plus size={24} className="text-bg-primary" />
+          <Plus size={24} className="text-black" />
         )}
       </button>
 

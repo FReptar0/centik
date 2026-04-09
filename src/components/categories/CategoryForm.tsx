@@ -239,8 +239,8 @@ function CategoryFormContent({ onClose }: FormContentProps) {
         type="submit"
         disabled={submitting}
         className={cn(
-          'w-full rounded-lg bg-accent py-2.5 text-sm font-semibold text-bg-primary',
-          'transition-colors duration-200',
+          'w-full rounded-full bg-accent py-2.5 text-sm font-semibold text-black',
+          'transition-all duration-200 active:scale-[0.98]',
           'hover:bg-accent-hover',
           'disabled:opacity-50 disabled:cursor-not-allowed',
         )}

@@ -102,9 +102,9 @@ export default function CloseConfirmationModal({
             onClick={onClose}
             disabled={isLoading}
             className={cn(
-              'rounded-lg border px-4 py-2',
+              'rounded-full border border-border-divider px-4 py-2',
               'text-sm font-semibold text-text-secondary',
-              'transition-colors duration-200 hover:text-text-primary',
+              'transition-all duration-200 hover:text-text-primary active:scale-[0.98]',
             )}
           >
             Cancelar
@@ -114,10 +114,10 @@ export default function CloseConfirmationModal({
             onClick={onConfirm}
             disabled={isLoading || !preview}
             className={cn(
-              'rounded-lg px-4 py-2',
+              'rounded-full px-4 py-2',
               'text-sm font-semibold text-white',
               'bg-negative hover:bg-negative/90',
-              'transition-colors duration-200',
+              'transition-all duration-200 active:scale-[0.98]',
               'disabled:opacity-50 disabled:cursor-not-allowed',
               'flex items-center gap-2',
             )}

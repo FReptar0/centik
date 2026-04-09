@@ -197,7 +197,7 @@ function TransactionFormContent({
           aria-label="Gasto"
           onClick={() => handleTypeChange(TransactionType.EXPENSE)}
           className={cn(
-            'flex-1 rounded-lg border px-3 py-2.5 text-sm font-semibold transition-colors duration-200',
+            'flex-1 rounded-full border px-3 py-2.5 text-sm font-semibold transition-all duration-200 active:scale-[0.98]',
             type === TransactionType.EXPENSE
               ? 'bg-accent/15 text-accent border-accent'
               : 'bg-transparent text-text-secondary border-border-divider',
@@ -210,7 +210,7 @@ function TransactionFormContent({
           aria-label="Ingreso"
           onClick={() => handleTypeChange(TransactionType.INCOME)}
           className={cn(
-            'flex-1 rounded-lg border px-3 py-2.5 text-sm font-semibold transition-colors duration-200',
+            'flex-1 rounded-full border px-3 py-2.5 text-sm font-semibold transition-all duration-200 active:scale-[0.98]',
             type === TransactionType.INCOME
               ? 'bg-accent/15 text-accent border-accent'
               : 'bg-transparent text-text-secondary border-border-divider',
@@ -359,7 +359,7 @@ function TransactionFormContent({
                       setPaymentMethod(paymentMethod === key ? null : key)
                     }
                     className={cn(
-                      'rounded-lg border px-3 py-2 text-sm font-medium transition-colors duration-200',
+                      'rounded-full border px-3 py-2 text-sm font-medium transition-all duration-200 active:scale-[0.98]',
                       paymentMethod === key
                         ? 'bg-accent/15 text-accent border-accent'
                         : 'bg-transparent text-text-secondary border-border-divider',
@@ -456,8 +456,8 @@ function TransactionFormContent({
         type="submit"
         disabled={submitting}
         className={cn(
-          'w-full rounded-lg bg-accent py-3 text-sm font-semibold text-bg-primary',
-          'transition-colors duration-200',
+          'w-full rounded-full bg-accent py-3 text-sm font-semibold text-black',
+          'transition-all duration-200 active:scale-[0.98]',
           'hover:bg-accent-hover',
           'disabled:opacity-50 disabled:cursor-not-allowed',
         )}

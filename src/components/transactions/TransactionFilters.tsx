@@ -115,8 +115,8 @@ export default function TransactionFilters({
   }
 
   const chipBase = cn(
-    'flex items-center gap-1.5 rounded-lg border px-3 py-2 text-sm font-medium',
-    'transition-colors duration-200 whitespace-nowrap shrink-0',
+    'flex items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-medium',
+    'transition-all duration-200 whitespace-nowrap shrink-0 active:scale-[0.98]',
   )
 
   const chipActive = 'bg-accent/15 text-accent border-accent'

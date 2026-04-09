@@ -58,9 +58,9 @@ export default function TransactionList({
           onClick={onLoadMore}
           disabled={isLoadingMore}
           className={cn(
-            'mt-4 w-full rounded-xl border border-border-divider bg-surface-elevated py-3',
+            'mt-4 w-full rounded-full border border-border-divider bg-surface-elevated py-3',
             'text-sm font-medium text-text-secondary',
-            'transition-colors duration-200',
+            'transition-all duration-200 active:scale-[0.98]',
             'hover:bg-surface-hover hover:text-text-primary',
             'disabled:opacity-50 disabled:cursor-not-allowed',
           )}
