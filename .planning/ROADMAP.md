@@ -97,12 +97,12 @@ Plans:
   3. Mobile modals appear as bottom sheets (85vh, drag handle visual, top-corner radius); desktop modals are centered with --radius-xl; no visible borders or shadows on either
   4. Cards are borderless with background-shift elevation; stacked cards use 1px #222222 separator; hero cards (dashboard balance, analytics) show dot-matrix SVG texture at 40% opacity
   5. DynamicIcon renders at strokeWidth 1.5px with crispEdges shape-rendering; StatusDot is placed on current period indicator and nav active state
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 19-01: TBD
-- [ ] 19-02: TBD
-- [ ] 19-03: TBD
+- [ ] 19-01-PLAN.md -- DynamicIcon tuning + Modal bottom sheet restructure + dot-matrix CSS
+- [ ] 19-02-PLAN.md -- Icon-only bottom nav + StatusDot placement on nav and period selector
+- [ ] 19-03-PLAN.md -- Pill buttons + borderless cards + pill badges sweep across all components
 
 ### Phase 20: Feature Component Updates
 **Goal**: All data-displaying feature components (progress bars, charts, monetary amounts) use Glyph Finance visual treatments -- segmented battery-bar progress, minimal charts, and styled monetary display
@@ -162,7 +162,7 @@ Phases execute in numeric order: 17 -> 18 -> 19 -> 20 -> 21 -> 22
 | 12-16 | v1.1 | 9/9 | Complete | 2026-04-06 |
 | 17. Token Foundation + Class Migration | 3/3 | Complete    | 2026-04-07 | - |
 | 18. New Primitive Components | 3/3 | Complete    | 2026-04-07 | - |
-| 19. Layout, Navigation + Global Updates | v2.0 | 0/TBD | Not started | - |
+| 19. Layout, Navigation + Global Updates | v2.0 | 0/3 | Planning | - |
 | 20. Feature Component Updates | v2.0 | 0/TBD | Not started | - |
 | 21. TransactionForm + Custom Numpad | v2.0 | 0/TBD | Not started | - |
 | 22. Visual QA + Accessibility | v2.0 | 0/TBD | Not started | - |
