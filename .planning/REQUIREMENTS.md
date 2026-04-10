@@ -31,15 +31,15 @@ Requirements for Glyph Finance code implementation. 10/10 quality bar -- anythin
 
 ### Component Updates
 
-- [ ] **UPDATE-01**: All buttons converted to pill shape (border-radius: 9999px), danger uses #FF3333, secondary keeps subtle border, 98% scale press interaction
-- [ ] **UPDATE-02**: All cards use borderless elevation (no visible borders), stacked cards use 1px #222222 separator, hero cards get dot-matrix texture background
+- [x] **UPDATE-01**: All buttons converted to pill shape (border-radius: 9999px), danger uses #FF3333, secondary keeps subtle border, 98% scale press interaction
+- [x] **UPDATE-02**: All cards use borderless elevation (no visible borders), stacked cards use 1px #222222 separator, hero cards get dot-matrix texture background
 - [ ] **UPDATE-03**: All progress bars replaced with BatteryBar component across budget, debt utilization, and debt payoff views
 - [ ] **UPDATE-04**: All charts updated -- no grid lines, 1.5px stroke, 4px dot endpoints, hardcoded CHART_COLORS updated to Glyph Finance hex values
 - [x] **UPDATE-05**: Bottom navigation converted to icon-only (no text labels), 4px chartreuse dot indicator 8px below active icon, inactive icons in --color-text-secondary
 - [x] **UPDATE-06**: Mobile modals use bottom sheet pattern (85vh, drag handle, top-corner radius), desktop modals centered with --radius-xl
 - [ ] **UPDATE-07**: Transaction form restructured -- bottom sheet with dot-matrix hero amount, toggle pills, circular 4x2 category grid with accent ring, custom numpad, checkmark save animation
 - [ ] **UPDATE-08**: All inputs across app replaced with FloatingInput (underline-only, floating labels)
-- [ ] **UPDATE-09**: All badges converted to pill shape (radius-full), semantic color variants
+- [x] **UPDATE-09**: All badges converted to pill shape (radius-full), semantic color variants
 - [x] **UPDATE-10**: Dot-matrix texture implemented as CSS pseudo-element on hero cards (8x8 SVG data URI, 40% opacity)
 - [ ] **UPDATE-11**: Pixel-dissolve scanline animation implemented for data refresh moments (@keyframes scanline-reveal, clip-path inset, steps(12,end))
 - [x] **UPDATE-12**: StatusDot placed on current period indicator and nav active state
@@ -102,15 +102,15 @@ Deferred to future milestones.
 | COMP-03 | Phase 18 | Complete |
 | COMP-04 | Phase 18 | Complete |
 | COMP-05 | Phase 21 | Pending |
-| UPDATE-01 | Phase 19 | Pending |
-| UPDATE-02 | Phase 19 | Pending |
+| UPDATE-01 | Phase 19 | Complete |
+| UPDATE-02 | Phase 19 | Complete |
 | UPDATE-03 | Phase 20 | Pending |
 | UPDATE-04 | Phase 20 | Pending |
 | UPDATE-05 | Phase 19 | Complete |
 | UPDATE-06 | Phase 19 | Complete |
 | UPDATE-07 | Phase 21 | Pending |
 | UPDATE-08 | Phase 21 | Pending |
-| UPDATE-09 | Phase 19 | Pending |
+| UPDATE-09 | Phase 19 | Complete |
 | UPDATE-10 | Phase 19 | Complete |
 | UPDATE-11 | Phase 21 | Pending |
 | UPDATE-12 | Phase 19 | Complete |

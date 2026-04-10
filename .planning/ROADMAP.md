@@ -46,7 +46,7 @@ See `.planning/milestones/v1.1-ROADMAP.md` for full phase details.
 
 - [x] **Phase 17: Token Foundation + Class Migration** - Replace @theme tokens, swap fonts, rename all utility classes across 36+ files, update constants and tests atomically (completed 2026-04-07)
 - [x] **Phase 18: New Primitive Components** - Build and test BatteryBar, FloatingInput, StatusDot, TogglePills in isolation (completed 2026-04-07)
-- [ ] **Phase 19: Layout, Navigation + Global Component Updates** - Pill buttons, borderless cards, icon-only nav, bottom sheet modals, dot-matrix, StatusDot placement, icon tuning
+- [x] **Phase 19: Layout, Navigation + Global Component Updates** - Pill buttons, borderless cards, icon-only nav, bottom sheet modals, dot-matrix, StatusDot placement, icon tuning (completed 2026-04-10)
 - [ ] **Phase 20: Feature Component Updates** - BatteryBar replacing progress bars, chart visual overhaul, monetary amount display styling
 - [ ] **Phase 21: TransactionForm + Custom Numpad** - Bottom sheet transaction flow with custom numpad, FloatingInput adoption across all forms, pixel-dissolve animation
 - [ ] **Phase 22: Visual QA + Accessibility** - Page-by-page spec verification, WCAG 2.1 AA audit, focus rings, contrast ratios
@@ -162,7 +162,7 @@ Phases execute in numeric order: 17 -> 18 -> 19 -> 20 -> 21 -> 22
 | 12-16 | v1.1 | 9/9 | Complete | 2026-04-06 |
 | 17. Token Foundation + Class Migration | 3/3 | Complete    | 2026-04-07 | - |
 | 18. New Primitive Components | 3/3 | Complete    | 2026-04-07 | - |
-| 19. Layout, Navigation + Global Updates | 2/3 | In Progress|  | - |
+| 19. Layout, Navigation + Global Updates | 3/3 | Complete   | 2026-04-10 | - |
 | 20. Feature Component Updates | v2.0 | 0/TBD | Not started | - |
 | 21. TransactionForm + Custom Numpad | v2.0 | 0/TBD | Not started | - |
 | 22. Visual QA + Accessibility | v2.0 | 0/TBD | Not started | - |
