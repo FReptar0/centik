@@ -5,7 +5,6 @@ import {
   Bar,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
   Cell,
@@ -19,10 +18,9 @@ export interface BudgetBarChartProps {
 }
 
 const CHART_COLORS = {
-  grid: '#222222',
   axis: '#666666',
   tooltipBg: '#141414',
-  tooltipBorder: '#222222',
+  tooltipBorder: 'none',
   budgetMuted: '#444444',
 }
 
@@ -52,10 +50,9 @@ function CustomTooltip({
 
   return (
     <div
-      className="rounded-lg border p-3 text-xs"
+      className="rounded-lg border-0 p-3 text-xs"
       style={{
         backgroundColor: CHART_COLORS.tooltipBg,
-        borderColor: CHART_COLORS.tooltipBorder,
       }}
     >
       <p className="font-medium text-text-primary mb-1">{data.name}</p>
@@ -114,11 +111,6 @@ export default function BudgetBarChart({ data }: BudgetBarChartProps) {
         height={Math.max(data.length * 50, 200)}
       >
         <BarChart data={chartData} layout="vertical" barGap={4}>
-          <CartesianGrid
-            strokeDasharray="3 3"
-            stroke={CHART_COLORS.grid}
-            horizontal={false}
-          />
           <YAxis
             dataKey="name"
             type="category"
@@ -136,19 +128,19 @@ export default function BudgetBarChart({ data }: BudgetBarChartProps) {
           />
           <Tooltip
             content={<CustomTooltip />}
-            cursor={{ fill: 'rgba(255,255,255,0.03)' }}
+            cursor={false}
           />
           <Bar
             dataKey="budgetNum"
             fill={CHART_COLORS.budgetMuted}
-            radius={[0, 4, 4, 0]}
-            barSize={12}
+            radius={0}
+            barSize={8}
             name="Presupuesto"
           />
           <Bar
             dataKey="spentNum"
-            radius={[0, 4, 4, 0]}
-            barSize={12}
+            radius={0}
+            barSize={8}
             name="Gastado"
           >
             {chartData.map((entry) => (

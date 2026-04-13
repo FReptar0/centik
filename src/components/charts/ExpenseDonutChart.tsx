@@ -11,7 +11,7 @@ export interface ExpenseDonutChartProps {
 
 const CHART_COLORS = {
   tooltipBg: '#141414',
-  tooltipBorder: '#222222',
+  tooltipBorder: 'none',
 }
 
 interface ChartDataPoint {
@@ -39,10 +39,9 @@ function CustomTooltip({
 
   return (
     <div
-      className="rounded-lg border p-3 text-xs"
+      className="rounded-lg border-0 p-3 text-xs"
       style={{
         backgroundColor: CHART_COLORS.tooltipBg,
-        borderColor: CHART_COLORS.tooltipBorder,
       }}
     >
       <p className="font-medium text-text-primary mb-1">{data.name}</p>
@@ -82,7 +81,7 @@ function CenterLabel({
       <tspan
         x={viewBox.cx}
         dy="20"
-        fill="#e2e8f0"
+        fill="#E8E8E8"
         fontSize="14"
         fontWeight="600"
       >
@@ -137,7 +136,7 @@ export default function ExpenseDonutChart({ data }: ExpenseDonutChartProps) {
           <Pie
             data={chartData}
             dataKey="value"
-            innerRadius={60}
+            innerRadius={70}
             outerRadius={100}
             paddingAngle={2}
             stroke="none"

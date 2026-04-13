@@ -4,8 +4,6 @@ import {
   AreaChart,
   Area,
   XAxis,
-  YAxis,
-  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
 } from 'recharts'
@@ -19,10 +17,9 @@ export interface TrendAreaChartProps {
 }
 
 const CHART_COLORS = {
-  grid: '#222222',
   axis: '#666666',
   tooltipBg: '#141414',
-  tooltipBorder: '#222222',
+  tooltipBorder: 'none',
   positive: '#00E676',
   negative: '#FF3333',
 }
@@ -34,14 +31,6 @@ interface ChartDataPoint {
   expensesNum: number
   incomeStr: string
   expensesStr: string
-}
-
-/** Formats a number as abbreviated currency for Y axis ticks */
-function formatAxisValue(value: number): string {
-  if (value >= 1000) {
-    return `$${(value / 1000).toFixed(0)}K`
-  }
-  return `$${value.toFixed(0)}`
 }
 
 function CustomTooltip({
@@ -57,10 +46,9 @@ function CustomTooltip({
 
   return (
     <div
-      className="rounded-lg border p-3 text-xs"
+      className="rounded-lg border-0 p-3 text-xs"
       style={{
         backgroundColor: CHART_COLORS.tooltipBg,
-        borderColor: CHART_COLORS.tooltipBorder,
       }}
     >
       <p className="font-medium text-text-primary mb-1">{data.monthName}</p>
@@ -120,7 +108,7 @@ export default function TrendAreaChart({ data }: TrendAreaChartProps) {
               <stop
                 offset="0%"
                 stopColor={CHART_COLORS.positive}
-                stopOpacity={0.3}
+                stopOpacity={0.12}
               />
               <stop
                 offset="100%"
@@ -132,7 +120,7 @@ export default function TrendAreaChart({ data }: TrendAreaChartProps) {
               <stop
                 offset="0%"
                 stopColor={CHART_COLORS.negative}
-                stopOpacity={0.3}
+                stopOpacity={0.12}
               />
               <stop
                 offset="100%"
@@ -141,41 +129,35 @@ export default function TrendAreaChart({ data }: TrendAreaChartProps) {
               />
             </linearGradient>
           </defs>
-          <CartesianGrid
-            strokeDasharray="3 3"
-            stroke={CHART_COLORS.grid}
-          />
           <XAxis
             dataKey="label"
             tick={{ fill: CHART_COLORS.axis, fontSize: 11 }}
             axisLine={false}
             tickLine={false}
           />
-          <YAxis
-            tick={{ fill: CHART_COLORS.axis, fontSize: 11 }}
-            axisLine={false}
-            tickLine={false}
-            tickFormatter={formatAxisValue}
-          />
           <Tooltip
             content={<CustomTooltip />}
-            cursor={{ stroke: CHART_COLORS.grid }}
+            cursor={false}
           />
           <Area
             type="monotone"
             dataKey="incomeNum"
             stroke={CHART_COLORS.positive}
-            strokeWidth={2}
+            strokeWidth={1.5}
             fill="url(#incomeGradient)"
             name="Ingresos"
+            dot={{ r: 2, fill: CHART_COLORS.positive, strokeWidth: 0 }}
+            activeDot={{ r: 3, fill: CHART_COLORS.positive, strokeWidth: 0 }}
           />
           <Area
             type="monotone"
             dataKey="expensesNum"
             stroke={CHART_COLORS.negative}
-            strokeWidth={2}
+            strokeWidth={1.5}
             fill="url(#expensesGradient)"
             name="Gastos"
+            dot={{ r: 2, fill: CHART_COLORS.negative, strokeWidth: 0 }}
+            activeDot={{ r: 3, fill: CHART_COLORS.negative, strokeWidth: 0 }}
           />
         </AreaChart>
       </ResponsiveContainer>
