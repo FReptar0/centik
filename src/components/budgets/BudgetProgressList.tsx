@@ -1,6 +1,7 @@
 'use client'
 
 import DynamicIcon from '@/components/ui/DynamicIcon'
+import BatteryBar from '@/components/ui/BatteryBar'
 import { cn, formatMoney } from '@/lib/utils'
 import { getBudgetColor } from '@/lib/budget-shared'
 import type { BudgetWithSpent } from '@/lib/budget-shared'
@@ -15,17 +16,6 @@ const COLOR_TEXT = {
   negative: 'text-negative',
 } as const
 
-const COLOR_BG = {
-  positive: 'bg-positive',
-  warning: 'bg-warning',
-  negative: 'bg-negative',
-} as const
-
-const COLOR_TRACK = {
-  positive: 'bg-positive/12',
-  warning: 'bg-warning/12',
-  negative: 'bg-negative/12',
-} as const
 
 /** Calculates budget usage percentage. Monthly budget = quincenal x2. */
 function calculatePercentUsed(quincenalAmount: string, spent: string): number {
@@ -87,21 +77,7 @@ export default function BudgetProgressList({ budgets }: BudgetProgressListProps)
             </div>
 
             {/* Progress bar */}
-            <div
-              className={cn('h-1.5 overflow-hidden rounded-full', COLOR_TRACK[color])}
-            >
-              <div
-                className={cn(
-                  'h-full rounded-full transition-all duration-500 ease-out',
-                  COLOR_BG[color],
-                )}
-                style={{ width: `${Math.min(percentUsed, 100)}%` }}
-                role="progressbar"
-                aria-valuenow={Math.round(percentUsed)}
-                aria-valuemin={0}
-                aria-valuemax={100}
-              />
-            </div>
+            <BatteryBar value={percentUsed} variant="compact" />
 
             {/* Percentage text */}
             <p className={cn('mt-1 text-xs tabular-nums', COLOR_TEXT[color])}>

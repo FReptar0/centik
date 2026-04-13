@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { toast } from 'sonner'
 import { CreditCard, Landmark, ChevronDown, ChevronUp, Pencil, Trash2 } from 'lucide-react'
+import BatteryBar from '@/components/ui/BatteryBar'
 import { cn, formatMoney, formatRate, toCents } from '@/lib/utils'
 import { calculateDebtMetrics, getUtilizationColor } from '@/lib/debt'
 import { updateDebtBalance, deleteDebt } from '@/app/deudas/actions'
@@ -19,17 +20,6 @@ const SEMANTIC_COLORS = {
   negative: 'text-negative',
 } as const
 
-const SEMANTIC_BG = {
-  positive: 'bg-positive',
-  warning: 'bg-warning',
-  negative: 'bg-negative',
-} as const
-
-const SEMANTIC_TRACK = {
-  positive: 'bg-positive/12',
-  warning: 'bg-warning/12',
-  negative: 'bg-negative/12',
-} as const
 
 /** Strip commas and non-numeric chars (except one decimal point) */
 function cleanAmountInput(value: string): string {
@@ -267,16 +257,7 @@ function CreditCardDetails({ debt, metrics }: DetailsProps) {
             {utilization.toFixed(1)}%
           </span>
         </div>
-        <div className={cn('h-1.5 rounded-full', SEMANTIC_TRACK[color])}>
-          <div
-            className={cn('h-full rounded-full transition-all duration-500', SEMANTIC_BG[color])}
-            style={{ width: `${Math.min(utilization, 100)}%` }}
-            role="progressbar"
-            aria-valuenow={utilization}
-            aria-valuemin={0}
-            aria-valuemax={100}
-          />
-        </div>
+        <BatteryBar value={utilization} variant="compact" thresholds={{ warning: 31, danger: 71 }} />
       </div>
 
       {/* Metrics grid */}
@@ -316,19 +297,7 @@ function LoanDetails({ debt, metrics }: DetailsProps) {
             {percentPaid.toFixed(1)}%
           </span>
         </div>
-        <div className={cn('h-1.5 rounded-full', SEMANTIC_TRACK[progressColor])}>
-          <div
-            className={cn(
-              'h-full rounded-full transition-all duration-500',
-              SEMANTIC_BG[progressColor],
-            )}
-            style={{ width: `${Math.min(percentPaid, 100)}%` }}
-            role="progressbar"
-            aria-valuenow={percentPaid}
-            aria-valuemin={0}
-            aria-valuemax={100}
-          />
-        </div>
+        <BatteryBar value={percentPaid} variant="compact" thresholds={{ warning: 101, danger: 102 }} />
       </div>
 
       {/* Metrics grid */}
