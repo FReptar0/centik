@@ -112,11 +112,11 @@ Plans:
   1. All smooth progress bars are replaced with BatteryBar in budget progress (threshold 80/100), debt utilization (threshold 31/71), and debt payoff views -- no smooth bars remain anywhere in the app
   2. All three charts (TrendAreaChart, ExpenseDonutChart, BudgetBarChart) render with no grid lines, 1.5px stroke, 4px dot endpoints, and Glyph Finance hex colors hardcoded in CHART_COLORS constants
   3. All monetary amounts display with a muted smaller "$" prefix in --color-text-tertiary, IBM Plex Mono font, and are color-coded by direction (green for income, red for expense)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 20-01: TBD
-- [ ] 20-02: TBD
+- [ ] 20-01-PLAN.md -- MoneyAmount shared component + chart visual overhaul (minimal aesthetic)
+- [ ] 20-02-PLAN.md -- BatteryBar adoption in progress bars + MoneyAmount sweep across all feature components
 
 ### Phase 21: TransactionForm + Custom Numpad
 **Goal**: The transaction creation flow uses a bottom sheet with custom numpad, dot-matrix hero amount display, toggle pills for type selection, circular category grid, and FloatingInput for optional fields -- delivering the signature Glyph Finance interaction in under 30 seconds
@@ -163,6 +163,6 @@ Phases execute in numeric order: 17 -> 18 -> 19 -> 20 -> 21 -> 22
 | 17. Token Foundation + Class Migration | 3/3 | Complete    | 2026-04-07 | - |
 | 18. New Primitive Components | 3/3 | Complete    | 2026-04-07 | - |
 | 19. Layout, Navigation + Global Updates | 3/3 | Complete    | 2026-04-13 | - |
-| 20. Feature Component Updates | v2.0 | 0/TBD | Not started | - |
+| 20. Feature Component Updates | v2.0 | 0/2 | Not started | - |
 | 21. TransactionForm + Custom Numpad | v2.0 | 0/TBD | Not started | - |
 | 22. Visual QA + Accessibility | v2.0 | 0/TBD | Not started | - |
