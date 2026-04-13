@@ -6,13 +6,13 @@ vi.mock('@/lib/income', () => ({
   calculateIncomeSummary: vi.fn(),
 }))
 
-vi.mock('@/lib/utils', async () => {
-  const actual = await vi.importActual<typeof import('@/lib/utils')>('@/lib/utils')
-  return {
-    ...actual,
-    formatMoney: vi.fn((cents: string) => `$${(Number(cents) / 100).toFixed(2)}`),
-  }
-})
+vi.mock('@/components/ui/MoneyAmount', () => ({
+  default: ({ value, variant, size }: { value: string; variant?: string; size?: string }) => (
+    <span data-testid="money-amount" data-value={value} data-variant={variant} data-size={size}>
+      ${(Number(value) / 100).toFixed(2)}
+    </span>
+  ),
+}))
 
 const { calculateIncomeSummary } = await import('@/lib/income')
 
@@ -38,7 +38,7 @@ describe('IncomeSummaryCards', () => {
     expect(screen.getByText('Anual')).toBeDefined()
   })
 
-  it('displays formatted money amounts', () => {
+  it('displays formatted money amounts via MoneyAmount component', () => {
     vi.mocked(calculateIncomeSummary).mockReturnValue({
       quincenal: '2000000',
       monthly: '4000000',
@@ -48,10 +48,20 @@ describe('IncomeSummaryCards', () => {
 
     render(<IncomeSummaryCards sources={[]} />)
 
-    expect(screen.getByText('$20000.00')).toBeDefined()
-    expect(screen.getByText('$40000.00')).toBeDefined()
-    expect(screen.getByText('$240000.00')).toBeDefined()
-    expect(screen.getByText('$480000.00')).toBeDefined()
+    const moneyAmounts = screen.getAllByTestId('money-amount')
+    expect(moneyAmounts).toHaveLength(4)
+
+    const values = moneyAmounts.map((el) => el.getAttribute('data-value'))
+    expect(values).toContain('2000000')
+    expect(values).toContain('4000000')
+    expect(values).toContain('24000000')
+    expect(values).toContain('48000000')
+
+    // All should use income variant
+    for (const el of moneyAmounts) {
+      expect(el.getAttribute('data-variant')).toBe('income')
+      expect(el.getAttribute('data-size')).toBe('xl')
+    }
   })
 
   it('shows $0.00 for empty sources array', () => {
@@ -64,7 +74,11 @@ describe('IncomeSummaryCards', () => {
 
     render(<IncomeSummaryCards sources={[]} />)
 
-    const zeroAmounts = screen.getAllByText('$0.00')
-    expect(zeroAmounts).toHaveLength(4)
+    const moneyAmounts = screen.getAllByTestId('money-amount')
+    expect(moneyAmounts).toHaveLength(4)
+
+    for (const el of moneyAmounts) {
+      expect(el.getAttribute('data-value')).toBe('0')
+    }
   })
 })

@@ -4,7 +4,8 @@ import { useState, useEffect, useCallback } from 'react'
 import { toast } from 'sonner'
 import { Pencil, Trash2 } from 'lucide-react'
 import DynamicIcon from '@/components/ui/DynamicIcon'
-import { cn, formatMoney } from '@/lib/utils'
+import MoneyAmount from '@/components/ui/MoneyAmount'
+import { cn } from '@/lib/utils'
 import { deleteTransaction } from '@/app/movimientos/actions'
 import type { SerializedTransaction } from '@/types'
 
@@ -110,15 +111,14 @@ export default function TransactionRow({ transaction, onEdit }: TransactionRowPr
           </div>
         ) : (
           <>
-            <span
-              className={cn(
-                'text-sm font-semibold tabular-nums',
-                isIncome ? 'text-positive' : 'text-negative',
-              )}
-            >
+            <span className={cn('text-sm font-semibold', isIncome ? 'text-positive' : 'text-negative')}>
               {isIncome ? '+' : '-'}
-              {formatMoney(transaction.amount)}
             </span>
+            <MoneyAmount
+              value={transaction.amount}
+              variant={isIncome ? 'income' : 'expense'}
+              size="sm"
+            />
             <button
               onClick={() => onEdit(transaction)}
               className="rounded-full p-2 text-text-tertiary transition-all duration-200 hover:text-text-primary hover:bg-surface-hover active:scale-[0.98]"

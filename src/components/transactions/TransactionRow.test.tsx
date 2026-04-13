@@ -9,13 +9,13 @@ vi.mock('@/app/movimientos/actions', () => ({
   deleteTransaction: (...args: unknown[]) => mockDeleteTransaction(...args),
 }))
 
-vi.mock('@/lib/utils', async () => {
-  const actual = await vi.importActual<typeof import('@/lib/utils')>('@/lib/utils')
-  return {
-    ...actual,
-    formatMoney: vi.fn((cents: string) => `$${(Number(cents) / 100).toFixed(2)}`),
-  }
-})
+vi.mock('@/components/ui/MoneyAmount', () => ({
+  default: ({ value, variant, size }: { value: string; variant?: string; size?: string }) => (
+    <span data-testid="money-amount" data-value={value} data-variant={variant} data-size={size}>
+      ${(Number(value) / 100).toFixed(2)}
+    </span>
+  ),
+}))
 
 type TransactionWithCategory = SerializedTransaction & {
   category: { name: string; icon: string; color: string }
@@ -64,7 +64,7 @@ describe('TransactionRow', () => {
     expect(screen.queryByText('Comida')).toBeNull()
   })
 
-  it('INCOME shows green "+$" amount', () => {
+  it('INCOME shows green "+" sign and income MoneyAmount', () => {
     const txn = makeTransaction({
       type: 'INCOME',
       amount: '5000000',
@@ -72,16 +72,28 @@ describe('TransactionRow', () => {
     })
     render(<TransactionRow transaction={txn} onEdit={vi.fn()} />)
 
-    const amountElement = screen.getByText(/\+\$50000\.00/)
-    expect(amountElement.className).toContain('text-positive')
+    // Sign prefix is in its own span
+    const signElement = screen.getByText('+')
+    expect(signElement.className).toContain('text-positive')
+
+    // MoneyAmount renders with income variant
+    const moneyElement = screen.getByTestId('money-amount')
+    expect(moneyElement.getAttribute('data-variant')).toBe('income')
+    expect(moneyElement.getAttribute('data-value')).toBe('5000000')
   })
 
-  it('EXPENSE shows red "-$" amount', () => {
+  it('EXPENSE shows red "-" sign and expense MoneyAmount', () => {
     const txn = makeTransaction({ type: 'EXPENSE', amount: '15075' })
     render(<TransactionRow transaction={txn} onEdit={vi.fn()} />)
 
-    const amountElement = screen.getByText(/-\$150\.75/)
-    expect(amountElement.className).toContain('text-negative')
+    // Sign prefix is in its own span
+    const signElement = screen.getByText('-')
+    expect(signElement.className).toContain('text-negative')
+
+    // MoneyAmount renders with expense variant
+    const moneyElement = screen.getByTestId('money-amount')
+    expect(moneyElement.getAttribute('data-variant')).toBe('expense')
+    expect(moneyElement.getAttribute('data-value')).toBe('15075')
   })
 
   it('edit button calls onEdit with transaction', () => {

@@ -1,6 +1,7 @@
 'use client'
 
-import { cn, formatMoney } from '@/lib/utils'
+import { cn } from '@/lib/utils'
+import MoneyAmount from '@/components/ui/MoneyAmount'
 import { calculateDebtSummary, getDebtToIncomeColor } from '@/lib/debt'
 import type { SerializedDebt } from '@/types'
 
@@ -24,17 +25,13 @@ export default function DebtSummaryCards({ debts, monthlyIncome }: DebtSummaryCa
       {/* Total Debt */}
       <div className="rounded-lg bg-surface-elevated p-5">
         <p className="text-sm text-text-secondary mb-1">Deuda Total</p>
-        <p className="text-2xl font-bold tabular-nums text-negative">
-          {formatMoney(summary.totalDebt)}
-        </p>
+        <MoneyAmount value={summary.totalDebt} variant="expense" size="2xl" className="text-2xl font-bold" />
       </div>
 
       {/* Monthly Payments */}
       <div className="rounded-lg bg-surface-elevated p-5">
         <p className="text-sm text-text-secondary mb-1">Pagos Mensuales</p>
-        <p className="text-2xl font-bold tabular-nums text-text-primary">
-          {formatMoney(summary.totalMonthlyPayments)}
-        </p>
+        <MoneyAmount value={summary.totalMonthlyPayments} variant="neutral" size="2xl" className="text-2xl font-bold" />
       </div>
 
       {/* Debt-to-Income Ratio */}

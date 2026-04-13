@@ -2,7 +2,8 @@
 
 import DynamicIcon from '@/components/ui/DynamicIcon'
 import BatteryBar from '@/components/ui/BatteryBar'
-import { cn, formatMoney } from '@/lib/utils'
+import MoneyAmount from '@/components/ui/MoneyAmount'
+import { cn } from '@/lib/utils'
 import { getBudgetColor } from '@/lib/budget-shared'
 import type { BudgetWithSpent } from '@/lib/budget-shared'
 
@@ -69,10 +70,12 @@ export default function BudgetProgressList({ budgets }: BudgetProgressListProps)
                   {budget.categoryName}
                 </span>
               </div>
-              <span className="text-sm tabular-nums text-text-secondary">
-                {formatMoney(budget.spent)}{' '}
-                <span className="text-text-tertiary">/</span>{' '}
-                {formatMoney(monthlyBudget)}
+              <span className="text-sm text-text-secondary">
+                <MoneyAmount value={budget.spent} size="sm" variant="neutral" />
+                {' '}
+                <span className="text-text-tertiary">/</span>
+                {' '}
+                <MoneyAmount value={monthlyBudget} size="sm" variant="neutral" />
               </span>
             </div>
 

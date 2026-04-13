@@ -4,7 +4,8 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { toast } from 'sonner'
 import { CreditCard, Landmark, ChevronDown, ChevronUp, Pencil, Trash2 } from 'lucide-react'
 import BatteryBar from '@/components/ui/BatteryBar'
-import { cn, formatMoney, formatRate, toCents } from '@/lib/utils'
+import MoneyAmount from '@/components/ui/MoneyAmount'
+import { cn, formatRate, toCents } from '@/lib/utils'
 import { calculateDebtMetrics, getUtilizationColor } from '@/lib/debt'
 import { updateDebtBalance, deleteDebt } from '@/app/deudas/actions'
 import type { SerializedDebt } from '@/types'
@@ -163,13 +164,13 @@ export default function DebtCard({ debt, onEdit }: DebtCardProps) {
                 startBalanceEdit()
               }}
               className={cn(
-                'text-xl font-bold tabular-nums text-negative',
-                'hover:text-negative/80 transition-colors duration-200',
+                'text-xl font-bold',
+                'hover:opacity-80 transition-colors duration-200',
                 isSaving && 'opacity-50',
               )}
               aria-label="Editar saldo"
             >
-              {formatMoney(debt.currentBalance)}
+              <MoneyAmount value={debt.currentBalance} variant="expense" size="xl" />
             </button>
           )}
 
@@ -263,11 +264,11 @@ function CreditCardDetails({ debt, metrics }: DetailsProps) {
       {/* Metrics grid */}
       <div className="grid grid-cols-2 gap-3">
         {debt.minimumPayment !== null && (
-          <MetricItem label="Pago minimo" value={formatMoney(debt.minimumPayment)} />
+          <MetricItem label="Pago minimo" value={<MoneyAmount value={debt.minimumPayment} size="sm" />} />
         )}
         <MetricItem
           label="Interes mensual estimado"
-          value={formatMoney(metrics.estimatedMonthlyInterest)}
+          value={<MoneyAmount value={metrics.estimatedMonthlyInterest} size="sm" />}
         />
         {debt.cutOffDay !== null && (
           <MetricItem label="Corte" value={`Dia ${debt.cutOffDay}`} />
@@ -303,13 +304,13 @@ function LoanDetails({ debt, metrics }: DetailsProps) {
       {/* Metrics grid */}
       <div className="grid grid-cols-2 gap-3">
         {debt.monthlyPayment !== null && (
-          <MetricItem label="Mensualidad" value={formatMoney(debt.monthlyPayment)} />
+          <MetricItem label="Mensualidad" value={<MoneyAmount value={debt.monthlyPayment} size="sm" />} />
         )}
         {debt.remainingMonths !== null && (
           <MetricItem label="Meses restantes" value={`${debt.remainingMonths}`} />
         )}
         {metrics.totalRemainingPayment !== null && (
-          <MetricItem label="Total por pagar" value={formatMoney(metrics.totalRemainingPayment)} />
+          <MetricItem label="Total por pagar" value={<MoneyAmount value={metrics.totalRemainingPayment} size="sm" />} />
         )}
         <MetricItem label="Tasa anual" value={formatRate(debt.annualRate)} />
       </div>
@@ -319,14 +320,14 @@ function LoanDetails({ debt, metrics }: DetailsProps) {
 
 interface MetricItemProps {
   label: string
-  value: string
+  value: React.ReactNode
 }
 
 function MetricItem({ label, value }: MetricItemProps) {
   return (
     <div>
       <p className="text-xs text-text-secondary mb-0.5">{label}</p>
-      <p className="text-sm font-semibold text-text-primary tabular-nums">{value}</p>
+      <p className="text-sm font-semibold text-text-primary">{value}</p>
     </div>
   )
 }

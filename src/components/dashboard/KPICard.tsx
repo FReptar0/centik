@@ -1,6 +1,7 @@
 'use client'
 
 import DynamicIcon from '@/components/ui/DynamicIcon'
+import MoneyAmount from '@/components/ui/MoneyAmount'
 import { cn } from '@/lib/utils'
 
 type SemanticColor = 'positive' | 'negative' | 'accent' | 'warning' | 'info'
@@ -12,6 +13,10 @@ export interface KPICardProps {
   color: SemanticColor
   subtitle?: string
   hero?: boolean
+  /** Raw centavo string for monetary KPIs (renders MoneyAmount instead of plain text) */
+  rawValue?: string
+  /** MoneyAmount variant for monetary KPIs */
+  moneyVariant?: 'income' | 'expense' | 'neutral'
 }
 
 const textColorMap: Record<SemanticColor, string> = {
@@ -30,7 +35,7 @@ const bgColorMap: Record<SemanticColor, string> = {
   info: 'bg-info/15',
 }
 
-export default function KPICard({ label, value, icon, color, subtitle, hero }: KPICardProps) {
+export default function KPICard({ label, value, icon, color, subtitle, hero, rawValue, moneyVariant }: KPICardProps) {
   return (
     <div className={cn(
       'rounded-lg bg-surface-elevated p-5 transition-all duration-200',
@@ -47,9 +52,13 @@ export default function KPICard({ label, value, icon, color, subtitle, hero }: K
             <DynamicIcon name={icon} size={24} className={textColorMap[color]} />
           </div>
         </div>
-        <p className={cn('text-2xl font-bold tabular-nums', textColorMap[color])}>
-          {value}
-        </p>
+        {rawValue ? (
+          <MoneyAmount value={rawValue} variant={moneyVariant} size="2xl" className="text-2xl font-bold" />
+        ) : (
+          <p className={cn('text-2xl font-bold tabular-nums', textColorMap[color])}>
+            {value}
+          </p>
+        )}
         <p className="text-sm font-medium text-text-secondary">{label}</p>
         {subtitle ? (
           <p className="mt-1 text-xs text-text-tertiary">{subtitle}</p>

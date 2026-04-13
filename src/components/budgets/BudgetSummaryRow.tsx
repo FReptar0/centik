@@ -1,6 +1,7 @@
 'use client'
 
-import { cn, formatMoney } from '@/lib/utils'
+import { cn } from '@/lib/utils'
+import MoneyAmount from '@/components/ui/MoneyAmount'
 import type { BudgetWithSpent } from '@/lib/budget-shared'
 
 interface BudgetSummaryRowProps {
@@ -27,15 +28,11 @@ export default function BudgetSummaryRow({ budgets, quincenalIncome }: BudgetSum
       <div className="flex items-center justify-between gap-4">
         <div>
           <p className="text-xs text-text-secondary">Ingreso quincenal</p>
-          <p className="text-lg font-bold tabular-nums text-text-primary">
-            {formatMoney(quincenalIncome)}
-          </p>
+          <MoneyAmount value={quincenalIncome} variant="neutral" size="lg" className="text-lg font-bold" />
         </div>
         <div className="text-right">
           <p className="text-xs text-text-secondary">Presupuesto quincenal</p>
-          <p className="text-lg font-bold tabular-nums text-text-primary">
-            {formatMoney(totalQuincenalBudget.toString())}
-          </p>
+          <MoneyAmount value={totalQuincenalBudget.toString()} variant="neutral" size="lg" className="text-lg font-bold" />
         </div>
       </div>
 
@@ -45,12 +42,10 @@ export default function BudgetSummaryRow({ budgets, quincenalIncome }: BudgetSum
           <span className={cn('text-sm font-semibold', isPositive ? 'text-positive' : 'text-negative')}>
             {isPositive ? 'Sobrante' : 'Faltante'}
           </span>
-          <span className={cn('text-lg font-bold tabular-nums', isPositive ? 'text-positive' : 'text-negative')}>
-            {formatMoney(absStr)}
-          </span>
+          <MoneyAmount value={absStr} variant={isPositive ? 'income' : 'expense'} size="lg" className="text-lg font-bold" />
         </div>
-        <p className="mt-1 text-xs tabular-nums text-text-tertiary">
-          Mensual: {formatMoney(monthlyDiff)} {isPositive ? 'sobrante' : 'faltante'}
+        <p className="mt-1 text-xs text-text-tertiary">
+          Mensual: <MoneyAmount value={monthlyDiff} size="sm" variant={isPositive ? 'income' : 'expense'} /> {isPositive ? 'sobrante' : 'faltante'}
         </p>
       </div>
     </div>

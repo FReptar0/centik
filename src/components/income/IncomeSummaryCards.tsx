@@ -1,5 +1,5 @@
 import { Banknote, Calendar, BookOpen, TrendingUp } from 'lucide-react'
-import { formatMoney } from '@/lib/utils'
+import MoneyAmount from '@/components/ui/MoneyAmount'
 import { calculateIncomeSummary } from '@/lib/income'
 import type { SerializedIncomeSource } from '@/types'
 
@@ -30,9 +30,7 @@ export default function IncomeSummaryCards({ sources }: IncomeSummaryCardsProps)
               {label}
             </span>
           </div>
-          <p className="text-xl font-bold text-text-primary tabular-nums">
-            {formatMoney(summary[key])}
-          </p>
+          <MoneyAmount value={summary[key]} variant="income" size="xl" className="text-xl font-bold" />
         </div>
       ))}
     </div>
