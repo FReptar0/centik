@@ -33,7 +33,7 @@ Requirements for Glyph Finance code implementation. 10/10 quality bar -- anythin
 
 - [x] **UPDATE-01**: All buttons converted to pill shape (border-radius: 9999px), danger uses #FF3333, secondary keeps subtle border, 98% scale press interaction
 - [x] **UPDATE-02**: All cards use borderless elevation (no visible borders), stacked cards use 1px #222222 separator, hero cards get dot-matrix texture background
-- [ ] **UPDATE-03**: All progress bars replaced with BatteryBar component across budget, debt utilization, and debt payoff views
+- [x] **UPDATE-03**: All progress bars replaced with BatteryBar component across budget, debt utilization, and debt payoff views
 - [x] **UPDATE-04**: All charts updated -- no grid lines, 1.5px stroke, 4px dot endpoints, hardcoded CHART_COLORS updated to Glyph Finance hex values
 - [x] **UPDATE-05**: Bottom navigation converted to icon-only (no text labels), 4px chartreuse dot indicator 8px below active icon, inactive icons in --color-text-secondary
 - [x] **UPDATE-06**: Mobile modals use bottom sheet pattern (85vh, drag handle, top-corner radius), desktop modals centered with --radius-xl
@@ -104,7 +104,7 @@ Deferred to future milestones.
 | COMP-05 | Phase 21 | Pending |
 | UPDATE-01 | Phase 19 | Complete |
 | UPDATE-02 | Phase 19 | Complete |
-| UPDATE-03 | Phase 20 | Pending |
+| UPDATE-03 | Phase 20 | Complete |
 | UPDATE-04 | Phase 20 | Complete |
 | UPDATE-05 | Phase 19 | Complete |
 | UPDATE-06 | Phase 19 | Complete |
