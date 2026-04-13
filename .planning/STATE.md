@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Glyph Finance Implementation
 current_phase: 20
-current_plan: Not started
-status: planning
-stopped_at: Completed 19-03-PLAN.md
-last_updated: "2026-04-13T04:43:59.422Z"
+current_plan: 2
+status: executing
+stopped_at: Completed 20-01-PLAN.md
+last_updated: "2026-04-13T05:08:24.004Z"
 last_activity: 2026-04-13
 progress:
   total_phases: 6
   completed_phases: 3
-  total_plans: 9
-  completed_plans: 9
+  total_plans: 11
+  completed_plans: 10
   percent: 94
 ---
 
@@ -23,14 +23,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-06)
 
 **Core value:** A single user can register a financial transaction in under 30 seconds and immediately see how it impacts their budget, debt ratio, and savings rate across all views.
-**Current focus:** Phase 19 -- Layout, Navigation & Global Component Updates
+**Current focus:** Phase 20 -- Feature Component Updates
 
 ## Current Position
 
 **Current Phase:** 20
-**Current Plan:** Not started
-**Total Plans in Phase:** 3
-**Status:** Ready to plan
+**Current Plan:** 2
+**Total Plans in Phase:** 2
+**Status:** Executing
 **Last Activity:** 2026-04-13
 
 Progress: [█████████░] 94%
@@ -65,6 +65,7 @@ Progress: [█████████░] 94%
 | Phase 19 P02 | 4min | 2 tasks | 7 files |
 | Phase 19 P01 | 4min | 3 tasks | 5 files |
 | Phase 19 P03 | 6min | 2 tasks | 25 files |
+| Phase 20 P01 | 6min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -95,6 +96,8 @@ Recent decisions affecting current work:
 - [Phase 19]: headerContent prop takes priority over title when both provided in Modal
 - [Phase 19]: TransactionRow buttons updated alongside borderless card change for consistency
 - [Phase 19]: Dropdown menus and form inputs retain border border-border-divider (not card containers)
+- [Phase 20]: MoneyAmount splits formatMoney output at first character to separate $ prefix from digits
+- [Phase 20]: MoneyAmount size prop uses step-down mapping (2xl->xl, lg->base) for prefix font size
 
 ### Pending Todos
 
@@ -107,6 +110,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-10T05:48:20.268Z
-Stopped at: Completed 19-03-PLAN.md
+Last session: 2026-04-13T05:08:24.001Z
+Stopped at: Completed 20-01-PLAN.md
 Resume file: None

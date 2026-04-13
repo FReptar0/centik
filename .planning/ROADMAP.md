@@ -163,6 +163,6 @@ Phases execute in numeric order: 17 -> 18 -> 19 -> 20 -> 21 -> 22
 | 17. Token Foundation + Class Migration | 3/3 | Complete    | 2026-04-07 | - |
 | 18. New Primitive Components | 3/3 | Complete    | 2026-04-07 | - |
 | 19. Layout, Navigation + Global Updates | 3/3 | Complete    | 2026-04-13 | - |
-| 20. Feature Component Updates | v2.0 | 0/2 | Not started | - |
+| 20. Feature Component Updates | 1/2 | In Progress|  | - |
 | 21. TransactionForm + Custom Numpad | v2.0 | 0/TBD | Not started | - |
 | 22. Visual QA + Accessibility | v2.0 | 0/TBD | Not started | - |
