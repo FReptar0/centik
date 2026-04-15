@@ -153,4 +153,34 @@ describe('TransactionRow', () => {
 
     expect(mockDeleteTransaction).toHaveBeenCalledWith('txn-1')
   })
+
+  it('applies animate-scanline-reveal class when isNew is true', () => {
+    const txn = makeTransaction()
+    const { container } = render(
+      <TransactionRow transaction={txn} onEdit={vi.fn()} isNew={true} />,
+    )
+
+    const outerDiv = container.firstElementChild as HTMLElement
+    expect(outerDiv.className).toContain('animate-scanline-reveal')
+  })
+
+  it('does not apply animate-scanline-reveal class when isNew is false or undefined', () => {
+    const txn = makeTransaction()
+
+    // Without isNew prop
+    const { container: container1 } = render(
+      <TransactionRow transaction={txn} onEdit={vi.fn()} />,
+    )
+    const div1 = container1.firstElementChild as HTMLElement
+    expect(div1.className).not.toContain('animate-scanline-reveal')
+
+    cleanup()
+
+    // With isNew=false
+    const { container: container2 } = render(
+      <TransactionRow transaction={txn} onEdit={vi.fn()} isNew={false} />,
+    )
+    const div2 = container2.firstElementChild as HTMLElement
+    expect(div2.className).not.toContain('animate-scanline-reveal')
+  })
 })

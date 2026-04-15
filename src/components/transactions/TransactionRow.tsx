@@ -14,13 +14,14 @@ interface TransactionRowProps {
     category: { name: string; icon: string; color: string }
   }
   onEdit: (transaction: SerializedTransaction) => void
+  isNew?: boolean
 }
 
 /**
  * Single transaction row with category icon, description/name,
  * date, colored signed amount, and inline delete confirmation.
  */
-export default function TransactionRow({ transaction, onEdit }: TransactionRowProps) {
+export default function TransactionRow({ transaction, onEdit, isNew }: TransactionRowProps) {
   const [confirmingDelete, setConfirmingDelete] = useState(false)
   const [deleting, setDeleting] = useState(false)
 
@@ -67,6 +68,7 @@ export default function TransactionRow({ transaction, onEdit }: TransactionRowPr
       className={cn(
         'flex items-center gap-3 bg-surface-elevated rounded-lg p-4',
         'transition-all duration-200',
+        isNew && 'animate-scanline-reveal',
       )}
     >
       {/* Icon circle */}

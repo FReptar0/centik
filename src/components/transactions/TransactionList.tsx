@@ -15,6 +15,7 @@ interface TransactionListProps {
   hasMore: boolean
   onLoadMore: () => void
   isLoadingMore: boolean
+  newTransactionIds?: Set<string>
 }
 
 /** Transaction list with empty state and "Cargar mas" pagination */
@@ -24,6 +25,7 @@ export default function TransactionList({
   hasMore,
   onLoadMore,
   isLoadingMore,
+  newTransactionIds,
 }: TransactionListProps) {
   if (transactions.length === 0) {
     return (
@@ -48,7 +50,7 @@ export default function TransactionList({
     <div>
       <div className="space-y-2">
         {transactions.map((txn) => (
-          <TransactionRow key={txn.id} transaction={txn} onEdit={onEdit} />
+          <TransactionRow key={txn.id} transaction={txn} onEdit={onEdit} isNew={newTransactionIds?.has(txn.id)} />
         ))}
       </div>
 
