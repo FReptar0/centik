@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { X, ChevronDown } from 'lucide-react'
 import DynamicIcon from '@/components/ui/DynamicIcon'
+import FloatingInput from '@/components/ui/FloatingInput'
 import { cn } from '@/lib/utils'
 import { PAYMENT_METHODS_DISPLAY } from '@/lib/constants'
 import type { Category } from '@/types'
@@ -208,38 +209,20 @@ export default function TransactionFilters({
 
       {/* Date range inputs */}
       <div className="flex items-center gap-1.5 shrink-0">
-        <label className="text-xs text-text-tertiary sr-only" htmlFor="filter-start">
-          Desde
-        </label>
-        <input
-          id="filter-start"
+        <FloatingInput
           type="date"
+          label="Desde"
           value={activeFilters.startDate ?? ''}
-          onChange={(e) => setDateFilter('startDate', e.target.value)}
-          placeholder="Desde"
-          aria-label="Desde"
-          className={cn(
-            'rounded-lg border bg-surface-elevated px-3 py-2 text-sm text-text-secondary',
-            'transition-colors duration-200',
-            activeFilters.startDate ? 'border-accent text-accent' : 'border-border-divider',
-          )}
+          onChange={(v) => setDateFilter('startDate', v)}
+          className="w-36"
         />
         <span className="text-text-tertiary text-xs">-</span>
-        <label className="text-xs text-text-tertiary sr-only" htmlFor="filter-end">
-          Hasta
-        </label>
-        <input
-          id="filter-end"
+        <FloatingInput
           type="date"
+          label="Hasta"
           value={activeFilters.endDate ?? ''}
-          onChange={(e) => setDateFilter('endDate', e.target.value)}
-          placeholder="Hasta"
-          aria-label="Hasta"
-          className={cn(
-            'rounded-lg border bg-surface-elevated px-3 py-2 text-sm text-text-secondary',
-            'transition-colors duration-200',
-            activeFilters.endDate ? 'border-accent text-accent' : 'border-border-divider',
-          )}
+          onChange={(v) => setDateFilter('endDate', v)}
+          className="w-36"
         />
       </div>
 

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 import Modal from '@/components/ui/Modal'
+import FloatingInput from '@/components/ui/FloatingInput'
 import DynamicIcon from '@/components/ui/DynamicIcon'
 import { cn } from '@/lib/utils'
 import { createCategorySchema } from '@/lib/validators'
@@ -93,9 +94,15 @@ function CategoryFormContent({ onClose }: FormContentProps) {
     }
   }
 
-  function handleBlur(fieldName: string) {
-    setTouched((prev) => new Set(prev).add(fieldName))
-    validateField(fieldName, getFormPayload())
+  function handleNameChange(v: string) {
+    setName(v)
+    if (!touched.has('name')) {
+      setTouched((prev) => new Set(prev).add('name'))
+    }
+    if (touched.has('name')) {
+      const payload = { ...getFormPayload(), name: v.trim() }
+      setTimeout(() => validateField('name', payload), 0)
+    }
   }
 
   async function handleSubmit(event: React.FormEvent) {
@@ -127,38 +134,12 @@ function CategoryFormContent({ onClose }: FormContentProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* Name field */}
-      <div>
-        <label
-          htmlFor="category-name"
-          className="block text-xs font-medium text-text-secondary tracking-wide uppercase mb-1.5"
-        >
-          Nombre
-        </label>
-        <input
-          id="category-name"
-          type="text"
-          value={name}
-          onChange={(e) => {
-            const v = e.target.value
-            setName(v)
-            if (touched.has('name')) {
-              const payload = { ...getFormPayload(), name: v.trim() }
-              setTimeout(() => validateField('name', payload), 0)
-            }
-          }}
-          onBlur={() => handleBlur('name')}
-          placeholder="Ej. Mascotas"
-          className={cn(
-            'w-full rounded-lg border bg-transparent px-3 py-2.5 text-sm text-text-primary',
-            'placeholder:text-text-tertiary',
-            'transition-colors duration-200',
-            errors.name ? 'border-negative' : 'border-border-divider',
-          )}
-        />
-        {errors.name && (
-          <p className="mt-1 text-xs text-negative">{errors.name[0]}</p>
-        )}
-      </div>
+      <FloatingInput
+        label="Nombre"
+        value={name}
+        onChange={handleNameChange}
+        error={errors.name?.[0]}
+      />
 
       {/* Icon selector */}
       <div>

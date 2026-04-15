@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 import Modal from '@/components/ui/Modal'
+import FloatingInput from '@/components/ui/FloatingInput'
 import { cn, toCents } from '@/lib/utils'
 import { createDebtSchema } from '@/lib/validators'
 import { createDebt, updateDebt } from '@/app/deudas/actions'
@@ -23,14 +24,6 @@ const DEBT_TYPE_DISPLAY: Record<string, string> = {
 }
 
 const DEBT_TYPE_VALUES = Object.values(DebtType)
-
-/** Format a numeric string with commas for display */
-function formatAmountDisplay(value: string): string {
-  if (!value) return ''
-  const num = parseFloat(value)
-  if (isNaN(num)) return value
-  return num.toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 2 })
-}
 
 /** Strip commas and non-numeric chars (except one decimal point) */
 function cleanAmountInput(value: string): string {
@@ -128,9 +121,29 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
     }
   }
 
-  function handleBlur(fieldName: string) {
-    setTouched((prev) => new Set(prev).add(fieldName))
-    validateField(fieldName, getDebtPayload())
+  function revalidateIfTouched(fieldName: string, payload: Record<string, unknown>) {
+    if (touched.has(fieldName)) {
+      setTimeout(() => validateField(fieldName, payload), 0)
+    }
+  }
+
+  function markTouched(fieldName: string) {
+    if (!touched.has(fieldName)) {
+      setTouched((prev) => new Set(prev).add(fieldName))
+    }
+  }
+
+  function handleAmountChange(
+    fieldName: string,
+    setter: (v: string) => void,
+    v: string,
+    payloadKey?: string,
+  ) {
+    const cleaned = cleanAmountInput(v)
+    setter(cleaned)
+    markTouched(fieldName)
+    const key = payloadKey ?? fieldName
+    revalidateIfTouched(fieldName, { ...getDebtPayload(), [key]: toCents(cleaned || '0') })
   }
 
   async function handleSubmit(event: React.FormEvent) {
@@ -177,24 +190,16 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* Name */}
-      <FormField label="Nombre" htmlFor="debt-name" error={errors.name}>
-        <input
-          id="debt-name"
-          type="text"
-          value={name}
-          onChange={(e) => {
-            const v = e.target.value
-            setName(v)
-            if (touched.has('name')) {
-              const payload = { ...getDebtPayload(), name: v.trim() }
-              setTimeout(() => validateField('name', payload), 0)
-            }
-          }}
-          onBlur={() => handleBlur('name')}
-          placeholder="Ej. BBVA Oro"
-          className={cn(inputClass, errors.name ? 'border-negative' : 'border-border-divider')}
-        />
-      </FormField>
+      <FloatingInput
+        label="Nombre"
+        value={name}
+        onChange={(v) => {
+          setName(v)
+          markTouched('name')
+          revalidateIfTouched('name', { ...getDebtPayload(), name: v.trim() })
+        }}
+        error={errors.name?.[0]}
+      />
 
       {/* Type radio group */}
       <div>
@@ -222,155 +227,105 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
       </div>
 
       {/* Current Balance */}
-      <AmountField
+      <FloatingInput
         label="Saldo actual"
-        id="debt-balance"
         value={currentBalance}
-        onChange={setCurrentBalance}
-        error={errors.currentBalance}
-        onFieldBlur={() => handleBlur('currentBalance')}
-        isTouched={touched.has('currentBalance')}
-        onRevalidate={(v) => {
-          const payload = { ...getDebtPayload(), currentBalance: toCents(v || '0') }
-          validateField('currentBalance', payload)
-        }}
+        onChange={(v) => handleAmountChange('currentBalance', setCurrentBalance, v)}
+        prefix="$"
+        error={errors.currentBalance?.[0]}
       />
 
       {/* Annual Rate */}
-      <FormField label="Tasa anual" htmlFor="debt-rate" error={errors.annualRate}>
-        <div className="relative">
-          <input
-            id="debt-rate"
-            type="text"
-            inputMode="decimal"
-            value={annualRate}
-            onChange={(e) => {
-              const v = e.target.value
-              setAnnualRate(v)
-              if (touched.has('annualRate')) {
-                const payload = { ...getDebtPayload(), annualRate: Math.round(parseFloat(v || '0') * 100) }
-                setTimeout(() => validateField('annualRate', payload), 0)
-              }
-            }}
-            onBlur={() => handleBlur('annualRate')}
-            placeholder="45.00"
-            className={cn(
-              inputClass,
-              'pr-8',
-              errors.annualRate ? 'border-negative' : 'border-border-divider',
-            )}
-          />
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-text-tertiary text-sm">
-            %
-          </span>
-        </div>
-      </FormField>
+      <FloatingInput
+        label="Tasa anual"
+        value={annualRate}
+        onChange={(v) => {
+          setAnnualRate(v)
+          markTouched('annualRate')
+          revalidateIfTouched('annualRate', {
+            ...getDebtPayload(),
+            annualRate: Math.round(parseFloat(v || '0') * 100),
+          })
+        }}
+        suffix="%"
+        error={errors.annualRate?.[0]}
+      />
 
       {/* Type-specific fields */}
       {isCreditCard ? (
         <>
-          <AmountField
+          <FloatingInput
             label="Limite de credito"
-            id="debt-credit-limit"
             value={creditLimit}
-            onChange={setCreditLimit}
-            error={errors.creditLimit}
-            onFieldBlur={() => handleBlur('creditLimit')}
-            isTouched={touched.has('creditLimit')}
-            onRevalidate={(v) => {
-              const payload = { ...getDebtPayload(), creditLimit: toCents(v || '0') }
-              validateField('creditLimit', payload)
-            }}
+            onChange={(v) => handleAmountChange('creditLimit', setCreditLimit, v)}
+            prefix="$"
+            error={errors.creditLimit?.[0]}
           />
-          <AmountField
+          <FloatingInput
             label="Pago minimo"
-            id="debt-min-payment"
             value={minimumPayment}
-            onChange={setMinimumPayment}
-            error={errors.minimumPayment}
-            onFieldBlur={() => handleBlur('minimumPayment')}
-            isTouched={touched.has('minimumPayment')}
-            onRevalidate={(v) => {
-              const payload = { ...getDebtPayload(), minimumPayment: toCents(v || '0') }
-              validateField('minimumPayment', payload)
-            }}
+            onChange={(v) => handleAmountChange('minimumPayment', setMinimumPayment, v)}
+            prefix="$"
+            error={errors.minimumPayment?.[0]}
           />
           <div className="grid grid-cols-2 gap-3">
-            <FormField label="Dia de corte" htmlFor="debt-cutoff" error={errors.cutOffDay}>
-              <input
-                id="debt-cutoff"
-                type="number"
-                min={1}
-                max={31}
-                value={cutOffDay}
-                onChange={(e) => setCutOffDay(e.target.value)}
-                placeholder="15"
-                className={cn(inputClass, errors.cutOffDay ? 'border-negative' : 'border-border-divider')}
-              />
-            </FormField>
-            <FormField label="Dia de pago" htmlFor="debt-due" error={errors.paymentDueDay}>
-              <input
-                id="debt-due"
-                type="number"
-                min={1}
-                max={31}
-                value={paymentDueDay}
-                onChange={(e) => setPaymentDueDay(e.target.value)}
-                placeholder="5"
-                className={cn(
-                  inputClass,
-                  errors.paymentDueDay ? 'border-negative' : 'border-border-divider',
-                )}
-              />
-            </FormField>
+            <FloatingInput
+              label="Dia de corte"
+              value={cutOffDay}
+              onChange={(v) => {
+                setCutOffDay(v)
+                markTouched('cutOffDay')
+                revalidateIfTouched('cutOffDay', {
+                  ...getDebtPayload(),
+                  cutOffDay: v ? parseInt(v, 10) : undefined,
+                })
+              }}
+              error={errors.cutOffDay?.[0]}
+            />
+            <FloatingInput
+              label="Dia de pago"
+              value={paymentDueDay}
+              onChange={(v) => {
+                setPaymentDueDay(v)
+                markTouched('paymentDueDay')
+                revalidateIfTouched('paymentDueDay', {
+                  ...getDebtPayload(),
+                  paymentDueDay: v ? parseInt(v, 10) : undefined,
+                })
+              }}
+              error={errors.paymentDueDay?.[0]}
+            />
           </div>
         </>
       ) : (
         <>
-          <AmountField
+          <FloatingInput
             label="Monto original"
-            id="debt-original"
             value={originalAmount}
-            onChange={setOriginalAmount}
-            error={errors.originalAmount}
-            onFieldBlur={() => handleBlur('originalAmount')}
-            isTouched={touched.has('originalAmount')}
-            onRevalidate={(v) => {
-              const payload = { ...getDebtPayload(), originalAmount: toCents(v || '0') }
-              validateField('originalAmount', payload)
-            }}
+            onChange={(v) => handleAmountChange('originalAmount', setOriginalAmount, v)}
+            prefix="$"
+            error={errors.originalAmount?.[0]}
           />
-          <AmountField
+          <FloatingInput
             label="Mensualidad"
-            id="debt-monthly"
             value={monthlyPayment}
-            onChange={setMonthlyPayment}
-            error={errors.monthlyPayment}
-            onFieldBlur={() => handleBlur('monthlyPayment')}
-            isTouched={touched.has('monthlyPayment')}
-            onRevalidate={(v) => {
-              const payload = { ...getDebtPayload(), monthlyPayment: toCents(v || '0') }
-              validateField('monthlyPayment', payload)
-            }}
+            onChange={(v) => handleAmountChange('monthlyPayment', setMonthlyPayment, v)}
+            prefix="$"
+            error={errors.monthlyPayment?.[0]}
           />
-          <FormField
+          <FloatingInput
             label="Meses restantes"
-            htmlFor="debt-remaining"
-            error={errors.remainingMonths}
-          >
-            <input
-              id="debt-remaining"
-              type="number"
-              min={0}
-              value={remainingMonths}
-              onChange={(e) => setRemainingMonths(e.target.value)}
-              placeholder="36"
-              className={cn(
-                inputClass,
-                errors.remainingMonths ? 'border-negative' : 'border-border-divider',
-              )}
-            />
-          </FormField>
+            value={remainingMonths}
+            onChange={(v) => {
+              setRemainingMonths(v)
+              markTouched('remainingMonths')
+              revalidateIfTouched('remainingMonths', {
+                ...getDebtPayload(),
+                remainingMonths: v ? parseInt(v, 10) : undefined,
+              })
+            }}
+            error={errors.remainingMonths?.[0]}
+          />
         </>
       )}
 
@@ -391,94 +346,5 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
         {submitting ? 'Guardando...' : 'Guardar'}
       </button>
     </form>
-  )
-}
-
-// --- Shared form primitives ---
-
-const inputClass = [
-  'w-full rounded-lg border bg-transparent px-3 py-2.5 text-sm text-text-primary',
-  'placeholder:text-text-tertiary',
-  'transition-colors duration-200',
-].join(' ')
-
-interface FormFieldProps {
-  label: string
-  htmlFor: string
-  error?: string[]
-  children: React.ReactNode
-}
-
-function FormField({ label, htmlFor, error, children }: FormFieldProps) {
-  return (
-    <div>
-      <label
-        htmlFor={htmlFor}
-        className="block text-xs font-medium text-text-secondary tracking-wide uppercase mb-1.5"
-      >
-        {label}
-      </label>
-      {children}
-      {error && <p className="mt-1 text-xs text-negative">{error[0]}</p>}
-    </div>
-  )
-}
-
-interface AmountFieldProps {
-  label: string
-  id: string
-  value: string
-  onChange: (v: string) => void
-  error?: string[]
-  onFieldBlur?: () => void
-  isTouched?: boolean
-  onRevalidate?: (v: string) => void
-}
-
-function AmountField({
-  label,
-  id,
-  value,
-  onChange,
-  error,
-  onFieldBlur,
-  isTouched,
-  onRevalidate,
-}: AmountFieldProps) {
-  const [displayValue, setDisplayValue] = useState(() => formatAmountDisplay(value))
-
-  return (
-    <FormField label={label} htmlFor={id} error={error}>
-      <div className="relative">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-tertiary text-sm pointer-events-none">
-          $
-        </span>
-        <input
-          id={id}
-          type="text"
-          inputMode="decimal"
-          value={displayValue}
-          onChange={(e) => {
-            const cleaned = cleanAmountInput(e.target.value)
-            onChange(cleaned)
-            setDisplayValue(cleaned)
-            if (isTouched && onRevalidate) {
-              setTimeout(() => onRevalidate(cleaned), 0)
-            }
-          }}
-          onFocus={() => setDisplayValue(value)}
-          onBlur={() => {
-            setDisplayValue(formatAmountDisplay(value))
-            onFieldBlur?.()
-          }}
-          placeholder="0.00"
-          className={cn(
-            inputClass,
-            'pl-7 text-right',
-            error ? 'border-negative' : 'border-border-divider',
-          )}
-        />
-      </div>
-    </FormField>
   )
 }

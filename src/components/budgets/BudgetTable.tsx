@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import DynamicIcon from '@/components/ui/DynamicIcon'
+import FloatingInput from '@/components/ui/FloatingInput'
 import { cn, formatMoney, toCents } from '@/lib/utils'
 import type { BudgetWithSpent } from '@/lib/budget-shared'
 
@@ -110,24 +111,13 @@ export default function BudgetTable({ budgets, onSave, isClosed }: BudgetTablePr
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <div className="relative ml-auto w-28">
-                      <span className="absolute left-2 top-1/2 -translate-y-1/2 text-text-tertiary text-xs pointer-events-none">
-                        $
-                      </span>
-                      <input
-                        type="text"
-                        inputMode="decimal"
+                    <div className="ml-auto w-28">
+                      <FloatingInput
+                        label=""
                         value={pesoValue}
-                        onChange={(e) =>
-                          handleChange(budget.categoryId, cleanAmountInput(e.target.value))
-                        }
+                        onChange={(v) => handleChange(budget.categoryId, cleanAmountInput(v))}
+                        prefix="$"
                         disabled={isClosed}
-                        placeholder="0"
-                        className={cn(
-                          'w-full rounded-lg border border-border-divider bg-transparent pl-5 pr-2 py-1.5 text-right text-sm text-text-primary tabular-nums',
-                          'transition-colors duration-200',
-                          isClosed && 'cursor-not-allowed opacity-50',
-                        )}
                       />
                     </div>
                   </td>

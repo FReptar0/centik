@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 import Modal from '@/components/ui/Modal'
+import FloatingInput from '@/components/ui/FloatingInput'
 import { cn, toCents } from '@/lib/utils'
 import { createIncomeSource, updateIncomeSource } from '@/app/ingresos/actions'
 import { createIncomeSourceSchema } from '@/lib/validators'
@@ -23,14 +24,6 @@ const TYPE_DISPLAY: Record<string, string> = {
 }
 
 const FREQUENCY_VALUES = Object.values(Frequency)
-
-/** Format a numeric string with commas for display */
-function formatAmountDisplay(value: string): string {
-  if (!value) return ''
-  const num = parseFloat(value)
-  if (isNaN(num)) return value
-  return num.toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 2 })
-}
 
 /** Strip commas and non-numeric chars (except one decimal point) */
 function cleanAmountInput(value: string): string {
@@ -63,10 +56,9 @@ interface FormContentProps {
 function IncomeSourceFormContent({ source, onClose }: FormContentProps) {
   const isEditing = !!source
 
-  const [name, setName] = useState(source?.name ?? '')
   const rawAmountInit = source ? (Number(source.defaultAmount) / 100).toString() : ''
+  const [name, setName] = useState(source?.name ?? '')
   const [amount, setAmount] = useState(rawAmountInit)
-  const [displayAmount, setDisplayAmount] = useState(() => formatAmountDisplay(rawAmountInit))
   const [frequency, setFrequency] = useState<string>(source?.frequency ?? 'QUINCENAL')
   const [type, setType] = useState<string>(source?.type ?? 'EMPLOYMENT')
   const [errors, setErrors] = useState<Record<string, string[]>>({})
@@ -101,9 +93,27 @@ function IncomeSourceFormContent({ source, onClose }: FormContentProps) {
     }
   }
 
-  function handleBlur(fieldName: string) {
-    setTouched((prev) => new Set(prev).add(fieldName))
-    validateField(fieldName, getFormPayload())
+  function handleNameChange(v: string) {
+    setName(v)
+    if (!touched.has('name')) {
+      setTouched((prev) => new Set(prev).add('name'))
+    }
+    if (touched.has('name')) {
+      const payload = { ...getFormPayload(), name: v.trim() }
+      setTimeout(() => validateField('name', payload), 0)
+    }
+  }
+
+  function handleAmountChange(v: string) {
+    const cleaned = cleanAmountInput(v)
+    setAmount(cleaned)
+    if (!touched.has('defaultAmount')) {
+      setTouched((prev) => new Set(prev).add('defaultAmount'))
+    }
+    if (touched.has('defaultAmount')) {
+      const payload = { ...getFormPayload(), defaultAmount: toCents(cleaned || '0') }
+      setTimeout(() => validateField('defaultAmount', payload), 0)
+    }
   }
 
   async function handleSubmit(event: React.FormEvent) {
@@ -137,83 +147,21 @@ function IncomeSourceFormContent({ source, onClose }: FormContentProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* Name field */}
-      <div>
-        <label
-          htmlFor="income-name"
-          className="block text-xs font-medium text-text-secondary tracking-wide uppercase mb-1.5"
-        >
-          Nombre
-        </label>
-        <input
-          id="income-name"
-          type="text"
-          value={name}
-          onChange={(e) => {
-            const v = e.target.value
-            setName(v)
-            if (touched.has('name')) {
-              const payload = { ...getFormPayload(), name: v.trim() }
-              setTimeout(() => validateField('name', payload), 0)
-            }
-          }}
-          onBlur={() => handleBlur('name')}
-          placeholder="Ej. TerSoft"
-          className={cn(
-            'w-full rounded-lg border bg-transparent px-3 py-2.5 text-sm text-text-primary',
-            'placeholder:text-text-tertiary',
-            'transition-colors duration-200',
-            errors.name ? 'border-negative' : 'border-border-divider',
-          )}
-        />
-        {errors.name && (
-          <p className="mt-1 text-xs text-negative">{errors.name[0]}</p>
-        )}
-      </div>
+      <FloatingInput
+        label="Nombre"
+        value={name}
+        onChange={handleNameChange}
+        error={errors.name?.[0]}
+      />
 
       {/* Amount field */}
-      <div>
-        <label
-          htmlFor="income-amount"
-          className="block text-xs font-medium text-text-secondary tracking-wide uppercase mb-1.5"
-        >
-          Monto por defecto
-        </label>
-        <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-tertiary text-sm pointer-events-none">
-            $
-          </span>
-          <input
-            id="income-amount"
-            type="text"
-            inputMode="decimal"
-            value={displayAmount}
-            onChange={(e) => {
-              const cleaned = cleanAmountInput(e.target.value)
-              setAmount(cleaned)
-              setDisplayAmount(cleaned)
-              if (touched.has('defaultAmount')) {
-                const payload = { ...getFormPayload(), defaultAmount: toCents(cleaned || '0') }
-                setTimeout(() => validateField('defaultAmount', payload), 0)
-              }
-            }}
-            onFocus={() => setDisplayAmount(amount)}
-            onBlur={() => {
-              setDisplayAmount(formatAmountDisplay(amount))
-              handleBlur('defaultAmount')
-            }}
-            placeholder="0.00"
-            className={cn(
-              'w-full rounded-lg border bg-transparent pl-7 pr-3 py-2.5 text-sm text-text-primary text-right',
-              'placeholder:text-text-tertiary',
-              'transition-colors duration-200',
-              errors.defaultAmount ? 'border-negative' : 'border-border-divider',
-            )}
-          />
-        </div>
-        {errors.defaultAmount && (
-          <p className="mt-1 text-xs text-negative">{errors.defaultAmount[0]}</p>
-        )}
-      </div>
+      <FloatingInput
+        label="Monto por defecto"
+        value={amount}
+        onChange={handleAmountChange}
+        prefix="$"
+        error={errors.defaultAmount?.[0]}
+      />
 
       {/* Frequency radio group */}
       <div>
