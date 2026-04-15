@@ -35,8 +35,6 @@ function makeCategory(overrides: Partial<Category> = {}): Category {
     isDefault: true,
     isActive: true,
     sortOrder: 1,
-    createdAt: new Date('2026-01-01'),
-    updatedAt: new Date('2026-01-01'),
     ...overrides,
   }
 }
@@ -99,23 +97,23 @@ describe('TransactionForm', () => {
   it('renders with expense toggle selected by default', () => {
     render(<TransactionForm {...defaultProps} />)
 
-    // Modal renders both mobile and desktop -- use getAllBy
-    const gastoButtons = screen.getAllByRole('button', { name: /gasto/i })
-    expect(gastoButtons.length).toBeGreaterThanOrEqual(1)
-    expect(gastoButtons[0].className).toContain('bg-accent')
+    // TogglePills renders radio buttons
+    const gastoRadios = screen.getAllByRole('radio', { name: /gasto/i })
+    expect(gastoRadios.length).toBeGreaterThanOrEqual(1)
+    expect(gastoRadios[0].getAttribute('aria-checked')).toBe('true')
   })
 
   it('toggling to income filters categories to income type', () => {
     render(<TransactionForm {...defaultProps} />)
 
-    // Initially shows expense categories (dual render = 2x each)
+    // Initially shows expense categories
     expect(screen.getAllByText('Comida').length).toBeGreaterThanOrEqual(1)
     expect(screen.getAllByText('Servicios').length).toBeGreaterThanOrEqual(1)
     expect(screen.queryByText('Empleo')).toBeNull()
 
-    // Toggle to income on ALL instances (dual render: mobile + desktop)
-    const ingresoButtons = screen.getAllByRole('button', { name: /ingreso/i })
-    ingresoButtons.forEach((btn) => fireEvent.click(btn))
+    // Toggle to income via TogglePills radio
+    const ingresoRadios = screen.getAllByRole('radio', { name: /ingreso/i })
+    ingresoRadios.forEach((btn) => fireEvent.click(btn))
 
     // Now shows income categories
     expect(screen.getAllByText('Empleo').length).toBeGreaterThanOrEqual(1)
@@ -123,48 +121,107 @@ describe('TransactionForm', () => {
     expect(screen.queryByText('Comida')).toBeNull()
   })
 
-  it('amount input has inputMode="decimal"', () => {
+  it('renders Numpad component with digit buttons', () => {
     render(<TransactionForm {...defaultProps} />)
 
-    const amountInputs = screen.getAllByPlaceholderText('0.00')
-    expect(amountInputs[0].getAttribute('inputMode')).toBe('decimal')
+    // Numpad renders digit buttons 0-9
+    for (let d = 0; d <= 9; d++) {
+      const digitButtons = screen.getAllByRole('button', { name: String(d) })
+      expect(digitButtons.length).toBeGreaterThanOrEqual(1)
+    }
+  })
+
+  it('hero amount display updates when Numpad digits are tapped', () => {
+    render(<TransactionForm {...defaultProps} />)
+
+    // Initially shows 0.00
+    expect(screen.getAllByText('0.00').length).toBeGreaterThanOrEqual(1)
+
+    // Tap 1, 5, 0 on numpad
+    const btn1 = screen.getAllByRole('button', { name: '1' })
+    const btn5 = screen.getAllByRole('button', { name: '5' })
+    const btn0 = screen.getAllByRole('button', { name: '0' })
+
+    fireEvent.click(btn1[0])
+    fireEvent.click(btn5[0])
+    fireEvent.click(btn0[0])
+
+    // Hero display should show "150"
+    expect(screen.getAllByText('150').length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('category grid shows circular icons with accent ring on selected', () => {
+    render(<TransactionForm {...defaultProps} />)
+
+    // Select first category (Comida)
+    const comidaButtons = screen.getAllByRole('button', { name: /comida/i })
+    fireEvent.click(comidaButtons[0])
+
+    // The icon container should have ring-2 ring-accent classes
+    const iconContainer = comidaButtons[0].querySelector('div')
+    expect(iconContainer?.className).toContain('ring-2')
+    expect(iconContainer?.className).toContain('ring-accent')
+  })
+
+  it('GUARDAR button is in header', () => {
+    render(<TransactionForm {...defaultProps} />)
+
+    const guardarButtons = screen.getAllByRole('button', { name: /guardar/i })
+    expect(guardarButtons.length).toBeGreaterThanOrEqual(1)
+    expect(guardarButtons[0].textContent).toBe('GUARDAR')
+  })
+
+  it('uses TogglePills for type selection (radiogroup)', () => {
+    render(<TransactionForm {...defaultProps} />)
+
+    const radiogroups = screen.getAllByRole('radiogroup')
+    expect(radiogroups.length).toBeGreaterThanOrEqual(1)
+
+    const gastoRadios = screen.getAllByRole('radio', { name: /gasto/i })
+    const ingresoRadios = screen.getAllByRole('radio', { name: /ingreso/i })
+    expect(gastoRadios.length).toBeGreaterThanOrEqual(1)
+    expect(ingresoRadios.length).toBeGreaterThanOrEqual(1)
   })
 
   it('"Mas detalles" section is collapsed by default, clicking expands it', () => {
     render(<TransactionForm {...defaultProps} />)
 
-    // Description should not be visible
+    // FloatingInput description should not be visible
     expect(screen.queryByLabelText(/descripcion/i)).toBeNull()
 
-    // Click "Mas detalles" (first instance)
+    // Click "Mas detalles"
     const toggleButtons = screen.getAllByRole('button', { name: /mas detalles/i })
     fireEvent.click(toggleButtons[0])
 
-    // Now description should be visible
+    // Now description FloatingInput should be visible
     expect(screen.getAllByLabelText(/descripcion/i).length).toBeGreaterThanOrEqual(1)
   })
 
-  it('submit calls createTransaction with correct data shape (amount in centavos)', async () => {
+  it('submit calls createTransaction with correct data shape', async () => {
     render(<TransactionForm {...defaultProps} />)
 
-    // Enter amount (first instance)
-    const amountInputs = screen.getAllByPlaceholderText('0.00')
-    fireEvent.change(amountInputs[0], { target: { value: '150.75' } })
+    // Tap 1, 5, 0 on the numpad
+    const btn1 = screen.getAllByRole('button', { name: '1' })
+    const btn5 = screen.getAllByRole('button', { name: '5' })
+    const btn0 = screen.getAllByRole('button', { name: '0' })
+    fireEvent.click(btn1[0])
+    fireEvent.click(btn5[0])
+    fireEvent.click(btn0[0])
 
-    // Select category (first Comida button)
+    // Select category
     const comidaButtons = screen.getAllByRole('button', { name: /comida/i })
     fireEvent.click(comidaButtons[0])
 
-    // Submit (first Guardar button)
-    const submitButtons = screen.getAllByRole('button', { name: /guardar/i })
+    // Click GUARDAR
+    const guardarButtons = screen.getAllByRole('button', { name: /guardar/i })
     await act(async () => {
-      fireEvent.click(submitButtons[0])
+      fireEvent.click(guardarButtons[0])
     })
 
     expect(mockCreateTransaction).toHaveBeenCalledWith(
       expect.objectContaining({
         type: 'EXPENSE',
-        amount: '15075',
+        amount: '15000',
         categoryId: 'cat-1',
       }),
     )
@@ -188,9 +245,8 @@ describe('TransactionForm', () => {
 
     render(<TransactionForm {...defaultProps} transaction={transaction} />)
 
-    // Amount should be pre-filled in pesos (15075 centavos = 150.75 pesos)
-    const amountInputs = screen.getAllByPlaceholderText('0.00') as HTMLInputElement[]
-    expect(amountInputs[0].value).toBe('150.75')
+    // Hero amount display should show "150.75" (15075 centavos = 150.75 pesos)
+    expect(screen.getAllByText('150.75').length).toBeGreaterThanOrEqual(1)
 
     // Optional fields should be expanded since transaction has description/notes
     const descInputs = screen.getAllByLabelText(/descripcion/i) as HTMLInputElement[]
@@ -207,8 +263,8 @@ describe('TransactionForm', () => {
     expect(screen.queryByLabelText(/fuente de ingreso/i)).toBeNull()
 
     // Toggle to income
-    const ingresoButtons = screen.getAllByRole('button', { name: /ingreso/i })
-    fireEvent.click(ingresoButtons[0])
+    const ingresoRadios = screen.getAllByRole('radio', { name: /ingreso/i })
+    fireEvent.click(ingresoRadios[0])
 
     // Expand details to see income source
     const toggleButtons = screen.getAllByRole('button', { name: /mas detalles/i })
@@ -221,24 +277,34 @@ describe('TransactionForm', () => {
   })
 
   it('successful submit closes modal by calling onClose', async () => {
+    vi.useFakeTimers()
     const onClose = vi.fn()
 
     render(<TransactionForm {...defaultProps} onClose={onClose} />)
 
-    // Enter amount
-    const amountInputs = screen.getAllByPlaceholderText('0.00')
-    fireEvent.change(amountInputs[0], { target: { value: '100' } })
+    // Enter amount via numpad
+    const btn1 = screen.getAllByRole('button', { name: '1' })
+    const btn0 = screen.getAllByRole('button', { name: '0' })
+    fireEvent.click(btn1[0])
+    fireEvent.click(btn0[0])
+    fireEvent.click(btn0[0])
 
     // Select category
     const comidaButtons = screen.getAllByRole('button', { name: /comida/i })
     fireEvent.click(comidaButtons[0])
 
-    // Submit
-    const submitButtons = screen.getAllByRole('button', { name: /guardar/i })
+    // Click GUARDAR
+    const guardarButtons = screen.getAllByRole('button', { name: /guardar/i })
     await act(async () => {
-      fireEvent.click(submitButtons[0])
+      fireEvent.click(guardarButtons[0])
+    })
+
+    // Advance timers to trigger the 200ms delay
+    await act(async () => {
+      vi.advanceTimersByTime(200)
     })
 
     expect(onClose).toHaveBeenCalled()
+    vi.useRealTimers()
   })
 })
