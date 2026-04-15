@@ -27,7 +27,7 @@ Requirements for Glyph Finance code implementation. 10/10 quality bar -- anythin
 - [x] **COMP-02**: FloatingInput component -- underline-only, transparent background, floating label (placeholder -> uppercase Label style on focus), chartreuse focus underline, error state
 - [x] **COMP-03**: StatusDot component -- 4px solid chartreuse circle, CSS animation (status-pulse), configurable placement
 - [x] **COMP-04**: TogglePills component -- active (chartreuse fill, black text), inactive (ghost), used for Expense/Income and period selectors
-- [ ] **COMP-05**: Numpad component -- custom dark 4x4 grid, monospaced IBM Plex Mono numbers, backspace icon, decimal/00 keys, 48px min touch targets
+- [x] **COMP-05**: Numpad component -- custom dark 4x4 grid, monospaced IBM Plex Mono numbers, backspace icon, decimal/00 keys, 48px min touch targets
 
 ### Component Updates
 
@@ -61,7 +61,7 @@ Requirements for Glyph Finance code implementation. 10/10 quality bar -- anythin
 
 - [x] **TEST-01**: All existing unit tests pass with new design tokens (394 tests, zero failures)
 - [x] **TEST-02**: New unit tests for BatteryBar (segments, colors, overflow, ARIA), FloatingInput (states, validation, floating behavior), TogglePills (active/inactive, callback)
-- [ ] **TEST-03**: New unit tests for Numpad (digit input, decimal, backspace, 00, max amount)
+- [x] **TEST-03**: New unit tests for Numpad (digit input, decimal, backspace, 00, max amount)
 - [x] **TEST-04**: New unit tests for StatusDot (renders, animation class, reduced-motion)
 
 ## v3.0 Requirements
@@ -101,7 +101,7 @@ Deferred to future milestones.
 | COMP-02 | Phase 18 | Complete |
 | COMP-03 | Phase 18 | Complete |
 | COMP-04 | Phase 18 | Complete |
-| COMP-05 | Phase 21 | Pending |
+| COMP-05 | Phase 21 | Complete |
 | UPDATE-01 | Phase 19 | Complete |
 | UPDATE-02 | Phase 19 | Complete |
 | UPDATE-03 | Phase 20 | Complete |
@@ -126,7 +126,7 @@ Deferred to future milestones.
 | QA-08 | Phase 22 | Pending |
 | TEST-01 | Phase 17 | Complete |
 | TEST-02 | Phase 18 | Complete |
-| TEST-03 | Phase 21 | Pending |
+| TEST-03 | Phase 21 | Complete |
 | TEST-04 | Phase 18 | Complete |
 
 **Coverage:**

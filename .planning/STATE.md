@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Glyph Finance Implementation
 current_phase: 21
-current_plan: Not started
-status: planning
-stopped_at: Completed 20-02-PLAN.md
-last_updated: "2026-04-13T05:22:42.571Z"
-last_activity: 2026-04-13
+current_plan: 2
+status: executing
+stopped_at: Completed 21-01-PLAN.md
+last_updated: "2026-04-15T15:28:28.414Z"
+last_activity: 2026-04-15
 progress:
   total_phases: 6
   completed_phases: 4
-  total_plans: 11
-  completed_plans: 11
+  total_plans: 14
+  completed_plans: 12
   percent: 94
 ---
 
@@ -23,15 +23,15 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-06)
 
 **Core value:** A single user can register a financial transaction in under 30 seconds and immediately see how it impacts their budget, debt ratio, and savings rate across all views.
-**Current focus:** Phase 20 -- Feature Component Updates
+**Current focus:** Phase 21 -- TransactionForm + Custom Numpad
 
 ## Current Position
 
 **Current Phase:** 21
-**Current Plan:** Not started
-**Total Plans in Phase:** 2
-**Status:** Ready to plan
-**Last Activity:** 2026-04-13
+**Current Plan:** 2
+**Total Plans in Phase:** 3
+**Status:** executing
+**Last Activity:** 2026-04-15
 
 Progress: [█████████░] 94%
 
@@ -67,6 +67,7 @@ Progress: [█████████░] 94%
 | Phase 19 P03 | 6min | 2 tasks | 25 files |
 | Phase 20 P01 | 6min | 2 tasks | 5 files |
 | Phase 20 P02 | 7min | 2 tasks | 10 files |
+| Phase 21 P01 | 7min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -102,6 +103,8 @@ Recent decisions affecting current work:
 - [Phase 20]: Loan payoff BatteryBar uses impossibly high thresholds (101/102) for all-accent segments since higher = better inverts traffic-light model
 - [Phase 20]: MetricItem value type widened from string to React.ReactNode to support inline MoneyAmount rendering
 - [Phase 20]: KPICard rawValue/moneyVariant props conditionally render MoneyAmount vs plain text for monetary vs rate KPIs
+- [Phase 21]: Numpad in transactions/ directory (not ui/) -- transaction-specific per CONTEXT.md
+- [Phase 21]: Numpad controlled component pattern (value/onChange) -- parent owns amount state, no-op for invalid input
 
 ### Pending Todos
 
@@ -114,6 +117,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-13T05:18:11.762Z
-Stopped at: Completed 20-02-PLAN.md
+Last session: 2026-04-15T15:28:28.410Z
+Stopped at: Completed 21-01-PLAN.md
 Resume file: None
