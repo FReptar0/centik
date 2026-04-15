@@ -37,7 +37,7 @@ Requirements for Glyph Finance code implementation. 10/10 quality bar -- anythin
 - [x] **UPDATE-04**: All charts updated -- no grid lines, 1.5px stroke, 4px dot endpoints, hardcoded CHART_COLORS updated to Glyph Finance hex values
 - [x] **UPDATE-05**: Bottom navigation converted to icon-only (no text labels), 4px chartreuse dot indicator 8px below active icon, inactive icons in --color-text-secondary
 - [x] **UPDATE-06**: Mobile modals use bottom sheet pattern (85vh, drag handle, top-corner radius), desktop modals centered with --radius-xl
-- [ ] **UPDATE-07**: Transaction form restructured -- bottom sheet with dot-matrix hero amount, toggle pills, circular 4x2 category grid with accent ring, custom numpad, checkmark save animation
+- [x] **UPDATE-07**: Transaction form restructured -- bottom sheet with dot-matrix hero amount, toggle pills, circular 4x2 category grid with accent ring, custom numpad, checkmark save animation
 - [x] **UPDATE-08**: All inputs across app replaced with FloatingInput (underline-only, floating labels)
 - [x] **UPDATE-09**: All badges converted to pill shape (radius-full), semantic color variants
 - [x] **UPDATE-10**: Dot-matrix texture implemented as CSS pseudo-element on hero cards (8x8 SVG data URI, 40% opacity)
@@ -108,7 +108,7 @@ Deferred to future milestones.
 | UPDATE-04 | Phase 20 | Complete |
 | UPDATE-05 | Phase 19 | Complete |
 | UPDATE-06 | Phase 19 | Complete |
-| UPDATE-07 | Phase 21 | Pending |
+| UPDATE-07 | Phase 21 | Complete |
 | UPDATE-08 | Phase 21 | Complete |
 | UPDATE-09 | Phase 19 | Complete |
 | UPDATE-10 | Phase 19 | Complete |

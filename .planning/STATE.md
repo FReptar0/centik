@@ -4,15 +4,15 @@ milestone: v2.0
 milestone_name: Glyph Finance Implementation
 current_phase: 21
 current_plan: 3
-status: executing
-stopped_at: Completed 21-02-PLAN.md
-last_updated: "2026-04-15T15:32:00.885Z"
+status: verifying
+stopped_at: Completed 21-03-PLAN.md
+last_updated: "2026-04-15T23:18:26.866Z"
 last_activity: 2026-04-15
 progress:
   total_phases: 6
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 14
-  completed_plans: 13
+  completed_plans: 14
   percent: 94
 ---
 
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 **Current Phase:** 21
 **Current Plan:** 3
 **Total Plans in Phase:** 3
-**Status:** Ready to execute
+**Status:** Phase complete — ready for verification
 **Last Activity:** 2026-04-15
 
 Progress: [█████████░] 94%
@@ -69,6 +69,7 @@ Progress: [█████████░] 94%
 | Phase 20 P02 | 7min | 2 tasks | 10 files |
 | Phase 21 P01 | 7min | 2 tasks | 2 files |
 | Phase 21 P02 | 7min | 2 tasks | 8 files |
+| Phase 21 P03 | 4min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -108,6 +109,9 @@ Recent decisions affecting current work:
 - [Phase 21]: Numpad controlled component pattern (value/onChange) -- parent owns amount state, no-op for invalid input
 - [Phase 21]: onChange-based validation replaces onBlur since FloatingInput does not expose onBlur prop
 - [Phase 21]: BudgetTable uses empty-label FloatingInput with prefix for compact table cells
+- [Phase 21]: TransactionFormContent renders Modal directly (owns headerContent with access to save state)
+- [Phase 21]: handleSave via onClick (not form onSubmit) since GUARDAR is in headerContent outside form DOM
+- [Phase 21]: formatAmountDisplay uses es-MX locale for comma-separated hero zone display
 
 ### Pending Todos
 
@@ -120,6 +124,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-15T15:32:00.882Z
-Stopped at: Completed 21-02-PLAN.md
+Last session: 2026-04-15T23:18:26.863Z
+Stopped at: Completed 21-03-PLAN.md
 Resume file: None
