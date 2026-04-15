@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Glyph Finance Implementation
 current_phase: 21
-current_plan: 2
+current_plan: 3
 status: executing
-stopped_at: Completed 21-01-PLAN.md
-last_updated: "2026-04-15T15:28:28.414Z"
+stopped_at: Completed 21-02-PLAN.md
+last_updated: "2026-04-15T15:32:00.885Z"
 last_activity: 2026-04-15
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 14
-  completed_plans: 12
+  completed_plans: 13
   percent: 94
 ---
 
@@ -28,9 +28,9 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 ## Current Position
 
 **Current Phase:** 21
-**Current Plan:** 2
+**Current Plan:** 3
 **Total Plans in Phase:** 3
-**Status:** executing
+**Status:** Ready to execute
 **Last Activity:** 2026-04-15
 
 Progress: [█████████░] 94%
@@ -68,6 +68,7 @@ Progress: [█████████░] 94%
 | Phase 20 P01 | 6min | 2 tasks | 5 files |
 | Phase 20 P02 | 7min | 2 tasks | 10 files |
 | Phase 21 P01 | 7min | 2 tasks | 2 files |
+| Phase 21 P02 | 7min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -105,6 +106,8 @@ Recent decisions affecting current work:
 - [Phase 20]: KPICard rawValue/moneyVariant props conditionally render MoneyAmount vs plain text for monetary vs rate KPIs
 - [Phase 21]: Numpad in transactions/ directory (not ui/) -- transaction-specific per CONTEXT.md
 - [Phase 21]: Numpad controlled component pattern (value/onChange) -- parent owns amount state, no-op for invalid input
+- [Phase 21]: onChange-based validation replaces onBlur since FloatingInput does not expose onBlur prop
+- [Phase 21]: BudgetTable uses empty-label FloatingInput with prefix for compact table cells
 
 ### Pending Todos
 
@@ -117,6 +120,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-15T15:28:28.410Z
-Stopped at: Completed 21-01-PLAN.md
+Last session: 2026-04-15T15:32:00.882Z
+Stopped at: Completed 21-02-PLAN.md
 Resume file: None

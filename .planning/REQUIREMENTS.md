@@ -38,10 +38,10 @@ Requirements for Glyph Finance code implementation. 10/10 quality bar -- anythin
 - [x] **UPDATE-05**: Bottom navigation converted to icon-only (no text labels), 4px chartreuse dot indicator 8px below active icon, inactive icons in --color-text-secondary
 - [x] **UPDATE-06**: Mobile modals use bottom sheet pattern (85vh, drag handle, top-corner radius), desktop modals centered with --radius-xl
 - [ ] **UPDATE-07**: Transaction form restructured -- bottom sheet with dot-matrix hero amount, toggle pills, circular 4x2 category grid with accent ring, custom numpad, checkmark save animation
-- [ ] **UPDATE-08**: All inputs across app replaced with FloatingInput (underline-only, floating labels)
+- [x] **UPDATE-08**: All inputs across app replaced with FloatingInput (underline-only, floating labels)
 - [x] **UPDATE-09**: All badges converted to pill shape (radius-full), semantic color variants
 - [x] **UPDATE-10**: Dot-matrix texture implemented as CSS pseudo-element on hero cards (8x8 SVG data URI, 40% opacity)
-- [ ] **UPDATE-11**: Pixel-dissolve scanline animation implemented for data refresh moments (@keyframes scanline-reveal, clip-path inset, steps(12,end))
+- [x] **UPDATE-11**: Pixel-dissolve scanline animation implemented for data refresh moments (@keyframes scanline-reveal, clip-path inset, steps(12,end))
 - [x] **UPDATE-12**: StatusDot placed on current period indicator and nav active state
 - [x] **UPDATE-13**: DynamicIcon default strokeWidth set to 1.5px, shape-rendering: crispEdges for pixel-aligned rendering
 - [x] **UPDATE-14**: All monetary amounts display with muted smaller "$" in --color-text-tertiary, IBM Plex Mono, color-coded by direction
@@ -109,10 +109,10 @@ Deferred to future milestones.
 | UPDATE-05 | Phase 19 | Complete |
 | UPDATE-06 | Phase 19 | Complete |
 | UPDATE-07 | Phase 21 | Pending |
-| UPDATE-08 | Phase 21 | Pending |
+| UPDATE-08 | Phase 21 | Complete |
 | UPDATE-09 | Phase 19 | Complete |
 | UPDATE-10 | Phase 19 | Complete |
-| UPDATE-11 | Phase 21 | Pending |
+| UPDATE-11 | Phase 21 | Complete |
 | UPDATE-12 | Phase 19 | Complete |
 | UPDATE-13 | Phase 19 | Complete |
 | UPDATE-14 | Phase 20 | Complete |
