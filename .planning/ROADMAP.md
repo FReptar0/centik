@@ -128,12 +128,12 @@ Plans:
   3. All input fields across the entire app (not just TransactionForm) use FloatingInput with underline-only styling and floating labels -- no box-style inputs remain
   4. Pixel-dissolve scanline animation plays on newly added transaction rows using `steps(12, end)` timing, and is disabled when `prefers-reduced-motion` is active
   5. Numpad unit tests pass covering digit input, decimal handling, backspace, 00 key, and max amount boundary
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 21-01: TBD
-- [ ] 21-02: TBD
-- [ ] 21-03: TBD
+- [ ] 21-01-PLAN.md -- Numpad component with TDD (digit input, decimal, backspace, 00 key, max decimal)
+- [ ] 21-02-PLAN.md -- FloatingInput adoption across all forms + pixel-dissolve animation on transaction rows
+- [ ] 21-03-PLAN.md -- TransactionForm restructure with bottom sheet, hero amount, category grid, numpad integration
 
 ### Phase 22: Visual QA + Accessibility
 **Goal**: Every page in the app matches STYLE_GUIDE.md specifications exactly, passes WCAG 2.1 AA accessibility standards, and the Quality Loop succeeds with zero failures
@@ -164,5 +164,5 @@ Phases execute in numeric order: 17 -> 18 -> 19 -> 20 -> 21 -> 22
 | 18. New Primitive Components | 3/3 | Complete    | 2026-04-07 | - |
 | 19. Layout, Navigation + Global Updates | 3/3 | Complete    | 2026-04-13 | - |
 | 20. Feature Component Updates | 2/2 | Complete    | 2026-04-13 | - |
-| 21. TransactionForm + Custom Numpad | v2.0 | 0/TBD | Not started | - |
+| 21. TransactionForm + Custom Numpad | v2.0 | 0/3 | Planning | - |
 | 22. Visual QA + Accessibility | v2.0 | 0/TBD | Not started | - |
