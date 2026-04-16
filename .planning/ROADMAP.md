@@ -62,7 +62,7 @@ See `.planning/milestones/v2.0-ROADMAP.md` for full phase details.
 
 Plans:
 - [x] 23-01-PLAN.md — Bug fixes (expansion, max-width) + debt grid responsiveness
-- [ ] 23-02-PLAN.md — Dashboard/KPI/income grid breakpoints + form grid responsiveness
+- [x] 23-02-PLAN.md — Dashboard/KPI/income grid breakpoints + form grid responsiveness
 
 ### Phase 24: Touch Targets + Table Optimization
 **Goal**: Every interactive element meets 44px minimum touch target and tables are usable on mobile without losing critical data visibility
@@ -74,7 +74,11 @@ Plans:
   3. PeriodSelector previous/next navigation arrows have at least 44x44px tap area on mobile
   4. AnnualPivotTable is readable on a 375px screen without requiring excessive horizontal scrolling (mobile strategy applied)
   5. BudgetTable input cells have sufficient height for comfortable touch input on mobile
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 24-01-PLAN.md — 44px touch targets on DebtCard, TransactionRow, PeriodSelector buttons
+- [ ] 24-02-PLAN.md — AnnualPivotTable mobile scroll optimization + BudgetTable touch inputs
 
 ## Progress
 
@@ -83,5 +87,5 @@ Plans:
 | 1-11 | v1.0 | 27/27 | Complete | 2026-04-06 |
 | 12-16 | v1.1 | 9/9 | Complete | 2026-04-06 |
 | 17-22 | v2.0 | 17/17 | Complete | 2026-04-16 |
-| 23. Layout + Grid Responsiveness | 2/2 | Complete    | 2026-04-16 | - |
-| 24. Touch Targets + Table Optimization | v2.1 | 0/? | Not started | - |
+| 23. Layout + Grid Responsiveness | v2.1 | 2/2 | Complete | 2026-04-16 |
+| 24. Touch Targets + Table Optimization | v2.1 | 0/2 | Planning | - |
