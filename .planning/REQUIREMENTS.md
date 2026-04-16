@@ -9,14 +9,14 @@ Requirements for responsive audit and bug fixes. Every page must work correctly 
 
 ### Layout Bugs
 
-- [ ] **BUG-01**: DebtCard expansion bug — when one card is clicked to expand, both cards in the grid resize but only the clicked one shows details. Only the expanded card should grow; the other card should remain compact.
-- [ ] **BUG-02**: Pages missing max-width container — Dashboard, Budget, History pages have no max-width constraint, content stretches to full viewport on wide screens.
+- [x] **BUG-01**: DebtCard expansion bug — when one card is clicked to expand, both cards in the grid resize but only the clicked one shows details. Only the expanded card should grow; the other card should remain compact.
+- [x] **BUG-02**: Pages missing max-width container — Dashboard, Budget, History pages have no max-width constraint, content stretches to full viewport on wide screens.
 
 ### Grid Responsiveness
 
-- [ ] **RESP-01**: DebtList grid missing md: breakpoint — jumps from grid-cols-1 to lg:grid-cols-2, skipping tablet. Add md:grid-cols-2.
-- [ ] **RESP-02**: DebtCard inner metric grid fixed grid-cols-2 on mobile — should be grid-cols-1 sm:grid-cols-2 to stack on narrow screens.
-- [ ] **RESP-03**: DebtSummaryCards incomplete breakpoints — 3 cards in 2-column layout causes uneven distribution.
+- [x] **RESP-01**: DebtList grid missing md: breakpoint — jumps from grid-cols-1 to lg:grid-cols-2, skipping tablet. Add md:grid-cols-2.
+- [x] **RESP-02**: DebtCard inner metric grid fixed grid-cols-2 on mobile — should be grid-cols-1 sm:grid-cols-2 to stack on narrow screens.
+- [x] **RESP-03**: DebtSummaryCards incomplete breakpoints — 3 cards in 2-column layout causes uneven distribution.
 - [ ] **RESP-04**: KPIGrid, IncomeSummaryCards, Dashboard chart grids missing intermediate breakpoints for tablet optimization.
 - [ ] **RESP-05**: Form grids not responsive — DebtForm, IncomeSourceForm, CategoryForm, TransactionForm use fixed grid-cols-2/3/4 without responsive prefixes.
 
@@ -43,11 +43,11 @@ Requirements for responsive audit and bug fixes. Every page must work correctly 
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BUG-01 | Phase 23 | Pending |
-| BUG-02 | Phase 23 | Pending |
-| RESP-01 | Phase 23 | Pending |
-| RESP-02 | Phase 23 | Pending |
-| RESP-03 | Phase 23 | Pending |
+| BUG-01 | Phase 23 | Complete |
+| BUG-02 | Phase 23 | Complete |
+| RESP-01 | Phase 23 | Complete |
+| RESP-02 | Phase 23 | Complete |
+| RESP-03 | Phase 23 | Complete |
 | RESP-04 | Phase 23 | Pending |
 | RESP-05 | Phase 23 | Pending |
 | TOUCH-01 | Phase 24 | Pending |
