@@ -41,14 +41,16 @@ export default function MoneyAmount({
     <span
       data-testid="money-wrapper"
       className={cn('font-mono tabular-nums', VARIANT_COLOR[variant], className)}
+      aria-label={formatted}
     >
       <span
         data-testid="money-prefix"
         className={cn('text-text-tertiary', PREFIX_SIZE[size])}
+        aria-hidden="true"
       >
         {prefix}
       </span>
-      <span data-testid="money-amount" className="font-mono tabular-nums">
+      <span data-testid="money-amount" className="font-mono tabular-nums" aria-hidden="true">
         {digits}
       </span>
     </span>

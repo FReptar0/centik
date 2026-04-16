@@ -258,7 +258,7 @@ function CreditCardDetails({ debt, metrics }: DetailsProps) {
             {utilization.toFixed(1)}%
           </span>
         </div>
-        <BatteryBar value={utilization} variant="compact" thresholds={{ warning: 31, danger: 71 }} />
+        <BatteryBar value={utilization} variant="compact" thresholds={{ warning: 31, danger: 71 }} label={`Utilizacion de credito ${utilization.toFixed(1)}%`} />
       </div>
 
       {/* Metrics grid */}
@@ -298,7 +298,7 @@ function LoanDetails({ debt, metrics }: DetailsProps) {
             {percentPaid.toFixed(1)}%
           </span>
         </div>
-        <BatteryBar value={percentPaid} variant="compact" thresholds={{ warning: 101, danger: 102 }} />
+        <BatteryBar value={percentPaid} variant="compact" thresholds={{ warning: 101, danger: 102 }} label={`Progreso de pago ${percentPaid.toFixed(1)}%`} />
       </div>
 
       {/* Metrics grid */}

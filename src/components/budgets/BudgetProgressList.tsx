@@ -80,7 +80,7 @@ export default function BudgetProgressList({ budgets }: BudgetProgressListProps)
             </div>
 
             {/* Progress bar */}
-            <BatteryBar value={percentUsed} variant="compact" />
+            <BatteryBar value={percentUsed} variant="compact" label={`Presupuesto ${budget.categoryName} ${percentUsed.toFixed(1)}%`} />
 
             {/* Percentage text */}
             <p className={cn('mt-1 text-xs tabular-nums', COLOR_TEXT[color])}>

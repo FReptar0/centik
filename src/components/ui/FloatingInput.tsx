@@ -42,6 +42,7 @@ export default function FloatingInput({
 }: FloatingInputProps) {
   const generatedId = useId()
   const id = providedId ?? generatedId
+  const errorId = `${id}-error`
   const [isFocused, setIsFocused] = useState(false)
 
   const isFloating = isFocused || value.length > 0
@@ -83,9 +84,11 @@ export default function FloatingInput({
         onBlur={() => setIsFocused(false)}
         disabled={disabled}
         autoFocus={autoFocus}
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={error ? errorId : undefined}
         className={cn(
           'w-full bg-transparent font-sans text-sm text-text-primary',
-          'border-0 border-b outline-none focus-visible:outline-none',
+          'border-0 border-b',
           'py-[10px] px-0',
           'transition-all duration-200',
           prefix && 'pl-5',
@@ -107,7 +110,7 @@ export default function FloatingInput({
       )}
 
       {/* Error message */}
-      {error && <p className="mt-1 text-[11px] text-negative">{error}</p>}
+      {error && <p id={errorId} className="mt-1 text-[11px] text-negative">{error}</p>}
     </div>
   )
 }

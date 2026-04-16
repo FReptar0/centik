@@ -20,9 +20,31 @@ export default function TogglePills({
   onChange,
   className,
 }: TogglePillsProps) {
+  function handleKeyDown(event: React.KeyboardEvent, currentIndex: number) {
+    let nextIndex: number | null = null
+
+    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+      event.preventDefault()
+      nextIndex = (currentIndex + 1) % options.length
+    } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+      event.preventDefault()
+      nextIndex = (currentIndex - 1 + options.length) % options.length
+    }
+
+    if (nextIndex !== null) {
+      onChange(options[nextIndex].value)
+      // Focus the next button after render
+      const container = (event.target as HTMLElement).parentElement
+      setTimeout(() => {
+        const buttons = container?.querySelectorAll<HTMLButtonElement>('[role="radio"]')
+        buttons?.[nextIndex as number]?.focus()
+      }, 0)
+    }
+  }
+
   return (
     <div className={cn('flex gap-1', className)} role="radiogroup">
-      {options.map((option) => {
+      {options.map((option, index) => {
         const isActive = option.value === value
 
         return (
@@ -31,7 +53,9 @@ export default function TogglePills({
             type="button"
             role="radio"
             aria-checked={isActive}
+            tabIndex={isActive ? 0 : -1}
             onClick={() => onChange(option.value)}
+            onKeyDown={(e) => handleKeyDown(e, index)}
             className={cn(
               'px-4 py-2 text-sm rounded-full transition-all duration-200 active:scale-[0.98] min-h-[40px]',
               isActive

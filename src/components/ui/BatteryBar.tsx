@@ -11,6 +11,8 @@ interface BatteryBarProps {
   variant?: 'compact' | 'detailed'
   /** Color breakpoints for warning and danger thresholds */
   thresholds?: { warning: number; danger: number }
+  /** Accessible label describing what is being measured */
+  label?: string
   className?: string
 }
 
@@ -63,6 +65,7 @@ export default function BatteryBar({
   max,
   variant = 'compact',
   thresholds = { warning: 80, danger: 100 },
+  label,
   className,
 }: BatteryBarProps) {
   const isOverflow = value > thresholds.danger
@@ -80,7 +83,7 @@ export default function BatteryBar({
       aria-valuenow={value}
       aria-valuemin={0}
       aria-valuemax={max ?? 100}
-      aria-label="Progress"
+      aria-label={label ?? `${Math.round(value)}% progress`}
     >
       <div
         className={cn('flex flex-1 gap-[2px]', heightClass)}

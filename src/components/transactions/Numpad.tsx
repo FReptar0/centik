@@ -69,7 +69,7 @@ export default function Numpad({ value, onChange }: NumpadProps) {
         onClick={handleBackspace}
         aria-label="Borrar"
       >
-        <Delete size={20} className="mx-auto" />
+        <Delete size={20} className="mx-auto" aria-hidden="true" />
       </button>
 
       {/* Row 2: 4, 5, 6, decimal */}

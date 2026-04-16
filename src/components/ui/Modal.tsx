@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useId } from 'react'
 import { X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -27,6 +27,8 @@ export default function Modal({
   maxWidth = 'max-w-[480px]',
   headerContent,
 }: ModalProps) {
+  const titleId = useId()
+
   useEffect(() => {
     if (!isOpen) return
 
@@ -62,7 +64,8 @@ export default function Modal({
         )}
         role="dialog"
         aria-modal="true"
-        aria-label={title}
+        aria-labelledby={title ? `${titleId}-mobile` : undefined}
+        aria-label={!title ? undefined : undefined}
       >
         {/* Drag handle indicator */}
         <div className="flex justify-center py-3">
@@ -73,12 +76,12 @@ export default function Modal({
           ? headerContent
           : title && (
               <div className="flex items-center justify-between px-7 pb-4">
-                <h2 className="text-lg font-semibold text-text-primary">
+                <h2 id={`${titleId}-mobile`} className="text-lg font-semibold text-text-primary">
                   {title}
                 </h2>
                 <button
                   onClick={onClose}
-                  className="rounded-md p-1 text-text-tertiary transition-colors duration-200 hover:text-text-primary"
+                  className="rounded-full p-1 text-text-tertiary transition-colors duration-200 hover:text-text-primary"
                   aria-label="Cerrar"
                 >
                   <X size={20} />
@@ -96,7 +99,7 @@ export default function Modal({
         )}
         role="dialog"
         aria-modal="true"
-        aria-label={title}
+        aria-labelledby={title ? `${titleId}-desktop` : undefined}
       >
         <div
           className={cn(
@@ -110,12 +113,12 @@ export default function Modal({
             ? headerContent
             : title && (
                 <div className="mb-5 flex items-center justify-between">
-                  <h2 className="text-lg font-semibold text-text-primary">
+                  <h2 id={`${titleId}-desktop`} className="text-lg font-semibold text-text-primary">
                     {title}
                   </h2>
                   <button
                     onClick={onClose}
-                    className="rounded-md p-1 text-text-tertiary transition-colors duration-200 hover:text-text-primary"
+                    className="rounded-full p-1 text-text-tertiary transition-colors duration-200 hover:text-text-primary"
                     aria-label="Cerrar"
                   >
                     <X size={20} />
