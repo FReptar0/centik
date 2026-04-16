@@ -39,6 +39,12 @@ A single user can register a financial transaction in under 30 seconds and immed
 
 ### Active
 
+- [ ] Responsive audit + fixes across all pages (v2.1)
+- [ ] DebtCard expansion layout bug on desktop (v2.1)
+- [ ] Touch target compliance (44px minimum) (v2.1)
+
+### Backlog
+
 - [ ] System of value units (UDI, UMA, USD) with configurable rate providers
 - [ ] Asset/investment tracking (PPR, CETES, funds) with MXN conversion
 - [ ] Authentication (NextAuth/Clerk) for multi-user support
