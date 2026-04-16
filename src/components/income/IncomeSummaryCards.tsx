@@ -18,7 +18,7 @@ export default function IncomeSummaryCards({ sources }: IncomeSummaryCardsProps)
   const summary = calculateIncomeSummary(sources)
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-8">
       {SUMMARY_ITEMS.map(({ key, label, Icon }) => (
         <div
           key={key}

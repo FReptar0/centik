@@ -81,7 +81,7 @@ export default function KPIGrid({ kpis }: KPIGridProps) {
   ]
 
   return (
-    <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
       {cards.map((card) => (
         <KPICard key={card.label} {...card} />
       ))}
