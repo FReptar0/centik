@@ -20,7 +20,7 @@ function getFirstError(result: {
 
 // Helper to get error message for a specific path
 function getErrorAtPath(
-  result: { success: false; error: { issues: { message: string; path: (string | number)[] }[] } },
+  result: { success: false; error: { issues: { message: string; path: PropertyKey[] }[] } },
   path: string,
 ): string | undefined {
   const issue = result.error.issues.find((i) => i.path.includes(path))
