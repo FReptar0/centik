@@ -1,5 +1,19 @@
 # Milestones
 
+## v2.1 Responsive Audit + Bug Fixes (Shipped: 2026-04-16)
+
+**Phases completed:** 2 phases (23-24), 4 plans, 12 requirements
+
+**Key accomplishments:**
+- Fixed DebtCard expansion bug — `items-start` on grid prevents adjacent card from resizing when one expands
+- Added `max-w-7xl` containers to Dashboard, Budget, and History pages for wide-screen content constraint
+- Added missing responsive breakpoints across all grids (KPIGrid 3-tier, IncomeSummaryCards sm bridge, debt/chart grids at md)
+- Made all form grids responsive (DebtForm, IncomeSourceForm, CategoryForm, TransactionForm stack on mobile)
+- Enforced 44px minimum touch targets on DebtCard, TransactionRow, and PeriodSelector action buttons
+- Optimized AnnualPivotTable (min-width 900→700px, styled scrollbar hints) and BudgetTable (44px input cells)
+
+---
+
 ## v2.0 Glyph Finance Implementation (Shipped: 2026-04-16)
 
 **Phases completed:** 6 phases (17-22), 17 plans, 39 requirements

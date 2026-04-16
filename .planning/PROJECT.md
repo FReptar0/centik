@@ -37,13 +37,11 @@ A single user can register a financial transaction in under 30 seconds and immed
 - ✓ TransactionForm bottom sheet with custom numpad, category grid, pixel-dissolve — v2.0
 - ✓ WCAG 2.1 AA accessibility audit — ARIA, focus rings, contrast, reduced-motion — v2.0
 
+- ✓ Responsive audit — grid breakpoints, max-width containers, DebtCard expansion fix — v2.1
+- ✓ Touch target compliance (44px minimum) on all action buttons — v2.1
+- ✓ Table mobile optimization — AnnualPivotTable scroll, BudgetTable touch inputs — v2.1
+
 ### Active
-
-- [ ] Responsive audit + fixes across all pages (v2.1)
-- [ ] DebtCard expansion layout bug on desktop (v2.1)
-- [ ] Touch target compliance (44px minimum) (v2.1)
-
-### Backlog
 
 - [ ] System of value units (UDI, UMA, USD) with configurable rate providers
 - [ ] Asset/investment tracking (PPR, CETES, funds) with MXN conversion
@@ -113,6 +111,9 @@ A single user can register a financial transaction in under 30 seconds and immed
 | MoneyAmount shared component | Ensures consistent "$" prefix styling across 8+ components | ✓ Good |
 | Numpad controlled props | Parent manages amount state, Numpad is stateless display+input | ✓ Good |
 | focus:outline-none over outline-none | Preserves keyboard focus rings while hiding mouse focus | ✓ Good |
+| items-start on expandable grids | Prevents adjacent grid items from stretching when one expands | ✓ Good |
+| max-w-7xl for wide pages | Constrains content on 1400px+ screens without centering | ✓ Good |
+| 44px min touch targets | WCAG compliance for all action buttons on mobile | ✓ Good |
 
 ---
-*Last updated: 2026-04-16 after v2.0 milestone*
+*Last updated: 2026-04-16 after v2.1 milestone*
