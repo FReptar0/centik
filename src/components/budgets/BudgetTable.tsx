@@ -111,7 +111,7 @@ export default function BudgetTable({ budgets, onSave, isClosed }: BudgetTablePr
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <div className="ml-auto w-28">
+                    <div className="ml-auto w-28 min-h-[44px] flex items-center">
                       <FloatingInput
                         label=""
                         value={pesoValue}
@@ -143,7 +143,7 @@ export default function BudgetTable({ budgets, onSave, isClosed }: BudgetTablePr
             onClick={handleSave}
             disabled={isPending}
             className={cn(
-              'rounded-full bg-accent px-4 py-2 text-sm font-semibold text-black',
+              'rounded-full bg-accent px-4 py-2 min-h-[44px] text-sm font-semibold text-black',
               'transition-all duration-200 hover:bg-accent-hover active:scale-[0.98]',
               isPending && 'cursor-not-allowed opacity-50',
             )}
