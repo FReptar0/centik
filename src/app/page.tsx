@@ -37,7 +37,7 @@ export default async function HomePage({ searchParams }: PageProps) {
     ])
 
   return (
-    <div className="space-y-8">
+    <div className="max-w-7xl space-y-8">
       <PageHeader
         title="Inicio"
         periodSelector={<PeriodSelector isClosed={period.isClosed} />}

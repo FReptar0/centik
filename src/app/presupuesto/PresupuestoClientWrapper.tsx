@@ -56,7 +56,7 @@ export default function PresupuestoClientWrapper({
   )
 
   return (
-    <div>
+    <div className="max-w-7xl">
       <PageHeader
         title="Presupuesto"
         periodSelector={<PeriodSelector isClosed={isClosed} />}
@@ -75,7 +75,7 @@ export default function PresupuestoClientWrapper({
         }
       />
 
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-8 md:grid-cols-2">
         {/* Left: Configuration */}
         <div className="space-y-6">
           <h2 className="text-lg font-semibold text-text-primary">Configuracion</h2>

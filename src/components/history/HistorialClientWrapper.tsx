@@ -112,7 +112,7 @@ export default function HistorialClientWrapper({
   )
 
   return (
-    <div>
+    <div className="max-w-7xl">
       <PageHeader title="Historial" />
 
       <div className="mb-6 flex justify-center">
