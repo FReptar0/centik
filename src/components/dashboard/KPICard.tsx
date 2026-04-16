@@ -38,7 +38,7 @@ const bgColorMap: Record<SemanticColor, string> = {
 export default function KPICard({ label, value, icon, color, subtitle, hero, rawValue, moneyVariant }: KPICardProps) {
   return (
     <div className={cn(
-      'rounded-lg bg-surface-elevated p-5 transition-all duration-200',
+      'rounded-lg bg-surface-elevated p-6 transition-all duration-200',
       hero && 'dot-matrix-hero',
     )}>
       <div className="relative z-[2]">
@@ -55,13 +55,13 @@ export default function KPICard({ label, value, icon, color, subtitle, hero, raw
         {rawValue ? (
           <MoneyAmount value={rawValue} variant={moneyVariant} size="2xl" className="text-2xl font-bold" />
         ) : (
-          <p className={cn('text-2xl font-bold tabular-nums', textColorMap[color])}>
+          <p className={cn('text-2xl font-bold font-mono tabular-nums', textColorMap[color])}>
             {value}
           </p>
         )}
-        <p className="text-sm font-medium text-text-secondary">{label}</p>
+        <p className="mt-1 text-xs font-medium uppercase tracking-widest text-text-secondary">{label}</p>
         {subtitle ? (
-          <p className="mt-1 text-xs text-text-tertiary">{subtitle}</p>
+          <p className="mt-1 text-[11px] text-text-tertiary">{subtitle}</p>
         ) : null}
       </div>
     </div>

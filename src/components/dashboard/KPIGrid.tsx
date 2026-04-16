@@ -34,6 +34,15 @@ function getDebtToIncomeColor(ratio: number): KPICardProps['color'] {
 export default function KPIGrid({ kpis }: KPIGridProps) {
   const cards: KPICardProps[] = [
     {
+      label: 'Disponible',
+      value: formatMoney(kpis.available),
+      rawValue: kpis.available,
+      moneyVariant: Number(kpis.available) >= 0 ? 'income' : 'expense',
+      icon: 'wallet',
+      color: getAvailableColor(kpis.available),
+      hero: true,
+    },
+    {
       label: 'Ingreso Mensual',
       value: formatMoney(kpis.monthlyEstimatedIncome),
       rawValue: kpis.monthlyEstimatedIncome,
@@ -48,14 +57,6 @@ export default function KPIGrid({ kpis }: KPIGridProps) {
       moneyVariant: 'expense',
       icon: 'trending-down',
       color: 'negative',
-    },
-    {
-      label: 'Disponible',
-      value: formatMoney(kpis.available),
-      rawValue: kpis.available,
-      moneyVariant: Number(kpis.available) >= 0 ? 'income' : 'expense',
-      icon: 'wallet',
-      color: getAvailableColor(kpis.available),
     },
     {
       label: 'Deuda Total',
@@ -80,9 +81,9 @@ export default function KPIGrid({ kpis }: KPIGridProps) {
   ]
 
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-      {cards.map((card, index) => (
-        <KPICard key={card.label} {...card} hero={index < 2} />
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+      {cards.map((card) => (
+        <KPICard key={card.label} {...card} />
       ))}
     </div>
   )

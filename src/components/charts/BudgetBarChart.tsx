@@ -50,16 +50,16 @@ function CustomTooltip({
 
   return (
     <div
-      className="rounded-lg border-0 p-3 text-xs"
+      className="rounded-md border-0 p-3 text-xs"
       style={{
         backgroundColor: CHART_COLORS.tooltipBg,
       }}
     >
       <p className="font-medium text-text-primary mb-1">{data.name}</p>
-      <p className="text-text-secondary">
+      <p className="font-mono text-text-secondary">
         Presupuesto: {formatMoney(data.budgetStr)}
       </p>
-      <p className="text-text-secondary">
+      <p className="font-mono text-text-secondary">
         Gastado: {formatMoney(data.spentStr)}
       </p>
       <p className="text-text-tertiary mt-1">{percentUsed}% usado</p>

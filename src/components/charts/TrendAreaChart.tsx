@@ -46,16 +46,16 @@ function CustomTooltip({
 
   return (
     <div
-      className="rounded-lg border-0 p-3 text-xs"
+      className="rounded-md border-0 p-3 text-xs"
       style={{
         backgroundColor: CHART_COLORS.tooltipBg,
       }}
     >
       <p className="font-medium text-text-primary mb-1">{data.monthName}</p>
-      <p style={{ color: CHART_COLORS.positive }}>
+      <p className="font-mono" style={{ color: CHART_COLORS.positive }}>
         Ingresos: {formatMoney(data.incomeStr)}
       </p>
-      <p style={{ color: CHART_COLORS.negative }}>
+      <p className="font-mono" style={{ color: CHART_COLORS.negative }}>
         Gastos: {formatMoney(data.expensesStr)}
       </p>
     </div>
@@ -147,7 +147,7 @@ export default function TrendAreaChart({ data }: TrendAreaChartProps) {
             fill="url(#incomeGradient)"
             name="Ingresos"
             dot={{ r: 2, fill: CHART_COLORS.positive, strokeWidth: 0 }}
-            activeDot={{ r: 3, fill: CHART_COLORS.positive, strokeWidth: 0 }}
+            activeDot={{ r: 4, fill: CHART_COLORS.positive, strokeWidth: 0 }}
           />
           <Area
             type="monotone"
@@ -157,7 +157,7 @@ export default function TrendAreaChart({ data }: TrendAreaChartProps) {
             fill="url(#expensesGradient)"
             name="Gastos"
             dot={{ r: 2, fill: CHART_COLORS.negative, strokeWidth: 0 }}
-            activeDot={{ r: 3, fill: CHART_COLORS.negative, strokeWidth: 0 }}
+            activeDot={{ r: 4, fill: CHART_COLORS.negative, strokeWidth: 0 }}
           />
         </AreaChart>
       </ResponsiveContainer>

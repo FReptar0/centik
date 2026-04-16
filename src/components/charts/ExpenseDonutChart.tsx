@@ -39,13 +39,13 @@ function CustomTooltip({
 
   return (
     <div
-      className="rounded-lg border-0 p-3 text-xs"
+      className="rounded-md border-0 p-3 text-xs"
       style={{
         backgroundColor: CHART_COLORS.tooltipBg,
       }}
     >
       <p className="font-medium text-text-primary mb-1">{data.name}</p>
-      <p className="text-text-secondary">
+      <p className="font-mono text-text-secondary">
         {formatMoney(data.originalTotal)}
       </p>
       <p className="text-text-tertiary mt-1">{percentage}%</p>
@@ -84,6 +84,7 @@ function CenterLabel({
         fill="#E8E8E8"
         fontSize="14"
         fontWeight="600"
+        style={{ fontFamily: "'IBM Plex Mono', 'Fira Code', monospace" }}
       >
         {formatMoney(totalStr)}
       </tspan>
@@ -162,7 +163,7 @@ export default function ExpenseDonutChart({ data }: ExpenseDonutChartProps) {
               style={{ backgroundColor: d.color }}
             />
             <span className="text-xs text-text-secondary">{d.name}</span>
-            <span className="text-xs tabular-nums text-text-tertiary">
+            <span className="text-xs font-mono tabular-nums text-text-tertiary">
               {formatMoney(d.total)}
             </span>
           </div>
