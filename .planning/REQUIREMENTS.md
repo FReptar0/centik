@@ -28,8 +28,8 @@ Requirements for responsive audit and bug fixes. Every page must work correctly 
 
 ### Table Optimization
 
-- [ ] **TABLE-01**: AnnualPivotTable min-w-[900px] forces horizontal scroll on any screen < 900px. No mobile strategy — consider hiding some months or showing fewer columns.
-- [ ] **TABLE-02**: BudgetTable input fields in cells need min-height for touch accessibility.
+- [x] **TABLE-01**: AnnualPivotTable min-w-[900px] forces horizontal scroll on any screen < 900px. No mobile strategy — consider hiding some months or showing fewer columns.
+- [x] **TABLE-02**: BudgetTable input fields in cells need min-height for touch accessibility.
 
 ## Out of Scope
 
@@ -53,8 +53,8 @@ Requirements for responsive audit and bug fixes. Every page must work correctly 
 | TOUCH-01 | Phase 24 | Pending |
 | TOUCH-02 | Phase 24 | Pending |
 | TOUCH-03 | Phase 24 | Pending |
-| TABLE-01 | Phase 24 | Pending |
-| TABLE-02 | Phase 24 | Pending |
+| TABLE-01 | Phase 24 | Complete |
+| TABLE-02 | Phase 24 | Complete |
 
 **Coverage:**
 - v2.1 requirements: 12 total
