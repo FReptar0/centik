@@ -95,14 +95,14 @@ function CategoryRow({ category }: CategoryRowProps) {
   return (
     <div
       className={cn(
-        'flex items-center gap-4 rounded-lg bg-surface-elevated p-4',
+        'flex items-center gap-4 rounded-2xl bg-surface-elevated p-4',
         'transition-all duration-200',
       )}
     >
-      {/* Icon circle with category color at 15% opacity */}
+      {/* Icon container with category color at 12% opacity (hex 1F) */}
       <div
-        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-        style={{ backgroundColor: `${category.color}26` }}
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
+        style={{ backgroundColor: `${category.color}1F` }}
       >
         <DynamicIcon
           name={category.icon}
@@ -123,7 +123,7 @@ function CategoryRow({ category }: CategoryRowProps) {
         </div>
         <span
           className={cn(
-            'text-[11px] font-semibold uppercase tracking-wide',
+            'text-[11px] font-semibold uppercase tracking-[2px]',
             'px-2 py-0.5 rounded-full inline-block mt-0.5',
             typeInfo.className,
           )}

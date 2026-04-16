@@ -143,7 +143,7 @@ function CategoryFormContent({ onClose }: FormContentProps) {
 
       {/* Icon selector */}
       <div>
-        <span className="block text-xs font-medium text-text-secondary tracking-wide uppercase mb-1.5">
+        <span className="block text-xs font-medium text-text-secondary tracking-[2px] uppercase mb-1.5">
           Icono
         </span>
         <div className="grid grid-cols-4 gap-2">
@@ -153,7 +153,7 @@ function CategoryFormContent({ onClose }: FormContentProps) {
               type="button"
               onClick={() => setIcon(iconName)}
               className={cn(
-                'flex flex-col items-center gap-1 rounded-lg border px-2 py-2.5',
+                'flex flex-col items-center gap-1 rounded-xl border px-2 py-2.5',
                 'transition-all duration-200',
                 icon === iconName
                   ? 'bg-accent/15 border-accent ring-1 ring-accent'
@@ -185,7 +185,7 @@ function CategoryFormContent({ onClose }: FormContentProps) {
 
       {/* Color selector */}
       <div>
-        <span className="block text-xs font-medium text-text-secondary tracking-wide uppercase mb-1.5">
+        <span className="block text-xs font-medium text-text-secondary tracking-[2px] uppercase mb-1.5">
           Color
         </span>
         <div className="flex flex-wrap gap-2">
@@ -197,7 +197,7 @@ function CategoryFormContent({ onClose }: FormContentProps) {
               className={cn(
                 'h-8 w-8 rounded-full transition-all duration-200',
                 color === hex
-                  ? 'ring-2 ring-offset-2 ring-offset-bg-primary ring-accent'
+                  ? 'ring-2 ring-offset-2 ring-offset-bg ring-accent'
                   : 'hover:scale-110',
               )}
               style={{ backgroundColor: hex }}

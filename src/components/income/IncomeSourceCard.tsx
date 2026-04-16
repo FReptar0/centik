@@ -3,10 +3,12 @@
 import { useState, useEffect, useCallback } from 'react'
 import { toast } from 'sonner'
 import { Pencil, Trash2 } from 'lucide-react'
-import { cn, formatMoney } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { getMonthlyEquivalent } from '@/lib/income'
 import { deleteIncomeSource } from '@/app/ingresos/actions'
 import { FREQUENCY_DISPLAY } from '@/lib/constants'
+import MoneyAmount from '@/components/ui/MoneyAmount'
+import DynamicIcon from '@/components/ui/DynamicIcon'
 import type { SerializedIncomeSource } from '@/types'
 
 interface IncomeSourceCardProps {
@@ -20,6 +22,10 @@ export default function IncomeSourceCard({ source, onEdit }: IncomeSourceCardPro
 
   const monthlyAmount = getMonthlyEquivalent(source.defaultAmount, source.frequency)
   const isVariable = source.frequency === 'VARIABLE'
+
+  /** Icon and color per type (Phase 17 decision: Empleo #6BAF8E, Freelance #7AACB8) */
+  const typeIcon = source.type === 'EMPLOYMENT' ? 'briefcase' : source.type === 'FREELANCE' ? 'laptop' : 'banknote'
+  const typeColor = source.type === 'EMPLOYMENT' ? '#6BAF8E' : source.type === 'FREELANCE' ? '#7AACB8' : '#8A9099'
 
   useEffect(() => {
     if (!confirmingDelete) return
@@ -54,42 +60,55 @@ export default function IncomeSourceCard({ source, onEdit }: IncomeSourceCardPro
 
   return (
     <div className={cn(
-      'rounded-lg bg-surface-elevated p-5',
+      'rounded-2xl bg-surface-elevated p-5',
       'transition-all duration-200',
     )}>
-      {/* Top row: name + type badge */}
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-lg font-semibold text-text-primary">{source.name}</h3>
-        <span className="text-[11px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-accent-subtle text-accent">
-          {source.type === 'EMPLOYMENT' ? 'Empleo' : source.type === 'FREELANCE' ? 'Freelance' : 'Otro'}
-        </span>
-      </div>
-
-      {/* Middle row: amount + monthly equivalent */}
-      <div className="mb-4">
-        <div className="flex items-baseline gap-2">
-          <span className="text-2xl font-bold text-text-primary tabular-nums">
-            {formatMoney(source.defaultAmount)}
-          </span>
-          {isVariable && (
-            <span className="text-sm text-accent">(estimado)</span>
-          )}
+      {/* Top row: icon + name + type label */}
+      <div className="flex items-center gap-3 mb-3">
+        {/* Circular icon container with category color at 12% opacity */}
+        <div
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+          style={{ backgroundColor: `${typeColor}1F` }}
+        >
+          <DynamicIcon
+            name={typeIcon}
+            size={18}
+            style={{ color: typeColor }}
+            aria-hidden="true"
+          />
         </div>
-        <p className="text-sm tabular-nums text-text-secondary mt-1">
-          Mensual: {formatMoney(monthlyAmount)}
-        </p>
-      </div>
-
-      {/* Bottom row: frequency badge + actions */}
-      <div className="flex items-center justify-between">
+        <div className="flex-1 min-w-0">
+          <h3 className="text-sm font-medium text-text-primary truncate">{source.name}</h3>
+          <span className="text-xs font-medium uppercase tracking-[2px] text-text-secondary">
+            {source.type === 'EMPLOYMENT' ? 'Empleo' : source.type === 'FREELANCE' ? 'Freelance' : 'Otro'}
+          </span>
+        </div>
+        {/* Frequency badge */}
         <span className={cn(
-          'text-[11px] font-semibold uppercase tracking-wide',
-          'px-2 py-0.5 rounded-full',
+          'text-[11px] font-semibold uppercase tracking-[2px]',
+          'px-2 py-0.5 rounded-full shrink-0',
           'bg-positive-subtle text-positive',
         )}>
           {FREQUENCY_DISPLAY[source.frequency] ?? source.frequency}
         </span>
+      </div>
 
+      {/* Amount row: MoneyAmount with positive color */}
+      <div className="mb-3">
+        <div className="flex items-baseline gap-2">
+          <MoneyAmount value={source.defaultAmount} variant="income" size="xl" className="text-xl font-bold" />
+          {isVariable && (
+            <span className="text-sm text-accent">(estimado)</span>
+          )}
+        </div>
+        <p className="text-xs font-medium uppercase tracking-[2px] text-text-secondary mt-1">
+          Mensual: <span className="font-mono tabular-nums normal-case tracking-normal">{' '}</span>
+          <MoneyAmount value={monthlyAmount} variant="income" size="sm" className="text-xs" />
+        </p>
+      </div>
+
+      {/* Actions row */}
+      <div className="flex items-center justify-end">
         <div className="flex items-center gap-2">
           {confirmingDelete ? (
             <div className="flex items-center gap-2 text-sm">

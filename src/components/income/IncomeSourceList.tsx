@@ -34,7 +34,7 @@ export default function IncomeSourceList({ sources, onEdit, onAdd }: IncomeSourc
   }
 
   return (
-    <div className="space-y-4">
+    <div className="divide-y divide-border-divider">
       {sources.map((source) => (
         <IncomeSourceCard key={source.id} source={source} onEdit={onEdit} />
       ))}

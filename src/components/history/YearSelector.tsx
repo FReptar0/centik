@@ -41,7 +41,7 @@ export default function YearSelector({
         disabled={isAtMin}
         aria-label="Ano anterior"
         className={cn(
-          'p-2 rounded-lg',
+          'p-2 rounded-full',
           'text-accent hover:text-accent-hover',
           'transition-colors duration-200',
           isAtMin && 'opacity-30 cursor-not-allowed hover:text-accent',
@@ -60,7 +60,7 @@ export default function YearSelector({
         disabled={isAtMax}
         aria-label="Ano siguiente"
         className={cn(
-          'p-2 rounded-lg',
+          'p-2 rounded-full',
           'text-accent hover:text-accent-hover',
           'transition-colors duration-200',
           isAtMax && 'opacity-30 cursor-not-allowed hover:text-accent',

@@ -38,7 +38,7 @@ export default function IngresosClientWrapper({ sources }: IngresosClientWrapper
         action={
           <button
             onClick={handleAdd}
-            className="flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-bg-primary transition-colors duration-200 hover:bg-accent-hover"
+            className="flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-black transition-all duration-200 hover:bg-accent-hover active:scale-[0.98]"
           >
             <Plus size={16} />
             Agregar

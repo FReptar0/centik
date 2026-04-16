@@ -165,7 +165,7 @@ function IncomeSourceFormContent({ source, onClose }: FormContentProps) {
 
       {/* Frequency radio group */}
       <div>
-        <span className="block text-xs font-medium text-text-secondary tracking-wide uppercase mb-1.5">
+        <span className="block text-xs font-medium text-text-secondary tracking-[2px] uppercase mb-1.5">
           Frecuencia
         </span>
         <div className="grid grid-cols-2 gap-2">
@@ -192,7 +192,7 @@ function IncomeSourceFormContent({ source, onClose }: FormContentProps) {
 
       {/* Type radio group */}
       <div>
-        <span className="block text-xs font-medium text-text-secondary tracking-wide uppercase mb-1.5">
+        <span className="block text-xs font-medium text-text-secondary tracking-[2px] uppercase mb-1.5">
           Tipo
         </span>
         <div className="grid grid-cols-3 gap-2">
