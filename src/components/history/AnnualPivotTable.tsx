@@ -54,8 +54,8 @@ export default function AnnualPivotTable({
   const annualTotals = computeAnnualTotals(data)
 
   return (
-    <div className="overflow-x-auto rounded-2xl bg-surface-elevated">
-      <table className="w-full min-w-[900px] text-sm">
+    <div className="overflow-x-auto rounded-2xl bg-surface-elevated [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-text-tertiary/30">
+      <table className="w-full min-w-[700px] text-sm">
         <thead>
           <tr className="border-b border-border-divider bg-bg">
             {/* Sticky first column header */}
@@ -72,7 +72,7 @@ export default function AnnualPivotTable({
                 <th
                   key={monthName}
                   scope="col"
-                  className="px-3 py-3 text-center text-xs font-medium uppercase tracking-[2px] text-text-secondary"
+                  className="px-2 py-3 text-center text-xs font-medium uppercase tracking-[2px] text-text-secondary"
                 >
                   <div className="flex flex-col items-center gap-1">
                     <span className="flex items-center gap-1">
@@ -113,7 +113,7 @@ export default function AnnualPivotTable({
                 </th>
               )
             })}
-            <th scope="col" className="px-3 py-3 text-center text-xs font-medium uppercase tracking-[2px] text-accent">
+            <th scope="col" className="px-2 py-3 text-center text-xs font-medium uppercase tracking-[2px] text-accent">
               Total Anual
             </th>
           </tr>
@@ -128,13 +128,13 @@ export default function AnnualPivotTable({
               {data.map((slot, idx) => (
                 <td
                   key={idx}
-                  className="px-3 py-3 text-center font-mono tabular-nums text-sm"
+                  className="px-2 py-3 text-center font-mono tabular-nums text-sm"
                 >
                   {renderCellValue(label, slot)}
                 </td>
               ))}
               {/* Annual total column */}
-              <td className="px-3 py-3 text-center font-mono tabular-nums text-sm font-semibold">
+              <td className="px-2 py-3 text-center font-mono tabular-nums text-sm font-semibold">
                 {renderAnnualTotal(label, annualTotals)}
               </td>
             </tr>
