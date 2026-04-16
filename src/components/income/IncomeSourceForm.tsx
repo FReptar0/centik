@@ -168,7 +168,7 @@ function IncomeSourceFormContent({ source, onClose }: FormContentProps) {
         <span className="block text-xs font-medium text-text-secondary tracking-[2px] uppercase mb-1.5">
           Frecuencia
         </span>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {FREQUENCY_VALUES.map((freq) => (
             <button
               key={freq}
@@ -195,7 +195,7 @@ function IncomeSourceFormContent({ source, onClose }: FormContentProps) {
         <span className="block text-xs font-medium text-text-secondary tracking-[2px] uppercase mb-1.5">
           Tipo
         </span>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
           {INCOME_SOURCE_TYPES.map((t) => (
             <button
               key={t}

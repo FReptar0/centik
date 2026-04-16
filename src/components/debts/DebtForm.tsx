@@ -206,7 +206,7 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
         <span className="block text-xs font-medium text-text-secondary tracking-[2px] uppercase mb-1.5">
           Tipo
         </span>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {DEBT_TYPE_VALUES.map((t) => (
             <button
               key={t}
@@ -268,7 +268,7 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
             prefix="$"
             error={errors.minimumPayment?.[0]}
           />
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <FloatingInput
               label="Dia de corte"
               value={cutOffDay}

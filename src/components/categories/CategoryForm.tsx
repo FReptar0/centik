@@ -146,7 +146,7 @@ function CategoryFormContent({ onClose }: FormContentProps) {
         <span className="block text-xs font-medium text-text-secondary tracking-[2px] uppercase mb-1.5">
           Icono
         </span>
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {PRESET_ICONS.map((iconName) => (
             <button
               key={iconName}

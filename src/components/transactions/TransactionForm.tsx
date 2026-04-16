@@ -225,7 +225,7 @@ function TransactionFormContent({
 
         {/* Section 3: Category Grid */}
         <div>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
             {filteredCategories.map((cat) => (
               <button
                 key={cat.id}
