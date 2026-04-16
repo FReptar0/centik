@@ -43,23 +43,23 @@ Requirements for responsive audit and bug fixes. Every page must work correctly 
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BUG-01 | — | Pending |
-| BUG-02 | — | Pending |
-| RESP-01 | — | Pending |
-| RESP-02 | — | Pending |
-| RESP-03 | — | Pending |
-| RESP-04 | — | Pending |
-| RESP-05 | — | Pending |
-| TOUCH-01 | — | Pending |
-| TOUCH-02 | — | Pending |
-| TOUCH-03 | — | Pending |
-| TABLE-01 | — | Pending |
-| TABLE-02 | — | Pending |
+| BUG-01 | Phase 23 | Pending |
+| BUG-02 | Phase 23 | Pending |
+| RESP-01 | Phase 23 | Pending |
+| RESP-02 | Phase 23 | Pending |
+| RESP-03 | Phase 23 | Pending |
+| RESP-04 | Phase 23 | Pending |
+| RESP-05 | Phase 23 | Pending |
+| TOUCH-01 | Phase 24 | Pending |
+| TOUCH-02 | Phase 24 | Pending |
+| TOUCH-03 | Phase 24 | Pending |
+| TABLE-01 | Phase 24 | Pending |
+| TABLE-02 | Phase 24 | Pending |
 
 **Coverage:**
 - v2.1 requirements: 12 total
-- Mapped to phases: 0
-- Unmapped: 12 (awaiting roadmap)
+- Mapped to phases: 12
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-16*
