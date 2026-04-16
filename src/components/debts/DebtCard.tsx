@@ -262,7 +262,7 @@ function CreditCardDetails({ debt, metrics }: DetailsProps) {
       </div>
 
       {/* Metrics grid */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {debt.minimumPayment !== null && (
           <MetricItem label="Pago minimo" value={<MoneyAmount value={debt.minimumPayment} size="sm" />} />
         )}
@@ -302,7 +302,7 @@ function LoanDetails({ debt, metrics }: DetailsProps) {
       </div>
 
       {/* Metrics grid */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {debt.monthlyPayment !== null && (
           <MetricItem label="Mensualidad" value={<MoneyAmount value={debt.monthlyPayment} size="sm" />} />
         )}

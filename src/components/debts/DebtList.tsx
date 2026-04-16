@@ -31,7 +31,7 @@ export default function DebtList({ debts, onEdit, onAdd }: DebtListProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 items-start">
       {debts.map((debt) => (
         <DebtCard key={debt.id} debt={debt} onEdit={onEdit} />
       ))}

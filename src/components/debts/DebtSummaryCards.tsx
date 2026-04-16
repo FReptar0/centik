@@ -21,7 +21,7 @@ export default function DebtSummaryCards({ debts, monthlyIncome }: DebtSummaryCa
   const dtiColor = getDebtToIncomeColor(summary.debtToIncomeRatio)
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
       {/* Total Debt */}
       <div className="rounded-lg bg-surface-elevated p-5">
         <p className="text-xs font-medium text-text-secondary uppercase tracking-[2px] mb-1">Deuda Total</p>
