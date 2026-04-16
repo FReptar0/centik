@@ -77,7 +77,7 @@ export default function PresupuestoClientWrapper({
 
       <div className="grid gap-8 md:grid-cols-2">
         {/* Left: Configuration */}
-        <div className="space-y-6">
+        <div className="space-y-6 min-w-0">
           <h2 className="text-lg font-semibold text-text-primary">Configuracion</h2>
           <BudgetSummaryRow budgets={budgets} quincenalIncome={quincenalIncome} />
           <BudgetTable budgets={budgets} onSave={handleSave} isClosed={isClosed} />

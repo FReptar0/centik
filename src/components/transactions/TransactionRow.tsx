@@ -101,7 +101,7 @@ export default function TransactionRow({ transaction, onEdit, isNew }: Transacti
       </div>
 
       {/* Amount + actions */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 sm:gap-2 shrink-0">
         {confirmingDelete ? (
           <div className="flex items-center gap-2 text-sm">
             <span className="text-text-secondary">Eliminar?</span>
@@ -121,7 +121,7 @@ export default function TransactionRow({ transaction, onEdit, isNew }: Transacti
           </div>
         ) : (
           <>
-            <span className={cn('font-mono text-sm font-semibold tabular-nums', isIncome ? 'text-positive' : 'text-negative')}>
+            <span className={cn('font-mono text-xs sm:text-sm font-semibold tabular-nums', isIncome ? 'text-positive' : 'text-negative')}>
               {isIncome ? '+' : '-'}
             </span>
             <MoneyAmount
@@ -131,14 +131,14 @@ export default function TransactionRow({ transaction, onEdit, isNew }: Transacti
             />
             <button
               onClick={() => onEdit(transaction)}
-              className="rounded-full p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-text-tertiary transition-all duration-200 hover:text-text-primary hover:bg-surface-hover active:scale-[0.98]"
+              className="hidden sm:flex rounded-full p-2 min-w-[44px] min-h-[44px] items-center justify-center text-text-tertiary transition-all duration-200 hover:text-text-primary hover:bg-surface-hover active:scale-[0.98]"
               aria-label="Editar"
             >
               <Pencil size={16} />
             </button>
             <button
               onClick={() => setConfirmingDelete(true)}
-              className="rounded-full p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-text-tertiary transition-all duration-200 hover:text-negative hover:bg-negative/10 active:scale-[0.98]"
+              className="hidden sm:flex rounded-full p-2 min-w-[44px] min-h-[44px] items-center justify-center text-text-tertiary transition-all duration-200 hover:text-negative hover:bg-negative/10 active:scale-[0.98]"
               aria-label="Eliminar"
             >
               <Trash2 size={16} />

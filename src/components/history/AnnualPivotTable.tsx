@@ -54,7 +54,7 @@ export default function AnnualPivotTable({
   const annualTotals = computeAnnualTotals(data)
 
   return (
-    <div className="overflow-x-auto rounded-2xl bg-surface-elevated [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-text-tertiary/30">
+    <div className="overflow-x-auto rounded-2xl bg-surface-elevated [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-text-tertiary/30 max-w-full">
       <table className="w-full min-w-[700px] text-sm">
         <thead>
           <tr className="border-b border-border-divider bg-bg">

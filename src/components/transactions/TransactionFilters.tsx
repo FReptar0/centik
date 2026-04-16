@@ -125,7 +125,7 @@ export default function TransactionFilters({
     'bg-surface-elevated text-text-secondary border-border-divider'
 
   return (
-    <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-4">
+    <div className="flex flex-wrap items-center gap-2 pb-2 mb-4">
       {/* Type chips */}
       <button
         type="button"
@@ -208,13 +208,13 @@ export default function TransactionFilters({
       </div>
 
       {/* Date range inputs */}
-      <div className="flex items-center gap-1.5 shrink-0">
+      <div className="flex items-center gap-1.5">
         <FloatingInput
           type="date"
           label="Desde"
           value={activeFilters.startDate ?? ''}
           onChange={(v) => setDateFilter('startDate', v)}
-          className="w-36"
+          className="w-28 sm:w-36"
         />
         <span className="text-text-tertiary text-xs">-</span>
         <FloatingInput
@@ -222,7 +222,7 @@ export default function TransactionFilters({
           label="Hasta"
           value={activeFilters.endDate ?? ''}
           onChange={(v) => setDateFilter('endDate', v)}
-          className="w-36"
+          className="w-28 sm:w-36"
         />
       </div>
 

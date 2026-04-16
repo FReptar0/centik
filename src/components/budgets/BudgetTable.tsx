@@ -75,7 +75,7 @@ export default function BudgetTable({ budgets, onSave, isClosed }: BudgetTablePr
               <th scope="col" className="bg-bg px-4 py-3 text-right text-xs font-medium uppercase tracking-[2px] text-text-secondary">
                 Quincenal
               </th>
-              <th scope="col" className="bg-bg px-4 py-3 text-right text-xs font-medium uppercase tracking-[2px] text-text-secondary">
+              <th scope="col" className="hidden bg-bg px-4 py-3 text-right text-xs font-medium uppercase tracking-[2px] text-text-secondary xl:table-cell">
                 Mensual
               </th>
               <th scope="col" className="hidden bg-bg px-4 py-3 text-right text-xs font-medium uppercase tracking-[2px] text-text-secondary lg:table-cell">
@@ -121,7 +121,7 @@ export default function BudgetTable({ budgets, onSave, isClosed }: BudgetTablePr
                       />
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-right text-sm font-mono tabular-nums text-text-secondary whitespace-nowrap">
+                  <td className="hidden px-4 py-3 text-right text-sm font-mono tabular-nums text-text-secondary whitespace-nowrap xl:table-cell">
                     {calculateMultiplied(pesoValue, 2)}
                   </td>
                   <td className="hidden px-4 py-3 text-right text-sm font-mono tabular-nums text-text-secondary whitespace-nowrap lg:table-cell">
