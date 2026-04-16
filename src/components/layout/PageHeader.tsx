@@ -25,7 +25,7 @@ export default function PageHeader({
     <header className="mb-6">
       {/* Top row: title + action */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-text-primary">{title}</h1>
+        <h1 className="text-xl font-semibold text-text-primary">{title}</h1>
         {action && <div data-testid="page-header-action">{action}</div>}
       </div>
 

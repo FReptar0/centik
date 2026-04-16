@@ -38,7 +38,7 @@ export default function MobileMoreSheet({
       <div
         className={cn(
           'fixed inset-x-0 bottom-0 z-50 md:hidden',
-          'bg-surface-elevated rounded-t-xl border-t border-border-divider',
+          'bg-surface-elevated rounded-t-xl',
         )}
         role="dialog"
         aria-modal="true"

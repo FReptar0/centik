@@ -63,7 +63,7 @@ export default function PeriodSelector({ isClosed = false }: PeriodSelectorProps
         <ChevronLeft size={16} aria-hidden="true" />
       </button>
 
-      <span className="text-sm font-medium text-text-primary flex items-center gap-1.5">
+      <span className="text-sm font-medium text-text-secondary flex items-center gap-1.5">
         {isClosed && (
           <Lock
             size={14}

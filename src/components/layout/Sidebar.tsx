@@ -21,7 +21,7 @@ export default function Sidebar() {
       className={cn(
         'fixed inset-y-0 left-0 z-30',
         'hidden md:flex md:w-16 lg:w-60',
-        'flex-col bg-surface-elevated border-r border-border-divider',
+        'flex-col bg-surface border-r border-border-divider',
       )}
     >
       {/* App name header */}

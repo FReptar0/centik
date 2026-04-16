@@ -40,7 +40,7 @@ export default function FAB() {
         onClick={handleOpen}
         className={cn(
           'fixed z-40',
-          'bottom-20 right-4 md:bottom-6 md:right-6',
+          'bottom-20 left-1/2 -translate-x-1/2 md:bottom-6 md:right-6 md:left-auto md:translate-x-0',
           'flex h-12 w-12 items-center justify-center',
           'rounded-full bg-accent',
           'hover:bg-accent-hover hover:scale-105',
