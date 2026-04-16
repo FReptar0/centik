@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Glyph Finance Implementation
 current_phase: 22
-current_plan: 2
+current_plan: 3
 status: executing
-stopped_at: Completed 22-01-PLAN.md
-last_updated: "2026-04-16T02:30:57.761Z"
+stopped_at: Completed 22-02-PLAN.md
+last_updated: "2026-04-16T02:32:06.112Z"
 last_activity: 2026-04-16
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 17
-  completed_plans: 15
+  completed_plans: 16
   percent: 94
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 ## Current Position
 
 **Current Phase:** 22
-**Current Plan:** 2
+**Current Plan:** 3
 **Total Plans in Phase:** 3
 **Status:** Ready to execute
 **Last Activity:** 2026-04-16
@@ -71,6 +71,7 @@ Progress: [█████████░] 94%
 | Phase 21 P02 | 7min | 2 tasks | 8 files |
 | Phase 21 P03 | 4min | 2 tasks | 2 files |
 | Phase 22 P01 | 5min | 3 tasks | 13 files |
+| Phase 22 P02 | 7min | 2 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -115,6 +116,9 @@ Recent decisions affecting current work:
 - [Phase 21]: formatAmountDisplay uses es-MX locale for comma-separated hero zone display
 - [Phase 22]: Disponible (balance) card promoted to hero position with dot-matrix texture as sole dashboard hero card
 - [Phase 22]: FAB centered on mobile (left-1/2 -translate-x-1/2) per UX_RULES 3.2; right-aligned on desktop
+- [Phase 22]: Icon containers use hex 1F (12.2% opacity) for closer match to 12% spec
+- [Phase 22]: Label style consistency: tracking-[2px] replaces tracking-wide across all feature pages
+- [Phase 22]: Numpad gets bg-surface container for proper surface contrast between keys and background
 
 ### Pending Todos
 
@@ -127,6 +131,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-16T02:30:57.758Z
-Stopped at: Completed 22-01-PLAN.md
+Last session: 2026-04-16T02:32:06.107Z
+Stopped at: Completed 22-02-PLAN.md
 Resume file: None
