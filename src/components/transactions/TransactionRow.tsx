@@ -131,14 +131,14 @@ export default function TransactionRow({ transaction, onEdit, isNew }: Transacti
             />
             <button
               onClick={() => onEdit(transaction)}
-              className="rounded-full p-2 text-text-tertiary transition-all duration-200 hover:text-text-primary hover:bg-surface-hover active:scale-[0.98]"
+              className="rounded-full p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-text-tertiary transition-all duration-200 hover:text-text-primary hover:bg-surface-hover active:scale-[0.98]"
               aria-label="Editar"
             >
               <Pencil size={16} />
             </button>
             <button
               onClick={() => setConfirmingDelete(true)}
-              className="rounded-full p-2 text-text-tertiary transition-all duration-200 hover:text-negative hover:bg-negative/10 active:scale-[0.98]"
+              className="rounded-full p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-text-tertiary transition-all duration-200 hover:text-negative hover:bg-negative/10 active:scale-[0.98]"
               aria-label="Eliminar"
             >
               <Trash2 size={16} />
