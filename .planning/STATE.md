@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Glyph Finance Implementation
 current_phase: 22
-current_plan: Not started
-status: planning
-stopped_at: Completed 21-03-PLAN.md
-last_updated: "2026-04-16T02:04:20.888Z"
+current_plan: 2
+status: executing
+stopped_at: Completed 22-01-PLAN.md
+last_updated: "2026-04-16T02:30:57.761Z"
 last_activity: 2026-04-16
 progress:
   total_phases: 6
   completed_phases: 5
-  total_plans: 14
-  completed_plans: 14
+  total_plans: 17
+  completed_plans: 15
   percent: 94
 ---
 
@@ -23,14 +23,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-06)
 
 **Core value:** A single user can register a financial transaction in under 30 seconds and immediately see how it impacts their budget, debt ratio, and savings rate across all views.
-**Current focus:** Phase 21 -- TransactionForm + Custom Numpad
+**Current focus:** Phase 22 -- Visual QA and Accessibility
 
 ## Current Position
 
 **Current Phase:** 22
-**Current Plan:** Not started
+**Current Plan:** 2
 **Total Plans in Phase:** 3
-**Status:** Ready to plan
+**Status:** Ready to execute
 **Last Activity:** 2026-04-16
 
 Progress: [█████████░] 94%
@@ -70,6 +70,7 @@ Progress: [█████████░] 94%
 | Phase 21 P01 | 7min | 2 tasks | 2 files |
 | Phase 21 P02 | 7min | 2 tasks | 8 files |
 | Phase 21 P03 | 4min | 2 tasks | 2 files |
+| Phase 22 P01 | 5min | 3 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -112,6 +113,8 @@ Recent decisions affecting current work:
 - [Phase 21]: TransactionFormContent renders Modal directly (owns headerContent with access to save state)
 - [Phase 21]: handleSave via onClick (not form onSubmit) since GUARDAR is in headerContent outside form DOM
 - [Phase 21]: formatAmountDisplay uses es-MX locale for comma-separated hero zone display
+- [Phase 22]: Disponible (balance) card promoted to hero position with dot-matrix texture as sole dashboard hero card
+- [Phase 22]: FAB centered on mobile (left-1/2 -translate-x-1/2) per UX_RULES 3.2; right-aligned on desktop
 
 ### Pending Todos
 
@@ -124,6 +127,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-15T23:18:26.863Z
-Stopped at: Completed 21-03-PLAN.md
+Last session: 2026-04-16T02:30:57.758Z
+Stopped at: Completed 22-01-PLAN.md
 Resume file: None

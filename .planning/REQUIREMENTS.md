@@ -48,13 +48,13 @@ Requirements for Glyph Finance code implementation. 10/10 quality bar -- anythin
 
 ### Visual QA
 
-- [ ] **QA-01**: Dashboard page matches STYLE_GUIDE.md -- KPIs, charts, recent transactions, hero balance card with dot-matrix
+- [x] **QA-01**: Dashboard page matches STYLE_GUIDE.md -- KPIs, charts, recent transactions, hero balance card with dot-matrix
 - [ ] **QA-02**: Transactions page matches -- list with new tokens, filters, FAB triggers bottom sheet with numpad
 - [ ] **QA-03**: Debts page matches -- cards with battery-bar utilization, inline editing, metrics
 - [ ] **QA-04**: Budget page matches -- battery-bar progress per category, traffic-light colors, configuration table
 - [ ] **QA-05**: Income page matches -- source cards, frequency display, monospaced amounts
 - [ ] **QA-06**: History page matches -- pivot table with new tokens, period close flow
-- [ ] **QA-07**: Navigation matches -- icon-only bottom tabs with dot, sidebar with new tokens, FAB styling
+- [x] **QA-07**: Navigation matches -- icon-only bottom tabs with dot, sidebar with new tokens, FAB styling
 - [ ] **QA-08**: All pages WCAG 2.1 AA accessible -- contrast ratios verified, focus rings visible, screen reader attributes on new components
 
 ### Test Updates
@@ -116,13 +116,13 @@ Deferred to future milestones.
 | UPDATE-12 | Phase 19 | Complete |
 | UPDATE-13 | Phase 19 | Complete |
 | UPDATE-14 | Phase 20 | Complete |
-| QA-01 | Phase 22 | Pending |
+| QA-01 | Phase 22 | Complete |
 | QA-02 | Phase 22 | Pending |
 | QA-03 | Phase 22 | Pending |
 | QA-04 | Phase 22 | Pending |
 | QA-05 | Phase 22 | Pending |
 | QA-06 | Phase 22 | Pending |
-| QA-07 | Phase 22 | Pending |
+| QA-07 | Phase 22 | Complete |
 | QA-08 | Phase 22 | Pending |
 | TEST-01 | Phase 17 | Complete |
 | TEST-02 | Phase 18 | Complete |
