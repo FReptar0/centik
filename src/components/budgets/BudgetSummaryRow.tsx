@@ -27,11 +27,11 @@ export default function BudgetSummaryRow({ budgets, quincenalIncome }: BudgetSum
       {/* Income vs Budget */}
       <div className="flex items-center justify-between gap-4">
         <div>
-          <p className="text-xs text-text-secondary">Ingreso quincenal</p>
+          <p className="text-xs font-medium text-text-secondary uppercase tracking-[2px]">Ingreso quincenal</p>
           <MoneyAmount value={quincenalIncome} variant="neutral" size="lg" className="text-lg font-bold" />
         </div>
         <div className="text-right">
-          <p className="text-xs text-text-secondary">Presupuesto quincenal</p>
+          <p className="text-xs font-medium text-text-secondary uppercase tracking-[2px]">Presupuesto quincenal</p>
           <MoneyAmount value={totalQuincenalBudget.toString()} variant="neutral" size="lg" className="text-lg font-bold" />
         </div>
       </div>

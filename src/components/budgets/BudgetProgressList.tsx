@@ -56,12 +56,12 @@ export default function BudgetProgressList({ budgets }: BudgetProgressListProps)
             <div className="mb-1.5 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div
-                  className="flex h-7 w-7 items-center justify-center rounded-lg"
-                  style={{ backgroundColor: `${budget.categoryColor}26` }}
+                  className="flex h-9 w-9 items-center justify-center rounded-xl"
+                  style={{ backgroundColor: `${budget.categoryColor}1F` }}
                 >
                   <DynamicIcon
                     name={budget.categoryIcon}
-                    size={16}
+                    size={18}
                     style={{ color: budget.categoryColor }}
                     aria-hidden="true"
                   />

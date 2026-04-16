@@ -69,19 +69,19 @@ export default function BudgetTable({ budgets, onSave, isClosed }: BudgetTablePr
         <table className="w-full">
           <thead>
             <tr className="border-b border-border-divider">
-              <th scope="col" className="bg-bg px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
+              <th scope="col" className="bg-bg px-4 py-3 text-left text-xs font-medium uppercase tracking-[2px] text-text-secondary">
                 Categoria
               </th>
-              <th scope="col" className="bg-bg px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary">
+              <th scope="col" className="bg-bg px-4 py-3 text-right text-xs font-medium uppercase tracking-[2px] text-text-secondary">
                 Quincenal
               </th>
-              <th scope="col" className="bg-bg px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary">
+              <th scope="col" className="bg-bg px-4 py-3 text-right text-xs font-medium uppercase tracking-[2px] text-text-secondary">
                 Mensual
               </th>
-              <th scope="col" className="hidden bg-bg px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary lg:table-cell">
+              <th scope="col" className="hidden bg-bg px-4 py-3 text-right text-xs font-medium uppercase tracking-[2px] text-text-secondary lg:table-cell">
                 Semestral
               </th>
-              <th scope="col" className="hidden bg-bg px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary 2xl:table-cell">
+              <th scope="col" className="hidden bg-bg px-4 py-3 text-right text-xs font-medium uppercase tracking-[2px] text-text-secondary 2xl:table-cell">
                 Anual
               </th>
             </tr>
@@ -95,12 +95,12 @@ export default function BudgetTable({ budgets, onSave, isClosed }: BudgetTablePr
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       <div
-                        className="flex h-7 w-7 items-center justify-center rounded-lg"
-                        style={{ backgroundColor: `${budget.categoryColor}26` }}
+                        className="flex h-9 w-9 items-center justify-center rounded-xl"
+                        style={{ backgroundColor: `${budget.categoryColor}1F` }}
                       >
                         <DynamicIcon
                           name={budget.categoryIcon}
-                          size={16}
+                          size={18}
                           style={{ color: budget.categoryColor }}
                           aria-hidden="true"
                         />
@@ -121,13 +121,13 @@ export default function BudgetTable({ budgets, onSave, isClosed }: BudgetTablePr
                       />
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-right text-sm tabular-nums text-text-secondary whitespace-nowrap">
+                  <td className="px-4 py-3 text-right text-sm font-mono tabular-nums text-text-secondary whitespace-nowrap">
                     {calculateMultiplied(pesoValue, 2)}
                   </td>
-                  <td className="hidden px-4 py-3 text-right text-sm tabular-nums text-text-secondary whitespace-nowrap lg:table-cell">
+                  <td className="hidden px-4 py-3 text-right text-sm font-mono tabular-nums text-text-secondary whitespace-nowrap lg:table-cell">
                     {calculateMultiplied(pesoValue, 12)}
                   </td>
-                  <td className="hidden px-4 py-3 text-right text-sm tabular-nums text-text-secondary whitespace-nowrap 2xl:table-cell">
+                  <td className="hidden px-4 py-3 text-right text-sm font-mono tabular-nums text-text-secondary whitespace-nowrap 2xl:table-cell">
                     {calculateMultiplied(pesoValue, 24)}
                   </td>
                 </tr>

@@ -140,7 +140,7 @@ export default function DebtCard({ debt, onEdit }: DebtCardProps) {
               className="relative"
               onClick={(e) => e.stopPropagation()}
             >
-              <span className="absolute left-2 top-1/2 -translate-y-1/2 text-text-tertiary text-sm pointer-events-none">
+              <span className="absolute left-0 bottom-[6px] text-xs text-text-tertiary pointer-events-none">
                 $
               </span>
               <input
@@ -152,7 +152,7 @@ export default function DebtCard({ debt, onEdit }: DebtCardProps) {
                 onKeyDown={handleBalanceKeyDown}
                 onBlur={saveBalance}
                 className={cn(
-                  'w-32 rounded-lg border border-border-divider bg-transparent pl-6 pr-2 py-1 text-sm text-text-primary text-right',
+                  'w-32 bg-transparent border-0 border-b border-accent pl-4 pr-0 py-1 text-sm font-mono text-text-primary text-right outline-none transition-colors duration-200',
                   isSaving && 'opacity-50',
                 )}
               />
@@ -251,7 +251,7 @@ function CreditCardDetails({ debt, metrics }: DetailsProps) {
       {/* Utilization bar */}
       <div>
         <div className="flex items-center justify-between mb-1.5">
-          <span className="text-xs text-text-secondary uppercase tracking-wide">
+          <span className="text-xs font-medium text-text-secondary uppercase tracking-[2px]">
             Utilizacion
           </span>
           <span className={cn('text-sm font-semibold tabular-nums', SEMANTIC_COLORS[color])}>
@@ -291,7 +291,7 @@ function LoanDetails({ debt, metrics }: DetailsProps) {
       {/* Progress bar */}
       <div>
         <div className="flex items-center justify-between mb-1.5">
-          <span className="text-xs text-text-secondary uppercase tracking-wide">Progreso</span>
+          <span className="text-xs font-medium text-text-secondary uppercase tracking-[2px]">Progreso</span>
           <span
             className={cn('text-sm font-semibold tabular-nums', SEMANTIC_COLORS[progressColor])}
           >
@@ -326,7 +326,7 @@ interface MetricItemProps {
 function MetricItem({ label, value }: MetricItemProps) {
   return (
     <div>
-      <p className="text-xs text-text-secondary mb-0.5">{label}</p>
+      <p className="text-xs font-medium text-text-secondary uppercase tracking-[2px] mb-0.5">{label}</p>
       <p className="text-sm font-semibold text-text-primary">{value}</p>
     </div>
   )
