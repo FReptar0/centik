@@ -58,7 +58,11 @@ See `.planning/milestones/v2.0-ROADMAP.md` for full phase details.
   3. Debt cards display in a 2-column grid starting at md (768px) breakpoint, not only at lg (1024px)
   4. All form grids (DebtForm, IncomeSourceForm, CategoryForm, TransactionForm) stack fields to single column on mobile and expand to multi-column on tablet+
   5. KPI cards, income summary cards, debt summary cards, and chart grids display with balanced column distribution at every standard breakpoint (sm, md, lg)
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 23-01-PLAN.md — Bug fixes (expansion, max-width) + debt grid responsiveness
+- [ ] 23-02-PLAN.md — Dashboard/KPI/income grid breakpoints + form grid responsiveness
 
 ### Phase 24: Touch Targets + Table Optimization
 **Goal**: Every interactive element meets 44px minimum touch target and tables are usable on mobile without losing critical data visibility
@@ -79,5 +83,5 @@ See `.planning/milestones/v2.0-ROADMAP.md` for full phase details.
 | 1-11 | v1.0 | 27/27 | Complete | 2026-04-06 |
 | 12-16 | v1.1 | 9/9 | Complete | 2026-04-06 |
 | 17-22 | v2.0 | 17/17 | Complete | 2026-04-16 |
-| 23. Layout + Grid Responsiveness | v2.1 | 0/? | Not started | - |
+| 23. Layout + Grid Responsiveness | v2.1 | 0/2 | Not started | - |
 | 24. Touch Targets + Table Optimization | v2.1 | 0/? | Not started | - |
