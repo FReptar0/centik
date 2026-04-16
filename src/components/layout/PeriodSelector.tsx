@@ -54,7 +54,7 @@ export default function PeriodSelector({ isClosed = false }: PeriodSelectorProps
         onClick={handlePrev}
         aria-label="Mes anterior"
         className={cn(
-          'p-1.5 rounded-md',
+          'p-1.5 rounded-md min-w-[44px] min-h-[44px] flex items-center justify-center',
           'text-text-secondary hover:text-text-primary',
           'hover:bg-surface-hover',
           'transition-colors duration-200',
@@ -82,7 +82,7 @@ export default function PeriodSelector({ isClosed = false }: PeriodSelectorProps
         disabled={isCurrentPeriod}
         aria-label="Mes siguiente"
         className={cn(
-          'p-1.5 rounded-md',
+          'p-1.5 rounded-md min-w-[44px] min-h-[44px] flex items-center justify-center',
           'text-text-secondary hover:text-text-primary',
           'hover:bg-surface-hover',
           'transition-colors duration-200',
