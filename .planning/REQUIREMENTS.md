@@ -22,9 +22,9 @@ Requirements for responsive audit and bug fixes. Every page must work correctly 
 
 ### Touch Targets
 
-- [ ] **TOUCH-01**: DebtCard edit/delete action buttons are 24x24px (p-2), below 44px minimum. Fix to min-w-[44px] min-h-[44px].
-- [ ] **TOUCH-02**: TransactionRow edit/delete buttons same issue — 24x24px touch targets.
-- [ ] **TOUCH-03**: PeriodSelector prev/next navigation buttons use p-1.5 padding — too small for mobile.
+- [x] **TOUCH-01**: DebtCard edit/delete action buttons are 24x24px (p-2), below 44px minimum. Fix to min-w-[44px] min-h-[44px].
+- [x] **TOUCH-02**: TransactionRow edit/delete buttons same issue — 24x24px touch targets.
+- [x] **TOUCH-03**: PeriodSelector prev/next navigation buttons use p-1.5 padding — too small for mobile.
 
 ### Table Optimization
 
@@ -50,9 +50,9 @@ Requirements for responsive audit and bug fixes. Every page must work correctly 
 | RESP-03 | Phase 23 | Complete |
 | RESP-04 | Phase 23 | Complete |
 | RESP-05 | Phase 23 | Complete |
-| TOUCH-01 | Phase 24 | Pending |
-| TOUCH-02 | Phase 24 | Pending |
-| TOUCH-03 | Phase 24 | Pending |
+| TOUCH-01 | Phase 24 | Complete |
+| TOUCH-02 | Phase 24 | Complete |
+| TOUCH-03 | Phase 24 | Complete |
 | TABLE-01 | Phase 24 | Complete |
 | TABLE-02 | Phase 24 | Complete |
 
