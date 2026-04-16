@@ -1,5 +1,19 @@
 # Milestones
 
+## v2.0 Glyph Finance Implementation (Shipped: 2026-04-16)
+
+**Phases completed:** 6 phases (17-22), 17 plans, 39 requirements
+
+**Key accomplishments:**
+- Complete design token migration — OLED black (#000000) bg, chartreuse (#CCFF00) accent, Satoshi + IBM Plex Mono fonts, 37 component files class-renamed atomically, all shadows removed
+- 5 new UI primitives built with TDD — BatteryBar (14 tests), FloatingInput (15 tests), StatusDot (7 tests), TogglePills (12 tests), Numpad (14 tests)
+- Icon-only bottom nav with 4px chartreuse dot indicator, StatusDot on period selector and sidebar active items, pill-shaped buttons everywhere with 98% scale press
+- Signature TransactionForm bottom sheet — custom dark 4x4 numpad, dot-matrix hero amount, toggle pills, 4x2 circular category grid with accent ring, checkmark save animation
+- All charts minimal (no grid, 1.5px strokes, 4px dot endpoints), MoneyAmount shared component with muted "$" prefix adopted across 8 feature components, BatteryBar replacing all smooth progress bars
+- Full visual QA pass — every page audited against STYLE_GUIDE.md, WCAG 2.1 AA accessibility audit (ARIA on all new components, focus rings, contrast ratios, reduced-motion), 479 tests passing
+
+---
+
 ## v1.1 Glyph Finance Design System (Shipped: 2026-04-06)
 
 **Phases completed:** 5 phases (12-16), 9 plans, 18 tasks

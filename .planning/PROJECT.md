@@ -25,26 +25,19 @@ A single user can register a financial transaction in under 30 seconds and immed
 - ✓ Read-only mode for closed periods with ghost reopen button — v1.0
 - ✓ Auto-create current period on app load — v1.0
 - ✓ Category management with preset icon/color pickers — v1.0
-- ✓ Dark mode UI with cyan accent, responsive sidebar/bottom tabs — v1.0
+- ✓ Dark mode UI with Glyph Finance design (OLED black, chartreuse accent) — v1.0 → v2.0
 - ✓ Toast notifications (sonner), blur validation, focus rings, semantic HTML, tabular-nums — v1.0
 - ✓ Glyph Finance design system — STYLE_GUIDE.md rewritten with Nothing OS-inspired tokens (OLED black, chartreuse, IBM Plex Mono + Satoshi) — v1.1
 - ✓ Glyph Finance UX rules — UX_RULES.md updated with icon-only nav, custom numpad, battery-bar progress, underline inputs — v1.1
 - ✓ Glyph Finance reference sync — CLAUDE.md styling section synchronized, zero contradictions — v1.1
 
+- ✓ Glyph Finance tokens in code — @theme, Satoshi + IBM Plex Mono, pill buttons, underline inputs, battery-bar, minimal charts — v2.0
+- ✓ 5 new UI primitives — BatteryBar, FloatingInput, StatusDot, TogglePills, Numpad — v2.0
+- ✓ Icon-only nav with dot indicator, bottom sheet modals, dot-matrix hero cards — v2.0
+- ✓ TransactionForm bottom sheet with custom numpad, category grid, pixel-dissolve — v2.0
+- ✓ WCAG 2.1 AA accessibility audit — ARIA, focus rings, contrast, reduced-motion — v2.0
+
 ### Active
-
-- [ ] Implement Glyph Finance @theme tokens in globals.css (colors, fonts, radius)
-- [ ] Swap DM Sans → Satoshi, JetBrains Mono → IBM Plex Mono (next/font)
-- [ ] Implement pill-shaped buttons, underline inputs, floating labels across all forms
-- [ ] Implement segmented battery-bar progress replacing smooth bars
-- [ ] Implement minimal charts (no grid, dot endpoints, 1.5px stroke)
-- [ ] Implement icon-only bottom nav with dot indicator
-- [ ] Implement dot-matrix texture, status dot, pixel-dissolve animations
-- [ ] Implement custom numpad for transaction bottom sheet
-- [ ] Visual QA: 10/10 pixel-perfect match to STYLE_GUIDE.md specs
-- [ ] Update all existing tests for new design tokens and component changes
-
-### Backlog
 
 - [ ] System of value units (UDI, UMA, USD) with configurable rate providers
 - [ ] Asset/investment tracking (PPR, CETES, funds) with MXN conversion
@@ -69,7 +62,9 @@ A single user can register a financial transaction in under 30 seconds and immed
 - **Target market:** Mexican personal finance, quincenal pay cycle
 - **Monetization:** None — open source, code quality and documentation are priorities
 - **Documentation:** DFR.md, STYLE_GUIDE.md (Glyph Finance v1.1), UX_RULES.md (Glyph Finance v1.1), DATA_FLOW.md all remain as reference
-- **Design system:** Glyph Finance — OLED black (#000000), chartreuse (#CCFF00) accent, IBM Plex Mono + Satoshi typography, docs-only (not yet implemented in code)
+- **Design system:** Glyph Finance — OLED black (#000000), chartreuse (#CCFF00) accent, IBM Plex Mono + Satoshi typography, fully implemented in code (v2.0)
+- **New UI primitives:** BatteryBar, FloatingInput, StatusDot, TogglePills, Numpad, MoneyAmount (6 reusable components)
+- **Tests:** 479 unit tests passing, 100% coverage on src/lib/
 
 ## Constraints
 
@@ -108,17 +103,10 @@ A single user can register a financial transaction in under 30 seconds and immed
 | Docs-only v1.1 milestone | Design system documented before implementation, Stitch validation first | — Pending |
 
 ---
-## Current Milestone: v2.0 Glyph Finance Implementation
-
-**Goal:** Implement the Glyph Finance design system in code across all pages and components. Every token, component, animation, and interaction pattern from STYLE_GUIDE.md and UX_RULES.md must be faithfully translated to working code. 10/10 quality bar — anything slightly off is fully wrong.
-
-**Target features:**
-- Replace all design tokens (globals.css @theme) with Glyph Finance palette
-- Swap fonts (DM Sans → Satoshi, JetBrains Mono → IBM Plex Mono)
-- Implement all component changes (pill buttons, underline inputs, battery-bar, minimal charts)
-- Implement signature elements (dot-matrix, status dot, pixel-dissolve scanline)
-- Implement UX patterns (icon-only nav, custom numpad, bottom sheet with drag handle)
-- Full visual QA pass — every page must match specs exactly
+| Docs-only v1.1 milestone | Design system documented before implementation, Stitch validation first | ✓ Good |
+| MoneyAmount shared component | Ensures consistent "$" prefix styling across 8+ components | ✓ Good |
+| Numpad controlled props | Parent manages amount state, Numpad is stateless display+input | ✓ Good |
+| focus:outline-none over outline-none | Preserves keyboard focus rings while hiding mouse focus | ✓ Good |
 
 ---
-*Last updated: 2026-04-06 after v2.0 milestone start*
+*Last updated: 2026-04-16 after v2.0 milestone*
