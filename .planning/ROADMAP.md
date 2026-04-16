@@ -145,11 +145,12 @@ Plans:
   3. Debts page shows battery-bar utilization on credit cards, battery-bar payoff progress on loans, correct threshold colors, and inline editing works with FloatingInput
   4. Budget page shows battery-bar progress per category with traffic-light colors (chartreuse/orange/red), configuration table with FloatingInput, and no smooth progress bars
   5. All pages pass WCAG 2.1 AA -- contrast ratios meet 4.5:1 for normal text and 3:1 for large text, focus rings are visible chartreuse outlines on every interactive element, `prefers-reduced-motion` disables all animations, and all new components have correct ARIA attributes
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 22-01: TBD
-- [ ] 22-02: TBD
+- [ ] 22-01-PLAN.md -- Dashboard page + Navigation components visual audit and fixes
+- [ ] 22-02-PLAN.md -- Transactions + Debts + Budget pages visual audit and fixes
+- [ ] 22-03-PLAN.md -- Income + History pages audit + WCAG 2.1 AA accessibility audit
 
 ## Progress
 
@@ -165,4 +166,4 @@ Phases execute in numeric order: 17 -> 18 -> 19 -> 20 -> 21 -> 22
 | 19. Layout, Navigation + Global Updates | 3/3 | Complete    | 2026-04-13 | - |
 | 20. Feature Component Updates | 2/2 | Complete    | 2026-04-13 | - |
 | 21. TransactionForm + Custom Numpad | 3/3 | Complete    | 2026-04-16 | - |
-| 22. Visual QA + Accessibility | v2.0 | 0/TBD | Not started | - |
+| 22. Visual QA + Accessibility | v2.0 | 0/3 | Not started | - |
