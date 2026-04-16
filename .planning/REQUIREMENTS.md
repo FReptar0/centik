@@ -17,8 +17,8 @@ Requirements for responsive audit and bug fixes. Every page must work correctly 
 - [x] **RESP-01**: DebtList grid missing md: breakpoint — jumps from grid-cols-1 to lg:grid-cols-2, skipping tablet. Add md:grid-cols-2.
 - [x] **RESP-02**: DebtCard inner metric grid fixed grid-cols-2 on mobile — should be grid-cols-1 sm:grid-cols-2 to stack on narrow screens.
 - [x] **RESP-03**: DebtSummaryCards incomplete breakpoints — 3 cards in 2-column layout causes uneven distribution.
-- [ ] **RESP-04**: KPIGrid, IncomeSummaryCards, Dashboard chart grids missing intermediate breakpoints for tablet optimization.
-- [ ] **RESP-05**: Form grids not responsive — DebtForm, IncomeSourceForm, CategoryForm, TransactionForm use fixed grid-cols-2/3/4 without responsive prefixes.
+- [x] **RESP-04**: KPIGrid, IncomeSummaryCards, Dashboard chart grids missing intermediate breakpoints for tablet optimization.
+- [x] **RESP-05**: Form grids not responsive — DebtForm, IncomeSourceForm, CategoryForm, TransactionForm use fixed grid-cols-2/3/4 without responsive prefixes.
 
 ### Touch Targets
 
@@ -48,8 +48,8 @@ Requirements for responsive audit and bug fixes. Every page must work correctly 
 | RESP-01 | Phase 23 | Complete |
 | RESP-02 | Phase 23 | Complete |
 | RESP-03 | Phase 23 | Complete |
-| RESP-04 | Phase 23 | Pending |
-| RESP-05 | Phase 23 | Pending |
+| RESP-04 | Phase 23 | Complete |
+| RESP-05 | Phase 23 | Complete |
 | TOUCH-01 | Phase 24 | Pending |
 | TOUCH-02 | Phase 24 | Pending |
 | TOUCH-03 | Phase 24 | Pending |
