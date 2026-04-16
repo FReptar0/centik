@@ -339,7 +339,7 @@ function TransactionFormContent({
                 rows={2}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                className="w-full bg-transparent border-0 border-b border-border-divider py-2 text-sm text-text-primary focus:border-accent outline-none transition-colors duration-200 resize-none"
+                className="w-full bg-transparent border-0 border-b border-border-divider py-2 text-sm text-text-primary focus:border-accent focus:outline-none transition-colors duration-200 resize-none"
               />
             </div>
 
@@ -356,7 +356,7 @@ function TransactionFormContent({
                   id="txn-income-source"
                   value={incomeSourceId}
                   onChange={(e) => setIncomeSourceId(e.target.value)}
-                  className="w-full bg-transparent border-0 border-b border-border-divider py-2 text-sm text-text-primary focus:border-accent outline-none transition-colors duration-200"
+                  className="w-full bg-transparent border-0 border-b border-border-divider py-2 text-sm text-text-primary focus:border-accent focus:outline-none transition-colors duration-200"
                 >
                   <option value="">Sin fuente</option>
                   {incomeSources.map((src) => (

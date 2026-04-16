@@ -152,7 +152,7 @@ export default function DebtCard({ debt, onEdit }: DebtCardProps) {
                 onKeyDown={handleBalanceKeyDown}
                 onBlur={saveBalance}
                 className={cn(
-                  'w-32 bg-transparent border-0 border-b border-accent pl-4 pr-0 py-1 text-sm font-mono text-text-primary text-right outline-none transition-colors duration-200',
+                  'w-32 bg-transparent border-0 border-b border-accent pl-4 pr-0 py-1 text-sm font-mono text-text-primary text-right focus:outline-none transition-colors duration-200',
                   isSaving && 'opacity-50',
                 )}
               />
