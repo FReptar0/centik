@@ -6,6 +6,7 @@ import { Pencil, Trash2 } from 'lucide-react'
 import DynamicIcon from '@/components/ui/DynamicIcon'
 import MoneyAmount from '@/components/ui/MoneyAmount'
 import { cn } from '@/lib/utils'
+import { PAYMENT_METHODS_DISPLAY } from '@/lib/constants'
 import { deleteTransaction } from '@/app/movimientos/actions'
 import type { SerializedTransaction } from '@/types'
 
@@ -66,19 +67,19 @@ export default function TransactionRow({ transaction, onEdit, isNew }: Transacti
   return (
     <div
       className={cn(
-        'flex items-center gap-3 bg-surface-elevated rounded-lg p-4',
+        'flex items-center gap-3 bg-surface-elevated p-4',
         'transition-all duration-200',
         isNew && 'animate-scanline-reveal',
       )}
     >
-      {/* Icon circle */}
+      {/* Icon circle: 36x36px, border-radius 12px, category color at 12% opacity */}
       <div
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
-        style={{ backgroundColor: `${transaction.category.color}26` }}
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
+        style={{ backgroundColor: `${transaction.category.color}1F` }}
       >
         <DynamicIcon
           name={transaction.category.icon}
-          size={20}
+          size={18}
           style={{ color: transaction.category.color }}
           aria-hidden="true"
         />
@@ -89,7 +90,14 @@ export default function TransactionRow({ transaction, onEdit, isNew }: Transacti
         <p className="text-sm font-medium text-text-primary truncate">
           {displayName}
         </p>
-        <p className="text-xs text-text-tertiary">{formattedDate}</p>
+        <div className="flex items-center gap-2">
+          <p className="text-[11px] text-text-tertiary">{formattedDate}</p>
+          {transaction.paymentMethod && (
+            <span className="rounded-full bg-surface-hover px-2 py-0.5 text-[11px] font-semibold uppercase text-text-secondary">
+              {PAYMENT_METHODS_DISPLAY[transaction.paymentMethod] ?? transaction.paymentMethod}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Amount + actions */}
@@ -113,7 +121,7 @@ export default function TransactionRow({ transaction, onEdit, isNew }: Transacti
           </div>
         ) : (
           <>
-            <span className={cn('text-sm font-semibold', isIncome ? 'text-positive' : 'text-negative')}>
+            <span className={cn('font-mono text-sm font-semibold tabular-nums', isIncome ? 'text-positive' : 'text-negative')}>
               {isIncome ? '+' : '-'}
             </span>
             <MoneyAmount

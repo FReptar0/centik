@@ -48,7 +48,7 @@ export default function TransactionList({
 
   return (
     <div>
-      <div className="space-y-2">
+      <div className="divide-y divide-border-divider rounded-2xl overflow-hidden">
         {transactions.map((txn) => (
           <TransactionRow key={txn.id} transaction={txn} onEdit={onEdit} isNew={newTransactionIds?.has(txn.id)} />
         ))}

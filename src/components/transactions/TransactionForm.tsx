@@ -202,11 +202,11 @@ function TransactionFormContent({
   return (
     <Modal isOpen={isOpen} onClose={onClose} headerContent={headerContent}>
       <div className="space-y-4">
-        {/* Section 1: Hero Amount Zone */}
+        {/* Section 1: Hero Amount Zone with dot-matrix texture */}
         <div className="dot-matrix-hero bg-surface-elevated rounded-2xl p-6">
           <div className="relative z-[2] text-center">
-            <span className="font-mono text-2xl text-text-tertiary mr-1">$</span>
-            <span className="font-mono text-4xl font-bold text-text-primary tabular-nums">
+            <span className="font-mono text-xl text-text-tertiary mr-0.5">$</span>
+            <span className="font-mono text-4xl font-semibold text-text-primary tabular-nums">
               {formatAmountDisplay(amount) || '0.00'}
             </span>
           </div>
@@ -236,14 +236,14 @@ function TransactionFormContent({
               >
                 <div
                   className={cn(
-                    'flex h-12 w-12 items-center justify-center rounded-full transition-all duration-200',
+                    'flex h-10 w-10 items-center justify-center rounded-full transition-all duration-200',
                     categoryId === cat.id ? 'ring-2 ring-accent' : '',
                   )}
-                  style={{ backgroundColor: `${cat.color}26` }}
+                  style={{ backgroundColor: `${cat.color}1F` }}
                 >
                   <DynamicIcon
                     name={cat.icon}
-                    size={24}
+                    size={20}
                     style={{ color: cat.color }}
                   />
                 </div>

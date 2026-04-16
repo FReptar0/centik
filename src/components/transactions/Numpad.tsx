@@ -8,7 +8,7 @@ interface NumpadProps {
 }
 
 const KEY_CLASS =
-  'min-h-[48px] min-w-[48px] rounded-xl bg-surface-elevated font-mono text-lg text-text-primary transition-colors duration-100 hover:bg-surface-hover active:bg-surface-hover'
+  'min-h-[48px] min-w-[48px] rounded-xl bg-surface-elevated font-mono text-xl text-text-primary transition-colors duration-100 hover:bg-surface-hover active:bg-surface-hover'
 
 export default function Numpad({ value, onChange }: NumpadProps) {
   function hasMaxDecimals(): boolean {
@@ -52,7 +52,7 @@ export default function Numpad({ value, onChange }: NumpadProps) {
   }
 
   return (
-    <div className="grid grid-cols-4 gap-2">
+    <div className="grid grid-cols-4 gap-2 rounded-2xl bg-surface p-2">
       {/* Row 1: 1, 2, 3, backspace */}
       <button type="button" className={KEY_CLASS} onClick={() => handleDigit('1')}>
         1
