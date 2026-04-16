@@ -4,15 +4,15 @@ milestone: v2.0
 milestone_name: Glyph Finance Implementation
 current_phase: 22
 current_plan: 3
-status: executing
-stopped_at: Completed 22-02-PLAN.md
-last_updated: "2026-04-16T02:32:06.112Z"
+status: verifying
+stopped_at: Completed 22-03-PLAN.md
+last_updated: "2026-04-16T03:22:33.460Z"
 last_activity: 2026-04-16
 progress:
   total_phases: 6
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 17
-  completed_plans: 16
+  completed_plans: 17
   percent: 94
 ---
 
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-04-06)
 **Current Phase:** 22
 **Current Plan:** 3
 **Total Plans in Phase:** 3
-**Status:** Ready to execute
+**Status:** Phase complete — ready for verification
 **Last Activity:** 2026-04-16
 
 Progress: [█████████░] 94%
@@ -72,6 +72,7 @@ Progress: [█████████░] 94%
 | Phase 21 P03 | 4min | 2 tasks | 2 files |
 | Phase 22 P01 | 5min | 3 tasks | 13 files |
 | Phase 22 P02 | 7min | 2 tasks | 12 files |
+| Phase 22 P03 | 8min | 3 tasks | 20 files |
 
 ## Accumulated Context
 
@@ -119,6 +120,9 @@ Recent decisions affecting current work:
 - [Phase 22]: Icon containers use hex 1F (12.2% opacity) for closer match to 12% spec
 - [Phase 22]: Label style consistency: tracking-[2px] replaces tracking-wide across all feature pages
 - [Phase 22]: Numpad gets bg-surface container for proper surface contrast between keys and background
+- [Phase 22]: text-text-tertiary verified only used for decorative/auxiliary content -- no WCAG violation
+- [Phase 22]: TogglePills arrow key navigation with roving tabIndex follows WAI-ARIA radiogroup pattern
+- [Phase 22]: MoneyAmount aria-label on wrapper + aria-hidden children for clean screen reader output
 
 ### Pending Todos
 
@@ -131,6 +135,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-16T02:32:06.107Z
-Stopped at: Completed 22-02-PLAN.md
+Last session: 2026-04-16T03:22:33.456Z
+Stopped at: Completed 22-03-PLAN.md
 Resume file: None

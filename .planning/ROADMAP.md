@@ -49,7 +49,7 @@ See `.planning/milestones/v1.1-ROADMAP.md` for full phase details.
 - [x] **Phase 19: Layout, Navigation + Global Component Updates** - Pill buttons, borderless cards, icon-only nav, bottom sheet modals, dot-matrix, StatusDot placement, icon tuning (completed 2026-04-10)
 - [x] **Phase 20: Feature Component Updates** - BatteryBar replacing progress bars, chart visual overhaul, monetary amount display styling (completed 2026-04-13)
 - [x] **Phase 21: TransactionForm + Custom Numpad** - Bottom sheet transaction flow with custom numpad, FloatingInput adoption across all forms, pixel-dissolve animation (completed 2026-04-15)
-- [ ] **Phase 22: Visual QA + Accessibility** - Page-by-page spec verification, WCAG 2.1 AA audit, focus rings, contrast ratios
+- [x] **Phase 22: Visual QA + Accessibility** - Page-by-page spec verification, WCAG 2.1 AA audit, focus rings, contrast ratios (completed 2026-04-16)
 
 ## Phase Details
 
@@ -166,4 +166,4 @@ Phases execute in numeric order: 17 -> 18 -> 19 -> 20 -> 21 -> 22
 | 19. Layout, Navigation + Global Updates | 3/3 | Complete    | 2026-04-13 | - |
 | 20. Feature Component Updates | 2/2 | Complete    | 2026-04-13 | - |
 | 21. TransactionForm + Custom Numpad | 3/3 | Complete    | 2026-04-16 | - |
-| 22. Visual QA + Accessibility | 2/3 | In Progress|  | - |
+| 22. Visual QA + Accessibility | 3/3 | Complete   | 2026-04-16 | - |

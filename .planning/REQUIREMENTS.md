@@ -52,10 +52,10 @@ Requirements for Glyph Finance code implementation. 10/10 quality bar -- anythin
 - [x] **QA-02**: Transactions page matches -- list with new tokens, filters, FAB triggers bottom sheet with numpad
 - [x] **QA-03**: Debts page matches -- cards with battery-bar utilization, inline editing, metrics
 - [x] **QA-04**: Budget page matches -- battery-bar progress per category, traffic-light colors, configuration table
-- [ ] **QA-05**: Income page matches -- source cards, frequency display, monospaced amounts
-- [ ] **QA-06**: History page matches -- pivot table with new tokens, period close flow
+- [x] **QA-05**: Income page matches -- source cards, frequency display, monospaced amounts
+- [x] **QA-06**: History page matches -- pivot table with new tokens, period close flow
 - [x] **QA-07**: Navigation matches -- icon-only bottom tabs with dot, sidebar with new tokens, FAB styling
-- [ ] **QA-08**: All pages WCAG 2.1 AA accessible -- contrast ratios verified, focus rings visible, screen reader attributes on new components
+- [x] **QA-08**: All pages WCAG 2.1 AA accessible -- contrast ratios verified, focus rings visible, screen reader attributes on new components
 
 ### Test Updates
 
@@ -120,10 +120,10 @@ Deferred to future milestones.
 | QA-02 | Phase 22 | Complete |
 | QA-03 | Phase 22 | Complete |
 | QA-04 | Phase 22 | Complete |
-| QA-05 | Phase 22 | Pending |
-| QA-06 | Phase 22 | Pending |
+| QA-05 | Phase 22 | Complete |
+| QA-06 | Phase 22 | Complete |
 | QA-07 | Phase 22 | Complete |
-| QA-08 | Phase 22 | Pending |
+| QA-08 | Phase 22 | Complete |
 | TEST-01 | Phase 17 | Complete |
 | TEST-02 | Phase 18 | Complete |
 | TEST-03 | Phase 21 | Complete |
