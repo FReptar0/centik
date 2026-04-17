@@ -43,9 +43,17 @@ A single user can register a financial transaction in under 30 seconds and immed
 
 ### Active
 
+- [ ] NextAuth (Auth.js) with email+password + TOTP 2FA
+- [ ] Invite-only registration (no self-signup)
+- [ ] Prisma Postgres (Vercel integration) for production DB
+- [ ] Vercel deployment with security headers (CSP, HSTS, etc.)
+- [ ] Per-user data isolation (all queries scoped to authenticated user)
+- [ ] Rate limiting on auth endpoints
+
+### Backlog
+
 - [ ] System of value units (UDI, UMA, USD) with configurable rate providers
 - [ ] Asset/investment tracking (PPR, CETES, funds) with MXN conversion
-- [ ] Authentication (NextAuth/Clerk) for multi-user support
 - [ ] PWA with offline support
 
 ### Out of Scope
@@ -115,5 +123,18 @@ A single user can register a financial transaction in under 30 seconds and immed
 | max-w-7xl for wide pages | Constrains content on 1400px+ screens without centering | ✓ Good |
 | 44px min touch targets | WCAG compliance for all action buttons on mobile | ✓ Good |
 
+## Current Milestone: v3.0 Auth + Cloud Deploy
+
+**Goal:** Llevar Centik a produccion en Vercel con autenticacion NextAuth (email+password+TOTP 2FA), invite-only access, Prisma Postgres, per-user data isolation, y security headers. Seguridad extrema — es informacion financiera real.
+
+**Target features:**
+- NextAuth (Auth.js) con email+password + TOTP 2FA
+- Registro invite-only (solo usuarios invitados por email)
+- Prisma Postgres (Vercel integration) como DB de produccion
+- Per-user data isolation (userId en todas las queries)
+- Security headers (CSP, HSTS, X-Frame-Options)
+- Rate limiting en endpoints de auth
+- Deploy a Vercel con CI/CD
+
 ---
-*Last updated: 2026-04-16 after v2.1 milestone*
+*Last updated: 2026-04-16 after v3.0 milestone start*
