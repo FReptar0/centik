@@ -1,584 +1,733 @@
 # Architecture Research
 
-**Domain:** Design system migration — Glyph Finance into existing Next.js 16 App Router app
-**Researched:** 2026-04-06
-**Confidence:** HIGH (codebase is fully readable, design specs are finalized docs)
+**Domain:** Auth + Cloud Deploy — NextAuth v5 into existing Next.js 16 App Router / Prisma 7 app
+**Researched:** 2026-04-15
+**Confidence:** HIGH (official Auth.js docs, Prisma docs, codebase read, multiple current sources)
 
 ---
 
-## Standard Architecture
+## System Overview
 
-### System Overview
+### Before (single-user, no auth)
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│                       TOKEN LAYER (globals.css)                   │
-│  @theme { --color-*, --font-*, --radius-* }                       │
-│  @theme inline { --font-sans: var(--font-satoshi) }               │
-├──────────────────────────────────────────────────────────────────┤
-│                       ROOT LAYOUT (layout.tsx)                    │
-│  next/font loads → CSS variables → @theme inline picks them up    │
-│  Body classname uses: bg-bg font-sans text-text-primary           │
-├──────────────────────────────────────────────────────────────────┤
-│  LAYOUT COMPONENTS               │  PRIMITIVE UI COMPONENTS       │
-│  Sidebar (modified)              │  Modal (modified)              │
-│  MobileNav (modified)            │  DynamicIcon (unchanged)       │
-│  FAB (modified)                  │  BatteryBar (NEW)              │
-│  MobileMoreSheet (unchanged)     │  FloatingInput (NEW)           │
-│  PageHeader (modified)           │  StatusDot (NEW)               │
-│                                  │  Numpad (NEW)                  │
-│                                  │  TogglePills (NEW)             │
-├──────────────────────────────────────────────────────────────────┤
-│  FEATURE COMPONENTS (modified — token swap unless noted)          │
-│  KPICard · BudgetProgressList (→ BatteryBar) · DebtCard           │
-│  TransactionForm (→ bottom sheet + numpad + floating inputs)       │
-│  TrendAreaChart · ExpenseDonutChart · BudgetBarChart (all charts) │
-│  TransactionRow · TransactionList · TransactionFilters            │
-│  IncomeSourceCard · IncomeSummaryCards                            │
-│  AnnualPivotTable                                                 │
-├──────────────────────────────────────────────────────────────────┤
-│  DATA LAYER (unchanged — zero impact from design migration)       │
-│  Server Actions · API Routes · Prisma · PostgreSQL                │
+┌────────────────────────────────────────────────────────────────┐
+│  Browser                                                        │
+│  Any URL → App loads directly → Data unscoped (global)         │
+└───────────────────────────────────┬────────────────────────────┘
+                                    │ HTTP
+┌───────────────────────────────────▼────────────────────────────┐
+│  Next.js 16 App Router                                          │
+│  ┌─────────────────┐  ┌──────────────────────────────────────┐ │
+│  │  Server Pages   │  │  Server Actions ('use server')       │ │
+│  │  (data queries) │  │  (mutations, revalidatePath)         │ │
+│  └────────┬────────┘  └─────────────┬────────────────────────┘ │
+│           │                         │                           │
+│  ┌────────▼─────────────────────────▼────────────────────────┐ │
+│  │  src/lib/{dashboard,income,debt,history,period,budget}.ts  │ │
+│  │  Direct Prisma queries — no userId filter                  │ │
+│  └────────────────────────┬───────────────────────────────────┘ │
+└───────────────────────────┼─────────────────────────────────────┘
+                            │ Prisma 7 + PrismaPg adapter
+┌───────────────────────────▼─────────────────────────────────────┐
+│  PostgreSQL (Docker dev)                                         │
+│  10 models — no User model                                       │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-The migration is purely additive at the data layer and purely substitutive at the token layer. No new API routes, no schema changes, no server actions. All impact is in `globals.css`, `layout.tsx`, and the component tree.
+### After (multi-user auth, per-user isolation, Vercel + Prisma Postgres)
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│  Browser                                                        │
+│  Unauthenticated → /login redirect via proxy.ts                │
+│  Authenticated → session cookie (JWT, httpOnly)                │
+└───────────────────────────────────┬────────────────────────────┘
+                                    │ HTTPS
+┌───────────────────────────────────▼────────────────────────────┐
+│  Next.js 16 proxy.ts (formerly middleware.ts)                   │
+│  export { auth as proxy } from "@/lib/auth"                     │
+│  Matcher: all routes except /login, /api/auth/*, static assets  │
+│  → Redirects unauthenticated users to /login                    │
+│  → Refreshes session cookie on every request                    │
+└───────────────────────────────────┬────────────────────────────┘
+                                    │ (passes through only authenticated)
+┌───────────────────────────────────▼────────────────────────────┐
+│  Next.js 16 App Router                                          │
+│  ┌──────────────────────────────────────────────────────────┐  │
+│  │  src/app/login/page.tsx  (public, NOT in proxy matcher)  │  │
+│  │  src/app/api/auth/[...nextauth]/route.ts  (Auth.js)      │  │
+│  └──────────────────────────────────────────────────────────┘  │
+│  ┌──────────────────────────────────────────────────────────┐  │
+│  │  Protected pages (all existing routes)                    │  │
+│  │  Each Server Component calls:                             │  │
+│  │    const session = await auth()                           │  │
+│  │    if (!session) redirect('/login')  ← defense in depth  │  │
+│  └────────────────────────┬─────────────────────────────────┘  │
+│  ┌──────────────────────────────────────────────────────────┐  │
+│  │  Server Actions — ALL must call auth() and verify        │  │
+│  │  session before touching DB (proxy does NOT cover them)  │  │
+│  └────────────────────────┬─────────────────────────────────┘  │
+└───────────────────────────┼─────────────────────────────────────┘
+                            │ userId injected into every Prisma query
+┌───────────────────────────▼─────────────────────────────────────┐
+│  src/lib/{dashboard,income,debt,history,period,budget}.ts        │
+│  All query functions accept userId param → WHERE userId = ?      │
+└───────────────────────────┬──────────────────────────────────────┘
+                            │ Prisma 7 + PrismaPg adapter
+┌───────────────────────────▼──────────────────────────────────────┐
+│  Prisma Postgres (Vercel)  — production                           │
+│  PostgreSQL (Docker)       — dev / test (unchanged)               │
+│  +User model, all 10 existing models get userId FK               │
+└───────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## Integration Points: New vs Modified vs Unchanged
+## Component Responsibilities
 
-### Category 1: Token Swap Only (modify CSS classes, no structural change)
-
-These files change only which token names appear in `className` strings. The component logic, props API, and structure stay identical. Search-replace of old token names to new ones, then verify visually.
-
-| File | Old tokens to New tokens (examples) |
-|------|--------------------------------------|
-| `src/app/globals.css` | Entire `@theme` block replaced. `--color-bg-primary` → `--color-bg`, `--color-bg-card` → `--color-surface`, `--color-bg-elevated` → `--color-surface-elevated`, `--color-border` → `--color-border-divider`, `--font-mono: 'JetBrains Mono'` → `'IBM Plex Mono'`, all radius values updated, all shadow tokens removed |
-| `src/app/layout.tsx` | `DM_Sans` import → Satoshi font (local or Google); `IBM_Plex_Mono` added; CSS variable names updated accordingly |
-| `src/components/layout/Sidebar.tsx` | `bg-bg-card border-r border-border` → `bg-surface` (no border); active item `bg-accent/15 text-accent` stays valid; icon `size={18}` already matches spec |
-| `src/components/layout/FAB.tsx` | `shadow-lg shadow-glow` removed; `text-bg-primary` → `text-black`; button already `rounded-full` — correct |
-| `src/components/layout/MobileMoreSheet.tsx` | Token names only |
-| `src/components/layout/PageHeader.tsx` | Token names only |
-| `src/components/debts/DebtSummaryCards.tsx` | Token names only |
-| `src/components/income/IncomeSourceCard.tsx` | Token names only |
-| `src/components/income/IncomeSummaryCards.tsx` | Token names only |
-| `src/components/history/AnnualPivotTable.tsx` | Token names only; table header uppercase + tracking styles already partially present |
-| `src/components/categories/*` | Token names only |
-
-### Category 2: Structural Modifications (component logic or structure changes, same file)
-
-These need more than a token swap — the rendered HTML structure or component behavior changes.
-
-**`src/components/ui/Modal.tsx`** — MODIFY (significant)
-- Mobile bottom sheet: `rounded-t-xl` → `rounded-t-[24px]` (radius-xl: 24px); `border-t border-border` removed; drag handle `h-1` stays but `rounded-full` removed (flat rect per spec); color `bg-border-light` → `bg-border-divider`
-- Mobile sheet header restructure: current layout has `<h2>` title + right-side `<X>` button. New spec: left-side `<X>` button + right-side `GUARDAR` button in Label style (12px, uppercase, letter-spacing, chartreuse). This is a breaking change to Modal's header interface — TransactionForm must provide its own header or Modal needs a `headerSlot` prop
-- Desktop modal: `rounded-xl` → `rounded-[24px]`; `border border-border` removed; `shadow-md` removed; `bg-bg-card` → `bg-surface-elevated`
-- Desktop animation: add `animate-in fade-in` + scale-from-95 classes if using tailwindcss-animate, or inline CSS animation
-
-**`src/components/layout/MobileNav.tsx`** — MODIFY (significant)
-- Remove `<span>` text labels entirely from all nav items and "Mas" button
-- Icon stays in `text-text-secondary` even when active — the dot communicates state, not icon color
-- Add `<StatusDot>` component positioned 8px below the icon of the active tab item (absolute positioning within each button's relative container)
-- "Mas" tab: same dot treatment when any overflow route is active
-
-**`src/components/budgets/BudgetProgressList.tsx`** — MODIFY (significant)
-- Replace the smooth progress bar `<div>` (currently: `h-1.5 overflow-hidden rounded-full` with inner `div` at `width: X%`) with `<BatteryBar value={percentUsed} />`
-- Remove `COLOR_TRACK` and `COLOR_BG` maps — BatteryBar handles colors internally
-- Percentage text: BatteryBar renders its own overflow text; remove duplicate percentage `<p>` below the bar or move it inside BatteryBar
-- Icon container: `h-7 w-7 rounded-lg` → `h-9 w-9 rounded-[12px]` (spec: 36px, 12px radius)
-- Amount display: wrap values in `font-mono tabular-nums`
-
-**`src/components/debts/DebtCard.tsx`** — MODIFY
-- Replace smooth progress bar with `<BatteryBar value={utilizationPercent} thresholds={{ warning: 31, danger: 71 }} />` (credit utilization thresholds differ from budget thresholds)
-- Debt ratio bar also uses BatteryBar with `thresholds={{ warning: 36, danger: 51 }}`
-- Remove any `shadow-*` classes
-- Token name updates
-
-**`src/components/dashboard/KPICard.tsx`** — MODIFY
-- Icon container: `rounded-lg` → `rounded-[12px]`
-- Value: add `font-mono tabular-nums`; consider splitting "$" prefix from digits into separate `<span>` elements so "$" can render at smaller size in `text-text-tertiary`
-- Container: remove `border border-border`; `bg-bg-card` → `bg-surface-elevated`
-- Hero balance card variant: add dot-matrix CSS class as background layer (opt-in prop or applied at page level)
-
-**`src/components/charts/TrendAreaChart.tsx`** — MODIFY
-- Replace `CHART_COLORS` object with Glyph Finance values (see token migration map below)
-- Remove `<CartesianGrid>` entirely
-- Change `strokeWidth={2}` → `strokeWidth={1.5}` on both `<Area>` elements
-- Add `dot={{ r: 2, fill: color }}` to each Area for 4px solid dot endpoints
-- Remove `<YAxis>` or set it to `hide={true}` (spec: no Y-axis labels)
-- X-axis: show only start and end labels, not all month labels
-- Legend: keep existing, but update to match token colors
-
-**`src/components/charts/ExpenseDonutChart.tsx`** — MODIFY
-- Update `CHART_COLORS` with desaturated category colors from Glyph Finance palette
-- Increase `innerRadius` proportion to ~70% of `outerRadius` for thinner ring
-- Remove any grid references
-
-**`src/components/charts/BudgetBarChart.tsx`** — MODIFY
-- Update `CHART_COLORS`
-- Set `radius={0}` on bars (flat tops, no border-radius)
-- Reduce `barSize` to ~60% of available space (wider gaps between bars)
-- Remove `<CartesianGrid>`
-
-**`src/components/transactions/TransactionForm.tsx`** — MODIFY (major restructure)
-- Replace all `<input>` elements with `<FloatingInput>` component
-- Amount input: replace `<input>` with `<Numpad>` component; display amount in large `font-mono` hero zone above numpad
-- Add dot-matrix texture CSS class to amount hero zone
-- Category selector: replace current dropdown/list with 4-column grid of 40px circular icon buttons; selection state = 2px chartreuse ring around circle
-- Expense/Income toggle: replace current toggle with `<TogglePills>` component
-- Optional fields: wrap in collapsible "Mas detalles" section
-- Bottom sheet header: left `<X>` close + right `GUARDAR` (Label style) — coordinate with Modal restructure
-
-**`src/components/transactions/TransactionRow.tsx`** — MODIFY
-- Amount: wrap in `font-mono tabular-nums`; render "+" prefix in `text-positive` for income, "-" prefix in `text-negative` for expense (separately from the digit span)
-- Category icon container: update to spec dimensions (36px, 12px radius) with desaturated color palette
-
-**`src/components/transactions/TransactionFilters.tsx`** — MODIFY
-- Filter chips: ensure `rounded-full` pill shape; active chip: `bg-accent-subtle text-accent`; inactive: neutral badge style
-
-### Category 3: New Components (create from scratch)
-
-These do not exist in the current codebase at all.
-
-**`src/components/ui/BatteryBar.tsx`** — NEW
-
-```typescript
-interface BatteryBarProps {
-  value: number   // 0-100+ (percentage, already calculated)
-  variant?: 'compact' | 'detailed'   // 6px vs 8px height
-  thresholds?: { warning: number; danger: number }  // default: { warning: 80, danger: 100 }
-}
-```
-
-Renders 10 equal-width rectangular segments with 2px gaps. Segment color determined by cumulative fill position vs thresholds. Overflow text "+N%" in `text-negative` Meta size rendered right of bar when value > 100. Segments are flat rectangles (no border-radius). Role `progressbar` with aria attributes.
-
-**`src/components/ui/FloatingInput.tsx`** — NEW
-
-```typescript
-interface FloatingInputProps {
-  label: string
-  value: string
-  onChange: (value: string) => void
-  type?: 'text' | 'number' | 'decimal' | 'date'
-  prefix?: string      // "$" for money inputs, static, does not float
-  suffix?: string      // "%" for rate inputs, static
-  error?: string       // shows below input in Meta/negative style
-  optional?: boolean   // shows "(opcional)" in label
-  className?: string
-}
-```
-
-No box — border-bottom only. Label starts as placeholder text at body size; on focus or when value is non-empty, label transforms: translates up, scales to Label size (12px), uppercase, tracking-widest, `text-text-secondary`. Transition 200ms ease. Focus state: border-bottom transitions to `border-accent`. Error state: border-bottom `border-negative`, error message below.
-
-**`src/components/ui/StatusDot.tsx`** — NEW
-
-```typescript
-interface StatusDotProps {
-  className?: string
-}
-```
-
-Renders a 4px circle with `bg-accent` and `status-dot` CSS class (animation defined in globals.css). Always `aria-hidden="true"` — decorative indicator only.
-
-**`src/components/ui/TogglePills.tsx`** — NEW
-
-```typescript
-interface TogglePillsProps {
-  options: { value: string; label: string }[]
-  value: string
-  onChange: (value: string) => void
-}
-```
-
-Row of pill buttons with `gap-1`. Active: `bg-accent text-black font-semibold rounded-full`. Inactive: `bg-transparent text-text-secondary rounded-full`. Min height 40px. Press state: `scale(0.98)`.
-
-**`src/components/transactions/Numpad.tsx`** — NEW
-
-```typescript
-interface NumpadProps {
-  value: string
-  onChange: (value: string) => void
-}
-```
-
-4-column CSS grid. Row 1: `1`, `2`, `3`, Delete icon (Lucide). Row 2: `4`, `5`, `6`, `.`. Row 3: `7`, `8`, `9`, `00`. Row 4: empty, `0`, empty, empty. Each key: `bg-surface-elevated`, min 48px touch target, `font-mono` at 20px heading size. Press: `bg-surface-hover`, transition 100ms. Logic: appends digit, handles single decimal point, backspace deletes last character.
+| Component | Responsibility | Notes |
+|-----------|---------------|-------|
+| `proxy.ts` | Redirect unauthenticated users to `/login`, refresh session cookie | Next.js 16 renamed middleware.ts to proxy.ts; export auth from Auth.js as proxy |
+| `src/lib/auth.ts` | NextAuth v5 configuration: credentials provider, callbacks, Prisma adapter, session strategy | Single source of truth for auth config; exports `auth`, `handlers`, `signIn`, `signOut` |
+| `src/app/api/auth/[...nextauth]/route.ts` | Auth.js catch-all route handler | Two lines: import `{ handlers }` from `@/lib/auth`, export `{ GET, POST } = handlers` |
+| `src/app/login/page.tsx` | Login form (email + password, TOTP step) | Client component; calls Server Action to sign in |
+| `src/app/login/actions.ts` | `signInAction()` Server Action — calls Auth.js `signIn()` | Must be `'use server'`; handles credential validation + TOTP check |
+| `src/lib/auth-utils.ts` | `requireAuth()` helper — calls `auth()`, throws/redirects if no session | Used at top of every Server Component page and Server Action |
+| `src/lib/{dashboard,income,etc}.ts` | All data-fetch functions — add `userId: string` param, inject into all WHERE clauses | Pure additive change to function signatures |
+| `src/app/**/actions.ts` | All Server Actions — call `requireAuth()` at top, pass userId to lib functions | Security-critical: proxy does NOT protect Server Actions |
+| Prisma schema | Add `User` model + `userId` FK on all 10 existing models | Schema migration is the highest-risk change |
 
 ---
 
-## Recommended Project Structure (Post-Migration)
+## New Files vs Modified Files
 
-```
-src/
-├── app/
-│   ├── globals.css              # MODIFIED — full @theme replacement + animations
-│   └── layout.tsx               # MODIFIED — Satoshi + IBM Plex Mono font swap
-├── components/
-│   ├── ui/
-│   │   ├── Modal.tsx            # MODIFIED — new sheet header structure
-│   │   ├── DynamicIcon.tsx      # UNCHANGED
-│   │   ├── BatteryBar.tsx       # NEW
-│   │   ├── FloatingInput.tsx    # NEW
-│   │   ├── StatusDot.tsx        # NEW
-│   │   └── TogglePills.tsx      # NEW
-│   ├── layout/
-│   │   ├── MobileNav.tsx        # MODIFIED — icon-only + status dot
-│   │   ├── FAB.tsx              # MODIFIED — token swap, remove shadow
-│   │   ├── Sidebar.tsx          # MODIFIED — token swap
-│   │   ├── PageHeader.tsx       # MODIFIED — token swap
-│   │   └── MobileMoreSheet.tsx  # UNCHANGED (token swap only)
-│   ├── transactions/
-│   │   ├── TransactionForm.tsx  # MODIFIED — major restructure
-│   │   ├── Numpad.tsx           # NEW
-│   │   ├── TransactionRow.tsx   # MODIFIED
-│   │   └── TransactionFilters.tsx # MODIFIED
-│   ├── budgets/
-│   │   └── BudgetProgressList.tsx # MODIFIED — BatteryBar integration
-│   ├── dashboard/
-│   │   └── KPICard.tsx          # MODIFIED
-│   ├── charts/
-│   │   ├── TrendAreaChart.tsx   # MODIFIED — no grid, dots, 1.5px stroke
-│   │   ├── ExpenseDonutChart.tsx # MODIFIED
-│   │   └── BudgetBarChart.tsx   # MODIFIED — flat tops, no grid
-│   └── debts/
-│       └── DebtCard.tsx         # MODIFIED — BatteryBar integration
-```
+### New Files (create from scratch)
+
+| File | Purpose |
+|------|---------|
+| `src/lib/auth.ts` | NextAuth v5 config — credentials provider, TOTP check, callbacks, Prisma adapter |
+| `src/lib/auth-utils.ts` | `requireAuth()` helper + typed session accessor used across all pages/actions |
+| `proxy.ts` | Export `{ auth as proxy }` from `@/lib/auth` + matcher config (root-level file, not in src/) |
+| `src/app/api/auth/[...nextauth]/route.ts` | Auth.js catch-all handler (2 lines) |
+| `src/app/login/page.tsx` | Login page — email/password form, then TOTP step |
+| `src/app/login/actions.ts` | `signInAction()` Server Action |
+| `prisma/migrations/[timestamp]_add_auth_models/` | Migration adding User, Account, Session, VerificationToken, Authenticator, plus userId FKs |
+
+### Modified Files (existing files that change)
+
+| File | What Changes |
+|------|-------------|
+| `prisma/schema.prisma` | Add User/Account/Session/VerificationToken models; add `userId String` + relation to all 10 existing models |
+| `src/lib/prisma.ts` | No change to singleton — but datasource URL changes for production (Prisma Postgres URL format) |
+| `src/app/layout.tsx` | Add session provider (NOT needed with Auth.js v5 JWT strategy — auth() works server-side without a context provider) |
+| `src/lib/dashboard.ts` | All exported functions get `userId: string` param, injected into every query `where:` clause |
+| `src/lib/income.ts` | Same — `userId` param + WHERE scoping |
+| `src/lib/debt.ts` | Same |
+| `src/lib/history.ts` | Same |
+| `src/lib/period.ts` | Same |
+| `src/lib/budget.ts` | Same |
+| `src/lib/budget-shared.ts` | Same |
+| `src/app/**/page.tsx` (all 7) | Call `requireAuth()` at top, pass `userId` to lib functions |
+| `src/app/**/actions.ts` (all 6) | Call `requireAuth()` at top, pass `userId` to lib functions |
+| `prisma/seed.ts` | Add seed user so dev DB is immediately usable; seed data becomes user-scoped |
+| `next.config.ts` | Add security headers (CSP, HSTS, X-Frame-Options, etc.) |
+| `package.json` | Add `postinstall: "prisma generate"` for Vercel build |
+| `.env.example` | Add `AUTH_SECRET`, `AUTH_TOTP_ENCRYPTION_KEY`, `DATABASE_URL` format note |
 
 ---
 
 ## Architectural Patterns
 
-### Pattern 1: Token-First Migration
+### Pattern 1: Auth.js v5 Single-Config Export
 
-**What:** Replace the entire `@theme` block in `globals.css` as step 1, before touching any component. After the token swap, pages will look broken (wrong colors) but all Tailwind utility classes that reference token names continue to work because the token names map correctly. Components can then be updated incrementally against stable tokens.
+**What:** Everything in one `src/lib/auth.ts`. The file exports four things: `auth` (session accessor, works server-side everywhere), `handlers` (GET/POST for the catch-all route), `signIn`, `signOut`. Nothing else needs to import NextAuth directly.
 
-**When to use:** Always first. Attempting to update components before tokens causes double-work.
+**When to use:** Always. This is the Auth.js v5 canonical pattern.
 
-**Trade-offs:** Brief period where the app looks garbled (acceptable during development). No risk to data layer.
-
-**Example:**
-```css
-/* BEFORE */
-@theme {
-  --color-bg-primary: #0a0f1a;
-  --color-bg-card: #111827;
-  --font-mono: 'JetBrains Mono', monospace;
-  --radius-xl: 16px;
-  --shadow-glow: 0 0 20px rgba(34, 211, 238, 0.15);
-}
-
-/* AFTER */
-@theme {
-  --color-bg: #000000;
-  --color-surface: #0A0A0A;
-  --color-surface-elevated: #141414;
-  --font-mono: 'IBM Plex Mono', 'Fira Code', monospace;
-  --radius-xl: 24px;
-  /* shadow tokens deleted entirely */
-}
-```
-
-### Pattern 2: CSS Animations Centralized in globals.css
-
-**What:** All keyframe animations (`status-pulse`, `scanline-reveal`) are defined once in `globals.css`. Components reference them via CSS class names. No inline `style` tags for animations.
-
-**When to use:** All Glyph Finance signature animations. Centralizing respects `prefers-reduced-motion` from one location.
-
-**Trade-offs:** Classes must be non-purged by Tailwind (add to safelist or use in JSX to keep them in bundle).
-
-**Example:**
-```css
-/* globals.css */
-@keyframes status-pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.85); }
-}
-
-@keyframes scanline-reveal {
-  0% { clip-path: inset(0 0 100% 0); }
-  100% { clip-path: inset(0 0 0% 0); }
-}
-
-.status-dot { animation: status-pulse 2.5s ease-in-out infinite; }
-.dot-matrix-bg {
-  background-image: url("data:image/svg+xml,%3Csvg width='8' height='8' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='4' cy='4' r='0.75' fill='%231E1E1E' fill-opacity='0.4'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 8px 8px;
-}
-.pixel-dissolve { animation: scanline-reveal 500ms steps(12, end) forwards; }
-
-@media (prefers-reduced-motion: reduce) {
-  .pixel-dissolve, .status-dot { animation: none; clip-path: none; }
-}
-```
-
-### Pattern 3: BatteryBar Thresholds via Props
-
-**What:** BatteryBar accepts optional `thresholds` prop to support different color breakpoints. Budget uses 80/100, credit utilization uses 30/70, debt ratio uses 35/50. Defaults to budget thresholds so most call sites need no extra props.
-
-**When to use:** Any time a progress indicator exists in the app.
-
-**Trade-offs:** BatteryBar internal logic has a mild branching complexity for the traffic-light coloring, but this is the right tradeoff vs having three different components.
+**Trade-offs:** One config file becomes important — keep it under 100 lines by extracting TOTP logic to a helper.
 
 ```typescript
-// Budget usage (default)
-<BatteryBar value={percentUsed} />
+// src/lib/auth.ts
+import NextAuth from 'next-auth'
+import { PrismaAdapter } from '@auth/prisma-adapter'
+import Credentials from 'next-auth/providers/credentials'
+import prisma from '@/lib/prisma'
+import bcrypt from 'bcryptjs'
+import { verifyTOTP } from '@/lib/totp'  // extracted helper
 
-// Credit card utilization
-<BatteryBar value={utilizationPercent} thresholds={{ warning: 31, danger: 71 }} />
-
-// Debt-to-income ratio
-<BatteryBar value={dtiPercent} thresholds={{ warning: 36, danger: 51 }} />
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  adapter: PrismaAdapter(prisma),
+  session: { strategy: 'jwt' },  // JWT required — database sessions can't run at edge
+  providers: [
+    Credentials({
+      credentials: {
+        email: { type: 'email' },
+        password: { type: 'password' },
+        totpCode: { type: 'text' },  // empty string if 2FA not yet set up
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) return null
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email as string },
+        })
+        if (!user || !user.passwordHash) return null
+        const valid = await bcrypt.compare(credentials.password as string, user.passwordHash)
+        if (!valid) return null
+        // Invite-only: user must be in DB (seeded or admin-created) and isApproved
+        if (!user.isApproved) return null
+        // TOTP check — if user has 2FA enabled, code is required
+        if (user.twoFactorEnabled) {
+          if (!verifyTOTP(credentials.totpCode as string, user.twoFactorSecret!)) return null
+        }
+        return { id: user.id, email: user.email, name: user.name }
+      },
+    }),
+  ],
+  callbacks: {
+    jwt({ token, user }) {
+      if (user) token.id = user.id  // persist userId into JWT on sign-in
+      return token
+    },
+    session({ session, token }) {
+      session.user.id = token.id as string  // expose userId on session object
+      return session
+    },
+  },
+})
 ```
 
-### Pattern 4: FloatingInput Requires Relative Container
+### Pattern 2: `requireAuth()` — Defense in Depth for Server Actions
 
-**What:** FloatingInput uses `position: absolute` for the label that floats above the input. The component renders its own `<div className="relative">` wrapper. The label and input are co-located siblings, not separate DOM elements.
+**What:** Proxy only protects page navigation. Server Actions can be called directly from any client (including curl). Every Server Action must independently verify auth. Centralizing this in one helper prevents forgetting.
 
-**When to use:** All form inputs. Replaces every `<input>` + `<label>` pair in the codebase.
+**When to use:** First line of every Server Action and Server Component page that reads/writes user data.
 
-**Trade-offs:** Current forms use separate `<label htmlFor>` + `<input id>` patterns. FloatingInput merges these — callers pass `label` as a prop, not as a sibling DOM element. All form components need structural changes, not just class swaps.
+**Trade-offs:** Two layers of auth checking (proxy + per-action). The duplication is intentional and correct — the proxy is for UX (redirect), requireAuth is for security.
 
-```tsx
-// BEFORE (current pattern in DebtForm, IncomeSourceForm, etc.)
-<label htmlFor="name" className="text-sm text-text-secondary">Nombre</label>
-<input id="name" className="border border-border rounded-lg bg-bg-input ..." />
+```typescript
+// src/lib/auth-utils.ts
+import { auth } from '@/lib/auth'
+import { redirect } from 'next/navigation'
 
-// AFTER
-<FloatingInput label="Nombre" value={name} onChange={setName} />
+export interface AuthSession {
+  userId: string
+  email: string
+  name: string | null
+}
+
+/**
+ * Call at the top of every Server Component and Server Action.
+ * Returns the session with userId guaranteed non-null.
+ * Redirects to /login if unauthenticated (pages) or throws (actions).
+ */
+export async function requireAuth(): Promise<AuthSession> {
+  const session = await auth()
+  if (!session?.user?.id) {
+    redirect('/login')
+  }
+  return {
+    userId: session.user.id,
+    email: session.user.email ?? '',
+    name: session.user.name ?? null,
+  }
+}
 ```
+
+Usage in a Server Action:
+```typescript
+// src/app/movimientos/actions.ts
+'use server'
+
+export async function createTransaction(data: unknown): Promise<ActionResult> {
+  const { userId } = await requireAuth()  // ← line 1 of every action
+  
+  const parsed = createTransactionSchema.safeParse(data)
+  if (!parsed.success) return { error: formatZodErrors(parsed.error) }
+  
+  const period = await getPeriodForDate(parsed.data.date, userId)
+  await prisma.transaction.create({
+    data: { ...parsed.data, userId, periodId: period.id }
+  })
+  revalidatePath('/')
+  return { success: true }
+}
+```
+
+Usage in a Server Component page:
+```typescript
+// src/app/page.tsx (dashboard)
+export default async function HomePage({ searchParams }) {
+  const { userId } = await requireAuth()  // ← line 1 of every page
+  
+  const params = await searchParams
+  const period = await getCurrentPeriod(userId)
+  const kpis = await getDashboardKPIs(period.id, userId)
+  // ...
+}
+```
+
+### Pattern 3: userId Scoping Pattern for All Lib Functions
+
+**What:** Every function in `src/lib/*.ts` that reads or writes data adds `userId: string` as its first parameter. All Prisma queries add `where: { ..., userId }` or rely on relations that already scope to the user. This makes it structurally impossible to fetch another user's data by accident.
+
+**When to use:** Every lib function that touches any of the 10 existing models.
+
+**Trade-offs:** All call sites need updating. Function signatures become slightly more verbose. The alternative (implicit userId via closure or context) is more complex and testability suffers.
+
+```typescript
+// BEFORE (no auth)
+export async function getDashboardKPIs(periodId: string): Promise<DashboardKPIs> {
+  const totals = await prisma.transaction.aggregate({
+    where: { periodId },
+    // ...
+  })
+}
+
+// AFTER (userId-scoped)
+export async function getDashboardKPIs(periodId: string, userId: string): Promise<DashboardKPIs> {
+  const totals = await prisma.transaction.aggregate({
+    where: { periodId, userId },  // userId added
+    // ...
+  })
+}
+```
+
+### Pattern 4: Invite-Only via `isApproved` Field on User
+
+**What:** Auth.js v5 has no built-in invite-only support. The implementation is: User model has `isApproved Boolean @default(false)`. Only users with `isApproved: true` can pass `authorize()`. The admin creates users directly (seeded or via a thin admin action), sets `isApproved: true`. There is no self-registration form.
+
+**When to use:** This is the correct pattern for personal finance apps where you control who can access.
+
+**Trade-offs:** No invite email flow in v3.0 scope. Admin must create user records manually (acceptable for personal use and small beta). Could add email invitation flow later.
+
+```typescript
+// Seeding an approved user in prisma/seed.ts
+await prisma.user.upsert({
+  where: { email: 'owner@example.com' },
+  update: {},
+  create: {
+    email: 'owner@example.com',
+    name: 'Owner',
+    passwordHash: await bcrypt.hash(process.env.SEED_USER_PASSWORD!, 12),
+    isApproved: true,
+    twoFactorEnabled: false,
+  },
+})
+```
+
+### Pattern 5: TOTP 2FA as a User-Level Toggle
+
+**What:** TOTP is not enforced at the config level — it is enforced per-user in `authorize()`. A user with `twoFactorEnabled: false` logs in with just email+password. A user with `twoFactorEnabled: true` must supply a valid TOTP code. The login form handles both cases: it shows the TOTP field only after password verification passes (two-step UI, single form submission).
+
+**When to use:** This approach avoids the complexity of two separate sessions/states during login.
+
+**Trade-offs:** The login form needs a two-phase UI (step 1: email+password; step 2: TOTP code). Both submits are Server Actions. TOTP secrets must be encrypted at rest — never store raw TOTP secrets in the DB.
+
+**Libraries:** `speakeasy` or `otpauth` for TOTP generation/verification. `qrcode` for QR code display during 2FA setup.
+
+```typescript
+// src/lib/totp.ts
+import * as OTPAuth from 'otpauth'
+import { createCipheriv, createDecipheriv, randomBytes } from 'crypto'
+
+const ENCRYPTION_KEY = process.env.AUTH_TOTP_ENCRYPTION_KEY!  // 32-byte hex string
+
+export function generateTOTPSecret(): string {
+  const totp = new OTPAuth.TOTP({ issuer: 'Centik', algorithm: 'SHA1', digits: 6, period: 30 })
+  const secret = new OTPAuth.Secret({ size: 20 })
+  return encryptSecret(secret.base32)
+}
+
+export function verifyTOTP(token: string, encryptedSecret: string): boolean {
+  const secret = decryptSecret(encryptedSecret)
+  const totp = new OTPAuth.TOTP({ algorithm: 'SHA1', digits: 6, period: 30, secret })
+  const delta = totp.validate({ token, window: 1 })
+  return delta !== null
+}
+```
+
+---
+
+## Prisma Schema Changes
+
+### New Models (required by @auth/prisma-adapter)
+
+```prisma
+model User {
+  id               String    @id @default(cuid())
+  name             String?
+  email            String    @unique
+  emailVerified    DateTime?
+  image            String?
+  passwordHash     String?        // bcrypt hash — null for OAuth users
+  isApproved       Boolean   @default(false)
+  twoFactorEnabled Boolean   @default(false)
+  twoFactorSecret  String?        // AES-encrypted TOTP secret
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  // Auth.js adapter relations
+  accounts         Account[]
+  sessions         Session[]
+  authenticators   Authenticator[]
+
+  // App data relations (owned data)
+  transactions     Transaction[]
+  incomeSources    IncomeSource[]
+  categories       Category[]
+  debts            Debt[]
+  budgets          Budget[]
+  periods          Period[]
+  assets           Asset[]
+  valueUnits       ValueUnit[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, credentialID])
+}
+```
+
+### Changes to All 10 Existing Models
+
+Add `userId String` field and `user User` relation to every model. Add `@@index([userId])` where missing.
+
+Example (Transaction, same pattern for all 10):
+```prisma
+model Transaction {
+  // ... all existing fields unchanged ...
+  userId    String         // NEW
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)  // NEW
+
+  @@index([periodId, date])
+  @@index([categoryId])
+  @@index([userId])        // NEW
+}
+```
+
+**Models that need userId:** Transaction, IncomeSource, Category, Debt, Budget, Period, MonthlySummary, ValueUnit, UnitRate, Asset.
+
+Note on migration strategy: existing rows in dev DB have no userId. The migration must either drop+reseed (acceptable for dev) or provide a default userId. For production (Vercel first deploy), this is a new database so no migration of existing data is needed.
 
 ---
 
 ## Data Flow
 
-### Font Loading Flow
+### Authentication Flow
 
 ```
-layout.tsx
-  ↓ next/font loads Satoshi (local or via Google Fonts)
-  ↓ assigns CSS variable --font-satoshi to <html> element
-  ↓ next/font loads IBM_Plex_Mono
-  ↓ assigns CSS variable --font-ibm-plex-mono to <html> element
-globals.css
-  @theme inline {
-    --font-sans: var(--font-satoshi);     ← Tailwind font-sans utility
-  }
-  @theme {
-    --font-mono: 'IBM Plex Mono', 'Fira Code', monospace;  ← Direct value
-  }
+User visits any protected URL
+  ↓
+proxy.ts intercepts (runs at edge in Next.js 16)
+  ↓ no valid session cookie?
+Redirect → /login
+  ↓ user submits email + password
+signInAction() Server Action
+  ↓ calls Auth.js signIn('credentials', {...})
+  ↓ Auth.js calls authorize() in auth.ts
+  ↓ bcrypt.compare(password, user.passwordHash)
+  ↓ if user.twoFactorEnabled → verifyTOTP(totpCode, user.twoFactorSecret)
+  ↓ returns { id, email, name }
+  ↓ jwt() callback: token.id = user.id
+  ↓ session JWT written to httpOnly cookie
+Redirect → / (dashboard)
+  ↓
+proxy.ts sees valid session cookie → passes through
+  ↓
+Dashboard Server Component calls requireAuth()
+  ↓ auth() reads JWT from cookie → returns session
+  ↓ returns { userId: session.user.id, ... }
+  ↓
+getDashboardKPIs(periodId, userId) — Prisma WHERE userId
+  ↓
+User only sees their own data
 ```
 
-The `@theme inline` pattern is critical — this is how next/font CSS variables become available to Tailwind's `font-sans` utility. The existing pattern for DM Sans already demonstrates this correctly; only the variable name and font family change.
+### Per-Request Data Access Flow (post-auth)
 
-### Token Naming Migration Map
+```
+Client request (page navigation or Server Action call)
+  ↓
+proxy.ts: validate JWT session cookie → refresh cookie expiry
+  ↓
+Server Component / Server Action
+  ↓ await requireAuth() → { userId }
+  ↓
+src/lib/*.ts function(args, userId)
+  ↓
+prisma.model.findMany({ where: { userId, ...otherFilters } })
+  ↓
+PostgreSQL: indexed scan on userId column
+  ↓
+Results returned → serialized → rendered / returned to client
+```
 
-The token names change between v1.0 and v2.0. Both `globals.css` (defining tokens) and components (using Tailwind utilities derived from tokens) must be updated in sync.
+---
 
-| v1.0 Token | v2.0 Token | Class Change Required |
-|------------|------------|----------------------|
-| `--color-bg-primary` | `--color-bg` | `bg-bg-primary` → `bg-bg` |
-| `--color-bg-card` | `--color-surface` | `bg-bg-card` → `bg-surface` |
-| `--color-bg-card-hover` | `--color-surface-hover` | `bg-bg-card-hover` → `bg-surface-hover` |
-| `--color-bg-elevated` | `--color-surface-elevated` | `bg-bg-elevated` → `bg-surface-elevated` |
-| `--color-bg-input` | *(removed — inputs have no background)* | Remove `bg-bg-input` class |
-| `--color-border` | `--color-border-divider` | `border-border` → `border-border-divider` |
-| `--color-border-light` | *(removed)* | Remove all usage |
-| `--color-border-focus` | *(handled via --color-accent in focus-visible)* | No class change — covered by global rule |
-| `--color-text-muted` | `--color-text-tertiary` | `text-text-muted` → `text-text-tertiary` |
-| `--color-accent` | `--color-accent` (value changes: `#22d3ee` → `#CCFF00`) | No class change, value updates automatically |
-| `--color-positive` | `--color-positive` (value changes: `#34d399` → `#00E676`) | No class change |
-| `--color-negative` | `--color-negative` (value changes: `#f87171` → `#FF3333`) | No class change |
-| `--color-warning` | `--color-warning` (value changes: `#fb923c` → `#FF9100`) | No class change |
-| `--shadow-sm/md/lg/glow` | *(deleted entirely)* | All `shadow-*` classes removed from JSX |
-| `--radius-sm: 6px` | `--radius-sm: 8px` | Value increases, classes unchanged |
-| `--radius-md: 8px` | `--radius-md: 12px` | Value increases |
-| `--radius-lg: 12px` | `--radius-lg: 16px` | Value increases |
-| `--radius-xl: 16px` | `--radius-xl: 24px` | Value increases (modals most affected) |
+## Recommended Project Structure Changes
 
-New tokens to add to `@theme`:
-- `--color-surface-hover: #1A1A1A`
-- `--color-dot-matrix: #1E1E1E`
-- `--color-accent-subtle: rgba(204, 255, 0, 0.12)`
-- `--color-positive-subtle: rgba(0, 230, 118, 0.12)`
-- `--color-negative-subtle: rgba(255, 51, 51, 0.12)`
-- `--color-warning-subtle: rgba(255, 145, 0, 0.12)`
-- `--color-info-subtle: rgba(68, 138, 255, 0.12)`
-- `--color-accent-hover: #B8E600`
-- `--color-info: #448AFF`
-- `--radius-full: 9999px`
+```
+/ (root)
+├── proxy.ts               NEW — export { auth as proxy } from "@/lib/auth"
+│
+src/
+├── lib/
+│   ├── auth.ts            NEW — NextAuth v5 config (credentials, TOTP, callbacks, adapter)
+│   ├── auth-utils.ts      NEW — requireAuth() helper, AuthSession type
+│   ├── totp.ts            NEW — generateTOTPSecret(), verifyTOTP(), encrypt/decrypt helpers
+│   ├── prisma.ts          UNCHANGED (Prisma Postgres uses same DATABASE_URL env var)
+│   ├── dashboard.ts       MODIFIED — all functions get userId param
+│   ├── income.ts          MODIFIED
+│   ├── debt.ts            MODIFIED
+│   ├── history.ts         MODIFIED
+│   ├── period.ts          MODIFIED
+│   ├── budget.ts          MODIFIED
+│   └── budget-shared.ts   MODIFIED
+├── app/
+│   ├── api/
+│   │   └── auth/
+│   │       └── [...nextauth]/
+│   │           └── route.ts   NEW — 2-line handler
+│   ├── login/
+│   │   ├── page.tsx       NEW — login form (2-step: email+password, then TOTP)
+│   │   └── actions.ts     NEW — signInAction() Server Action
+│   ├── page.tsx           MODIFIED — requireAuth() at top
+│   ├── movimientos/
+│   │   └── actions.ts     MODIFIED — requireAuth() at top of every action
+│   ├── deudas/
+│   │   └── actions.ts     MODIFIED
+│   ├── ingresos/
+│   │   └── actions.ts     MODIFIED
+│   ├── presupuesto/
+│   │   └── actions.ts     MODIFIED
+│   ├── historial/
+│   │   └── actions.ts     MODIFIED
+│   └── configuracion/
+│       └── actions.ts     MODIFIED
+│
+prisma/
+│   ├── schema.prisma      MODIFIED — User + auth models + userId on all 10 models
+│   └── seed.ts            MODIFIED — seed approved User, scope all seed data to userId
+│
+next.config.ts             MODIFIED — add security headers
+package.json               MODIFIED — postinstall: "prisma generate"
+.env.example               MODIFIED — AUTH_SECRET, AUTH_TOTP_ENCRYPTION_KEY
+```
 
-Category color tokens stay named `--color-cat-*` but values change to desaturated palette:
-- `--color-cat-food: #C88A5A` (was `#fb923c`)
-- `--color-cat-services: #7A9EC4` (was `#60a5fa`)
-- `--color-cat-entertainment: #9B89C4` (was `#a78bfa`)
-- `--color-cat-subscriptions: #C48AA3` (was `#f472b6`)
-- `--color-cat-transport: #C4A84E` (was `#fbbf24`)
-- `--color-cat-other: #8A9099` (was `#94a3b8`)
+---
 
-### Chart Hardcoded Color Migration
+## Security Headers Configuration
 
-All three chart files use a `CHART_COLORS` object with hardcoded hex values that bypass the CSS variable system. These must be updated directly to new Glyph Finance values:
+Add to `next.config.ts`. These are required for production (financial app, personal data).
 
 ```typescript
-// Applies to TrendAreaChart.tsx, ExpenseDonutChart.tsx, BudgetBarChart.tsx
-const CHART_COLORS = {
-  tooltipBg: '#141414',       // was #0a0f1a  (surface-elevated)
-  tooltipBorder: 'none',      // was #1e293b  (no decorative borders)
-  positive: '#00E676',        // was #34d399  (new positive)
-  negative: '#FF3333',        // was #f87171  (new negative)
-  accent: '#CCFF00',          // was #22d3ee  (chartreuse)
-  axis: '#666666',            // was #64748b  (text-tertiary)
-  // Remove: grid (CartesianGrid component removed from JSX)
+const nextConfig: NextConfig = {
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()',
+          },
+          {
+            key: 'Content-Security-Policy',
+            // Tailwind v4 uses inline styles via @theme — nonce-based CSP is needed
+            // For v3.0, start with a permissive but safe CSP and tighten post-launch
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline'",  // tighten to nonce in v4.0
+              "style-src 'self' 'unsafe-inline'",
+              "font-src 'self' https://fonts.gstatic.com",
+              "img-src 'self' data:",
+              "connect-src 'self'",
+              "frame-ancestors 'none'",
+            ].join('; '),
+          },
+        ],
+      },
+    ]
+  },
 }
 ```
 
 ---
 
+## Rate Limiting Architecture
+
+For auth endpoints on Vercel (serverless), in-memory rate limiting is useless — each function instance is stateless. The correct approach for v3.0:
+
+**Option A (recommended for v3.0): Upstash Redis + @upstash/ratelimit**
+- Serverless-native, pay-per-use, no separate infrastructure
+- Rate limit `POST /api/auth/callback/credentials` to 5 attempts per 15 minutes per IP
+- Implemented in `proxy.ts` alongside auth redirect logic
+- Confidence: HIGH — Vercel's own templates use this pattern
+
+**Option B (simpler, acceptable for personal use): Skip external rate limiting, rely on strong passwords + TOTP**
+- TOTP 2FA already dramatically reduces brute-force risk
+- Acceptable for a personal app with invite-only access
+- Avoids adding Upstash dependency in v3.0
+
+**Recommendation:** Start with Option B (TOTP is the real protection). Add Upstash rate limiting in v3.1 if needed.
+
+---
+
+## Vercel + Prisma Postgres Deployment
+
+### Connection Strategy
+
+Prisma Postgres (Vercel's managed Postgres with Prisma Accelerate) uses a different connection string format:
+```
+# Dev (Docker — unchanged)
+DATABASE_URL="postgresql://misfinanzas:misfinanzas_dev@localhost:5432/misfinanzas"
+
+# Production (Prisma Postgres via Vercel)
+DATABASE_URL="prisma+postgres://accelerate.prisma-data.net/?api_key=..."
+```
+
+The `src/lib/prisma.ts` singleton already uses `PrismaPg` adapter from `@prisma/adapter-pg`. Prisma Postgres requires switching to `@prisma/adapter-pg` or using Accelerate directly. The Vercel Marketplace integration auto-configures `DATABASE_URL`. No code change needed in `prisma.ts` as long as the env var is set correctly.
+
+### Deployment Checklist
+
+```
+package.json:
+  "postinstall": "prisma generate"   ← ensures client is generated at build time
+
+Vercel environment variables to set:
+  DATABASE_URL         = (set automatically by Prisma Postgres integration)
+  AUTH_SECRET          = (generate with: openssl rand -base64 32)
+  AUTH_TOTP_ENCRYPTION_KEY = (generate with: openssl rand -hex 32)
+  NODE_ENV             = production
+
+CI/CD (Vercel auto-deploy):
+  - Push to main → Vercel builds
+  - "Build command": next build (default)
+  - "Install command": npm install (user preference)
+  - Run migrations before first deploy: prisma migrate deploy
+```
+
+### Migration Strategy for First Deploy
+
+1. Provision Prisma Postgres via Vercel Marketplace
+2. Set `DATABASE_URL` in Vercel env vars
+3. Run `npx prisma migrate deploy` locally against the production DATABASE_URL to initialize schema
+4. Run `npx prisma db seed` to create the initial approved user
+5. Deploy — subsequent pushes auto-deploy; schema changes require `prisma migrate deploy` in CI
+
+---
+
 ## Build Order: Recommended Phase Sequence
 
-Dependencies flow token layer → layout → primitives → feature components. This order allows testing each layer before building on it.
+Dependencies determine order. Auth is the foundation — nothing else in v3.0 can be tested without it.
 
 ```
-Phase 1: Token foundation
-  Files: globals.css (full @theme replacement + animations)
-         layout.tsx (font swap: DM_Sans → Satoshi, JetBrains Mono → IBM Plex Mono)
-  Expected after: app uses new palette/radius, looks partially broken
-                  (token name mismatches between old CSS classes and new token names)
-  Unblocks: all subsequent phases
+Phase 1: Schema + Auth Foundation (highest risk, do first)
+  - Add User + auth models to prisma/schema.prisma
+  - Add userId FK to all 10 existing models
+  - Run migration against dev DB (expect dev data loss → reseed)
+  - Update seed.ts to create approved User + scope all seed data to that userId
+  - Install: next-auth@beta @auth/prisma-adapter bcryptjs otpauth qrcode
+  - Create src/lib/auth.ts (credentials provider, no TOTP yet — add after)
+  - Create src/app/api/auth/[...nextauth]/route.ts (2 lines)
+  - Create proxy.ts (auth redirect)
+  - Test: unauthenticated request to / → /login redirect
+  Unblocks: everything
 
-Phase 2: Class name migration
-  Action: search-replace old token utility class names across all components
-          grep for: bg-bg-primary, bg-bg-card, bg-bg-elevated, border-border,
-                    text-text-muted, shadow-sm, shadow-md, shadow-lg, shadow-glow,
-                    bg-bg-input, border-border-light
-          Update hardcoded hex values in CHART_COLORS objects
-  Expected after: app looks visually correct with new palette (colors, sizes)
-  Unblocks: nothing blocked, but clears visual noise for subsequent phases
+Phase 2: requireAuth() + userId scoping in all lib functions
+  - Create src/lib/auth-utils.ts (requireAuth helper)
+  - Update all 7 functions in src/lib/*.ts to accept userId param
+  - Update all 7 page.tsx files to call requireAuth()
+  - Update all 6 actions.ts files to call requireAuth()
+  - Test: all pages still render with valid session, data is scoped
+  Unblocks: correct data isolation before wiring TOTP
 
-Phase 3: New primitive components
-  Files: BatteryBar.tsx (with tests), FloatingInput.tsx (with tests),
-         StatusDot.tsx (with tests), TogglePills.tsx (with tests)
-  Zero side effects — new files, nothing imports them yet
-  Expected after: components exist and are tested in isolation
-  Unblocks: BudgetProgressList, DebtCard, MobileNav, TransactionForm
+Phase 3: Login UI
+  - Create src/app/login/page.tsx (step 1: email+password)
+  - Create src/app/login/actions.ts (signInAction)
+  - Integrate with Auth.js signIn('credentials', ...)
+  - Test: full login flow works
+  Unblocks: TOTP UI
 
-Phase 4: Layout components
-  Files: MobileNav.tsx (icon-only, status dot), Sidebar.tsx (polish),
-         FAB.tsx (remove shadow, icon to text-black)
-  Expected after: navigation fully correct per spec
+Phase 4: TOTP 2FA
+  - Create src/lib/totp.ts (generate, verify, encrypt/decrypt)
+  - Add 2FA setup page/modal (show QR code, verify first code, save encrypted secret)
+  - Update login form step 2: TOTP input
+  - Update authorize() in auth.ts to check TOTP
+  - Test: login with 2FA enabled requires valid TOTP code
+  Unblocks: security hardening
 
-Phase 5: Modal restructure
-  Files: Modal.tsx (new header structure, correct radius, no border, no shadow)
-  Expected after: all modals and bottom sheets correct per spec
-  Unblocks: TransactionForm (which lives inside Modal)
-
-Phase 6: TransactionForm redesign
-  Files: TransactionForm.tsx (bottom sheet layout, dot-matrix hero, amount display,
-         TogglePills, category grid, Numpad, FloatingInput for optional fields),
-         Numpad.tsx (NEW — created here alongside TransactionForm)
-  Most complex single-component change. Has existing tests — update tests alongside.
-  Expected after: transaction registration flow fully spec-compliant
-
-Phase 7: Progress bars
-  Files: BudgetProgressList.tsx, DebtCard.tsx,
-         any BudgetTable or progress usage in presupuesto page
-  Action: Replace all smooth bars with BatteryBar component
-  Expected after: all progress indicators are segmented battery-bar style
-
-Phase 8: Charts
-  Files: TrendAreaChart.tsx, ExpenseDonutChart.tsx, BudgetBarChart.tsx
-  Action: Update CHART_COLORS, remove CartesianGrid, adjust strokeWidth/dots/radius
-  Expected after: charts match minimal no-grid spec with 1.5px strokes
-
-Phase 9: Remaining feature components
-  Files: KPICard.tsx (font-mono values, no border, hero dot-matrix),
-         TransactionRow.tsx (font-mono amounts, +/- prefix colors),
-         TransactionFilters.tsx (pill chips),
-         IncomeSourceCard.tsx, IncomeSummaryCards.tsx,
-         AnnualPivotTable.tsx (table header uppercase tracking)
-  Expected after: all pages visually complete
-
-Phase 10: Visual QA
-  Action: Every page reviewed against STYLE_GUIDE.md spec
-          Focus rings, touch targets, contrast ratios
-          Update all affected unit tests
+Phase 5: Security Headers + Deployment
+  - Update next.config.ts with security headers
+  - Add postinstall script to package.json
+  - Provision Prisma Postgres via Vercel
+  - Run migration deploy + seed on production DB
+  - Deploy to Vercel, verify all routes protected
+  - Smoke test: login, dashboard KPIs, create transaction, close period
 ```
-
----
-
-## Component Dependencies
-
-```
-StatusDot ← MobileNav (active tab indicator)
-StatusDot ← PageHeader (active period indicator)
-BatteryBar ← BudgetProgressList
-BatteryBar ← DebtCard (credit utilization, different thresholds)
-BatteryBar ← presupuesto page BudgetTable (if progress bars exist there)
-FloatingInput ← TransactionForm (optional fields section)
-FloatingInput ← DebtForm
-FloatingInput ← IncomeSourceForm
-TogglePills ← TransactionForm (Gasto/Ingreso toggle)
-Numpad ← TransactionForm (amount entry)
-dot-matrix-bg (CSS class) ← KPICard hero variant
-dot-matrix-bg (CSS class) ← TransactionForm amount hero zone
-```
-
-FloatingInput and BatteryBar have the widest fan-out — build and test them first (Phase 3) before migrating any feature components.
-
----
-
-## Anti-Patterns
-
-### Anti-Pattern 1: Partial Token Migration with Hardcoded Hex Values
-
-**What people do:** Update `globals.css` but leave hardcoded hex values in components — specifically the `CHART_COLORS` objects in all three chart files and any `style={{ backgroundColor: '#0a0f1a' }}` inline styles.
-
-**Why it's wrong:** Creates a split-brain state where the design system changes but scattered hardcoded values remain old colors. Charts look completely wrong while everything else updates.
-
-**Do this instead:** After updating `globals.css`, grep for all old hex values (`#0a0f1a`, `#111827`, `#1e293b`, `#22d3ee`, `#34d399`, `#f87171`, `#64748b`, `#64748b`) and update every occurrence in the same phase.
-
-### Anti-Pattern 2: Keeping Any Smooth Progress Bars
-
-**What people do:** Implement BatteryBar but only use it in new components, leaving existing smooth bars in `BudgetProgressList` and `DebtCard` unchanged.
-
-**Why it's wrong:** Two progress bar systems means visual inconsistency. Glyph Finance's identity requires 100% segmented bars everywhere.
-
-**Do this instead:** Migrate all three locations in Phase 7 as a single atomic change. There are only 3 files with progress bars.
-
-### Anti-Pattern 3: Floating Labels via Classes on Existing Inputs
-
-**What people do:** Apply underline styling to existing `<input>` elements via classes (e.g., `className="border-b border-border-divider bg-transparent"`) without implementing the floating label behavior.
-
-**Why it's wrong:** Underline inputs without floating labels lose label context while typing. The spec requires floating labels on every input.
-
-**Do this instead:** Build FloatingInput as a proper component. The CSS transform requires a relative container wrapping both label and input — cannot be done with Tailwind classes on the input element alone.
-
-### Anti-Pattern 4: Implementing Numpad Before Bottom Sheet Layout
-
-**What people do:** Build Numpad in isolation before redesigning the TransactionForm bottom sheet structure.
-
-**Why it's wrong:** The Numpad's 4-row grid needs known container dimensions. Building it out of context causes sizing mistakes that require rework when placed in the actual bottom sheet.
-
-**Do this instead:** Establish the TransactionForm bottom sheet structure (sections, proportions: dot-matrix hero zone + category grid + numpad area) before sizing the Numpad keys.
-
-### Anti-Pattern 5: Modal Title Prop Driving Bottom Sheet Header
-
-**What people do:** Keep the existing `title` prop in Modal and try to style it to match the Glyph Finance spec, which has "X" on the left and "GUARDAR" on the right.
-
-**Why it's wrong:** The current Modal renders title as `<h2>` centered with close button on the right. The new spec has a fundamentally different header layout. Trying to fit it in the existing prop causes either a messy prop API or incorrect layouts.
-
-**Do this instead:** Add a `headerContent?: ReactNode` prop to Modal that replaces the default title/close layout entirely for the bottom sheet case. TransactionForm passes its own header JSX. The desktop modal can keep the standard title+X layout.
-
----
-
-## Scaling Considerations
-
-| Scale | Architecture Adjustments |
-|-------|--------------------------|
-| Current: 1 user, ~100 files | Monolith is correct. No extraction needed. |
-| Token system growth | If token count grows significantly, extract to `tokens.css` imported into globals.css — not needed for this milestone |
-| Component library extraction | BatteryBar, FloatingInput, Numpad are generic enough to publish as a separate package if the project becomes an open-source design system — not in scope |
 
 ---
 
@@ -586,33 +735,96 @@ FloatingInput and BatteryBar have the widest fan-out — build and test them fir
 
 ### External Services
 
-| Service | Integration Pattern | Notes |
-|---------|---------------------|-------|
-| next/font (Google) | `IBM_Plex_Mono` from `next/font/google` | IBM Plex Mono is on Google Fonts — HIGH confidence. Satoshi may require local font files if not available via Google Fonts — verify before Phase 1 |
-| Sonner toasts | `theme="dark"` already set | Toast appearance inherits page CSS — no changes needed |
-| Recharts | Hardcoded hex values in CHART_COLORS objects | Must update manually — Recharts does not use CSS variables |
-| Lucide React | `strokeWidth` prop on DynamicIcon | Update DynamicIcon.tsx default `strokeWidth` from `2` to `1.5` for all category icons |
+| Service | Integration Pattern | Confidence |
+|---------|---------------------|------------|
+| Auth.js v5 (`next-auth@beta`) | `@/lib/auth.ts` — single config, export `{ auth, handlers, signIn, signOut }` | HIGH — canonical v5 pattern, matches Next.js 16 proxy.ts rename |
+| `@auth/prisma-adapter` | Passed as `adapter:` to NextAuth config. Manages User/Account/Session automatically | HIGH — official adapter, documented schema |
+| Prisma Postgres (Vercel) | Same `DATABASE_URL` env var, different URL format (`prisma+postgres://...`). `postinstall: prisma generate` | HIGH — Vercel Marketplace integration handles setup |
+| Upstash Redis (optional) | `@upstash/ratelimit` in `proxy.ts` for brute-force protection on auth route | MEDIUM — optional for v3.0, recommended for v3.1 |
+| `bcryptjs` | Password hashing in `authorize()` and user creation. `bcrypt.hash(password, 12)` for create, `bcrypt.compare()` for verify | HIGH — standard, no native deps |
+| `otpauth` or `speakeasy` | TOTP generation + verification. AES-256-CBC encryption of secrets before DB storage | MEDIUM — prefer `otpauth` (actively maintained, no native deps) |
 
 ### Internal Boundaries
 
-| Boundary | Communication | Notes |
-|----------|---------------|-------|
-| globals.css → Tailwind utilities | `@theme` block defines token values; Tailwind generates utility classes | Token rename = class rename everywhere in JSX |
-| layout.tsx → globals.css | `@theme inline` requires font CSS variable on `<html>` | Font variable set via `className` on `<html>`, consumed by `@theme inline` — existing pattern, just swap variable name |
-| BatteryBar → lib/budget-shared.ts | `getBudgetColor()` returns thresholds — BatteryBar can accept thresholds as props instead | Recommendation: keep getBudgetColor() utility, expose thresholds as BatteryBar props for flexibility |
-| TransactionForm → Modal | Modal's header restructuring affects TransactionForm's close/save button placement | Solution: add `headerContent` prop to Modal or have TransactionForm render its own header outside Modal's built-in title area |
+| Boundary | Communication | Security Note |
+|----------|---------------|---------------|
+| `proxy.ts` ↔ `src/lib/auth.ts` | `export { auth as proxy }` — proxy reads JWT from cookie, redirects if invalid | Proxy is UX-only. Not sufficient for security alone |
+| Server Actions ↔ `src/lib/auth-utils.ts` | `requireAuth()` called at top of every action | This is the security boundary. Every action must call it independently |
+| `src/lib/*.ts` ↔ Prisma | All queries now include `userId` in `where:` clause | Structural guarantee — impossible to fetch unscoped data if pattern is followed |
+| `src/lib/auth.ts` ↔ Prisma | Auth.js adapter uses the same Prisma singleton from `@/lib/prisma` | One client, one pool — correct |
+| Login page ↔ Auth.js | Login form submits to Server Action which calls `signIn('credentials', {...})` from `next-auth` — not a direct API call | Server Action has built-in CSRF protection. Do not use client-side fetch to `/api/auth/callback/credentials` directly |
+
+---
+
+## Anti-Patterns
+
+### Anti-Pattern 1: Relying Only on proxy.ts for Security
+
+**What people do:** Add proxy.ts to redirect unauthenticated users and assume all protected routes are secure.
+
+**Why it's wrong:** Server Actions can be called directly by any HTTP client regardless of the proxy. A POST to `/movimientos/actions.ts` bypasses proxy entirely. Financial mutations (create transaction, close period, update debt) would be callable without authentication.
+
+**Do this instead:** Call `requireAuth()` as the first line of every Server Action. The proxy is for redirecting users in the browser — security lives in the action itself.
+
+### Anti-Pattern 2: Adding `userId` Only to Transaction Queries
+
+**What people do:** Add `userId` to Transaction and Period queries, miss the rest.
+
+**Why it's wrong:** Debts, income sources, budgets, and categories are also user data. An attacker who discovers another user's IDs could read their financial profile through any unscoped model.
+
+**Do this instead:** Add `userId` FK to all 10 models as a batch in one migration. Update ALL lib functions in Phase 2. Use a grep for `prisma.` after Phase 2 to verify no unscoped queries remain.
+
+### Anti-Pattern 3: Storing TOTP Secrets in Plaintext
+
+**What people do:** Store the TOTP secret directly in `user.twoFactorSecret` as a base32 string.
+
+**Why it's wrong:** If the database is compromised (leaked backup, SQL injection), an attacker gets both the password hash AND the TOTP secrets — meaning 2FA provides zero additional protection.
+
+**Do this instead:** Encrypt TOTP secrets with AES-256 before storage. The encryption key lives only in `AUTH_TOTP_ENCRYPTION_KEY` env var, never in the DB. Compromise of the DB alone is insufficient to recover secrets.
+
+### Anti-Pattern 4: Database Session Strategy in proxy.ts
+
+**What people do:** Configure `session: { strategy: 'database' }` and export `auth` as proxy.
+
+**Why it's wrong:** Database sessions require a DB call to validate each session. Next.js proxy.ts runs at the edge runtime — it cannot make direct PostgreSQL connections. The result is a runtime error or fallback to no session validation.
+
+**Do this instead:** Use `session: { strategy: 'jwt' }`. JWT sessions are validated by signature verification (no DB call needed), which is compatible with edge runtime. The userId is embedded in the JWT via the `jwt()` callback.
+
+### Anti-Pattern 5: Modifying Existing Queries Before Schema Migration
+
+**What people do:** Update `src/lib/dashboard.ts` to add `userId` to WHERE clauses before running the schema migration that adds the `userId` column.
+
+**Why it's wrong:** Prisma client will fail to generate (or generate without the new field), and TypeScript will have type errors. The schema is the source of truth.
+
+**Do this instead:** Phase 1 is schema-first. Run `prisma migrate dev`, regenerate client (`prisma generate`), then update lib functions. TypeScript will guide you — the new `userId` field will appear in the Prisma types.
+
+---
+
+## Scaling Considerations
+
+| Scale | Architecture Adjustments |
+|-------|--------------------------|
+| 1-10 users (current goal) | JWT sessions, no rate limiting needed if TOTP is enforced, Docker dev + Prisma Postgres prod |
+| 10-100 users | Add Upstash rate limiting on auth endpoints, monitor Prisma Postgres connection pool |
+| 100-1000 users | Consider Prisma Accelerate connection pooling (already built into Prisma Postgres), add Redis session invalidation if needed |
+| 1000+ users | Separate auth service or add session revocation, consider read replicas for dashboard queries |
 
 ---
 
 ## Sources
 
-- `/Users/freptar0/Desktop/Projects/centik/STYLE_GUIDE.md` — Glyph Finance design tokens, component specs, animation implementations (HIGH confidence — authoritative project doc)
-- `/Users/freptar0/Desktop/Projects/centik/UX_RULES.md` — Interaction patterns, layout rules, numpad spec, floating inputs (HIGH confidence — authoritative project doc)
-- `/Users/freptar0/Desktop/Projects/centik/.planning/PROJECT.md` — Active requirements, confirmed decisions (HIGH confidence)
-- Codebase inspection: `src/app/globals.css`, `src/app/layout.tsx`, `src/components/ui/Modal.tsx`, `src/components/layout/Sidebar.tsx`, `src/components/layout/MobileNav.tsx`, `src/components/layout/FAB.tsx`, `src/components/transactions/TransactionForm.tsx`, `src/components/budgets/BudgetProgressList.tsx`, `src/components/charts/TrendAreaChart.tsx`, `src/components/dashboard/KPICard.tsx` (HIGH confidence — direct source inspection)
-- Tailwind v4 `@theme` / `@theme inline` pattern (HIGH confidence — based on working implementation already in globals.css)
+- [Auth.js Getting Started — Protecting Routes](https://authjs.dev/getting-started/session-management/protecting) — proxy.ts export pattern, matcher config (HIGH confidence)
+- [Auth.js Prisma Adapter](https://authjs.dev/getting-started/adapters/prisma) — required schema models, User/Account/Session/VerificationToken definitions (HIGH confidence)
+- [Prisma Docs — Auth.js + Next.js guide](https://www.prisma.io/docs/guides/authentication/authjs/nextjs) — Prisma Postgres + adapter integration (HIGH confidence)
+- [Deploy to Vercel — Prisma Docs](https://www.prisma.io/docs/orm/prisma-client/deployment/serverless/deploy-to-vercel) — postinstall script, environment variable setup (HIGH confidence)
+- [Auth.js — Extending the Session](https://authjs.dev/guides/extending-the-session) — jwt/session callbacks for custom userId (HIGH confidence)
+- [Auth.js v5 with Next.js 16: Complete Guide (DEV Community)](https://dev.to/huangyongshan46a11y/authjs-v5-with-nextjs-16-the-complete-authentication-guide-2026-2lg) — proxy.ts rename confirmation, credentials pattern (MEDIUM confidence — community source)
+- [Next.js 16 proxy.ts Auth Migration Guide (Medium)](https://medium.com/@securestartkit/next-js-proxy-ts-auth-migration-guide-ff7489ec8735) — Next.js 16 middleware→proxy rename (MEDIUM confidence)
+- [NextAuth Discussion #4106 — Invite-only auth](https://github.com/nextauthjs/next-auth/discussions/4106) — No built-in invite-only; custom `isApproved` pattern is correct approach (HIGH confidence)
+- [Upstash Rate Limiting with Vercel Edge](https://upstash.com/blog/edge-rate-limiting) — serverless rate limiting pattern (MEDIUM confidence)
+- Codebase inspection: `prisma/schema.prisma`, `src/lib/prisma.ts`, `src/app/*/actions.ts`, `src/lib/dashboard.ts`, `src/app/layout.tsx` (HIGH confidence — direct source read)
 
 ---
 
-*Architecture research for: Glyph Finance design system implementation in existing Next.js 16 app*
-*Researched: 2026-04-06*
+*Architecture research for: Auth + Cloud Deploy integration into Centik (Next.js 16 + Prisma 7)*
+*Researched: 2026-04-15*

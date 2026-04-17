@@ -1,293 +1,219 @@
 # Stack Research
 
-**Domain:** Design system implementation — font loading, CSS animations, Tailwind v4 token migration
-**Researched:** 2026-04-06
-**Confidence:** HIGH
+**Domain:** Authentication + Cloud Deploy (v3.0 milestone)
+**Researched:** 2026-04-15
+**Confidence:** MEDIUM-HIGH (Auth.js v5 is still beta; all other choices HIGH)
 
 ---
 
 ## Context
 
-This research covers ONLY the new capabilities required for the v2.0 Glyph Finance implementation milestone. The existing stack (Next.js 16.2.2, React 19.2.4, Tailwind CSS 4.2.2, Prisma 7, Recharts, Zod v4, Vitest, npm) is validated and working in v1.0.
+This research covers ONLY the new capabilities required for the v3.0 Auth + Cloud Deploy milestone. The existing stack (Next.js 16.2.2, React 19.2.4, Tailwind v4, Prisma 7, Recharts, Zod v4, Vitest, npm) is validated and working in v2.1.
 
-**No new npm packages are needed.** The three capability areas — font loading, CSS animations, and @theme token swap — are all handled by tools already installed.
+**Critical constraint:** Next.js 16 renamed `middleware.ts` to `proxy.ts`. Any tool that wraps middleware (NextAuth, Upstash rate limiting) must be configured through `proxy.ts`, not `middleware.ts`. The edge runtime is NOT supported in proxy.ts — it runs Node.js only.
+
+**Critical constraint:** Prisma 7 breaks the Prisma client singleton pattern from v6. The new import path is `@/generated/prisma/client` (not `@prisma/client`), and a driver adapter must be passed to the constructor. This affects how the NextAuth Prisma adapter is wired up.
 
 ---
 
 ## Recommended Stack
 
-### Core Technologies (unchanged)
+### New Dependencies
 
-| Technology | Installed Version | Role in Glyph Finance |
-|------------|------------------|-----------------------|
-| Next.js | 16.2.2 | `next/font/local` for Satoshi, `next/font/google` for IBM Plex Mono |
-| Tailwind CSS | 4.2.2 | `@theme` block replacement, `@keyframes` inside `@theme` for animate-* utilities |
-| React | 19.2.4 | `key` prop re-mount trick for animation re-triggers |
+| Technology | Version | Purpose | Why Recommended |
+|------------|---------|---------|-----------------|
+| next-auth | `@beta` (~5.0.0-beta.28+) | Session management, credentials provider, route protection | The only auth library with first-class Next.js App Router support, nonce-based CSRF, and a Prisma adapter. v4 has no App Router support. v5 beta is production-stable per community consensus. |
+| @auth/prisma-adapter | `^2.11.1` | Bridges NextAuth sessions to Prisma DB (User, Session, Account, VerificationToken models) | Official adapter maintained by the Auth.js team. Works with Prisma 7 with correct import path. |
+| bcryptjs | `^2.4.3` | Hashing passwords before storage, comparing at login | Pure JavaScript — no native compilation step. bcrypt (native) breaks on Vercel serverless and Vercel's build pipeline. bcryptjs is ~30% slower but the speed difference is irrelevant at typical auth volumes. |
+| @types/bcryptjs | `^2.4.6` | TypeScript types for bcryptjs | Dev dependency, required for strict mode. |
+| otpauth | `^9.x` | TOTP secret generation, QR code URI generation, code verification | Actively maintained (last updated Feb 2026). Full RFC 6238 compliance. Works in Node.js, Bun, Deno, and browser. TypeScript-first. No native bindings. Speakeasy is unmaintained (last commit 2017). |
+| @upstash/ratelimit | `^2.x` | Sliding window rate limiting on auth endpoints | Connectionless HTTP-based Redis client, designed for Vercel Edge/serverless. Works in proxy.ts (Node.js runtime). Free tier (10k requests/day) covers single-user app. |
+| @upstash/redis | `^1.x` | Redis client required by @upstash/ratelimit | Peer dependency of @upstash/ratelimit. Also HTTP-based, no persistent connection needed. |
+| @prisma/adapter-ppg | `^7.x` | Prisma Postgres (Vercel managed DB) driver adapter | Required by Prisma 7 when connecting to Prisma Postgres. Replaces direct TCP connection with HTTP/WebSocket-based connection optimized for serverless. |
+
+### Supporting Libraries
+
+| Library | Version | Purpose | When to Use |
+|---------|---------|---------|-------------|
+| qrcode | `^1.5.x` | Generate QR code as data URI for TOTP setup screen | Only needed on the TOTP enrollment page. Renders the QR code the user scans with their authenticator app. |
+| @types/qrcode | `^1.5.x` | TypeScript types for qrcode | Dev dependency, only if qrcode is added. |
+
+### What Is NOT Changing
+
+| Area | Decision | Rationale |
+|------|----------|-----------|
+| Prisma ORM | Stay on Prisma 7 | Already installed. Prisma Postgres uses `@prisma/adapter-ppg` on top of existing Prisma 7 install. |
+| Zod | Stay on Zod v4 | Already validating all inputs. Auth forms get Zod schemas like everything else. |
+| Vitest | Stay | Auth logic (token validation, password hashing) is pure functions — unit testable with existing setup. |
+| Tailwind v4 / design system | No changes | Auth pages (login, 2FA) follow Glyph Finance tokens already in globals.css. |
 
 ---
 
-## Capability 1: Font Loading
+## Prisma 7 + Prisma Postgres Integration
 
-### Satoshi (body + headings)
-
-Satoshi is NOT on Google Fonts. It is an Indian Type Foundry (ITF) exclusive distributed via [Fontshare](https://www.fontshare.com/fonts/satoshi), free for personal and commercial use.
-
-**Load method:** `next/font/local` with variable font file.
-
-Satoshi ships as a variable font (`Satoshi-Variable.woff2`) covering weights 300–900 in a single file. Use this rather than individual weight files — one network request, smaller total bytes.
-
-**File placement:** `src/app/fonts/` — co-located with `layout.tsx`. Next.js automatically serves files from `src/app/` with optimal cache headers and preloads the font.
+Prisma 7 requires a driver adapter — the old singleton pattern from CLAUDE.md will not work for Prisma Postgres. The new pattern:
 
 ```typescript
-// src/app/layout.tsx
-import localFont from 'next/font/local'
+// src/lib/prisma.ts — updated for Prisma 7 + Prisma Postgres
+import { PrismaClient } from '@/generated/prisma/client'
+import { PrismaPostgresAdapter } from '@prisma/adapter-ppg'
 
-const satoshi = localFont({
-  src: [
-    {
-      path: './fonts/Satoshi-Variable.woff2',
-      weight: '300 900',
-      style: 'normal',
-    },
-    {
-      path: './fonts/Satoshi-VariableItalic.woff2',
-      weight: '300 900',
-      style: 'italic',
-    },
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
+
+function createPrismaClient() {
+  const adapter = new PrismaPostgresAdapter(process.env.DATABASE_URL!)
+  return new PrismaClient({ adapter })
+}
+
+export const prisma = globalForPrisma.prisma ?? createPrismaClient()
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+```
+
+For local development against Docker PostgreSQL, use `@prisma/adapter-pg` (standard pg driver) instead of `@prisma/adapter-ppg`. This means local dev and production use different adapters — manage via `NODE_ENV` branch or separate `.env` configs.
+
+---
+
+## Auth.js v5 Setup Pattern for Next.js 16
+
+### Key structural change from v4
+
+Everything exports from a single `NextAuth()` call. No separate `authOptions` object.
+
+```typescript
+// src/lib/auth.ts
+import NextAuth from 'next-auth'
+import Credentials from 'next-auth/providers/credentials'
+import { PrismaAdapter } from '@auth/prisma-adapter'
+import { prisma } from '@/lib/prisma'
+
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  adapter: PrismaAdapter(prisma),
+  providers: [
+    Credentials({
+      authorize: async (credentials) => {
+        // Zod validate, bcryptjs compare, TOTP verify
+        // Return user object or null
+      },
+    }),
   ],
-  variable: '--font-satoshi',
-  display: 'swap',
+  session: { strategy: 'database' },
+  // ...callbacks
 })
 ```
 
-**Manual download step (not npm):**
-1. Go to https://www.fontshare.com/fonts/satoshi
-2. Download the font package
-3. Copy `Satoshi-Variable.woff2` (and optionally `Satoshi-VariableItalic.woff2`) to `src/app/fonts/`
-
-### IBM Plex Mono (financial numbers)
-
-IBM Plex Mono IS on Google Fonts. `next/font/google` handles download, self-hosting, and preloading automatically at build time.
-
-IBM Plex Mono does not have a variable font on Google Fonts — load specific weights (400, 600, 700) as declared in the STYLE_GUIDE.
+### Route handler (App Router)
 
 ```typescript
-// src/app/layout.tsx
-import { IBM_Plex_Mono } from 'next/font/google'
+// src/app/api/auth/[...nextauth]/route.ts
+import { handlers } from '@/lib/auth'
+export const { GET, POST } = handlers
+```
 
-const ibmPlexMono = IBM_Plex_Mono({
-  subsets: ['latin'],
-  weight: ['400', '600', '700'],
-  variable: '--font-ibm-plex-mono',
-  display: 'swap',
+### proxy.ts (NOT middleware.ts — Next.js 16 breaking change)
+
+```typescript
+// proxy.ts (root of project)
+import { auth } from '@/lib/auth'
+import { NextResponse } from 'next/server'
+
+export default auth((req) => {
+  const isLoggedIn = !!req.auth
+  const isAuthPage = req.nextUrl.pathname.startsWith('/login')
+
+  if (!isLoggedIn && !isAuthPage) {
+    return NextResponse.redirect(new URL('/login', req.url))
+  }
+  // Rate limiting check runs here too (see below)
 })
+
+export const config = {
+  matcher: ['/((?!api/auth|_next/static|_next/image|favicon.ico).*)'],
+}
 ```
-
-### Applying Both Fonts in RootLayout
-
-```tsx
-// src/app/layout.tsx — html tag
-<html
-  lang="es"
-  className={`${satoshi.variable} ${ibmPlexMono.variable} h-full antialiased`}
->
-```
-
-This injects `--font-satoshi` and `--font-ibm-plex-mono` as CSS custom properties on the `<html>` element at runtime.
 
 ---
 
-## Capability 2: Tailwind v4 @theme Font Variable Integration
+## Rate Limiting
 
-Tailwind v4 has two `@theme` variants with different behaviors:
+Rate limiting lives in `proxy.ts` (Node.js runtime). Upstash is the only practical choice on Vercel — in-memory rate limiting dies on every cold start because serverless functions don't share memory.
 
-| Directive | When to Use | Why |
-|-----------|-------------|-----|
-| `@theme { }` | Static tokens (colors, radii, shadows) | Tailwind resolves values at build time, generates all utility classes |
-| `@theme inline { }` | Tokens that reference CSS variables set at runtime | Emits `var(--x)` as-is instead of resolving; required for next/font |
+Apply rate limiting only to auth endpoints (`/api/auth/signin`, `/api/auth/callback`, any custom `/api/auth/*` routes). Global rate limiting on all routes is unnecessary overhead for a single-user app.
 
-next/font injects `--font-satoshi` onto `<html>` at JavaScript runtime. Tailwind's build-time `@theme` cannot see runtime values, so fonts MUST go in `@theme inline`.
+Upstash free tier: 10,000 requests/day. For a single-user personal finance app, this is effectively unlimited.
 
-**Pattern:**
-
-```css
-/* globals.css */
-
-/* Static design tokens — Tailwind resolves these at build time */
-@theme {
-  --color-bg: #000000;
-  /* ... all colors, radii, etc. */
-}
-
-/* Font references — next/font injects these at runtime */
-@theme inline {
-  --font-sans: var(--font-satoshi);
-  --font-mono: var(--font-ibm-plex-mono);
-}
+Required environment variables:
 ```
-
-This generates `font-sans` and `font-mono` utility classes that resolve to the correct font families at runtime.
+UPSTASH_REDIS_REST_URL=...
+UPSTASH_REDIS_REST_TOKEN=...
+```
 
 ---
 
-## Capability 3: Replacing the @theme Block
+## Security Headers
 
-The existing `@theme` block in `globals.css` uses v1.0 tokens (cyan accent, slate palette). The entire block must be swapped to Glyph Finance tokens (OLED black, chartreuse, desaturated category colors).
+Use `next.config.ts` headers array directly — no additional library needed. The `@nosecone/next` library (Arcjet) is a convenience wrapper around the same underlying pattern; for a project already comfortable with configuration files, it adds a dependency without meaningful benefit.
 
-### Complete Token Rename Map
+Configure in `next.config.ts`:
 
-| Old Token | New Token | Old Value | New Value |
-|-----------|-----------|-----------|-----------|
-| `--color-bg-primary` | `--color-bg` | `#0a0f1a` | `#000000` |
-| `--color-bg-card` | `--color-surface-elevated` | `#111827` | `#141414` |
-| `--color-bg-card-hover` | `--color-surface-hover` | `#1a2332` | `#1A1A1A` |
-| `--color-bg-elevated` | `--color-surface` | `#1e293b` | `#0A0A0A` |
-| `--color-bg-input` | *(removed — underline inputs use transparent bg)* | `#0f172a` | — |
-| `--color-border` | `--color-border-divider` | `#1e293b` | `#222222` |
-| `--color-border-light` | *(removed)* | `#334155` | — |
-| `--color-border-focus` | *(removed — focus uses --color-accent directly)* | `#22d3ee` | — |
-| `--color-text-primary` | `--color-text-primary` | `#e2e8f0` | `#E8E8E8` |
-| `--color-text-secondary` | `--color-text-secondary` | `#94a3b8` | `#999999` |
-| `--color-text-muted` | `--color-text-tertiary` | `#64748b` | `#666666` |
-| `--color-text-disabled` | `--color-text-disabled` | `#475569` | `#444444` |
-| `--color-accent` | `--color-accent` | `#22d3ee` | `#CCFF00` |
-| `--color-accent-hover` | `--color-accent-hover` | `#06b6d4` | `#B8E600` |
-| *(new)* | `--color-accent-subtle` | — | `rgba(204,255,0,0.12)` |
-| `--color-positive` | `--color-positive` | `#34d399` | `#00E676` |
-| *(new)* | `--color-positive-subtle` | — | `rgba(0,230,118,0.12)` |
-| `--color-negative` | `--color-negative` | `#f87171` | `#FF3333` |
-| *(new)* | `--color-negative-subtle` | — | `rgba(255,51,51,0.12)` |
-| `--color-warning` | `--color-warning` | `#fb923c` | `#FF9100` |
-| *(new)* | `--color-warning-subtle` | — | `rgba(255,145,0,0.12)` |
-| `--color-info` | `--color-info` | `#60a5fa` | `#448AFF` |
-| *(new)* | `--color-info-subtle` | — | `rgba(68,138,255,0.12)` |
-| `--color-cat-food` | `--color-cat-food` | `#fb923c` | `#C88A5A` |
-| `--color-cat-services` | `--color-cat-services` | `#60a5fa` | `#7A9EC4` |
-| `--color-cat-entertainment` | `--color-cat-entertainment` | `#a78bfa` | `#9B89C4` |
-| `--color-cat-subscriptions` | `--color-cat-subscriptions` | `#f472b6` | `#C48AA3` |
-| `--color-cat-transport` | `--color-cat-transport` | `#fbbf24` | `#C4A84E` |
-| `--color-cat-other` | `--color-cat-other` | `#94a3b8` | `#8A9099` |
-| *(new)* | `--color-dot-matrix` | — | `#1E1E1E` |
-| `--radius-sm` | `--radius-sm` | `6px` | `8px` |
-| `--radius-md` | `--radius-md` | `8px` | `12px` |
-| `--radius-lg` | `--radius-lg` | `12px` | `16px` |
-| `--radius-xl` | `--radius-xl` | `16px` | `24px` |
-| *(new)* | `--radius-full` | — | `9999px` |
-| `--shadow-sm` | *(removed — elevation via background-shift only)* | box-shadow | — |
-| `--shadow-md` | *(removed)* | box-shadow | — |
-| `--shadow-lg` | *(removed)* | box-shadow | — |
-| `--shadow-glow` | *(removed)* | box-shadow | — |
+```typescript
+const securityHeaders = [
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  { key: 'X-Frame-Options', value: 'DENY' },
+  { key: 'X-XSS-Protection', value: '1; mode=block' },
+  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+  {
+    key: 'Strict-Transport-Security',
+    value: 'max-age=63072000; includeSubDomains; preload',
+  },
+  {
+    key: 'Content-Security-Policy',
+    value: buildCSP(), // function that assembles nonce-based CSP
+  },
+  {
+    key: 'Permissions-Policy',
+    value: 'camera=(), microphone=(), geolocation=()',
+  },
+]
+```
 
-### Component Impact of Token Renames
-
-After swapping the `@theme` block, a grep-and-replace pass across all component files is required for these class name changes:
-
-| Old Tailwind Class | New Tailwind Class |
-|--------------------|--------------------|
-| `bg-bg-primary` | `bg-bg` |
-| `bg-bg-card` | `bg-surface-elevated` |
-| `bg-bg-card-hover` | `bg-surface-hover` |
-| `bg-bg-elevated` | `bg-surface` |
-| `bg-bg-input` | `bg-transparent` |
-| `border-border` | `border-border-divider` |
-| `text-text-muted` | `text-text-tertiary` |
-| `text-text-secondary` | `text-text-secondary` *(unchanged)* |
-| `text-accent` | `text-accent` *(unchanged, value changes)* |
-| `text-positive` | `text-positive` *(unchanged, value changes)* |
-| `text-negative` | `text-negative` *(unchanged, value changes)* |
-| `rounded-sm` → uses `--radius-sm` | *(value changes from 6px to 8px — visual only)* |
-| `shadow-glow`, `shadow-md`, etc. | Remove — no shadows in Glyph Finance |
+CSP for this app needs to allow: `'self'`, Next.js inline scripts (requires nonce or hash), Vercel analytics (if added), font sources (Google Fonts for IBM Plex Mono). The OLED black design with no third-party widgets makes CSP simpler than most apps.
 
 ---
 
-## Capability 4: CSS Animations
+## Vercel Deployment
 
-All three Glyph Finance signature animations are pure CSS. No animation library needed.
+No additional npm packages needed for Vercel deployment itself. Required changes:
 
-### Tailwind v4 @theme + @keyframes Pattern
-
-Animations defined in `@theme` generate `animate-*` utility classes. The keyframe name and duration MUST be on the same line (a v4 formatting requirement — newlines between keyframe name and duration silently prevent generation).
-
-```css
-/* globals.css — inside @theme block */
-@theme {
-  /* Status dot: calm pulse, 2.5s cycle */
-  --animate-status-pulse: status-pulse 2.5s ease-in-out infinite;
-  @keyframes status-pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.85); }
-  }
-
-  /* Pixel-dissolve: mechanical scanline reveal, 500ms */
-  --animate-scanline-reveal: scanline-reveal 500ms steps(12, end) forwards;
-  @keyframes scanline-reveal {
-    0% { clip-path: inset(0 0 100% 0); }
-    100% { clip-path: inset(0 0 0% 0); }
-  }
-}
-```
-
-This generates `animate-status-pulse` and `animate-scanline-reveal` utility classes for use in JSX.
-
-### Dot-Matrix Texture (not an animation — CSS background-image)
-
-The dot-matrix texture is a static SVG data URI background, applied via a CSS class defined outside `@theme`:
-
-```css
-/* globals.css — outside @theme */
-.dot-matrix-bg {
-  background-image: url("data:image/svg+xml,%3Csvg width='8' height='8' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='4' cy='4' r='0.75' fill='%231E1E1E' fill-opacity='0.4'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 8px 8px;
-}
-```
-
-Apply via pseudo-element (`::before` with `position: absolute; inset: 0; pointer-events: none`) so it doesn't interfere with card content.
-
-### Reduced Motion Override (accessibility — required)
-
-```css
-/* globals.css — outside @theme */
-@media (prefers-reduced-motion: reduce) {
-  .animate-scanline-reveal,
-  .animate-status-pulse {
-    animation: none;
-    clip-path: none;
-  }
-}
-```
-
-### Re-triggering Scanline on Data Refresh
-
-The pixel-dissolve animation must re-trigger when KPI data updates. CSS animations only replay on element mount. Use React's `key` prop — changing `key` forces unmount + remount, replaying the animation:
-
-```tsx
-// The key changes when data updates, forcing animation replay
-<div key={dataRevision} className="animate-scanline-reveal">
-  {formattedAmount}
-</div>
-```
-
-`dataRevision` is an integer incremented with each data fetch. No animation library, no imperative DOM manipulation.
+1. `package.json` `postinstall` script: `prisma generate` — regenerates Prisma client at build time.
+2. Vercel environment variables: `DATABASE_URL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, Upstash credentials.
+3. `NEXTAUTH_SECRET`: generate with `openssl rand -base64 32`.
+4. Prisma Postgres: provision via Vercel Marketplace → Storage tab → Create Database → Prisma Postgres. Vercel sets `DATABASE_URL` automatically.
 
 ---
 
 ## Installation
 
-**No new packages.** All capabilities use already-installed tools.
-
-**Font files to download manually (not npm):**
-
 ```bash
-# 1. Download Satoshi from https://www.fontshare.com/fonts/satoshi
-# 2. Create the fonts directory
-mkdir -p src/app/fonts
-# 3. Copy these files into src/app/fonts/:
-#    Satoshi-Variable.woff2
-#    Satoshi-VariableItalic.woff2  (optional)
-```
+# Auth
+npm install next-auth@beta @auth/prisma-adapter
 
-IBM Plex Mono: `next/font/google` downloads and self-hosts it automatically at build time — no manual step.
+# Password hashing
+npm install bcryptjs
+npm install -D @types/bcryptjs
+
+# TOTP
+npm install otpauth
+
+# QR code for TOTP setup page
+npm install qrcode
+npm install -D @types/qrcode
+
+# Rate limiting (requires Upstash Redis account)
+npm install @upstash/ratelimit @upstash/redis
+
+# Prisma Postgres adapter (replaces @prisma/adapter-pg for production)
+npm install @prisma/adapter-ppg
+```
 
 ---
 
@@ -295,15 +221,19 @@ IBM Plex Mono: `next/font/google` downloads and self-hosts it automatically at b
 
 | Recommended | Alternative | Why Not |
 |-------------|-------------|---------|
-| `next/font/local` for Satoshi | CDN `<link>` to fontshare.com | next/font self-hosts the font, adds preload hints, zero layout shift. CDN link adds third-party request and has no cache guarantees |
-| `next/font/local` for Satoshi | `@font-face` in globals.css | Loses next/font automatic preloading, optimal font display, and build-time subsets |
-| Variable font file for Satoshi | Individual weight .woff2 files (Regular, Bold, etc.) | Variable font = one HTTP request for all weights; individual files = multiple requests |
-| `next/font/google` for IBM Plex Mono | Self-hosted IBM Plex Mono woff2 | No reason to self-host when Google Fonts has it and next/font handles the download automatically at build time |
-| CSS `@keyframes` in `@theme` | `framer-motion` | framer-motion is 70KB+; all three required animations (pulse, scanline, dot-matrix) are trivially pure CSS |
-| CSS `@keyframes` in `@theme` | `react-spring` | Same rationale — no animation library justified for three simple CSS animations |
-| CSS `@keyframes` in `@theme` | `tailwind-animate` npm package | The package adds predefined animations; project needs specifically named custom animations. No value added |
-| React `key` for animation re-trigger | JS class toggle via `ref` | Imperative DOM manipulation; the `key` approach is idiomatic React and avoids refs entirely |
-| SVG data URI for dot-matrix | PNG file in `public/` | Data URI = no HTTP request, no public/ path concerns, works in SSR context without base URL issues |
+| next-auth@beta (v5) | next-auth@4.x (stable) | v4 has no App Router support. Requires the old `pages/` directory pattern. Would require a parallel route setup hack. |
+| next-auth@beta (v5) | better-auth | better-auth is newer (2024), better TypeScript DX, but has less community documentation for TOTP 2FA and is unproven at the same scale. next-auth has more examples, more Stack Overflow answers, more guides for exactly this use case (Credentials + TOTP). |
+| next-auth@beta (v5) | Lucia Auth | Lucia v3 is in maintenance mode — the author announced it in late 2024. Not appropriate for a new project. |
+| next-auth@beta (v5) | Clerk / Auth0 | Third-party SaaS. Adds external dependency, data leaves your server, adds monthly cost at scale. Centik is open source and handles personal financial data — keep it self-contained. |
+| bcryptjs | bcrypt (native) | bcrypt requires node-gyp compilation. Breaks on Vercel's build pipeline unless native modules are explicitly supported. bcryptjs is pure JS, zero compilation, works everywhere. |
+| bcryptjs | argon2 | argon2 is the stronger algorithm but requires native binaries. Same Vercel incompatibility as bcrypt. When argon2-cloudflare (pure WASM) matures, it may be worth revisiting. |
+| otpauth | speakeasy | speakeasy is unmaintained (last commit 2017, README says "NOT MAINTAINED"). |
+| otpauth | otplib | otplib is also actively maintained and TypeScript-first, but otpauth has slightly simpler API for TOTP-only use case and documents QR code URI generation explicitly. Either would work. |
+| @upstash/ratelimit | in-memory rate limiting (lru-cache) | Serverless functions don't share memory — in-memory rate limiting resets on every cold start, providing zero protection. |
+| @upstash/ratelimit | @arcjet/next | Arcjet is a full security platform (bot detection, email validation, rate limiting). Heavyweight for a single-user app that only needs auth endpoint protection. |
+| next.config.ts headers | @nosecone/next | nosecone is a thin wrapper around next.config headers. Adds a dependency without meaningful abstraction benefit given this project already manages configuration files carefully. |
+| Prisma Postgres (Vercel) | Supabase | Supabase requires migration from Prisma's migration system to their workflow, or careful coexistence. Prisma Postgres is designed specifically for Prisma ORM and has native Vercel Marketplace integration. No migration friction. |
+| Prisma Postgres (Vercel) | Neon | Neon is a strong alternative (also serverless Postgres, Vercel integration). Prisma Postgres was chosen because it is managed directly through the Vercel Dashboard with automatic `DATABASE_URL` injection, and because it uses the same `@prisma/adapter-ppg` that Prisma documents as the v7 canonical path. |
 
 ---
 
@@ -311,37 +241,108 @@ IBM Plex Mono: `next/font/google` downloads and self-hosts it automatically at b
 
 | Avoid | Why | Use Instead |
 |-------|-----|-------------|
-| `framer-motion` | 70KB bundle cost; not justified for three CSS animations | Native CSS `@keyframes` |
-| `react-spring` | Same as framer-motion | Native CSS `@keyframes` |
-| `tailwind-animate` | Predefined animations, not what the project needs | Custom `@keyframes` in `@theme` |
-| Google Fonts `<link>` tag for Satoshi | Satoshi is NOT on Google Fonts — the link would 404 | `next/font/local` with downloaded woff2 |
-| `@font-face` in globals.css for either font | Bypasses next/font optimization | `next/font/local` and `next/font/google` |
-| Any CSS-in-JS library | Contradicts Tailwind v4 CSS-first approach | Tailwind utilities + globals.css |
+| `speakeasy` | Unmaintained since 2017 | `otpauth` |
+| `bcrypt` (native) | Breaks Vercel build pipeline due to native compilation | `bcryptjs` |
+| `jsonwebtoken` | Not needed — NextAuth handles JWT/session internally | Let NextAuth manage sessions |
+| `passport` | Express middleware pattern, incompatible with Next.js App Router server actions | `next-auth` credentials provider |
+| `@arcjet/next` | Overkill full security platform for auth-only rate limiting | `@upstash/ratelimit` |
+| `middleware.ts` | Deprecated in Next.js 16, runs on edge runtime (not Node.js) | `proxy.ts` (Node.js runtime) |
+| `jose` directly | Next-auth already depends on it internally | Let NextAuth manage its own JWT signing |
+| Any OAuth provider (Google, GitHub) | Not in spec for this milestone; invite-only means no third-party OAuth flows | Credentials only for v3.0 |
 
 ---
 
 ## Version Compatibility
 
-| Package | Installed | Notes |
-|---------|-----------|-------|
-| tailwindcss | 4.2.2 | `@theme` with `@keyframes` supported since v4.0. The keyframe-name-and-duration-on-same-line requirement is a v4 quirk — see PITFALLS.md |
-| next | 16.2.2 | `next/font/local` variable fonts fully supported. `IBM_Plex_Mono` is available in `next/font/google` export |
-| @tailwindcss/postcss | ^4 | Matches tailwindcss 4.x |
-| react | 19.2.4 | `key` prop re-mount behavior unchanged from React 18 |
+| Package | Version | Compatible With | Notes |
+|---------|---------|-----------------|-------|
+| next-auth@beta | ~5.0.0-beta.28+ | Next.js 16.2.2 | Minimum Next.js 14.0 per Auth.js docs. proxy.ts replaces middleware.ts for route protection. |
+| @auth/prisma-adapter | ^2.11.1 | Prisma 7 | Works with Prisma 7, but import path must be `@/generated/prisma/client` not `@prisma/client`. |
+| @prisma/adapter-ppg | ^7.x | Prisma 7 | Designed for Prisma 7. Requires `DATABASE_URL` pointing to Prisma Postgres endpoint. |
+| @prisma/adapter-pg | ^7.x | Prisma 7 | For local development against Docker PostgreSQL. |
+| bcryptjs | ^2.4.3 | Node.js 18+ | Pure JS, no compatibility concerns. |
+| otpauth | ^9.x | Node.js 18+, TypeScript 5 | ESM-first package. May need `"moduleResolution": "bundler"` in tsconfig if not already set (Next.js 16 sets this by default). |
+| @upstash/ratelimit | ^2.x | proxy.ts Node.js runtime | Does NOT run in edge runtime. Compatible with proxy.ts (Node.js only in Next.js 16). |
+
+---
+
+## Prisma Schema Additions Required
+
+The NextAuth Prisma adapter requires these models in `schema.prisma`. They do not exist in the current schema (which has no auth):
+
+```prisma
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  passwordHash  String?
+  totpSecret    String?
+  totpEnabled   Boolean   @default(false)
+  invitedBy     String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  accounts      Account[]
+  sessions      Session[]
+  // Relations to existing financial data:
+  transactions  Transaction[]
+  periods       Period[]
+  // ... other relations for per-user isolation
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  // ... standard NextAuth Account fields
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  @@unique([identifier, token])
+}
+
+model Invite {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  token     String   @unique @default(cuid())
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+}
+```
+
+All existing models (Transaction, Period, Category, etc.) need a `userId` field added and a relation to `User` for per-user data isolation.
 
 ---
 
 ## Sources
 
-- [Tailwind CSS v4 Animation Docs](https://tailwindcss.com/docs/animation) — `@theme` + `@keyframes` inside theme block, `--animate-*` naming convention. HIGH confidence (official docs, verified during research).
-- [Next.js Font Optimization Docs](https://nextjs.org/docs/app/getting-started/fonts) — `next/font/local` array src, variable font weight range, CSS variable pattern. HIGH confidence (official docs).
-- [Google Fonts — IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono) — Confirmed available; weights 400/600/700 exist; no variable font variant. HIGH confidence (direct source).
-- [Fontshare — Satoshi](https://www.fontshare.com/fonts/satoshi) — Confirmed NOT on Google Fonts; free commercial license via ITF. HIGH confidence (direct source).
-- [Tailwind v4 @theme vs @theme inline discussion](https://github.com/tailwindlabs/tailwindcss/discussions/18560) — Explains why next/font variables require `@theme inline`. MEDIUM confidence (community discussion, aligns with observed behavior in existing globals.css).
-- [Tailwind v4 keyframe formatting issue](https://github.com/tailwindlabs/tailwindcss/issues/16227) — Documents the same-line requirement for `--animate-*` + keyframe name in v4. MEDIUM confidence (GitHub issue, behavior seen in v4.2.x).
-- WebSearch: Satoshi npm package — not available on npm; Fontshare direct download is the only legitimate source. HIGH confidence.
+- [Auth.js Installation Docs](https://authjs.dev/getting-started/installation) — Installation steps, route handler pattern, proxy.ts integration. MEDIUM confidence (official docs, but v5 is still beta).
+- [Auth.js Prisma Adapter](https://authjs.dev/getting-started/adapters/prisma) — Schema requirements, adapter setup. HIGH confidence (official).
+- [Next.js 16 proxy.ts announcement](https://nextjs.org/blog/next-16) — middleware.ts renamed to proxy.ts, edge runtime removed from proxy. HIGH confidence (official Next.js release notes).
+- [Prisma v7 Upgrade Guide](https://www.prisma.io/docs/guides/upgrade-prisma-orm/v7) — adapter-ppg requirement, import path changes, env loading changes. HIGH confidence (official Prisma docs).
+- [Prisma Postgres Vercel Integration](https://www.prisma.io/docs/postgres/integrations/vercel) — Vercel Marketplace setup, DATABASE_URL injection. HIGH confidence (official Prisma docs).
+- [Upstash Ratelimit Overview](https://upstash.com/docs/redis/sdks/ratelimit-ts/overview) — Fixed/sliding window algorithms, free tier. HIGH confidence (official Upstash docs).
+- [speakeasy GitHub](https://github.com/speakeasyjs/speakeasy) — Confirmed "NOT MAINTAINED" label on repo. HIGH confidence.
+- [otpauth GitHub](https://github.com/hectorm/otpauth) — Active maintenance, Feb 2026 update, RFC 6238 compliant. HIGH confidence.
+- WebSearch: bcryptjs vs bcrypt serverless compatibility — multiple consistent sources confirm bcrypt breaks on Vercel. MEDIUM confidence (no single official source, but widely documented).
+- WebSearch: next-auth@beta production readiness — community consensus is stable-enough-for-production as of early 2026. LOW-MEDIUM confidence (beta is beta).
 
 ---
 
-*Stack research for: Glyph Finance design system implementation (v2.0 milestone)*
-*Researched: 2026-04-06*
+*Stack research for: Auth + Cloud Deploy (v3.0 milestone)*
+*Researched: 2026-04-15*
