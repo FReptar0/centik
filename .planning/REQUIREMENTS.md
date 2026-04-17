@@ -1,65 +1,114 @@
 # Requirements: Centik
 
-**Defined:** 2026-04-16
+**Defined:** 2026-04-17
 **Core Value:** A single user can register a financial transaction in under 30 seconds and immediately see how it impacts their budget, debt ratio, and savings rate across all views.
 
-## v2.1 Requirements
+## v3.0 Requirements
 
-Requirements for responsive audit and bug fixes. Every page must work correctly at mobile (320px), tablet (768px), and desktop (1024px+) breakpoints.
+Requirements for auth + cloud deploy. Security-first — this is real financial data in production.
 
-### Layout Bugs
+### Auth Foundation
 
-- [x] **BUG-01**: DebtCard expansion bug — when one card is clicked to expand, both cards in the grid resize but only the clicked one shows details. Only the expanded card should grow; the other card should remain compact.
-- [x] **BUG-02**: Pages missing max-width container — Dashboard, Budget, History pages have no max-width constraint, content stretches to full viewport on wide screens.
+- [ ] **AUTH-01**: Prisma schema updated with User model, Auth.js adapter tables (Account, Session, VerificationToken), and userId FK on all 10 existing data models
+- [ ] **AUTH-02**: Auth.js v5 configured with Prisma adapter, Credentials provider (email+password), JWT session strategy, and session callbacks exposing userId
+- [ ] **AUTH-03**: proxy.ts protects all routes except /login and /register — unauthenticated users redirected to /login
+- [ ] **AUTH-04**: Login page with email+password form, error handling, and Glyph Finance design
+- [ ] **AUTH-05**: Password hashing with bcryptjs (cost factor 12), passwords never stored in plaintext
 
-### Grid Responsiveness
+### Per-User Data Isolation
 
-- [x] **RESP-01**: DebtList grid missing md: breakpoint — jumps from grid-cols-1 to lg:grid-cols-2, skipping tablet. Add md:grid-cols-2.
-- [x] **RESP-02**: DebtCard inner metric grid fixed grid-cols-2 on mobile — should be grid-cols-1 sm:grid-cols-2 to stack on narrow screens.
-- [x] **RESP-03**: DebtSummaryCards incomplete breakpoints — 3 cards in 2-column layout causes uneven distribution.
-- [x] **RESP-04**: KPIGrid, IncomeSummaryCards, Dashboard chart grids missing intermediate breakpoints for tablet optimization.
-- [x] **RESP-05**: Form grids not responsive — DebtForm, IncomeSourceForm, CategoryForm, TransactionForm use fixed grid-cols-2/3/4 without responsive prefixes.
+- [ ] **ISOL-01**: requireAuth() helper function that calls auth(), redirects if no session, returns { userId } — used as first line in every Server Action
+- [ ] **ISOL-02**: All Prisma queries across all 7 lib files scoped with userId filter (where: { userId })
+- [ ] **ISOL-03**: All Server Actions (6 action files) call requireAuth() before any database operation
+- [ ] **ISOL-04**: All page Server Components call auth() and pass userId to data-fetching functions
+- [ ] **ISOL-05**: Cross-user integration tests — authenticate as User B, assert zero access to User A's data
 
-### Touch Targets
+### TOTP 2FA
 
-- [x] **TOUCH-01**: DebtCard edit/delete action buttons are 24x24px (p-2), below 44px minimum. Fix to min-w-[44px] min-h-[44px].
-- [x] **TOUCH-02**: TransactionRow edit/delete buttons same issue — 24x24px touch targets.
-- [x] **TOUCH-03**: PeriodSelector prev/next navigation buttons use p-1.5 padding — too small for mobile.
+- [ ] **TOTP-01**: TOTP setup flow — generate secret, display QR code (otpauth URI), verify first code before persisting
+- [ ] **TOTP-02**: TOTP secrets encrypted at rest with AES-256-GCM using AUTH_TOTP_ENCRYPTION_KEY env var
+- [ ] **TOTP-03**: Two-step login flow — password verification first, then TOTP code verification before session issuance
+- [ ] **TOTP-04**: 10 backup codes generated during 2FA setup, hashed with bcryptjs, single-use
+- [ ] **TOTP-05**: Rate limiting on login and TOTP endpoints via @upstash/ratelimit (max 5 attempts per minute)
 
-### Table Optimization
+### Invite-Only Registration
 
-- [x] **TABLE-01**: AnnualPivotTable min-w-[900px] forces horizontal scroll on any screen < 900px. No mobile strategy — consider hiding some months or showing fewer columns.
-- [x] **TABLE-02**: BudgetTable input fields in cells need min-height for touch accessibility.
+- [ ] **INVITE-01**: InviteToken model in Prisma schema (token, email, expiresAt, usedAt)
+- [ ] **INVITE-02**: Admin Server Action to generate invite tokens (crypto.randomBytes(32))
+- [ ] **INVITE-03**: Registration page — only accessible with valid invite token URL, creates user with isApproved=true
+- [ ] **INVITE-04**: No self-registration — /register without valid token shows error
+
+### Vercel Deploy + Security
+
+- [ ] **DEPLOY-01**: Prisma Postgres provisioned via Vercel Marketplace with pooled (runtime) and direct (migrations) connection strings
+- [ ] **DEPLOY-02**: Security headers in next.config.ts — CSP with per-request nonce, HSTS, X-Frame-Options DENY, X-Content-Type-Options nosniff
+- [ ] **DEPLOY-03**: Production seed script that creates admin user (your email) with hashed password
+- [ ] **DEPLOY-04**: Vercel deployment configuration (vercel.json or project settings) with environment variables
+- [ ] **DEPLOY-05**: noStore() on all Server Components fetching user-specific data to prevent cross-user cache leakage
+
+### Test Updates
+
+- [ ] **TEST-01**: All existing 479 unit tests pass with auth changes (userId params added to all function signatures)
+- [ ] **TEST-02**: New auth tests — login flow, session validation, requireAuth() behavior, TOTP verification
+- [ ] **TEST-03**: Cross-user isolation integration tests — User B cannot see User A's transactions, debts, budgets, income, categories, or history
+
+## v4.0 Requirements
+
+Deferred to future milestones.
+
+### Features
+
+- **FEAT-01**: System of value units (UDI, UMA, USD) with configurable rate providers
+- **FEAT-02**: Asset/investment tracking (PPR, CETES, funds) with MXN conversion
+- **FEAT-03**: PWA with offline support
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Complete mobile redesign | This is a fix pass, not a redesign. Layout structure stays the same. |
-| New breakpoints beyond standard | Use Tailwind defaults: sm(640), md(768), lg(1024), xl(1280) |
-| Horizontal scroll elimination | Some tables genuinely need scroll on mobile — just make it usable |
+| OAuth (Google, GitHub) | Email+password sufficient for invite-only single-user. Adds complexity without value. |
+| Email verification | Invite-only means admin knows the user. No self-registration = no email verification needed. |
+| Password reset via email | Single admin user can reset via DB/seed. Email infra not justified for 1-2 users. |
+| Row Level Security (RLS) | Application-level userId filtering is sufficient and simpler than Postgres RLS for this scale. |
+| Multi-tenant admin panel | Not needed — admin actions via Server Actions or seed script. |
+| Session database strategy | JWT required for proxy.ts compatibility with Next.js 16 |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BUG-01 | Phase 23 | Complete |
-| BUG-02 | Phase 23 | Complete |
-| RESP-01 | Phase 23 | Complete |
-| RESP-02 | Phase 23 | Complete |
-| RESP-03 | Phase 23 | Complete |
-| RESP-04 | Phase 23 | Complete |
-| RESP-05 | Phase 23 | Complete |
-| TOUCH-01 | Phase 24 | Complete |
-| TOUCH-02 | Phase 24 | Complete |
-| TOUCH-03 | Phase 24 | Complete |
-| TABLE-01 | Phase 24 | Complete |
-| TABLE-02 | Phase 24 | Complete |
+| AUTH-01 | — | Pending |
+| AUTH-02 | — | Pending |
+| AUTH-03 | — | Pending |
+| AUTH-04 | — | Pending |
+| AUTH-05 | — | Pending |
+| ISOL-01 | — | Pending |
+| ISOL-02 | — | Pending |
+| ISOL-03 | — | Pending |
+| ISOL-04 | — | Pending |
+| ISOL-05 | — | Pending |
+| TOTP-01 | — | Pending |
+| TOTP-02 | — | Pending |
+| TOTP-03 | — | Pending |
+| TOTP-04 | — | Pending |
+| TOTP-05 | — | Pending |
+| INVITE-01 | — | Pending |
+| INVITE-02 | — | Pending |
+| INVITE-03 | — | Pending |
+| INVITE-04 | — | Pending |
+| DEPLOY-01 | — | Pending |
+| DEPLOY-02 | — | Pending |
+| DEPLOY-03 | — | Pending |
+| DEPLOY-04 | — | Pending |
+| DEPLOY-05 | — | Pending |
+| TEST-01 | — | Pending |
+| TEST-02 | — | Pending |
+| TEST-03 | — | Pending |
 
 **Coverage:**
-- v2.1 requirements: 12 total
-- Mapped to phases: 12
-- Unmapped: 0
+- v3.0 requirements: 27 total
+- Mapped to phases: 0
+- Unmapped: 27 (awaiting roadmap)
 
 ---
-*Requirements defined: 2026-04-16*
+*Requirements defined: 2026-04-17*
