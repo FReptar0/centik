@@ -51,7 +51,7 @@ See `.planning/milestones/v2.1-ROADMAP.md` for full phase details.
 
 **Milestone Goal:** Llevar Centik a produccion en Vercel con autenticacion NextAuth (email+password+TOTP 2FA), invite-only access, Prisma Postgres, per-user data isolation, y security headers. Seguridad extrema — es informacion financiera real.
 
-- [ ] **Phase 25: Schema Migration** - User model, Auth.js adapter tables, InviteToken model, userId FK on 10 data tables, existing tests updated
+- [x] **Phase 25: Schema Migration** - User model, Auth.js adapter tables, InviteToken model, userId FK on 10 data tables, existing tests updated (completed 2026-04-18)
 - [ ] **Phase 26: Auth Wiring + Login** - Auth.js v5 with Credentials provider, JWT sessions, proxy.ts route protection, login page, password hashing
 - [ ] **Phase 27: Per-User Data Isolation** - requireAuth() helper, all queries scoped by userId, all Server Actions protected, noStore() on user-specific pages
 - [ ] **Phase 28: Invite-Only Registration** - Admin invite generation, registration page with token validation, self-registration blocked
@@ -164,7 +164,7 @@ Note: Phases 28 and 29 both depend on 26, not on each other. They could theoreti
 | 12-16 | v1.1 | 9/9 | Complete | 2026-04-06 |
 | 17-22 | v2.0 | 17/17 | Complete | 2026-04-16 |
 | 23-24 | v2.1 | 4/4 | Complete | 2026-04-16 |
-| 25. Schema Migration | 1/2 | In Progress|  | - |
+| 25. Schema Migration | 2/2 | Complete   | 2026-04-18 | - |
 | 26. Auth Wiring + Login | v3.0 | 0/? | Not started | - |
 | 27. Per-User Data Isolation | v3.0 | 0/? | Not started | - |
 | 28. Invite-Only Registration | v3.0 | 0/? | Not started | - |
