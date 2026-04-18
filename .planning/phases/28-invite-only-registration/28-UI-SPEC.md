@@ -55,8 +55,8 @@ Sizes declared for this phase: 4. Weights declared: 2 (400 regular, 600 semibold
 |------|------|--------|-------------|----------|
 | Body | 14px (`text-sm`) | 400 | 1.5 | Form input text, error messages (`text-sm`), badge labels, confirm/cancel inline copy |
 | Label | 11px (`text-[11px]`) | 600 | 1.4 | Floating micro-label (existing `FloatingInput` behavior), status badges (`uppercase tracking-[2px]`), inline field errors |
-| Heading | 18–20px (`text-lg`/`text-xl`) | 600 | 1.3 | `<h1>` on `/configuracion` (PageHeader: `text-xl font-semibold`), `<h2>` "Invitaciones" section title (`text-lg font-semibold`), `/register` subtitle row |
-| Display | 36px (`text-4xl`) | 700 (bold) | 1.1 | "Centik" wordmark at the top of `/register` (matches login exactly: `text-4xl font-bold text-accent`) |
+| Heading | 18px (`text-lg`) | 600 | 1.3 | `<h1>` on `/configuracion` (PageHeader: `text-lg font-semibold` — adjusted from existing `text-xl` within this phase), `<h2>` "Invitaciones" section title (`text-lg font-semibold`), `/register` subtitle row |
+| Display | 36px (`text-4xl`) | 600 (semibold) | 1.1 | "Centik" wordmark at the top of `/register` (`text-4xl font-semibold text-accent`). Note: deliberate 1-weight divergence from login's `font-bold`, required to keep this phase within the 2-weight contract ({400, 600}). |
 
 **Mono usage (tabular alignment):** `font-mono tabular-nums` on (a) the full registration URL in the copy row, (b) the token expiration date (`DD MMM YYYY, HH:mm`), (c) any partial token hex shown in the admin list. Never mono on Spanish prose.
 
