@@ -7,6 +7,8 @@ import {
   getRecentTransactions,
 } from './dashboard'
 
+const TEST_USER_ID = 'test-user-id'
+
 const mockAggregate = vi.fn()
 const mockGroupBy = vi.fn()
 const mockFindMany = vi.fn()
@@ -69,7 +71,7 @@ describe('getDashboardKPIs', () => {
       { minimumPayment: null, monthlyPayment: BigInt(350000) },
     ])
 
-    const result = await getDashboardKPIs('period-1')
+    const result = await getDashboardKPIs('period-1', TEST_USER_ID)
 
     expect(result.monthlyEstimatedIncome).toBe('5000000')
     expect(result.monthExpenses).toBe('1500000')
@@ -90,7 +92,7 @@ describe('getDashboardKPIs', () => {
     mockDebtAggregate.mockResolvedValue({ _sum: { currentBalance: null } })
     mockDebtFindMany.mockResolvedValue([])
 
-    const result = await getDashboardKPIs('period-1')
+    const result = await getDashboardKPIs('period-1', TEST_USER_ID)
 
     expect(result.monthlyEstimatedIncome).toBe('0')
     expect(result.monthExpenses).toBe('0')
@@ -110,7 +112,7 @@ describe('getDashboardKPIs', () => {
     mockDebtAggregate.mockResolvedValue({ _sum: { currentBalance: BigInt(0) } })
     mockDebtFindMany.mockResolvedValue([])
 
-    const result = await getDashboardKPIs('period-1')
+    const result = await getDashboardKPIs('period-1', TEST_USER_ID)
 
     // SEMANAL * 4 = 625000 * 4 = 2500000
     expect(result.monthlyEstimatedIncome).toBe('2500000')
@@ -127,7 +129,7 @@ describe('getDashboardKPIs', () => {
     mockDebtAggregate.mockResolvedValue({ _sum: { currentBalance: BigInt(0) } })
     mockDebtFindMany.mockResolvedValue([])
 
-    const result = await getDashboardKPIs('period-1')
+    const result = await getDashboardKPIs('period-1', TEST_USER_ID)
 
     // MENSUAL 3000000 * 1 + VARIABLE 1000000 * 1 = 4000000
     expect(result.monthlyEstimatedIncome).toBe('4000000')
@@ -144,7 +146,7 @@ describe('getDashboardKPIs', () => {
     mockDebtAggregate.mockResolvedValue({ _sum: { currentBalance: BigInt(0) } })
     mockDebtFindMany.mockResolvedValue([])
 
-    const result = await getDashboardKPIs('period-1')
+    const result = await getDashboardKPIs('period-1', TEST_USER_ID)
 
     // QUINCENAL 2500000 * 2 + MENSUAL 1000000 * 1 = 6000000
     expect(result.monthlyEstimatedIncome).toBe('6000000')
@@ -167,7 +169,7 @@ describe('getCategoryExpenses', () => {
       { id: 'cat-2', name: 'Servicios', icon: 'zap', color: '#7A9EC4' },
     ])
 
-    const result = await getCategoryExpenses('period-1')
+    const result = await getCategoryExpenses('period-1', TEST_USER_ID)
 
     expect(result).toHaveLength(2)
     // Sorted desc: Servicios (1200000) first, Comida (500000) second
@@ -182,7 +184,7 @@ describe('getCategoryExpenses', () => {
   it('returns empty array when no expenses', async () => {
     mockGroupBy.mockResolvedValue([])
 
-    const result = await getCategoryExpenses('period-1')
+    const result = await getCategoryExpenses('period-1', TEST_USER_ID)
 
     expect(result).toEqual([])
   })
@@ -210,7 +212,7 @@ describe('getBudgetVsSpent', () => {
       { categoryId: 'cat-1', _sum: { amount: BigInt(300000) } },
     ])
 
-    const result = await getBudgetVsSpent('period-1')
+    const result = await getBudgetVsSpent('period-1', TEST_USER_ID)
 
     expect(result).toHaveLength(2)
     expect(result[0].name).toBe('Comida')
@@ -225,7 +227,7 @@ describe('getBudgetVsSpent', () => {
     mockBudgetFindMany.mockResolvedValue([])
     mockGroupBy.mockResolvedValue([])
 
-    const result = await getBudgetVsSpent('period-1')
+    const result = await getBudgetVsSpent('period-1', TEST_USER_ID)
 
     expect(result).toEqual([])
   })
@@ -254,7 +256,7 @@ describe('getMonthlyTrend', () => {
       },
     ])
 
-    const result = await getMonthlyTrend()
+    const result = await getMonthlyTrend(TEST_USER_ID)
 
     expect(result).toHaveLength(2)
     expect(result[0]).toEqual({
@@ -276,7 +278,7 @@ describe('getMonthlyTrend', () => {
   it('returns empty array when no summaries exist', async () => {
     mockMonthlySummaryFindMany.mockResolvedValue([])
 
-    const result = await getMonthlyTrend()
+    const result = await getMonthlyTrend(TEST_USER_ID)
 
     expect(result).toEqual([])
   })
@@ -306,7 +308,7 @@ describe('getRecentTransactions', () => {
       },
     ])
 
-    const result = await getRecentTransactions('period-1')
+    const result = await getRecentTransactions('period-1', TEST_USER_ID)
 
     expect(result).toHaveLength(1)
     expect(result[0].amount).toBe('150075')
@@ -318,11 +320,11 @@ describe('getRecentTransactions', () => {
   it('passes correct take and orderBy to Prisma', async () => {
     mockFindMany.mockResolvedValue([])
 
-    await getRecentTransactions('period-1')
+    await getRecentTransactions('period-1', TEST_USER_ID)
 
     expect(mockFindMany).toHaveBeenCalledWith(
       expect.objectContaining({
-        where: { periodId: 'period-1' },
+        where: { periodId: 'period-1', userId: TEST_USER_ID },
         take: 8,
         orderBy: [{ date: 'desc' }, { createdAt: 'desc' }],
       }),

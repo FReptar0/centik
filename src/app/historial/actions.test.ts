@@ -4,7 +4,8 @@ import { closePeriod, reopenPeriod, getClosePeriodPreviewAction } from './action
 // --- Mock prisma ---
 const mockPeriodFindUnique = vi.fn()
 const mockPeriodUpdate = vi.fn()
-const mockPeriodUpsert = vi.fn()
+const mockPeriodFindFirst = vi.fn()
+const mockPeriodCreate = vi.fn()
 const mockMonthlySummaryCreate = vi.fn()
 const mockMonthlySummaryDelete = vi.fn()
 const mockTransactionAggregate = vi.fn()
@@ -19,7 +20,6 @@ vi.mock('@/lib/prisma', () => ({
     period: {
       findUnique: (...args: unknown[]) => mockPeriodFindUnique(...args),
       update: (...args: unknown[]) => mockPeriodUpdate(...args),
-      upsert: (...args: unknown[]) => mockPeriodUpsert(...args),
     },
     monthlySummary: {
       create: (...args: unknown[]) => mockMonthlySummaryCreate(...args),
@@ -39,6 +39,11 @@ vi.mock('@/lib/history', () => ({
   getClosePeriodPreview: (...args: unknown[]) => mockGetClosePeriodPreview(...args),
 }))
 
+const TEST_USER_ID = 'test-user-id'
+vi.mock('@/lib/auth-utils', () => ({
+  getDefaultUserId: vi.fn().mockResolvedValue('test-user-id'),
+}))
+
 // --- Helper: create a mock tx object for $transaction callback ---
 function createMockTx() {
   return {
@@ -53,7 +58,8 @@ function createMockTx() {
     },
     period: {
       update: (...args: unknown[]) => mockPeriodUpdate(...args),
-      upsert: (...args: unknown[]) => mockPeriodUpsert(...args),
+      findFirst: (...args: unknown[]) => mockPeriodFindFirst(...args),
+      create: (...args: unknown[]) => mockPeriodCreate(...args),
     },
     budget: {
       findMany: (...args: unknown[]) => mockBudgetFindMany(...args),
@@ -134,8 +140,9 @@ describe('closePeriod', () => {
     // Step 3: Mark period closed
     mockPeriodUpdate.mockResolvedValue({ id: 'period-apr' })
 
-    // Step 4: Upsert next period
-    mockPeriodUpsert.mockResolvedValue({ id: 'period-may', month: 5, year: 2026 })
+    // Step 4: Create next period (findFirst returns null so create is called)
+    mockPeriodFindFirst.mockResolvedValue(null)
+    mockPeriodCreate.mockResolvedValue({ id: 'period-may', month: 5, year: 2026 })
 
     // Step 5: Copy budgets
     mockBudgetCount.mockResolvedValue(0)
@@ -149,7 +156,7 @@ describe('closePeriod', () => {
 
     expect(result).toEqual({ success: true })
 
-    // Verify MonthlySummary was created with correct totals
+    // Verify MonthlySummary was created with correct totals and userId
     expect(mockMonthlySummaryCreate).toHaveBeenCalledWith({
       data: expect.objectContaining({
         periodId: 'period-apr',
@@ -159,6 +166,7 @@ describe('closePeriod', () => {
         savingsRate: 4000,
         debtAtClose: BigInt(1000000),
         debtPayments: BigInt(0),
+        userId: TEST_USER_ID,
       }),
     })
 
@@ -168,18 +176,16 @@ describe('closePeriod', () => {
       data: { isClosed: true, closedAt: expect.any(Date) },
     })
 
-    // Verify next period was upserted (May 2026)
-    expect(mockPeriodUpsert).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: { month_year: { month: 5, year: 2026 } },
-      }),
-    )
+    // Verify next period was created (May 2026)
+    expect(mockPeriodFindFirst).toHaveBeenCalledWith({
+      where: { month: 5, year: 2026, userId: TEST_USER_ID },
+    })
 
-    // Verify budgets were copied
+    // Verify budgets were copied with userId
     expect(mockBudgetCreateMany).toHaveBeenCalledWith({
       data: [
-        { categoryId: 'cat-1', quincenalAmount: BigInt(50000), periodId: 'period-may' },
-        { categoryId: 'cat-2', quincenalAmount: BigInt(25000), periodId: 'period-may' },
+        { categoryId: 'cat-1', quincenalAmount: BigInt(50000), periodId: 'period-may', userId: TEST_USER_ID },
+        { categoryId: 'cat-2', quincenalAmount: BigInt(25000), periodId: 'period-may', userId: TEST_USER_ID },
       ],
     })
   })
@@ -205,7 +211,8 @@ describe('closePeriod', () => {
     mockDebtAggregate.mockResolvedValue({ _sum: { currentBalance: BigInt(0) } })
     mockMonthlySummaryCreate.mockResolvedValue({ id: 'ms-dec' })
     mockPeriodUpdate.mockResolvedValue({ id: 'period-dec' })
-    mockPeriodUpsert.mockResolvedValue({ id: 'period-jan26', month: 1, year: 2026 })
+    mockPeriodFindFirst.mockResolvedValue(null)
+    mockPeriodCreate.mockResolvedValue({ id: 'period-jan26', month: 1, year: 2026 })
     mockBudgetCount.mockResolvedValue(0)
     mockBudgetFindMany.mockResolvedValue([])
 
@@ -214,11 +221,9 @@ describe('closePeriod', () => {
     expect(result).toEqual({ success: true })
 
     // Next period should be January 2026
-    expect(mockPeriodUpsert).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: { month_year: { month: 1, year: 2026 } },
-      }),
-    )
+    expect(mockPeriodFindFirst).toHaveBeenCalledWith({
+      where: { month: 1, year: 2026, userId: TEST_USER_ID },
+    })
   })
 
   it('handles January->February (month=1, year=2026)', async () => {
@@ -242,7 +247,8 @@ describe('closePeriod', () => {
     mockDebtAggregate.mockResolvedValue({ _sum: { currentBalance: BigInt(0) } })
     mockMonthlySummaryCreate.mockResolvedValue({ id: 'ms-jan' })
     mockPeriodUpdate.mockResolvedValue({ id: 'period-jan' })
-    mockPeriodUpsert.mockResolvedValue({ id: 'period-feb26', month: 2, year: 2026 })
+    mockPeriodFindFirst.mockResolvedValue(null)
+    mockPeriodCreate.mockResolvedValue({ id: 'period-feb26', month: 2, year: 2026 })
     mockBudgetCount.mockResolvedValue(0)
     mockBudgetFindMany.mockResolvedValue([])
 
@@ -251,11 +257,9 @@ describe('closePeriod', () => {
     expect(result).toEqual({ success: true })
 
     // Next period should be February 2026
-    expect(mockPeriodUpsert).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: { month_year: { month: 2, year: 2026 } },
-      }),
-    )
+    expect(mockPeriodFindFirst).toHaveBeenCalledWith({
+      where: { month: 2, year: 2026, userId: TEST_USER_ID },
+    })
   })
 
   it('handles June->July mid-year (month=6, year=2026)', async () => {
@@ -279,7 +283,8 @@ describe('closePeriod', () => {
     mockDebtAggregate.mockResolvedValue({ _sum: { currentBalance: BigInt(0) } })
     mockMonthlySummaryCreate.mockResolvedValue({ id: 'ms-jun' })
     mockPeriodUpdate.mockResolvedValue({ id: 'period-jun' })
-    mockPeriodUpsert.mockResolvedValue({ id: 'period-jul26', month: 7, year: 2026 })
+    mockPeriodFindFirst.mockResolvedValue(null)
+    mockPeriodCreate.mockResolvedValue({ id: 'period-jul26', month: 7, year: 2026 })
     mockBudgetCount.mockResolvedValue(0)
     mockBudgetFindMany.mockResolvedValue([])
 
@@ -288,11 +293,9 @@ describe('closePeriod', () => {
     expect(result).toEqual({ success: true })
 
     // Next period should be July 2026
-    expect(mockPeriodUpsert).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: { month_year: { month: 7, year: 2026 } },
-      }),
-    )
+    expect(mockPeriodFindFirst).toHaveBeenCalledWith({
+      where: { month: 7, year: 2026, userId: TEST_USER_ID },
+    })
   })
 
   it('skips budget copy when next period already has budgets', async () => {
@@ -309,7 +312,8 @@ describe('closePeriod', () => {
     mockDebtAggregate.mockResolvedValue({ _sum: { currentBalance: BigInt(0) } })
     mockMonthlySummaryCreate.mockResolvedValue({ id: 'ms-new' })
     mockPeriodUpdate.mockResolvedValue({ id: 'period-apr' })
-    mockPeriodUpsert.mockResolvedValue({ id: 'period-may', month: 5, year: 2026 })
+    mockPeriodFindFirst.mockResolvedValue(null)
+    mockPeriodCreate.mockResolvedValue({ id: 'period-may', month: 5, year: 2026 })
 
     // Next period already has 3 budgets
     mockBudgetCount.mockResolvedValue(3)
@@ -336,7 +340,8 @@ describe('closePeriod', () => {
     mockDebtAggregate.mockResolvedValue({ _sum: { currentBalance: BigInt(0) } })
     mockMonthlySummaryCreate.mockResolvedValue({ id: 'ms-new' })
     mockPeriodUpdate.mockResolvedValue({ id: 'period-apr' })
-    mockPeriodUpsert.mockResolvedValue({ id: 'period-may', month: 5, year: 2026 })
+    mockPeriodFindFirst.mockResolvedValue(null)
+    mockPeriodCreate.mockResolvedValue({ id: 'period-may', month: 5, year: 2026 })
     mockBudgetCount.mockResolvedValue(0)
     mockBudgetFindMany.mockResolvedValue([])
 
@@ -447,7 +452,7 @@ describe('getClosePeriodPreviewAction', () => {
 
     const result = await getClosePeriodPreviewAction('period-apr')
 
-    expect(mockGetClosePeriodPreview).toHaveBeenCalledWith('period-apr')
+    expect(mockGetClosePeriodPreview).toHaveBeenCalledWith('period-apr', TEST_USER_ID)
     expect(result).toEqual(previewData)
   })
 })

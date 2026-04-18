@@ -16,6 +16,7 @@ function makeDebt(
     name: 'Test Debt',
     annualRate: 4500,
     isActive: true,
+    userId: 'test-user-id',
     creditLimit: null,
     minimumPayment: null,
     monthlyPayment: null,

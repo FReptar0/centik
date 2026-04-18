@@ -27,6 +27,11 @@ vi.mock('@/lib/period', () => ({
   getPeriodForDate: (...args: unknown[]) => mockGetPeriodForDate(...args),
 }))
 
+const TEST_USER_ID = 'test-user-id'
+vi.mock('@/lib/auth-utils', () => ({
+  getDefaultUserId: vi.fn().mockResolvedValue('test-user-id'),
+}))
+
 const openPeriod = {
   id: 'period-open',
   month: 4,
@@ -99,6 +104,7 @@ describe('createTransaction', () => {
         notes: null,
         incomeSourceId: null,
         periodId: 'period-open',
+        userId: TEST_USER_ID,
       },
     })
   })

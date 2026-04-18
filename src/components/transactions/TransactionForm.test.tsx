@@ -35,6 +35,7 @@ function makeCategory(overrides: Partial<Category> = {}): Category {
     isDefault: true,
     isActive: true,
     sortOrder: 1,
+    userId: 'test-user-id',
     ...overrides,
   }
 }
@@ -49,6 +50,7 @@ function makeIncomeSource(
     frequency: 'QUINCENAL',
     type: 'EMPLOYMENT',
     isActive: true,
+    userId: 'test-user-id',
     createdAt: new Date('2026-01-01'),
     updatedAt: new Date('2026-01-01'),
     ...overrides,
@@ -239,6 +241,7 @@ describe('TransactionForm', () => {
       paymentMethod: 'DEBITO',
       periodId: 'period-1',
       notes: 'Con colegas',
+      userId: 'test-user-id',
       createdAt: new Date('2026-04-01'),
       updatedAt: new Date('2026-04-01'),
     }

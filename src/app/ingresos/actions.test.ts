@@ -20,6 +20,11 @@ vi.mock('next/cache', () => ({
   revalidatePath: (...args: unknown[]) => mockRevalidatePath(...args),
 }))
 
+const TEST_USER_ID = 'test-user-id'
+vi.mock('@/lib/auth-utils', () => ({
+  getDefaultUserId: vi.fn().mockResolvedValue('test-user-id'),
+}))
+
 const validData = {
   name: 'TerSoft',
   defaultAmount: '2500000',
@@ -44,6 +49,7 @@ describe('createIncomeSource', () => {
         defaultAmount: BigInt('2500000'),
         frequency: 'QUINCENAL',
         type: 'EMPLOYMENT',
+        userId: TEST_USER_ID,
       },
     })
   })

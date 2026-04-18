@@ -1,12 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { upsertBudgets } from './actions'
 
-const mockUpsert = vi.fn()
+const mockFindFirst = vi.fn()
+const mockCreate = vi.fn()
+const mockUpdate = vi.fn()
 
 vi.mock('@/lib/prisma', () => ({
   default: {
     budget: {
-      upsert: (...args: unknown[]) => mockUpsert(...args),
+      findFirst: (...args: unknown[]) => mockFindFirst(...args),
+      create: (...args: unknown[]) => mockCreate(...args),
+      update: (...args: unknown[]) => mockUpdate(...args),
     },
   },
 }))
@@ -14,6 +18,11 @@ vi.mock('@/lib/prisma', () => ({
 const mockRevalidatePath = vi.fn()
 vi.mock('next/cache', () => ({
   revalidatePath: (...args: unknown[]) => mockRevalidatePath(...args),
+}))
+
+const TEST_USER_ID = 'test-user-id'
+vi.mock('@/lib/auth-utils', () => ({
+  getDefaultUserId: vi.fn().mockResolvedValue('test-user-id'),
 }))
 
 const validEntries = {
@@ -28,22 +37,44 @@ describe('upsertBudgets', () => {
     vi.clearAllMocks()
   })
 
-  it('upserts valid entries for a period and returns success', async () => {
-    mockUpsert.mockResolvedValue({ id: 'b1' })
+  it('creates new entries when no existing budgets found', async () => {
+    mockFindFirst.mockResolvedValue(null)
+    mockCreate.mockResolvedValue({ id: 'b1' })
 
     const result = await upsertBudgets('period-1', validEntries)
 
     expect(result).toEqual({ success: true })
-    expect(mockUpsert).toHaveBeenCalledTimes(2)
-    expect(mockUpsert).toHaveBeenCalledWith({
-      where: { periodId_categoryId: { periodId: 'period-1', categoryId: 'cat1' } },
-      update: { quincenalAmount: BigInt('500000') },
-      create: { periodId: 'period-1', categoryId: 'cat1', quincenalAmount: BigInt('500000') },
+    expect(mockFindFirst).toHaveBeenCalledTimes(2)
+    expect(mockCreate).toHaveBeenCalledTimes(2)
+    expect(mockCreate).toHaveBeenCalledWith({
+      data: {
+        periodId: 'period-1',
+        categoryId: 'cat1',
+        quincenalAmount: BigInt('500000'),
+        userId: TEST_USER_ID,
+      },
     })
-    expect(mockUpsert).toHaveBeenCalledWith({
-      where: { periodId_categoryId: { periodId: 'period-1', categoryId: 'cat2' } },
-      update: { quincenalAmount: BigInt('200000') },
-      create: { periodId: 'period-1', categoryId: 'cat2', quincenalAmount: BigInt('200000') },
+    expect(mockCreate).toHaveBeenCalledWith({
+      data: {
+        periodId: 'period-1',
+        categoryId: 'cat2',
+        quincenalAmount: BigInt('200000'),
+        userId: TEST_USER_ID,
+      },
+    })
+  })
+
+  it('updates existing entries when budgets found', async () => {
+    mockFindFirst.mockResolvedValue({ id: 'existing-budget' })
+    mockUpdate.mockResolvedValue({ id: 'existing-budget' })
+
+    const result = await upsertBudgets('period-1', validEntries)
+
+    expect(result).toEqual({ success: true })
+    expect(mockUpdate).toHaveBeenCalledTimes(2)
+    expect(mockUpdate).toHaveBeenCalledWith({
+      where: { id: 'existing-budget' },
+      data: { quincenalAmount: BigInt('500000') },
     })
   })
 
@@ -56,7 +87,7 @@ describe('upsertBudgets', () => {
     if ('error' in result) {
       expect(result.error).toHaveProperty('entries')
     }
-    expect(mockUpsert).not.toHaveBeenCalled()
+    expect(mockFindFirst).not.toHaveBeenCalled()
   })
 
   it('returns validation error for empty entries array', async () => {
@@ -66,11 +97,12 @@ describe('upsertBudgets', () => {
     if ('error' in result) {
       expect(result.error).toHaveProperty('entries')
     }
-    expect(mockUpsert).not.toHaveBeenCalled()
+    expect(mockFindFirst).not.toHaveBeenCalled()
   })
 
   it('revalidates /presupuesto and / paths after success', async () => {
-    mockUpsert.mockResolvedValue({ id: 'b1' })
+    mockFindFirst.mockResolvedValue(null)
+    mockCreate.mockResolvedValue({ id: 'b1' })
 
     await upsertBudgets('period-1', validEntries)
 
@@ -79,7 +111,7 @@ describe('upsertBudgets', () => {
   })
 
   it('returns generic server error on Prisma failure', async () => {
-    mockUpsert.mockRejectedValue(new Error('Connection lost'))
+    mockFindFirst.mockRejectedValue(new Error('Connection lost'))
 
     const result = await upsertBudgets('period-1', validEntries)
 

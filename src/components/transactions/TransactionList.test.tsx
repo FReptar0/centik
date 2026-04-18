@@ -29,6 +29,7 @@ function makeTxn(id: string): TransactionWithCategory {
     paymentMethod: null,
     periodId: 'period-1',
     notes: null,
+    userId: 'test-user-id',
     createdAt: new Date('2026-04-01'),
     updatedAt: new Date('2026-04-01'),
     category: { name: 'Comida', icon: 'utensils', color: '#C88A5A' },

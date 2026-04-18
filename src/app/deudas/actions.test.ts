@@ -20,6 +20,11 @@ vi.mock('next/cache', () => ({
   revalidatePath: (...args: unknown[]) => mockRevalidatePath(...args),
 }))
 
+const TEST_USER_ID = 'test-user-id'
+vi.mock('@/lib/auth-utils', () => ({
+  getDefaultUserId: vi.fn().mockResolvedValue('test-user-id'),
+}))
+
 const validCreditCard = {
   name: 'BBVA Oro',
   type: 'CREDIT_CARD' as const,
@@ -65,6 +70,7 @@ describe('createDebt', () => {
         remainingMonths: null,
         cutOffDay: 15,
         paymentDueDay: 5,
+        userId: TEST_USER_ID,
       },
     })
   })
@@ -88,6 +94,7 @@ describe('createDebt', () => {
         remainingMonths: 30,
         cutOffDay: null,
         paymentDueDay: null,
+        userId: TEST_USER_ID,
       },
     })
   })

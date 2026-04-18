@@ -22,6 +22,11 @@ vi.mock('next/cache', () => ({
   revalidatePath: (...args: unknown[]) => mockRevalidatePath(...args),
 }))
 
+const TEST_USER_ID = 'test-user-id'
+vi.mock('@/lib/auth-utils', () => ({
+  getDefaultUserId: vi.fn().mockResolvedValue('test-user-id'),
+}))
+
 const validData = {
   name: 'Mascotas',
   icon: 'heart',
@@ -52,6 +57,7 @@ describe('createCategory', () => {
         type: 'EXPENSE',
         isDefault: false,
         sortOrder: 6,
+        userId: TEST_USER_ID,
       },
     })
   })

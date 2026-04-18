@@ -177,6 +177,42 @@ describe('Seed data correctness', () => {
     }
   })
 
+  it('seeds admin user with isApproved=true', async () => {
+    const users = await prisma.user.findMany()
+    expect(users.length).toBeGreaterThanOrEqual(1)
+
+    const admin = users.find((u) => u.isApproved)
+    expect(admin).toBeDefined()
+    expect(admin!.email).toBeDefined()
+  })
+
+  it('all records have non-null userId', async () => {
+    const categories = await prisma.category.findMany()
+    for (const cat of categories) {
+      expect(cat.userId).not.toBeNull()
+    }
+
+    const transactions = await prisma.transaction.findMany()
+    for (const txn of transactions) {
+      expect(txn.userId).not.toBeNull()
+    }
+
+    const periods = await prisma.period.findMany()
+    for (const period of periods) {
+      expect(period.userId).not.toBeNull()
+    }
+
+    const debts = await prisma.debt.findMany()
+    for (const debt of debts) {
+      expect(debt.userId).not.toBeNull()
+    }
+
+    const budgets = await prisma.budget.findMany()
+    for (const budget of budgets) {
+      expect(budget.userId).not.toBeNull()
+    }
+  })
+
   it('all monetary fields are BigInt', async () => {
     const debt = await prisma.debt.findFirst()
     expect(debt).toBeDefined()

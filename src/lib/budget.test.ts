@@ -3,7 +3,7 @@ import { getBudgetColor, getBudgetsWithSpent, copyBudgetsFromPreviousPeriod } fr
 
 const mockFindMany = vi.fn()
 const mockGroupBy = vi.fn()
-const mockFindUnique = vi.fn()
+const mockFindFirst = vi.fn()
 const mockCreateMany = vi.fn()
 
 vi.mock('@/lib/prisma', () => ({
@@ -16,10 +16,12 @@ vi.mock('@/lib/prisma', () => ({
       groupBy: (...args: unknown[]) => mockGroupBy(...args),
     },
     period: {
-      findUnique: (...args: unknown[]) => mockFindUnique(...args),
+      findFirst: (...args: unknown[]) => mockFindFirst(...args),
     },
   },
 }))
+
+const TEST_USER_ID = 'test-user-id'
 
 describe('getBudgetColor', () => {
   it('returns positive for 0% usage', () => {
@@ -74,7 +76,7 @@ describe('getBudgetsWithSpent', () => {
       { categoryId: 'cat1', _sum: { amount: BigInt(350000) } },
     ])
 
-    const result = await getBudgetsWithSpent('p1')
+    const result = await getBudgetsWithSpent('p1', TEST_USER_ID)
 
     expect(result).toEqual([
       {
@@ -102,7 +104,7 @@ describe('getBudgetsWithSpent', () => {
     mockFindMany.mockResolvedValue([])
     mockGroupBy.mockResolvedValue([])
 
-    const result = await getBudgetsWithSpent('p-empty')
+    const result = await getBudgetsWithSpent('p-empty', TEST_USER_ID)
 
     expect(result).toEqual([])
   })
@@ -114,49 +116,49 @@ describe('copyBudgetsFromPreviousPeriod', () => {
   })
 
   it('copies budgets from previous period to target period', async () => {
-    mockFindUnique.mockResolvedValue({ id: 'prev-period' })
+    mockFindFirst.mockResolvedValue({ id: 'prev-period' })
     mockFindMany.mockResolvedValue([
       { categoryId: 'cat1', quincenalAmount: BigInt(500000) },
       { categoryId: 'cat2', quincenalAmount: BigInt(200000) },
     ])
     mockCreateMany.mockResolvedValue({ count: 2 })
 
-    const result = await copyBudgetsFromPreviousPeriod('current-period', 4, 2026)
+    const result = await copyBudgetsFromPreviousPeriod('current-period', 4, 2026, TEST_USER_ID)
 
     expect(result).toBe(true)
-    expect(mockFindUnique).toHaveBeenCalledWith({
-      where: { month_year: { month: 3, year: 2026 } },
+    expect(mockFindFirst).toHaveBeenCalledWith({
+      where: { month: 3, year: 2026, userId: TEST_USER_ID },
     })
     expect(mockFindMany).toHaveBeenCalledWith({
-      where: { periodId: 'prev-period' },
+      where: { periodId: 'prev-period', userId: TEST_USER_ID },
     })
     expect(mockCreateMany).toHaveBeenCalledWith({
       data: [
-        { categoryId: 'cat1', quincenalAmount: BigInt(500000), periodId: 'current-period' },
-        { categoryId: 'cat2', quincenalAmount: BigInt(200000), periodId: 'current-period' },
+        { categoryId: 'cat1', quincenalAmount: BigInt(500000), periodId: 'current-period', userId: TEST_USER_ID },
+        { categoryId: 'cat2', quincenalAmount: BigInt(200000), periodId: 'current-period', userId: TEST_USER_ID },
       ],
     })
   })
 
   it('handles January wrapping to December of previous year', async () => {
-    mockFindUnique.mockResolvedValue({ id: 'dec-period' })
+    mockFindFirst.mockResolvedValue({ id: 'dec-period' })
     mockFindMany.mockResolvedValue([
       { categoryId: 'cat1', quincenalAmount: BigInt(300000) },
     ])
     mockCreateMany.mockResolvedValue({ count: 1 })
 
-    const result = await copyBudgetsFromPreviousPeriod('jan-period', 1, 2026)
+    const result = await copyBudgetsFromPreviousPeriod('jan-period', 1, 2026, TEST_USER_ID)
 
     expect(result).toBe(true)
-    expect(mockFindUnique).toHaveBeenCalledWith({
-      where: { month_year: { month: 12, year: 2025 } },
+    expect(mockFindFirst).toHaveBeenCalledWith({
+      where: { month: 12, year: 2025, userId: TEST_USER_ID },
     })
   })
 
   it('returns false when no previous period exists', async () => {
-    mockFindUnique.mockResolvedValue(null)
+    mockFindFirst.mockResolvedValue(null)
 
-    const result = await copyBudgetsFromPreviousPeriod('current-period', 4, 2026)
+    const result = await copyBudgetsFromPreviousPeriod('current-period', 4, 2026, TEST_USER_ID)
 
     expect(result).toBe(false)
     expect(mockFindMany).not.toHaveBeenCalled()
@@ -164,10 +166,10 @@ describe('copyBudgetsFromPreviousPeriod', () => {
   })
 
   it('returns false when previous period has no budgets', async () => {
-    mockFindUnique.mockResolvedValue({ id: 'prev-period' })
+    mockFindFirst.mockResolvedValue({ id: 'prev-period' })
     mockFindMany.mockResolvedValue([])
 
-    const result = await copyBudgetsFromPreviousPeriod('current-period', 4, 2026)
+    const result = await copyBudgetsFromPreviousPeriod('current-period', 4, 2026, TEST_USER_ID)
 
     expect(result).toBe(false)
     expect(mockCreateMany).not.toHaveBeenCalled()

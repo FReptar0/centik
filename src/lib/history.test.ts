@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { getMonthlySummariesForYear, getAvailableYears, getClosePeriodPreview } from './history'
 
+const TEST_USER_ID = 'test-user-id'
+
 const mockMonthlySummaryFindMany = vi.fn()
 const mockPeriodFindMany = vi.fn()
 const mockTransactionAggregate = vi.fn()
@@ -40,12 +42,13 @@ describe('getMonthlySummariesForYear', () => {
         debtAtClose: BigInt(1000000),
         debtPayments: BigInt(0),
         notes: null,
+        userId: TEST_USER_ID,
         createdAt: new Date('2026-03-31'),
         period: { month: 3, year: 2026 },
       },
     ])
 
-    const result = await getMonthlySummariesForYear(2026)
+    const result = await getMonthlySummariesForYear(2026, TEST_USER_ID)
 
     expect(result).toHaveLength(12)
 
@@ -69,7 +72,7 @@ describe('getMonthlySummariesForYear', () => {
   it('returns all null data when no summaries exist for the year', async () => {
     mockMonthlySummaryFindMany.mockResolvedValue([])
 
-    const result = await getMonthlySummariesForYear(2025)
+    const result = await getMonthlySummariesForYear(2025, TEST_USER_ID)
 
     expect(result).toHaveLength(12)
     for (let i = 0; i < 12; i++) {
@@ -91,6 +94,7 @@ describe('getMonthlySummariesForYear', () => {
         debtAtClose: BigInt(0),
         debtPayments: BigInt(0),
         notes: null,
+        userId: TEST_USER_ID,
         createdAt: new Date('2026-01-31'),
         period: { month: 1, year: 2026 },
       },
@@ -104,12 +108,13 @@ describe('getMonthlySummariesForYear', () => {
         debtAtClose: BigInt(500000),
         debtPayments: BigInt(0),
         notes: 'Buen mes',
+        userId: TEST_USER_ID,
         createdAt: new Date('2026-06-30'),
         period: { month: 6, year: 2026 },
       },
     ])
 
-    const result = await getMonthlySummariesForYear(2026)
+    const result = await getMonthlySummariesForYear(2026, TEST_USER_ID)
 
     expect(result).toHaveLength(12)
     expect(result[0].data).not.toBeNull()
@@ -135,7 +140,7 @@ describe('getAvailableYears', () => {
       { year: 2026 },
     ])
 
-    const result = await getAvailableYears()
+    const result = await getAvailableYears(TEST_USER_ID)
 
     expect(result).toEqual([2025, 2026])
   })
@@ -143,7 +148,7 @@ describe('getAvailableYears', () => {
   it('returns empty array when no periods exist', async () => {
     mockPeriodFindMany.mockResolvedValue([])
 
-    const result = await getAvailableYears()
+    const result = await getAvailableYears(TEST_USER_ID)
 
     expect(result).toEqual([])
   })
@@ -151,7 +156,7 @@ describe('getAvailableYears', () => {
   it('returns single year when only one period exists', async () => {
     mockPeriodFindMany.mockResolvedValue([{ year: 2026 }])
 
-    const result = await getAvailableYears()
+    const result = await getAvailableYears(TEST_USER_ID)
 
     expect(result).toEqual([2026])
   })
@@ -171,7 +176,7 @@ describe('getClosePeriodPreview', () => {
       _sum: { currentBalance: BigInt(1000000) },
     })
 
-    const result = await getClosePeriodPreview('period-1')
+    const result = await getClosePeriodPreview('period-1', TEST_USER_ID)
 
     expect(result.totalIncome).toBe('500000')
     expect(result.totalExpenses).toBe('300000')
@@ -191,7 +196,7 @@ describe('getClosePeriodPreview', () => {
       _sum: { currentBalance: null },
     })
 
-    const result = await getClosePeriodPreview('period-empty')
+    const result = await getClosePeriodPreview('period-empty', TEST_USER_ID)
 
     expect(result.totalIncome).toBe('0')
     expect(result.totalExpenses).toBe('50000')
@@ -210,7 +215,7 @@ describe('getClosePeriodPreview', () => {
       _sum: { currentBalance: null },
     })
 
-    const result = await getClosePeriodPreview('period-new')
+    const result = await getClosePeriodPreview('period-new', TEST_USER_ID)
 
     expect(result.totalIncome).toBe('0')
     expect(result.totalExpenses).toBe('0')
@@ -229,7 +234,7 @@ describe('getClosePeriodPreview', () => {
       _sum: { currentBalance: BigInt(500000) },
     })
 
-    const result = await getClosePeriodPreview('period-neg')
+    const result = await getClosePeriodPreview('period-neg', TEST_USER_ID)
 
     expect(result.totalIncome).toBe('100000')
     expect(result.totalExpenses).toBe('300000')
