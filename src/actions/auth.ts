@@ -1,8 +1,10 @@
 'use server'
 
+import bcrypt from 'bcryptjs'
 import { signIn, signOut } from '@/auth'
 import { AuthError } from 'next-auth'
-import { loginSchema } from '@/lib/validators'
+import prisma from '@/lib/prisma'
+import { loginSchema, registerSchema } from '@/lib/validators'
 
 export async function loginAction(
   _prevState: { error?: string } | undefined,
@@ -36,4 +38,91 @@ export async function loginAction(
 
 export async function logoutAction() {
   await signOut({ redirectTo: '/login' })
+}
+
+type RegisterResult = { error?: Record<string, string[]> } | undefined
+
+/**
+ * Creates a new user account from a valid InviteToken.
+ * Per D-17: atomic create User + mark InviteToken.usedAt + signIn auto-login + redirect to /.
+ * Per D-10: rejects email mismatch between form and token (defense in depth -- server-side check).
+ * Per RESEARCH Pitfall #1 + Pitfall #2: catches AuthError; re-throws NEXT_REDIRECT;
+ * re-checks token inside transaction to defeat TOCTOU.
+ */
+export async function registerAction(
+  _prevState: RegisterResult,
+  formData: FormData,
+): Promise<RegisterResult> {
+  const parsed = registerSchema.safeParse({
+    token: formData.get('token'),
+    email: formData.get('email'),
+    name: formData.get('name'),
+    password: formData.get('password'),
+    confirmPassword: formData.get('confirmPassword'),
+  })
+
+  if (!parsed.success) {
+    return { error: parsed.error.flatten().fieldErrors }
+  }
+
+  // Hash BEFORE the transaction (bcrypt is slow; do not hold a DB transaction open during it)
+  const hashedPassword = await bcrypt.hash(parsed.data.password, 12)
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      const token = await tx.inviteToken.findUnique({
+        where: { token: parsed.data.token },
+      })
+      if (!token) throw new Error('INVITE_INVALID')
+      if (token.revokedAt) throw new Error('INVITE_REVOKED')
+      if (token.usedAt) throw new Error('INVITE_USED')
+      if (token.expiresAt.getTime() < Date.now()) throw new Error('INVITE_EXPIRED')
+      if (token.email !== parsed.data.email) throw new Error('INVITE_EMAIL_MISMATCH')
+
+      await tx.user.create({
+        data: {
+          email: parsed.data.email,
+          name: parsed.data.name,
+          hashedPassword,
+          isApproved: true,
+          isAdmin: false,
+          totpEnabled: false,
+        },
+      })
+
+      await tx.inviteToken.update({
+        where: { id: token.id },
+        data: { usedAt: new Date() },
+      })
+    })
+  } catch (error) {
+    if (error instanceof Error && error.message.startsWith('INVITE_')) {
+      return { error: { _form: ['Este enlace de invitacion ya no es valido'] } }
+    }
+    // P2002 on User.email unique = race with another concurrent registration
+    if (
+      error &&
+      typeof error === 'object' &&
+      'code' in error &&
+      (error as { code: string }).code === 'P2002'
+    ) {
+      return { error: { email: ['Ya existe una cuenta con este correo'] } }
+    }
+    return { error: { _form: ['No pudimos crear tu cuenta. Intenta de nuevo.'] } }
+  }
+
+  // Auto-login after successful registration. signIn throws NEXT_REDIRECT on success -- DO NOT swallow.
+  try {
+    await signIn('credentials', {
+      email: parsed.data.email,
+      password: parsed.data.password,
+      redirectTo: '/',
+    })
+    return undefined
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return { error: { _form: ['No pudimos iniciar sesion automaticamente'] } }
+    }
+    throw error // CRITICAL: re-throw NEXT_REDIRECT so Next.js performs the redirect
+  }
 }
