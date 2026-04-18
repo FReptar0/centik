@@ -8,6 +8,7 @@ import {
   createCategorySchema,
   createAssetSchema,
   createValueUnitSchema,
+  loginSchema,
 } from './validators'
 
 // Helper to get first error message from a failed parse result
@@ -558,6 +559,28 @@ describe('createValueUnitSchema', () => {
 
   it('rejects negative refreshInterval', () => {
     const result = createValueUnitSchema.safeParse({ ...validUnit, refreshInterval: -1 })
+    expect(result.success).toBe(false)
+  })
+})
+
+describe('loginSchema', () => {
+  it('accepts valid email and non-empty password', () => {
+    const result = loginSchema.safeParse({ email: 'user@example.com', password: 'secret123' })
+    expect(result.success).toBe(true)
+  })
+
+  it('rejects invalid email format', () => {
+    const result = loginSchema.safeParse({ email: 'not-an-email', password: 'secret' })
+    expect(result.success).toBe(false)
+  })
+
+  it('rejects empty password', () => {
+    const result = loginSchema.safeParse({ email: 'user@example.com', password: '' })
+    expect(result.success).toBe(false)
+  })
+
+  it('rejects missing email', () => {
+    const result = loginSchema.safeParse({ password: 'secret123' })
     expect(result.success).toBe(false)
   })
 })

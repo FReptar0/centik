@@ -5,6 +5,11 @@ vi.mock('next/navigation', () => ({
   usePathname: vi.fn(() => '/'),
 }))
 
+// Mock auth action to prevent next-auth/next/server import chain
+vi.mock('@/actions/auth', () => ({
+  logoutAction: vi.fn(),
+}))
+
 vi.mock('next/link', () => ({
   default: ({
     children,
