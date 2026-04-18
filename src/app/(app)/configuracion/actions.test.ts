@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { createCategory, deleteCategory } from './actions'
 
 const mockCreate = vi.fn()
-const mockFindUnique = vi.fn()
+const mockFindFirst = vi.fn()
 const mockUpdate = vi.fn()
 const mockAggregate = vi.fn()
 
@@ -10,7 +10,7 @@ vi.mock('@/lib/prisma', () => ({
   default: {
     category: {
       create: (...args: unknown[]) => mockCreate(...args),
-      findUnique: (...args: unknown[]) => mockFindUnique(...args),
+      findFirst: (...args: unknown[]) => mockFindFirst(...args),
       update: (...args: unknown[]) => mockUpdate(...args),
       aggregate: (...args: unknown[]) => mockAggregate(...args),
     },
@@ -24,7 +24,7 @@ vi.mock('next/cache', () => ({
 
 const TEST_USER_ID = 'test-user-id'
 vi.mock('@/lib/auth-utils', () => ({
-  getDefaultUserId: vi.fn().mockResolvedValue('test-user-id'),
+  requireAuth: vi.fn().mockResolvedValue({ userId: 'test-user-id' }),
 }))
 
 const validData = {
@@ -141,14 +141,14 @@ describe('deleteCategory', () => {
   })
 
   it('soft-deletes a non-default category and returns success', async () => {
-    mockFindUnique.mockResolvedValue({ isDefault: false })
+    mockFindFirst.mockResolvedValue({ isDefault: false })
     mockUpdate.mockResolvedValue({ id: 'custom-cat-id' })
 
     const result = await deleteCategory('custom-cat-id')
 
     expect(result).toEqual({ success: true })
-    expect(mockFindUnique).toHaveBeenCalledWith({
-      where: { id: 'custom-cat-id' },
+    expect(mockFindFirst).toHaveBeenCalledWith({
+      where: { id: 'custom-cat-id', userId: TEST_USER_ID },
       select: { isDefault: true },
     })
     expect(mockUpdate).toHaveBeenCalledWith({
@@ -158,7 +158,7 @@ describe('deleteCategory', () => {
   })
 
   it('refuses to delete a default category', async () => {
-    mockFindUnique.mockResolvedValue({ isDefault: true })
+    mockFindFirst.mockResolvedValue({ isDefault: true })
 
     const result = await deleteCategory('default-cat-id')
 
@@ -169,7 +169,7 @@ describe('deleteCategory', () => {
   })
 
   it('returns not-found error for non-existent ID', async () => {
-    mockFindUnique.mockResolvedValue(null)
+    mockFindFirst.mockResolvedValue(null)
 
     const result = await deleteCategory('nonexistent-id')
 
@@ -180,7 +180,7 @@ describe('deleteCategory', () => {
   })
 
   it('calls revalidatePath for /configuracion and /movimientos on success', async () => {
-    mockFindUnique.mockResolvedValue({ isDefault: false })
+    mockFindFirst.mockResolvedValue({ isDefault: false })
     mockUpdate.mockResolvedValue({ id: 'custom-cat-id' })
 
     await deleteCategory('custom-cat-id')
@@ -190,7 +190,7 @@ describe('deleteCategory', () => {
   })
 
   it('returns generic error for unexpected failures', async () => {
-    mockFindUnique.mockRejectedValue(new Error('DB timeout'))
+    mockFindFirst.mockRejectedValue(new Error('DB timeout'))
 
     const result = await deleteCategory('some-id')
 

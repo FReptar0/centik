@@ -2,9 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { closePeriod, reopenPeriod, getClosePeriodPreviewAction } from './actions'
 
 // --- Mock prisma ---
-const mockPeriodFindUnique = vi.fn()
-const mockPeriodUpdate = vi.fn()
 const mockPeriodFindFirst = vi.fn()
+const mockPeriodUpdate = vi.fn()
 const mockPeriodCreate = vi.fn()
 const mockMonthlySummaryCreate = vi.fn()
 const mockMonthlySummaryDelete = vi.fn()
@@ -18,7 +17,7 @@ const mockTransaction = vi.fn()
 vi.mock('@/lib/prisma', () => ({
   default: {
     period: {
-      findUnique: (...args: unknown[]) => mockPeriodFindUnique(...args),
+      findFirst: (...args: unknown[]) => mockPeriodFindFirst(...args),
       update: (...args: unknown[]) => mockPeriodUpdate(...args),
     },
     monthlySummary: {
@@ -41,7 +40,7 @@ vi.mock('@/lib/history', () => ({
 
 const TEST_USER_ID = 'test-user-id'
 vi.mock('@/lib/auth-utils', () => ({
-  getDefaultUserId: vi.fn().mockResolvedValue('test-user-id'),
+  requireAuth: vi.fn().mockResolvedValue({ userId: 'test-user-id' }),
 }))
 
 // --- Helper: create a mock tx object for $transaction callback ---
@@ -97,7 +96,7 @@ describe('closePeriod', () => {
   })
 
   it('rejects if period not found', async () => {
-    mockPeriodFindUnique.mockResolvedValue(null)
+    mockPeriodFindFirst.mockResolvedValue(null)
 
     const result = await closePeriod('nonexistent')
 
@@ -108,7 +107,7 @@ describe('closePeriod', () => {
   })
 
   it('rejects if period already closed', async () => {
-    mockPeriodFindUnique.mockResolvedValue(closedPeriod)
+    mockPeriodFindFirst.mockResolvedValue(closedPeriod)
 
     const result = await closePeriod('period-mar')
 
@@ -119,7 +118,10 @@ describe('closePeriod', () => {
   })
 
   it('executes atomic $transaction with all 5 steps', async () => {
-    mockPeriodFindUnique.mockResolvedValue(openPeriod)
+    // First call: top-level period lookup; Second call: next period lookup in $transaction
+    mockPeriodFindFirst
+      .mockResolvedValueOnce(openPeriod)
+      .mockResolvedValueOnce(null)
 
     const mockTx = createMockTx()
     mockTransaction.mockImplementation(async (cb: (tx: unknown) => Promise<void>) => {
@@ -140,8 +142,7 @@ describe('closePeriod', () => {
     // Step 3: Mark period closed
     mockPeriodUpdate.mockResolvedValue({ id: 'period-apr' })
 
-    // Step 4: Create next period (findFirst returns null so create is called)
-    mockPeriodFindFirst.mockResolvedValue(null)
+    // Step 4: Create next period
     mockPeriodCreate.mockResolvedValue({ id: 'period-may', month: 5, year: 2026 })
 
     // Step 5: Copy budgets
@@ -198,7 +199,10 @@ describe('closePeriod', () => {
       year: 2025,
     }
 
-    mockPeriodFindUnique.mockResolvedValue(decemberPeriod)
+    // First call: top-level period lookup; Second call: next period lookup in $transaction
+    mockPeriodFindFirst
+      .mockResolvedValueOnce(decemberPeriod)
+      .mockResolvedValueOnce(null)
 
     const mockTx = createMockTx()
     mockTransaction.mockImplementation(async (cb: (tx: unknown) => Promise<void>) => {
@@ -211,7 +215,6 @@ describe('closePeriod', () => {
     mockDebtAggregate.mockResolvedValue({ _sum: { currentBalance: BigInt(0) } })
     mockMonthlySummaryCreate.mockResolvedValue({ id: 'ms-dec' })
     mockPeriodUpdate.mockResolvedValue({ id: 'period-dec' })
-    mockPeriodFindFirst.mockResolvedValue(null)
     mockPeriodCreate.mockResolvedValue({ id: 'period-jan26', month: 1, year: 2026 })
     mockBudgetCount.mockResolvedValue(0)
     mockBudgetFindMany.mockResolvedValue([])
@@ -234,7 +237,10 @@ describe('closePeriod', () => {
       year: 2026,
     }
 
-    mockPeriodFindUnique.mockResolvedValue(januaryPeriod)
+    // First call: top-level period lookup; Second call: next period lookup in $transaction
+    mockPeriodFindFirst
+      .mockResolvedValueOnce(januaryPeriod)
+      .mockResolvedValueOnce(null)
 
     const mockTx = createMockTx()
     mockTransaction.mockImplementation(async (cb: (tx: unknown) => Promise<void>) => {
@@ -247,7 +253,6 @@ describe('closePeriod', () => {
     mockDebtAggregate.mockResolvedValue({ _sum: { currentBalance: BigInt(0) } })
     mockMonthlySummaryCreate.mockResolvedValue({ id: 'ms-jan' })
     mockPeriodUpdate.mockResolvedValue({ id: 'period-jan' })
-    mockPeriodFindFirst.mockResolvedValue(null)
     mockPeriodCreate.mockResolvedValue({ id: 'period-feb26', month: 2, year: 2026 })
     mockBudgetCount.mockResolvedValue(0)
     mockBudgetFindMany.mockResolvedValue([])
@@ -270,7 +275,10 @@ describe('closePeriod', () => {
       year: 2026,
     }
 
-    mockPeriodFindUnique.mockResolvedValue(junePeriod)
+    // First call: top-level period lookup; Second call: next period lookup in $transaction
+    mockPeriodFindFirst
+      .mockResolvedValueOnce(junePeriod)
+      .mockResolvedValueOnce(null)
 
     const mockTx = createMockTx()
     mockTransaction.mockImplementation(async (cb: (tx: unknown) => Promise<void>) => {
@@ -283,7 +291,6 @@ describe('closePeriod', () => {
     mockDebtAggregate.mockResolvedValue({ _sum: { currentBalance: BigInt(0) } })
     mockMonthlySummaryCreate.mockResolvedValue({ id: 'ms-jun' })
     mockPeriodUpdate.mockResolvedValue({ id: 'period-jun' })
-    mockPeriodFindFirst.mockResolvedValue(null)
     mockPeriodCreate.mockResolvedValue({ id: 'period-jul26', month: 7, year: 2026 })
     mockBudgetCount.mockResolvedValue(0)
     mockBudgetFindMany.mockResolvedValue([])
@@ -299,7 +306,10 @@ describe('closePeriod', () => {
   })
 
   it('skips budget copy when next period already has budgets', async () => {
-    mockPeriodFindUnique.mockResolvedValue(openPeriod)
+    // First call: top-level period lookup; Second call: next period lookup in $transaction
+    mockPeriodFindFirst
+      .mockResolvedValueOnce(openPeriod)
+      .mockResolvedValueOnce(null)
 
     const mockTx = createMockTx()
     mockTransaction.mockImplementation(async (cb: (tx: unknown) => Promise<void>) => {
@@ -312,7 +322,6 @@ describe('closePeriod', () => {
     mockDebtAggregate.mockResolvedValue({ _sum: { currentBalance: BigInt(0) } })
     mockMonthlySummaryCreate.mockResolvedValue({ id: 'ms-new' })
     mockPeriodUpdate.mockResolvedValue({ id: 'period-apr' })
-    mockPeriodFindFirst.mockResolvedValue(null)
     mockPeriodCreate.mockResolvedValue({ id: 'period-may', month: 5, year: 2026 })
 
     // Next period already has 3 budgets
@@ -327,7 +336,10 @@ describe('closePeriod', () => {
   })
 
   it('revalidates /, /historial, /presupuesto, /movimientos after close', async () => {
-    mockPeriodFindUnique.mockResolvedValue(openPeriod)
+    // First call: top-level period lookup; Second call: next period lookup in $transaction
+    mockPeriodFindFirst
+      .mockResolvedValueOnce(openPeriod)
+      .mockResolvedValueOnce(null)
 
     const mockTx = createMockTx()
     mockTransaction.mockImplementation(async (cb: (tx: unknown) => Promise<void>) => {
@@ -340,7 +352,6 @@ describe('closePeriod', () => {
     mockDebtAggregate.mockResolvedValue({ _sum: { currentBalance: BigInt(0) } })
     mockMonthlySummaryCreate.mockResolvedValue({ id: 'ms-new' })
     mockPeriodUpdate.mockResolvedValue({ id: 'period-apr' })
-    mockPeriodFindFirst.mockResolvedValue(null)
     mockPeriodCreate.mockResolvedValue({ id: 'period-may', month: 5, year: 2026 })
     mockBudgetCount.mockResolvedValue(0)
     mockBudgetFindMany.mockResolvedValue([])
@@ -354,7 +365,7 @@ describe('closePeriod', () => {
   })
 
   it('returns generic error on unexpected failure', async () => {
-    mockPeriodFindUnique.mockResolvedValue(openPeriod)
+    mockPeriodFindFirst.mockResolvedValueOnce(openPeriod)
     mockTransaction.mockRejectedValue(new Error('DB timeout'))
 
     const result = await closePeriod('period-apr')
@@ -371,7 +382,7 @@ describe('reopenPeriod', () => {
   })
 
   it('rejects if period not found', async () => {
-    mockPeriodFindUnique.mockResolvedValue(null)
+    mockPeriodFindFirst.mockResolvedValue(null)
 
     const result = await reopenPeriod('nonexistent')
 
@@ -381,7 +392,7 @@ describe('reopenPeriod', () => {
   })
 
   it('rejects if period is not closed', async () => {
-    mockPeriodFindUnique.mockResolvedValue(openPeriod)
+    mockPeriodFindFirst.mockResolvedValue(openPeriod)
 
     const result = await reopenPeriod('period-apr')
 
@@ -391,7 +402,7 @@ describe('reopenPeriod', () => {
   })
 
   it('deletes MonthlySummary and unlocks period on success', async () => {
-    mockPeriodFindUnique.mockResolvedValue(closedPeriod)
+    mockPeriodFindFirst.mockResolvedValue(closedPeriod)
     mockMonthlySummaryDelete.mockResolvedValue({ id: 'ms-mar' })
     mockPeriodUpdate.mockResolvedValue({ id: 'period-mar', isClosed: false })
 
@@ -410,7 +421,7 @@ describe('reopenPeriod', () => {
   })
 
   it('revalidates /, /historial, /presupuesto, /movimientos after reopen', async () => {
-    mockPeriodFindUnique.mockResolvedValue(closedPeriod)
+    mockPeriodFindFirst.mockResolvedValue(closedPeriod)
     mockMonthlySummaryDelete.mockResolvedValue({ id: 'ms-mar' })
     mockPeriodUpdate.mockResolvedValue({ id: 'period-mar' })
 
@@ -423,7 +434,7 @@ describe('reopenPeriod', () => {
   })
 
   it('returns generic error on unexpected failure', async () => {
-    mockPeriodFindUnique.mockResolvedValue(closedPeriod)
+    mockPeriodFindFirst.mockResolvedValue(closedPeriod)
     mockMonthlySummaryDelete.mockRejectedValue(new Error('DB error'))
 
     const result = await reopenPeriod('period-mar')

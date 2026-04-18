@@ -22,7 +22,7 @@ vi.mock('next/cache', () => ({
 
 const TEST_USER_ID = 'test-user-id'
 vi.mock('@/lib/auth-utils', () => ({
-  getDefaultUserId: vi.fn().mockResolvedValue('test-user-id'),
+  requireAuth: vi.fn().mockResolvedValue({ userId: 'test-user-id' }),
 }))
 
 const validEntries = {

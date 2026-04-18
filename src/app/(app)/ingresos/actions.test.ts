@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { createIncomeSource, updateIncomeSource, deleteIncomeSource } from './actions'
 
 const mockCreate = vi.fn()
+const mockFindFirst = vi.fn()
 const mockUpdate = vi.fn()
 const mockDelete = vi.fn()
 
@@ -9,6 +10,7 @@ vi.mock('@/lib/prisma', () => ({
   default: {
     incomeSource: {
       create: (...args: unknown[]) => mockCreate(...args),
+      findFirst: (...args: unknown[]) => mockFindFirst(...args),
       update: (...args: unknown[]) => mockUpdate(...args),
       delete: (...args: unknown[]) => mockDelete(...args),
     },
@@ -22,7 +24,7 @@ vi.mock('next/cache', () => ({
 
 const TEST_USER_ID = 'test-user-id'
 vi.mock('@/lib/auth-utils', () => ({
-  getDefaultUserId: vi.fn().mockResolvedValue('test-user-id'),
+  requireAuth: vi.fn().mockResolvedValue({ userId: 'test-user-id' }),
 }))
 
 const validData = {
@@ -109,11 +111,13 @@ describe('updateIncomeSource', () => {
   })
 
   it('updates record with valid data and returns success', async () => {
+    mockFindFirst.mockResolvedValue({ id: 'existing-id' })
     mockUpdate.mockResolvedValue({ id: 'existing-id', ...validData })
 
     const result = await updateIncomeSource('existing-id', validData)
 
     expect(result).toEqual({ success: true })
+    expect(mockFindFirst).toHaveBeenCalledWith({ where: { id: 'existing-id', userId: TEST_USER_ID } })
     expect(mockUpdate).toHaveBeenCalledWith({
       where: { id: 'existing-id' },
       data: {
@@ -140,17 +144,19 @@ describe('updateIncomeSource', () => {
     expect(mockUpdate).not.toHaveBeenCalled()
   })
 
-  it('returns not-found error for non-existent ID (P2025)', async () => {
-    mockUpdate.mockRejectedValue({ code: 'P2025' })
+  it('returns not-found error for non-existent ID', async () => {
+    mockFindFirst.mockResolvedValue(null)
 
     const result = await updateIncomeSource('nonexistent-id', validData)
 
     expect(result).toEqual({
       error: { _form: ['Fuente de ingreso no encontrada'] },
     })
+    expect(mockUpdate).not.toHaveBeenCalled()
   })
 
   it('returns friendly error for duplicate name on update (P2002)', async () => {
+    mockFindFirst.mockResolvedValue({ id: 'existing-id' })
     mockUpdate.mockRejectedValue({ code: 'P2002', meta: { target: ['name'] } })
 
     const result = await updateIncomeSource('existing-id', validData)
@@ -161,6 +167,7 @@ describe('updateIncomeSource', () => {
   })
 
   it('calls revalidatePath for /ingresos and / on success', async () => {
+    mockFindFirst.mockResolvedValue({ id: 'existing-id' })
     mockUpdate.mockResolvedValue({ id: 'existing-id' })
 
     await updateIncomeSource('existing-id', validData)
@@ -176,27 +183,31 @@ describe('deleteIncomeSource', () => {
   })
 
   it('deletes record and returns success', async () => {
+    mockFindFirst.mockResolvedValue({ id: 'existing-id' })
     mockDelete.mockResolvedValue({ id: 'existing-id' })
 
     const result = await deleteIncomeSource('existing-id')
 
     expect(result).toEqual({ success: true })
+    expect(mockFindFirst).toHaveBeenCalledWith({ where: { id: 'existing-id', userId: TEST_USER_ID } })
     expect(mockDelete).toHaveBeenCalledWith({
       where: { id: 'existing-id' },
     })
   })
 
-  it('returns not-found error for non-existent ID (P2025)', async () => {
-    mockDelete.mockRejectedValue({ code: 'P2025' })
+  it('returns not-found error for non-existent ID', async () => {
+    mockFindFirst.mockResolvedValue(null)
 
     const result = await deleteIncomeSource('nonexistent-id')
 
     expect(result).toEqual({
       error: { _form: ['Fuente de ingreso no encontrada'] },
     })
+    expect(mockDelete).not.toHaveBeenCalled()
   })
 
   it('calls revalidatePath for /ingresos and / on success', async () => {
+    mockFindFirst.mockResolvedValue({ id: 'existing-id' })
     mockDelete.mockResolvedValue({ id: 'existing-id' })
 
     await deleteIncomeSource('existing-id')
@@ -206,6 +217,7 @@ describe('deleteIncomeSource', () => {
   })
 
   it('returns generic error for unexpected failures', async () => {
+    mockFindFirst.mockResolvedValue({ id: 'some-id' })
     mockDelete.mockRejectedValue(new Error('DB timeout'))
 
     const result = await deleteIncomeSource('some-id')

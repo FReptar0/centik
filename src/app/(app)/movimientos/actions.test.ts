@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { createTransaction, updateTransaction, deleteTransaction } from './actions'
 
 const mockCreate = vi.fn()
-const mockFindUnique = vi.fn()
+const mockFindFirst = vi.fn()
 const mockUpdate = vi.fn()
 const mockDelete = vi.fn()
 
@@ -10,7 +10,7 @@ vi.mock('@/lib/prisma', () => ({
   default: {
     transaction: {
       create: (...args: unknown[]) => mockCreate(...args),
-      findUnique: (...args: unknown[]) => mockFindUnique(...args),
+      findFirst: (...args: unknown[]) => mockFindFirst(...args),
       update: (...args: unknown[]) => mockUpdate(...args),
       delete: (...args: unknown[]) => mockDelete(...args),
     },
@@ -29,7 +29,7 @@ vi.mock('@/lib/period', () => ({
 
 const TEST_USER_ID = 'test-user-id'
 vi.mock('@/lib/auth-utils', () => ({
-  getDefaultUserId: vi.fn().mockResolvedValue('test-user-id'),
+  requireAuth: vi.fn().mockResolvedValue({ userId: 'test-user-id' }),
 }))
 
 const openPeriod = {
@@ -180,7 +180,7 @@ describe('updateTransaction', () => {
   })
 
   it('updates transaction with valid data and returns success', async () => {
-    mockFindUnique.mockResolvedValue(existingTransaction)
+    mockFindFirst.mockResolvedValue(existingTransaction)
     mockGetPeriodForDate.mockResolvedValue(openPeriod)
     mockUpdate.mockResolvedValue({ id: 'txn-1' })
 
@@ -213,11 +213,11 @@ describe('updateTransaction', () => {
     if ('error' in result) {
       expect(result.error).toHaveProperty('type')
     }
-    expect(mockFindUnique).not.toHaveBeenCalled()
+    expect(mockFindFirst).not.toHaveBeenCalled()
   })
 
   it('returns not-found error for non-existent ID', async () => {
-    mockFindUnique.mockResolvedValue(null)
+    mockFindFirst.mockResolvedValue(null)
 
     const result = await updateTransaction('nonexistent', validExpenseData)
 
@@ -228,7 +228,7 @@ describe('updateTransaction', () => {
   })
 
   it('rejects update when existing transaction is in closed period', async () => {
-    mockFindUnique.mockResolvedValue({
+    mockFindFirst.mockResolvedValue({
       ...existingTransaction,
       period: closedPeriod,
       periodId: closedPeriod.id,
@@ -247,7 +247,7 @@ describe('updateTransaction', () => {
   })
 
   it('rejects update when new target period is closed', async () => {
-    mockFindUnique.mockResolvedValue(existingTransaction)
+    mockFindFirst.mockResolvedValue(existingTransaction)
     mockGetPeriodForDate.mockResolvedValue(closedPeriod)
 
     const result = await updateTransaction('txn-1', {
@@ -266,7 +266,7 @@ describe('updateTransaction', () => {
   })
 
   it('calls revalidatePath for /, /movimientos, and /presupuesto', async () => {
-    mockFindUnique.mockResolvedValue(existingTransaction)
+    mockFindFirst.mockResolvedValue(existingTransaction)
     mockGetPeriodForDate.mockResolvedValue(openPeriod)
     mockUpdate.mockResolvedValue({ id: 'txn-1' })
 
@@ -278,7 +278,7 @@ describe('updateTransaction', () => {
   })
 
   it('returns generic error for unexpected failures', async () => {
-    mockFindUnique.mockResolvedValue(existingTransaction)
+    mockFindFirst.mockResolvedValue(existingTransaction)
     mockGetPeriodForDate.mockResolvedValue(openPeriod)
     mockUpdate.mockRejectedValue(new Error('DB timeout'))
 
@@ -296,7 +296,7 @@ describe('deleteTransaction', () => {
   })
 
   it('deletes transaction in open period and returns success', async () => {
-    mockFindUnique.mockResolvedValue(existingTransaction)
+    mockFindFirst.mockResolvedValue(existingTransaction)
     mockDelete.mockResolvedValue({ id: 'txn-1' })
 
     const result = await deleteTransaction('txn-1')
@@ -308,7 +308,7 @@ describe('deleteTransaction', () => {
   })
 
   it('returns not-found error for non-existent ID', async () => {
-    mockFindUnique.mockResolvedValue(null)
+    mockFindFirst.mockResolvedValue(null)
 
     const result = await deleteTransaction('nonexistent')
 
@@ -319,7 +319,7 @@ describe('deleteTransaction', () => {
   })
 
   it('rejects delete when transaction is in closed period', async () => {
-    mockFindUnique.mockResolvedValue({
+    mockFindFirst.mockResolvedValue({
       ...existingTransaction,
       period: closedPeriod,
       periodId: closedPeriod.id,
@@ -338,7 +338,7 @@ describe('deleteTransaction', () => {
   })
 
   it('calls revalidatePath for /, /movimientos, and /presupuesto', async () => {
-    mockFindUnique.mockResolvedValue(existingTransaction)
+    mockFindFirst.mockResolvedValue(existingTransaction)
     mockDelete.mockResolvedValue({ id: 'txn-1' })
 
     await deleteTransaction('txn-1')
@@ -349,7 +349,7 @@ describe('deleteTransaction', () => {
   })
 
   it('returns generic error for unexpected failures', async () => {
-    mockFindUnique.mockResolvedValue(existingTransaction)
+    mockFindFirst.mockResolvedValue(existingTransaction)
     mockDelete.mockRejectedValue(new Error('DB error'))
 
     const result = await deleteTransaction('txn-1')

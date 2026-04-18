@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { createDebt, updateDebt, updateDebtBalance, deleteDebt } from './actions'
 
 const mockCreate = vi.fn()
+const mockFindFirst = vi.fn()
 const mockUpdate = vi.fn()
 const mockDelete = vi.fn()
 
@@ -9,6 +10,7 @@ vi.mock('@/lib/prisma', () => ({
   default: {
     debt: {
       create: (...args: unknown[]) => mockCreate(...args),
+      findFirst: (...args: unknown[]) => mockFindFirst(...args),
       update: (...args: unknown[]) => mockUpdate(...args),
       delete: (...args: unknown[]) => mockDelete(...args),
     },
@@ -22,7 +24,7 @@ vi.mock('next/cache', () => ({
 
 const TEST_USER_ID = 'test-user-id'
 vi.mock('@/lib/auth-utils', () => ({
-  getDefaultUserId: vi.fn().mockResolvedValue('test-user-id'),
+  requireAuth: vi.fn().mockResolvedValue({ userId: 'test-user-id' }),
 }))
 
 const validCreditCard = {
@@ -169,11 +171,13 @@ describe('updateDebt', () => {
   })
 
   it('updates debt with valid data and returns success', async () => {
+    mockFindFirst.mockResolvedValue({ id: 'existing-id' })
     mockUpdate.mockResolvedValue({ id: 'existing-id', ...validCreditCard })
 
     const result = await updateDebt('existing-id', validCreditCard)
 
     expect(result).toEqual({ success: true })
+    expect(mockFindFirst).toHaveBeenCalledWith({ where: { id: 'existing-id', userId: TEST_USER_ID } })
     expect(mockUpdate).toHaveBeenCalledWith({
       where: { id: 'existing-id' },
       data: {
@@ -207,17 +211,19 @@ describe('updateDebt', () => {
     expect(mockUpdate).not.toHaveBeenCalled()
   })
 
-  it('returns not-found error for non-existent ID (P2025)', async () => {
-    mockUpdate.mockRejectedValue({ code: 'P2025' })
+  it('returns not-found error for non-existent ID', async () => {
+    mockFindFirst.mockResolvedValue(null)
 
     const result = await updateDebt('nonexistent-id', validCreditCard)
 
     expect(result).toEqual({
       error: { _form: ['Deuda no encontrada'] },
     })
+    expect(mockUpdate).not.toHaveBeenCalled()
   })
 
   it('returns friendly error for duplicate name on update (P2002)', async () => {
+    mockFindFirst.mockResolvedValue({ id: 'existing-id' })
     mockUpdate.mockRejectedValue({ code: 'P2002', meta: { target: ['name'] } })
 
     const result = await updateDebt('existing-id', validCreditCard)
@@ -228,6 +234,7 @@ describe('updateDebt', () => {
   })
 
   it('calls revalidatePath for /deudas and / on success', async () => {
+    mockFindFirst.mockResolvedValue({ id: 'existing-id' })
     mockUpdate.mockResolvedValue({ id: 'existing-id' })
 
     await updateDebt('existing-id', validCreditCard)
@@ -243,11 +250,13 @@ describe('updateDebtBalance', () => {
   })
 
   it('updates balance with valid data and returns success', async () => {
+    mockFindFirst.mockResolvedValue({ id: 'existing-id' })
     mockUpdate.mockResolvedValue({ id: 'existing-id', currentBalance: BigInt('2000000') })
 
     const result = await updateDebtBalance('existing-id', { currentBalance: '2000000' })
 
     expect(result).toEqual({ success: true })
+    expect(mockFindFirst).toHaveBeenCalledWith({ where: { id: 'existing-id', userId: TEST_USER_ID } })
     expect(mockUpdate).toHaveBeenCalledWith({
       where: { id: 'existing-id' },
       data: { currentBalance: BigInt('2000000') },
@@ -264,17 +273,19 @@ describe('updateDebtBalance', () => {
     expect(mockUpdate).not.toHaveBeenCalled()
   })
 
-  it('returns not-found error for non-existent ID (P2025)', async () => {
-    mockUpdate.mockRejectedValue({ code: 'P2025' })
+  it('returns not-found error for non-existent ID', async () => {
+    mockFindFirst.mockResolvedValue(null)
 
     const result = await updateDebtBalance('nonexistent-id', { currentBalance: '2000000' })
 
     expect(result).toEqual({
       error: { _form: ['Deuda no encontrada'] },
     })
+    expect(mockUpdate).not.toHaveBeenCalled()
   })
 
   it('calls revalidatePath for /deudas and / on success', async () => {
+    mockFindFirst.mockResolvedValue({ id: 'existing-id' })
     mockUpdate.mockResolvedValue({ id: 'existing-id' })
 
     await updateDebtBalance('existing-id', { currentBalance: '2000000' })
@@ -284,6 +295,7 @@ describe('updateDebtBalance', () => {
   })
 
   it('returns generic error for unexpected failures', async () => {
+    mockFindFirst.mockResolvedValue({ id: 'some-id' })
     mockUpdate.mockRejectedValue(new Error('DB timeout'))
 
     const result = await updateDebtBalance('some-id', { currentBalance: '2000000' })
@@ -301,27 +313,31 @@ describe('deleteDebt', () => {
   })
 
   it('deletes debt and returns success', async () => {
+    mockFindFirst.mockResolvedValue({ id: 'existing-id' })
     mockDelete.mockResolvedValue({ id: 'existing-id' })
 
     const result = await deleteDebt('existing-id')
 
     expect(result).toEqual({ success: true })
+    expect(mockFindFirst).toHaveBeenCalledWith({ where: { id: 'existing-id', userId: TEST_USER_ID } })
     expect(mockDelete).toHaveBeenCalledWith({
       where: { id: 'existing-id' },
     })
   })
 
-  it('returns not-found error for non-existent ID (P2025)', async () => {
-    mockDelete.mockRejectedValue({ code: 'P2025' })
+  it('returns not-found error for non-existent ID', async () => {
+    mockFindFirst.mockResolvedValue(null)
 
     const result = await deleteDebt('nonexistent-id')
 
     expect(result).toEqual({
       error: { _form: ['Deuda no encontrada'] },
     })
+    expect(mockDelete).not.toHaveBeenCalled()
   })
 
   it('calls revalidatePath for /deudas and / on success', async () => {
+    mockFindFirst.mockResolvedValue({ id: 'existing-id' })
     mockDelete.mockResolvedValue({ id: 'existing-id' })
 
     await deleteDebt('existing-id')
@@ -331,6 +347,7 @@ describe('deleteDebt', () => {
   })
 
   it('returns generic error for unexpected failures', async () => {
+    mockFindFirst.mockResolvedValue({ id: 'some-id' })
     mockDelete.mockRejectedValue(new Error('DB timeout'))
 
     const result = await deleteDebt('some-id')
