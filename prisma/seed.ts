@@ -27,12 +27,13 @@ async function seedAdminUser(): Promise<string> {
 
   const user = await prisma.user.upsert({
     where: { email },
-    update: {},
+    update: { isAdmin: true },
     create: {
       email,
       hashedPassword,
       isApproved: true,
       totpEnabled: false,
+      isAdmin: true,
     },
   })
 

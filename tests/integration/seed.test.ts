@@ -186,6 +186,14 @@ describe('Seed data correctness', () => {
     expect(admin!.email).toBeDefined()
   })
 
+  it('marks the admin user with isAdmin: true', async () => {
+    const admin = await prisma.user.findUnique({
+      where: { email: process.env.ADMIN_EMAIL || 'fmemije00@gmail.com' },
+      select: { isAdmin: true },
+    })
+    expect(admin?.isAdmin).toBe(true)
+  })
+
   it('all records have non-null userId', async () => {
     const categories = await prisma.category.findMany()
     for (const cat of categories) {

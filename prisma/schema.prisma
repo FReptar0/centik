@@ -60,6 +60,7 @@ model User {
   image          String?
   hashedPassword String?
   isApproved     Boolean   @default(false)
+  isAdmin        Boolean   @default(false)
   totpSecret     String?
   totpEnabled    Boolean   @default(false)
   createdAt      DateTime  @default(now())
@@ -126,6 +127,7 @@ model InviteToken {
   email     String
   expiresAt DateTime
   usedAt    DateTime?
+  revokedAt DateTime?
   createdBy String
   createdAt DateTime  @default(now())
 
