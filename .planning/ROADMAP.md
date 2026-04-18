@@ -102,12 +102,13 @@ Plans:
   2. All Prisma queries across all 7 lib/data files include userId in their where clause
   3. All 6 Server Action files call requireAuth() before any database operation
   4. All page Server Components call auth() and pass userId to data-fetching functions
-  5. noStore() is called on all Server Components that fetch user-specific data to prevent cross-user cache leakage
-**Plans**: TBD
+  5. connection() is called on all Server Components that fetch user-specific data to prevent cross-user cache leakage
+**Plans**: 3 plans
 
 Plans:
-- [ ] 27-01: TBD
-- [ ] 27-02: TBD
+- [ ] 27-01-PLAN.md — requireAuth() helper + unit tests (replaces getDefaultUserId)
+- [ ] 27-02-PLAN.md — Server Action migration (requireAuth + IDOR fixes) + test mock updates
+- [ ] 27-03-PLAN.md — Page migration (auth + connection) + cross-user isolation integration test
 
 ### Phase 28: Invite-Only Registration
 **Goal**: New users can only register via an admin-generated invite link -- no self-registration
@@ -168,7 +169,7 @@ Note: Phases 28 and 29 both depend on 26, not on each other. They could theoreti
 | 23-24 | v2.1 | 4/4 | Complete | 2026-04-16 |
 | 25. Schema Migration | 2/2 | Complete    | 2026-04-18 | - |
 | 26. Auth Wiring + Login | 4/4 | Complete    | 2026-04-18 | - |
-| 27. Per-User Data Isolation | v3.0 | 0/? | Not started | - |
+| 27. Per-User Data Isolation | v3.0 | 0/3 | Not started | - |
 | 28. Invite-Only Registration | v3.0 | 0/? | Not started | - |
 | 29. TOTP Two-Factor Auth | v3.0 | 0/? | Not started | - |
 | 30. Vercel Deploy + Security | v3.0 | 0/? | Not started | - |
