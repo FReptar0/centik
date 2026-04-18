@@ -118,10 +118,12 @@ Plans:
   1. Admin can generate an invite token via Server Action that produces a unique URL with a 32-byte random token
   2. A user visiting /register with a valid, unused, non-expired invite token can create an account with email and password
   3. A user visiting /register without a token, with an expired token, or with an already-used token sees an error and cannot register
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 28-01: TBD
+- [ ] 28-01-PLAN.md — Schema migration (User.isAdmin + InviteToken.revokedAt) + seed update + JWT/session augmentation + Zod schemas
+- [ ] 28-02-PLAN.md — Admin invite Server Actions + Invitaciones UI in /configuracion + integration tests
+- [ ] 28-03-PLAN.md — registerAction with $transaction + /register page + RegisterForm + TokenErrorScreen + tests
 
 ### Phase 29: TOTP Two-Factor Authentication
 **Goal**: Users can enable TOTP-based 2FA for an additional layer of security on login, with backup codes for recovery
