@@ -121,7 +121,7 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 28-01-PLAN.md — Schema migration (User.isAdmin + InviteToken.revokedAt) + seed update + JWT/session augmentation + Zod schemas
+- [x] 28-01-PLAN.md — Schema migration (User.isAdmin + InviteToken.revokedAt) + seed update + JWT/session augmentation + Zod schemas (completed 2026-04-18)
 - [ ] 28-02-PLAN.md — Admin invite Server Actions + Invitaciones UI in /configuracion + integration tests
 - [ ] 28-03-PLAN.md — registerAction with $transaction + /register page + RegisterForm + TokenErrorScreen + tests
 

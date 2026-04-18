@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Auth + Cloud Deploy
 current_phase: 28
-current_plan: Not started
-status: planning
-stopped_at: Phase 28 UI-SPEC approved
-last_updated: "2026-04-18T16:25:12.878Z"
+current_plan: 02
+status: executing
+stopped_at: Phase 28 Plan 01 complete
+last_updated: "2026-04-18T17:00:30.000Z"
 last_activity: 2026-04-18
 progress:
   total_phases: 6
   completed_phases: 3
-  total_plans: 9
-  completed_plans: 9
-  percent: 100
+  total_plans: 12
+  completed_plans: 10
+  percent: 83
 ---
 
 # Project State
@@ -23,17 +23,17 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-16)
 
 **Core value:** A single user can register a financial transaction in under 30 seconds and immediately see how it impacts their budget, debt ratio, and savings rate across all views.
-**Current focus:** v3.0 Auth + Cloud Deploy -- Phase 27 Plan 01 complete, Plan 02 next
+**Current focus:** v3.0 Auth + Cloud Deploy -- Phase 28 Plan 01 complete, Plan 02 (admin invite generation) next
 
 ## Current Position
 
 **Current Phase:** 28
-**Current Plan:** Not started
+**Current Plan:** 02 (next)
 **Total Plans in Phase:** 3
-**Status:** Ready to plan
+**Status:** Plan 01 complete; schema + auth pipeline + validators ready for Plans 02/03
 **Last Activity:** 2026-04-18
 
-Progress: [█████████░] 91%
+Progress: [█████████░] 92%
 
 ## Performance Metrics
 
@@ -59,6 +59,7 @@ Progress: [█████████░] 91%
 | Phase 27 P01 | 2min | 1 tasks | 2 files |
 | Phase 27 P03 | 4min | 2 tasks | 8 files |
 | Phase 27 P02 | 8min | 2 tasks | 12 files |
+| Phase 28 P01 | 5min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -90,6 +91,10 @@ Recent decisions affecting current work:
 - [Phase 27]: Non-null assertion on session (session!.user!.id) -- proxy.ts guarantees auth for (app) routes
 - [Phase 27]: requireAuth() placed BEFORE try/catch -- redirect() throws and would be swallowed inside try/catch
 - [Phase 27]: IDOR fix: findFirst pre-check with userId before update/delete operations
+- [Phase 28 P01]: Added dedicated `revokedAt` field on InviteToken instead of reusing `usedAt` -- unambiguous status derivation (resolves D-05 per RESEARCH Pitfall #7)
+- [Phase 28 P01]: `sessionCallback` always writes `session.user.isAdmin` (true from token, or false fallback) so legacy pre-Phase-28 JWTs never render as undefined
+- [Phase 28 P01]: `User.isAdmin?: boolean` in next-auth.d.ts is optional so authorizeUser's return stays compatible with NextAuth's User contract; Session.user.isAdmin is required (always set by sessionCallback)
+- [Phase 28 P01]: Seed upsert `update: { isAdmin: true }` flips the admin flag on existing dev DBs, not just fresh ones
 
 ### Pending Todos
 
@@ -102,6 +107,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-18T16:25:12.862Z
-Stopped at: Phase 28 UI-SPEC approved
-Resume file: .planning/phases/28-invite-only-registration/28-UI-SPEC.md
+Last session: 2026-04-18T17:00:30.000Z
+Stopped at: Phase 28 Plan 01 complete -- schema migration, isAdmin session pipeline, invite/register Zod schemas
+Resume file: .planning/phases/28-invite-only-registration/28-02-PLAN.md
