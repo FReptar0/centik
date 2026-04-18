@@ -2,10 +2,12 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { LogOut } from 'lucide-react'
 import DynamicIcon from '@/components/ui/DynamicIcon'
 import StatusDot from '@/components/ui/StatusDot'
 import { SIDEBAR_NAV_ITEMS } from '@/lib/constants'
 import { cn } from '@/lib/utils'
+import { logoutAction } from '@/actions/auth'
 
 /** Desktop/tablet sidebar navigation with responsive collapse */
 export default function Sidebar() {
@@ -83,6 +85,37 @@ export default function Sidebar() {
           )
         })}
       </nav>
+
+      {/* Logout button */}
+      <div className="mt-auto px-2 lg:px-3 pb-4">
+        <form action={logoutAction}>
+          <button
+            type="submit"
+            title="Cerrar sesion"
+            className={cn(
+              'group relative flex w-full items-center rounded-lg py-2.5 text-sm font-medium',
+              'transition-all duration-200',
+              'md:justify-center md:px-0 lg:justify-start lg:gap-3 lg:px-3',
+              'text-text-secondary hover:text-text-primary hover:bg-surface-hover',
+            )}
+          >
+            <LogOut size={18} aria-hidden="true" />
+            <span className="hidden lg:inline">Cerrar sesion</span>
+            {/* Tooltip for tablet */}
+            <span
+              className={cn(
+                'absolute left-full ml-2 rounded-md bg-surface px-2 py-1',
+                'text-xs text-text-primary whitespace-nowrap',
+                'opacity-0 pointer-events-none',
+                'group-hover:opacity-100 lg:hidden',
+                'transition-opacity duration-200',
+              )}
+            >
+              Cerrar sesion
+            </span>
+          </button>
+        </form>
+      </div>
     </aside>
   )
 }
