@@ -18,8 +18,8 @@ Requirements for auth + cloud deploy. Security-first — this is real financial 
 ### Per-User Data Isolation
 
 - [x] **ISOL-01**: requireAuth() helper function that calls auth(), redirects if no session, returns { userId } — used as first line in every Server Action
-- [ ] **ISOL-02**: All Prisma queries across all 7 lib files scoped with userId filter (where: { userId })
-- [ ] **ISOL-03**: All Server Actions (6 action files) call requireAuth() before any database operation
+- [x] **ISOL-02**: All Prisma queries across all 7 lib files scoped with userId filter (where: { userId })
+- [x] **ISOL-03**: All Server Actions (6 action files) call requireAuth() before any database operation
 - [x] **ISOL-04**: All page Server Components call auth() and pass userId to data-fetching functions
 - [ ] **ISOL-05**: Cross-user integration tests — authenticate as User B, assert zero access to User A's data
 
@@ -83,8 +83,8 @@ Deferred to future milestones.
 | AUTH-04 | Phase 26 | Complete |
 | AUTH-05 | Phase 26 | Complete |
 | ISOL-01 | Phase 27 | Complete |
-| ISOL-02 | Phase 27 | Pending |
-| ISOL-03 | Phase 27 | Pending |
+| ISOL-02 | Phase 27 | Complete |
+| ISOL-03 | Phase 27 | Complete |
 | ISOL-04 | Phase 27 | Complete |
 | ISOL-05 | Phase 30 | Pending |
 | TOTP-01 | Phase 29 | Pending |

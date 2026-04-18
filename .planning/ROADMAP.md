@@ -53,7 +53,7 @@ See `.planning/milestones/v2.1-ROADMAP.md` for full phase details.
 
 - [x] **Phase 25: Schema Migration** - User model, Auth.js adapter tables, InviteToken model, userId FK on 10 data tables, existing tests updated (completed 2026-04-18)
 - [x] **Phase 26: Auth Wiring + Login** - Auth.js v5 with Credentials provider, JWT sessions, proxy.ts route protection, login page, password hashing (completed 2026-04-18)
-- [ ] **Phase 27: Per-User Data Isolation** - requireAuth() helper, all queries scoped by userId, all Server Actions protected, noStore() on user-specific pages
+- [x] **Phase 27: Per-User Data Isolation** - requireAuth() helper, all queries scoped by userId, all Server Actions protected, noStore() on user-specific pages (completed 2026-04-18)
 - [ ] **Phase 28: Invite-Only Registration** - Admin invite generation, registration page with token validation, self-registration blocked
 - [ ] **Phase 29: TOTP Two-Factor Authentication** - TOTP setup with QR code, AES-256-GCM encrypted secrets, two-step login, backup codes, rate limiting
 - [ ] **Phase 30: Vercel Deploy + Security Hardening** - Prisma Postgres, security headers, production seed, Vercel config, cross-user isolation test suite
@@ -169,7 +169,7 @@ Note: Phases 28 and 29 both depend on 26, not on each other. They could theoreti
 | 23-24 | v2.1 | 4/4 | Complete | 2026-04-16 |
 | 25. Schema Migration | 2/2 | Complete    | 2026-04-18 | - |
 | 26. Auth Wiring + Login | 4/4 | Complete    | 2026-04-18 | - |
-| 27. Per-User Data Isolation | 2/3 | In Progress|  | - |
+| 27. Per-User Data Isolation | 3/3 | Complete   | 2026-04-18 | - |
 | 28. Invite-Only Registration | v3.0 | 0/? | Not started | - |
 | 29. TOTP Two-Factor Auth | v3.0 | 0/? | Not started | - |
 | 30. Vercel Deploy + Security | v3.0 | 0/? | Not started | - |
