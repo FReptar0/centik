@@ -7,7 +7,7 @@ import type { SerializedIncomeSource, SerializedTransaction } from '@/types'
 const mockCreateTransaction = vi.fn().mockResolvedValue({ success: true })
 const mockUpdateTransaction = vi.fn().mockResolvedValue({ success: true })
 
-vi.mock('@/app/movimientos/actions', () => ({
+vi.mock('@/app/(app)/movimientos/actions', () => ({
   createTransaction: (...args: unknown[]) => mockCreateTransaction(...args),
   updateTransaction: (...args: unknown[]) => mockUpdateTransaction(...args),
 }))

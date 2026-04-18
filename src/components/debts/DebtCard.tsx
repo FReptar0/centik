@@ -7,7 +7,7 @@ import BatteryBar from '@/components/ui/BatteryBar'
 import MoneyAmount from '@/components/ui/MoneyAmount'
 import { cn, formatRate, toCents } from '@/lib/utils'
 import { calculateDebtMetrics, getUtilizationColor } from '@/lib/debt'
-import { updateDebtBalance, deleteDebt } from '@/app/deudas/actions'
+import { updateDebtBalance, deleteDebt } from '@/app/(app)/deudas/actions'
 import type { SerializedDebt } from '@/types'
 
 interface DebtCardProps {

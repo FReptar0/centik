@@ -9,7 +9,7 @@ const mockGetTransactionFormData = vi.fn().mockResolvedValue({
   incomeSources: [],
 })
 
-vi.mock('@/app/movimientos/actions', () => ({
+vi.mock('@/app/(app)/movimientos/actions', () => ({
   getTransactionFormData: () => mockGetTransactionFormData(),
 }))
 

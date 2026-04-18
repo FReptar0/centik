@@ -2,9 +2,6 @@ import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import { IBM_Plex_Mono } from 'next/font/google'
 import { Toaster } from 'sonner'
-import Sidebar from '@/components/layout/Sidebar'
-import MobileNav from '@/components/layout/MobileNav'
-import FAB from '@/components/layout/FAB'
 import './globals.css'
 
 const satoshi = localFont({
@@ -44,16 +41,7 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${satoshi.variable} ${ibmPlexMono.variable} h-full antialiased`}>
       <body className="min-h-full bg-bg text-text-primary font-sans">
-        <div className="flex min-h-screen">
-          <Sidebar />
-          <main className="flex-1 md:ml-16 lg:ml-60 pb-16 md:pb-0 overflow-x-hidden">
-            <div className="p-4 md:p-6 lg:p-8">
-              {children}
-            </div>
-          </main>
-        </div>
-        <MobileNav />
-        <FAB />
+        {children}
         <Toaster
           position="top-right"
           toastOptions={{ duration: 3000, className: 'text-sm' }}

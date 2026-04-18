@@ -12,7 +12,7 @@ import {
   closePeriod,
   reopenPeriod,
   getClosePeriodPreviewAction,
-} from '@/app/historial/actions'
+} from '@/app/(app)/historial/actions'
 import type { MonthSummarySlot, ClosePeriodPreview } from '@/lib/history'
 
 interface PeriodInfo {

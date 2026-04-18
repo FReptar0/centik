@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Plus, Loader2 } from 'lucide-react'
 import TransactionForm from '@/components/transactions/TransactionForm'
-import { getTransactionFormData } from '@/app/movimientos/actions'
+import { getTransactionFormData } from '@/app/(app)/movimientos/actions'
 import { cn } from '@/lib/utils'
 import type { Category, SerializedIncomeSource } from '@/types'
 

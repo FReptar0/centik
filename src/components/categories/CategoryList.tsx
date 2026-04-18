@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 import { Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import DynamicIcon from '@/components/ui/DynamicIcon'
-import { deleteCategory } from '@/app/configuracion/actions'
+import { deleteCategory } from '@/app/(app)/configuracion/actions'
 import type { Category } from '@/types'
 
 interface CategoryListProps {

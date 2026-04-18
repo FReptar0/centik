@@ -7,7 +7,7 @@ import DynamicIcon from '@/components/ui/DynamicIcon'
 import MoneyAmount from '@/components/ui/MoneyAmount'
 import { cn } from '@/lib/utils'
 import { PAYMENT_METHODS_DISPLAY } from '@/lib/constants'
-import { deleteTransaction } from '@/app/movimientos/actions'
+import { deleteTransaction } from '@/app/(app)/movimientos/actions'
 import type { SerializedTransaction } from '@/types'
 
 interface TransactionRowProps {

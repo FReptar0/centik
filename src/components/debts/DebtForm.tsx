@@ -6,7 +6,7 @@ import Modal from '@/components/ui/Modal'
 import FloatingInput from '@/components/ui/FloatingInput'
 import { cn, toCents } from '@/lib/utils'
 import { createDebtSchema } from '@/lib/validators'
-import { createDebt, updateDebt } from '@/app/deudas/actions'
+import { createDebt, updateDebt } from '@/app/(app)/deudas/actions'
 import { DebtType } from '@/types'
 import type { SerializedDebt } from '@/types'
 

@@ -10,7 +10,7 @@ import BudgetTable from '@/components/budgets/BudgetTable'
 import BudgetProgressList from '@/components/budgets/BudgetProgressList'
 import BudgetSummaryRow from '@/components/budgets/BudgetSummaryRow'
 import { upsertBudgets } from './actions'
-import { reopenPeriod } from '@/app/historial/actions'
+import { reopenPeriod } from '@/app/(app)/historial/actions'
 import type { BudgetWithSpent } from '@/lib/budget-shared'
 
 interface PresupuestoClientWrapperProps {

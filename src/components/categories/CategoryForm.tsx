@@ -7,7 +7,7 @@ import FloatingInput from '@/components/ui/FloatingInput'
 import DynamicIcon from '@/components/ui/DynamicIcon'
 import { cn } from '@/lib/utils'
 import { createCategorySchema } from '@/lib/validators'
-import { createCategory } from '@/app/configuracion/actions'
+import { createCategory } from '@/app/(app)/configuracion/actions'
 
 interface CategoryFormProps {
   isOpen: boolean

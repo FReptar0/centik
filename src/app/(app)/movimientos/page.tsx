@@ -4,7 +4,7 @@ import { getCurrentPeriod } from '@/lib/period'
 import { getDefaultUserId } from '@/lib/auth-utils'
 import MovimientosClientWrapper from './MovimientosClientWrapper'
 import type { SerializedIncomeSource, SerializedTransaction } from '@/types'
-import type { TransactionType, PaymentMethod, Prisma } from '../../../generated/prisma/client'
+import type { TransactionType, PaymentMethod, Prisma } from '../../../../generated/prisma/client'
 
 type TransactionWithCategory = SerializedTransaction & {
   category: { name: string; icon: string; color: string }

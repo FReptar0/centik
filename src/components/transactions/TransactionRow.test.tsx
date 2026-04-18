@@ -5,7 +5,7 @@ import type { SerializedTransaction } from '@/types'
 
 const mockDeleteTransaction = vi.fn().mockResolvedValue({ success: true })
 
-vi.mock('@/app/movimientos/actions', () => ({
+vi.mock('@/app/(app)/movimientos/actions', () => ({
   deleteTransaction: (...args: unknown[]) => mockDeleteTransaction(...args),
 }))
 

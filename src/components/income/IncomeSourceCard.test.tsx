@@ -3,7 +3,7 @@ import { render, screen, fireEvent, cleanup, act } from '@testing-library/react'
 import IncomeSourceCard from './IncomeSourceCard'
 import type { SerializedIncomeSource } from '@/types'
 
-vi.mock('@/app/ingresos/actions', () => ({
+vi.mock('@/app/(app)/ingresos/actions', () => ({
   deleteIncomeSource: vi.fn().mockResolvedValue({ success: true }),
 }))
 
@@ -19,7 +19,7 @@ vi.mock('@/lib/utils', async () => {
   }
 })
 
-const { deleteIncomeSource } = await import('@/app/ingresos/actions')
+const { deleteIncomeSource } = await import('@/app/(app)/ingresos/actions')
 const { getMonthlyEquivalent } = await import('@/lib/income')
 
 function makeMockSource(overrides: Partial<SerializedIncomeSource> = {}): SerializedIncomeSource {
