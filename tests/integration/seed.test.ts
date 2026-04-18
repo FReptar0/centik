@@ -110,8 +110,8 @@ describe('Seed data correctness', () => {
   })
 
   it('seeds budget entries for current period', async () => {
-    const currentPeriod = await prisma.period.findUnique({
-      where: { month_year: { month: 4, year: 2026 } },
+    const currentPeriod = await prisma.period.findFirst({
+      where: { month: 4, year: 2026 },
     })
     expect(currentPeriod).toBeDefined()
 
@@ -126,11 +126,11 @@ describe('Seed data correctness', () => {
   })
 
   it('seeds sample transactions for both periods', async () => {
-    const currentPeriod = await prisma.period.findUnique({
-      where: { month_year: { month: 4, year: 2026 } },
+    const currentPeriod = await prisma.period.findFirst({
+      where: { month: 4, year: 2026 },
     })
-    const previousPeriod = await prisma.period.findUnique({
-      where: { month_year: { month: 3, year: 2026 } },
+    const previousPeriod = await prisma.period.findFirst({
+      where: { month: 3, year: 2026 },
     })
 
     const currentTxns = await prisma.transaction.count({
@@ -147,8 +147,8 @@ describe('Seed data correctness', () => {
   })
 
   it('seeds MonthlySummary for closed period', async () => {
-    const previousPeriod = await prisma.period.findUnique({
-      where: { month_year: { month: 3, year: 2026 } },
+    const previousPeriod = await prisma.period.findFirst({
+      where: { month: 3, year: 2026 },
     })
     expect(previousPeriod).toBeDefined()
 
@@ -253,11 +253,11 @@ describe('Seed idempotency', () => {
   })
 
   it('running seed twice produces no duplicate transactions', async () => {
-    const currentPeriod = await prisma.period.findUnique({
-      where: { month_year: { month: 4, year: 2026 } },
+    const currentPeriod = await prisma.period.findFirst({
+      where: { month: 4, year: 2026 },
     })
-    const previousPeriod = await prisma.period.findUnique({
-      where: { month_year: { month: 3, year: 2026 } },
+    const previousPeriod = await prisma.period.findFirst({
+      where: { month: 3, year: 2026 },
     })
 
     const currentTxns = await prisma.transaction.count({

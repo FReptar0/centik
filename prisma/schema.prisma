@@ -144,9 +144,9 @@ model IncomeSource {
   isActive      Boolean     @default(true)
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
-  userId        String?
+  userId        String
 
-  user         User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions Transaction[]
 
   @@index([userId])
@@ -166,9 +166,9 @@ model Transaction {
   notes          String?
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
-  userId         String?
+  userId         String
 
-  user         User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   category     Category     @relation(fields: [categoryId], references: [id])
   incomeSource IncomeSource? @relation(fields: [incomeSourceId], references: [id])
   period       Period       @relation(fields: [periodId], references: [id])
@@ -188,9 +188,9 @@ model Category {
   isDefault Boolean      @default(false)
   isActive  Boolean      @default(true)
   sortOrder Int          @default(0)
-  userId    String?
+  userId    String
 
-  user         User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions Transaction[]
   budgets      Budget[]
 
@@ -214,9 +214,9 @@ model Debt {
   isActive        Boolean  @default(true)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  userId          String?
+  userId          String
 
-  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -229,13 +229,13 @@ model Budget {
   periodId        String
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  userId          String?
+  userId          String
 
-  user     User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   category Category @relation(fields: [categoryId], references: [id])
   period   Period   @relation(fields: [periodId], references: [id])
 
-  @@unique([periodId, categoryId])
+  @@unique([periodId, categoryId, userId])
   @@index([userId])
 }
 
@@ -249,14 +249,14 @@ model Period {
   isClosed  Boolean   @default(false)
   closedAt  DateTime?
   createdAt DateTime  @default(now())
-  userId    String?
+  userId    String
 
-  user           User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions   Transaction[]
   budgets        Budget[]
   monthlySummary MonthlySummary?
 
-  @@unique([month, year])
+  @@unique([month, year, userId])
   @@index([userId])
 }
 
@@ -272,9 +272,9 @@ model MonthlySummary {
   debtPayments  BigInt
   notes         String?
   createdAt     DateTime @default(now())
-  userId        String?
+  userId        String
 
-  user   User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   period Period @relation(fields: [periodId], references: [id])
 
   @@index([userId])
@@ -296,9 +296,9 @@ model ValueUnit {
   isActive        Boolean  @default(true)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  userId          String?
+  userId          String
 
-  user   User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   rates  UnitRate[]
   assets Asset[]
 
@@ -314,9 +314,9 @@ model UnitRate {
   rateRaw        String
   source         String
   createdAt      DateTime @default(now())
-  userId         String?
+  userId         String
 
-  user User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   unit ValueUnit @relation(fields: [unitId], references: [id], onDelete: Cascade)
 
   @@unique([unitId, date])
@@ -336,9 +336,9 @@ model Asset {
   isActive    Boolean       @default(true)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-  userId      String?
+  userId      String
 
-  user User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   unit ValueUnit @relation(fields: [unitId], references: [id], onDelete: Cascade)
 
   @@index([unitId])

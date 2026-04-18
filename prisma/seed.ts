@@ -71,7 +71,7 @@ function lastDayOfMonth(year: number, month: number): Date {
 
 async function seedPeriods(userId: string) {
   const previousPeriod = await prisma.period.upsert({
-    where: { month_year: { month: 3, year: 2026 } },
+    where: { month_year_userId: { month: 3, year: 2026, userId } },
     update: {},
     create: {
       month: 3,
@@ -85,7 +85,7 @@ async function seedPeriods(userId: string) {
   })
 
   const currentPeriod = await prisma.period.upsert({
-    where: { month_year: { month: 4, year: 2026 } },
+    where: { month_year_userId: { month: 4, year: 2026, userId } },
     update: {},
     create: {
       month: 4,
@@ -172,9 +172,10 @@ async function seedBudgets(
 
     await prisma.budget.upsert({
       where: {
-        periodId_categoryId: {
+        periodId_categoryId_userId: {
           periodId: currentPeriodId,
           categoryId,
+          userId,
         },
       },
       update: {},
