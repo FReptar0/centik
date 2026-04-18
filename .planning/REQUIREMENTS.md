@@ -49,7 +49,7 @@ Requirements for auth + cloud deploy. Security-first — this is real financial 
 ### Test Updates
 
 - [x] **TEST-01**: All existing 479 unit tests pass with auth changes (userId params added to all function signatures)
-- [ ] **TEST-02**: New auth tests — login flow, session validation, requireAuth() behavior, TOTP verification
+- [x] **TEST-02**: New auth tests — login flow, session validation, requireAuth() behavior, TOTP verification
 - [ ] **TEST-03**: Cross-user isolation integration tests — User B cannot see User A's transactions, debts, budgets, income, categories, or history
 
 ## v4.0 Requirements
@@ -102,7 +102,7 @@ Deferred to future milestones.
 | DEPLOY-04 | Phase 30 | Pending |
 | DEPLOY-05 | Phase 27 | Pending |
 | TEST-01 | Phase 25 | Complete |
-| TEST-02 | Phase 26 | Pending |
+| TEST-02 | Phase 26 | Complete |
 | TEST-03 | Phase 30 | Pending |
 
 **Coverage:**
