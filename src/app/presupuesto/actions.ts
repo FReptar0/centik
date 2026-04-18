@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { createBudgetSchema } from '@/lib/validators'
+import { getDefaultUserId } from '@/lib/auth-utils'
 
 type ActionResult = { success: true } | { error: Record<string, string[]> }
 
@@ -25,23 +26,29 @@ export async function upsertBudgets(periodId: string, data: unknown): Promise<Ac
   }
 
   try {
+    const userId = await getDefaultUserId()
     await Promise.all(
-      parsed.data.entries.map((entry) =>
-        prisma.budget.upsert({
-          where: {
-            periodId_categoryId: {
+      parsed.data.entries.map(async (entry) => {
+        const existing = await prisma.budget.findFirst({
+          where: { periodId, categoryId: entry.categoryId, userId },
+        })
+
+        if (existing) {
+          await prisma.budget.update({
+            where: { id: existing.id },
+            data: { quincenalAmount: BigInt(entry.quincenalAmount) },
+          })
+        } else {
+          await prisma.budget.create({
+            data: {
               periodId,
               categoryId: entry.categoryId,
+              quincenalAmount: BigInt(entry.quincenalAmount),
+              userId,
             },
-          },
-          update: { quincenalAmount: BigInt(entry.quincenalAmount) },
-          create: {
-            periodId,
-            categoryId: entry.categoryId,
-            quincenalAmount: BigInt(entry.quincenalAmount),
-          },
-        }),
-      ),
+          })
+        }
+      }),
     )
 
     revalidateBudgetPaths()

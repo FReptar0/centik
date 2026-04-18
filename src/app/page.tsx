@@ -13,6 +13,7 @@ import {
   getMonthlyTrend,
   getRecentTransactions,
 } from '@/lib/dashboard'
+import { getDefaultUserId } from '@/lib/auth-utils'
 
 interface PageProps {
   searchParams: Promise<{ month?: string; year?: string }>
@@ -20,20 +21,22 @@ interface PageProps {
 
 export default async function HomePage({ searchParams }: PageProps) {
   const params = await searchParams
+  const userId = await getDefaultUserId()
 
   const period = params.month && params.year
     ? await getPeriodForDate(
         `${params.year}-${String(params.month).padStart(2, '0')}-01`,
+        userId,
       )
-    : await getCurrentPeriod()
+    : await getCurrentPeriod(userId)
 
   const [kpis, categoryExpenses, budgetVsSpent, trend, recentTransactions] =
     await Promise.all([
-      getDashboardKPIs(period.id),
-      getCategoryExpenses(period.id),
-      getBudgetVsSpent(period.id),
-      getMonthlyTrend(),
-      getRecentTransactions(period.id),
+      getDashboardKPIs(period.id, userId),
+      getCategoryExpenses(period.id, userId),
+      getBudgetVsSpent(period.id, userId),
+      getMonthlyTrend(userId),
+      getRecentTransactions(period.id, userId),
     ])
 
   return (

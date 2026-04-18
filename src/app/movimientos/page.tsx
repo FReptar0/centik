@@ -1,6 +1,7 @@
 import prisma from '@/lib/prisma'
 import { serializeBigInts } from '@/lib/serialize'
 import { getCurrentPeriod } from '@/lib/period'
+import { getDefaultUserId } from '@/lib/auth-utils'
 import MovimientosClientWrapper from './MovimientosClientWrapper'
 import type { SerializedIncomeSource, SerializedTransaction } from '@/types'
 import type { TransactionType, PaymentMethod, Prisma } from '../../../generated/prisma/client'
@@ -27,21 +28,23 @@ export default async function MovimientosPage({ searchParams }: PageProps) {
 
   const month = params.month ? Number(params.month) : undefined
   const year = params.year ? Number(params.year) : undefined
+  const userId = await getDefaultUserId()
 
   let period
   if (month && year) {
-    period = await prisma.period.findUnique({
-      where: { month_year: { month, year } },
+    period = await prisma.period.findFirst({
+      where: { month, year, userId },
     })
     if (!period) {
-      period = await getCurrentPeriod()
+      period = await getCurrentPeriod(userId)
     }
   } else {
-    period = await getCurrentPeriod()
+    period = await getCurrentPeriod(userId)
   }
 
   const where: Prisma.TransactionWhereInput = {
     periodId: period.id,
+    userId,
     ...(params.type && { type: params.type as TransactionType }),
     ...(params.categoryId && { categoryId: params.categoryId }),
     ...(params.paymentMethod && {
@@ -71,11 +74,11 @@ export default async function MovimientosPage({ searchParams }: PageProps) {
       }),
       prisma.transaction.count({ where }),
       prisma.category.findMany({
-        where: { isActive: true },
+        where: { isActive: true, userId },
         orderBy: { sortOrder: 'asc' },
       }),
       prisma.incomeSource.findMany({
-        where: { isActive: true },
+        where: { isActive: true, userId },
         orderBy: { createdAt: 'asc' },
       }),
     ])

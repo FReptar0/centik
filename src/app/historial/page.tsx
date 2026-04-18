@@ -1,6 +1,7 @@
 import prisma from '@/lib/prisma'
 import { getMonthlySummariesForYear, getAvailableYears } from '@/lib/history'
 import { getCurrentPeriod } from '@/lib/period'
+import { getDefaultUserId } from '@/lib/auth-utils'
 import HistorialClientWrapper from '@/components/history/HistorialClientWrapper'
 
 interface PageProps {
@@ -13,16 +14,17 @@ export default async function HistorialPage({ searchParams }: PageProps) {
   const now = new Date()
   const defaultYear = now.getFullYear()
   const year = params.year ? Number(params.year) : defaultYear
+  const userId = await getDefaultUserId()
 
   const [data, availableYears, periodsForYear, currentPeriod] =
     await Promise.all([
-      getMonthlySummariesForYear(year),
-      getAvailableYears(),
+      getMonthlySummariesForYear(year, userId),
+      getAvailableYears(userId),
       prisma.period.findMany({
-        where: { year },
+        where: { year, userId },
         select: { id: true, month: true, year: true, isClosed: true },
       }),
-      getCurrentPeriod(),
+      getCurrentPeriod(userId),
     ])
 
   // Ensure current year is in available years

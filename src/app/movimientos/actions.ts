@@ -5,6 +5,7 @@ import prisma from '@/lib/prisma'
 import { serializeBigInts } from '@/lib/serialize'
 import { createTransactionSchema } from '@/lib/validators'
 import { getPeriodForDate } from '@/lib/period'
+import { getDefaultUserId } from '@/lib/auth-utils'
 import type { Category, SerializedIncomeSource } from '@/types'
 
 type ActionResult = { success: true } | { error: Record<string, string[]> }
@@ -17,13 +18,14 @@ export async function getTransactionFormData(): Promise<{
   categories: Category[]
   incomeSources: SerializedIncomeSource[]
 }> {
+  const userId = await getDefaultUserId()
   const [categories, rawSources] = await Promise.all([
     prisma.category.findMany({
-      where: { isActive: true },
+      where: { isActive: true, userId },
       orderBy: { sortOrder: 'asc' },
     }),
     prisma.incomeSource.findMany({
-      where: { isActive: true },
+      where: { isActive: true, userId },
       orderBy: { createdAt: 'asc' },
     }),
   ])
@@ -56,7 +58,8 @@ export async function createTransaction(data: unknown): Promise<ActionResult> {
   }
 
   try {
-    const period = await getPeriodForDate(parsed.data.date)
+    const userId = await getDefaultUserId()
+    const period = await getPeriodForDate(parsed.data.date, userId)
 
     if (period.isClosed) {
       return { error: { _form: [CLOSED_PERIOD_ERROR] } }
@@ -73,6 +76,7 @@ export async function createTransaction(data: unknown): Promise<ActionResult> {
         notes: parsed.data.notes ?? null,
         incomeSourceId: parsed.data.incomeSourceId ?? null,
         periodId: period.id,
+        userId,
       },
     })
 
@@ -108,7 +112,8 @@ export async function updateTransaction(id: string, data: unknown): Promise<Acti
       return { error: { _form: [CLOSED_PERIOD_ERROR] } }
     }
 
-    const newPeriod = await getPeriodForDate(parsed.data.date)
+    const userId = await getDefaultUserId()
+    const newPeriod = await getPeriodForDate(parsed.data.date, userId)
 
     if (newPeriod.isClosed) {
       return { error: { _form: [CLOSED_PERIOD_ERROR] } }

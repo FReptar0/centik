@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { createIncomeSourceSchema } from '@/lib/validators'
+import { getDefaultUserId } from '@/lib/auth-utils'
 
 type ActionResult = { success: true } | { error: Record<string, string[]> }
 
@@ -32,12 +33,14 @@ export async function createIncomeSource(data: unknown): Promise<ActionResult> {
   }
 
   try {
+    const userId = await getDefaultUserId()
     await prisma.incomeSource.create({
       data: {
         name: parsed.data.name,
         defaultAmount: BigInt(parsed.data.defaultAmount),
         frequency: parsed.data.frequency,
         type: parsed.data.type,
+        userId,
       },
     })
 

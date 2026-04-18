@@ -10,15 +10,15 @@ export { getBudgetColor } from './budget-shared'
  * Uses parallel queries: budget findMany (with category include) + transaction groupBy.
  * Joins results via a spentMap keyed by categoryId.
  */
-export async function getBudgetsWithSpent(periodId: string): Promise<BudgetWithSpent[]> {
+export async function getBudgetsWithSpent(periodId: string, userId: string): Promise<BudgetWithSpent[]> {
   const [budgets, expenseGroups] = await Promise.all([
     prisma.budget.findMany({
-      where: { periodId },
+      where: { periodId, userId },
       include: { category: true },
     }),
     prisma.transaction.groupBy({
       by: ['categoryId'],
-      where: { periodId, type: 'EXPENSE' },
+      where: { periodId, type: 'EXPENSE', userId },
       _sum: { amount: true },
     }),
   ])
@@ -52,18 +52,19 @@ export async function copyBudgetsFromPreviousPeriod(
   periodId: string,
   month: number,
   year: number,
+  userId: string,
 ): Promise<boolean> {
   const prevMonth = month === 1 ? 12 : month - 1
   const prevYear = month === 1 ? year - 1 : year
 
-  const previousPeriod = await prisma.period.findUnique({
-    where: { month_year: { month: prevMonth, year: prevYear } },
+  const previousPeriod = await prisma.period.findFirst({
+    where: { month: prevMonth, year: prevYear, userId },
   })
 
   if (!previousPeriod) return false
 
   const previousBudgets = await prisma.budget.findMany({
-    where: { periodId: previousPeriod.id },
+    where: { periodId: previousPeriod.id, userId },
   })
 
   if (previousBudgets.length === 0) return false
@@ -73,6 +74,7 @@ export async function copyBudgetsFromPreviousPeriod(
       categoryId: budget.categoryId,
       quincenalAmount: budget.quincenalAmount,
       periodId,
+      userId,
     })),
   })
 

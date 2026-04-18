@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { getClosePeriodPreview, type ClosePeriodPreview } from '@/lib/history'
+import { getDefaultUserId } from '@/lib/auth-utils'
 
 type ActionResult = { success: true } | { error: Record<string, string[]> }
 
@@ -21,6 +22,7 @@ function revalidateHistoryPaths(): void {
  */
 export async function closePeriod(periodId: string): Promise<ActionResult> {
   try {
+    const userId = await getDefaultUserId()
     const period = await prisma.period.findUnique({
       where: { id: periodId },
     })
@@ -38,15 +40,15 @@ export async function closePeriod(periodId: string): Promise<ActionResult> {
       const [incomeAgg, expenseAgg, debtAgg] = await Promise.all([
         tx.transaction.aggregate({
           _sum: { amount: true },
-          where: { periodId, type: 'INCOME' },
+          where: { periodId, type: 'INCOME', userId },
         }),
         tx.transaction.aggregate({
           _sum: { amount: true },
-          where: { periodId, type: 'EXPENSE' },
+          where: { periodId, type: 'EXPENSE', userId },
         }),
         tx.debt.aggregate({
           _sum: { currentBalance: true },
-          where: { isActive: true },
+          where: { isActive: true, userId },
         }),
       ])
 
@@ -71,6 +73,7 @@ export async function closePeriod(periodId: string): Promise<ActionResult> {
           savingsRate,
           debtAtClose,
           debtPayments,
+          userId,
         },
       })
 
@@ -80,30 +83,35 @@ export async function closePeriod(periodId: string): Promise<ActionResult> {
         data: { isClosed: true, closedAt: new Date() },
       })
 
-      // Step 4: Create next period (upsert for idempotency)
+      // Step 4: Create next period (findFirst + create for userId-aware lookup)
       const nextMonth = period.month === 12 ? 1 : period.month + 1
       const nextYear = period.month === 12 ? period.year + 1 : period.year
 
-      const nextPeriod = await tx.period.upsert({
-        where: { month_year: { month: nextMonth, year: nextYear } },
-        update: {},
-        create: {
-          month: nextMonth,
-          year: nextYear,
-          startDate: new Date(nextYear, nextMonth - 1, 1),
-          endDate: new Date(nextYear, nextMonth, 0),
-          isClosed: false,
-        },
+      let nextPeriod = await tx.period.findFirst({
+        where: { month: nextMonth, year: nextYear, userId },
       })
+
+      if (!nextPeriod) {
+        nextPeriod = await tx.period.create({
+          data: {
+            month: nextMonth,
+            year: nextYear,
+            startDate: new Date(nextYear, nextMonth - 1, 1),
+            endDate: new Date(nextYear, nextMonth, 0),
+            isClosed: false,
+            userId,
+          },
+        })
+      }
 
       // Step 5: Copy budgets (skip if next period already has budgets)
       const nextBudgetCount = await tx.budget.count({
-        where: { periodId: nextPeriod.id },
+        where: { periodId: nextPeriod.id, userId },
       })
 
       if (nextBudgetCount === 0) {
         const currentBudgets = await tx.budget.findMany({
-          where: { periodId },
+          where: { periodId, userId },
         })
 
         if (currentBudgets.length > 0) {
@@ -112,6 +120,7 @@ export async function closePeriod(periodId: string): Promise<ActionResult> {
               categoryId: b.categoryId,
               quincenalAmount: b.quincenalAmount,
               periodId: nextPeriod.id,
+              userId,
             })),
           })
         }
@@ -166,5 +175,6 @@ export async function reopenPeriod(periodId: string): Promise<ActionResult> {
 export async function getClosePeriodPreviewAction(
   periodId: string,
 ): Promise<ClosePeriodPreview> {
-  return getClosePeriodPreview(periodId)
+  const userId = await getDefaultUserId()
+  return getClosePeriodPreview(periodId, userId)
 }

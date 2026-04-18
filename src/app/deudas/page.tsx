@@ -1,17 +1,19 @@
 import prisma from '@/lib/prisma'
 import { serializeBigInts } from '@/lib/serialize'
 import { calculateIncomeSummary } from '@/lib/income'
+import { getDefaultUserId } from '@/lib/auth-utils'
 import DeudasClientWrapper from './DeudasClientWrapper'
 import type { SerializedDebt, SerializedIncomeSource } from '@/types'
 
 export default async function DeudasPage() {
+  const userId = await getDefaultUserId()
   const [debts, incomeSources] = await Promise.all([
     prisma.debt.findMany({
-      where: { isActive: true },
+      where: { isActive: true, userId },
       orderBy: { createdAt: 'asc' },
     }),
     prisma.incomeSource.findMany({
-      where: { isActive: true },
+      where: { isActive: true, userId },
     }),
   ])
 

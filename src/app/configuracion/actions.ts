@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { createCategorySchema } from '@/lib/validators'
+import { getDefaultUserId } from '@/lib/auth-utils'
 
 type ActionResult = { success: true } | { error: Record<string, string[]> }
 
@@ -33,6 +34,7 @@ export async function createCategory(data: unknown): Promise<ActionResult> {
   }
 
   try {
+    const userId = await getDefaultUserId()
     const maxSort = await prisma.category.aggregate({
       _max: { sortOrder: true },
     })
@@ -47,6 +49,7 @@ export async function createCategory(data: unknown): Promise<ActionResult> {
         type: parsed.data.type,
         isDefault: false,
         sortOrder: nextSortOrder,
+        userId,
       },
     })
 

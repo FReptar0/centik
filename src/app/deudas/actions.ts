@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { createDebtSchema, updateDebtBalanceSchema } from '@/lib/validators'
+import { getDefaultUserId } from '@/lib/auth-utils'
 
 type ActionResult = { success: true } | { error: Record<string, string[]> }
 
@@ -33,6 +34,7 @@ export async function createDebt(data: unknown): Promise<ActionResult> {
   }
 
   try {
+    const userId = await getDefaultUserId()
     await prisma.debt.create({
       data: {
         name: parsed.data.name,
@@ -46,6 +48,7 @@ export async function createDebt(data: unknown): Promise<ActionResult> {
         remainingMonths: parsed.data.remainingMonths ?? null,
         cutOffDay: parsed.data.cutOffDay ?? null,
         paymentDueDay: parsed.data.paymentDueDay ?? null,
+        userId,
       },
     })
 

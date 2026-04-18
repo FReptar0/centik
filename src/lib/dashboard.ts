@@ -52,23 +52,23 @@ function computeMonthlyFromFrequency(amount: bigint, frequency: string): bigint 
  * Uses Prisma aggregate queries (not loading individual records).
  * All monetary values serialized as strings; rates as basis points (integers).
  */
-export async function getDashboardKPIs(periodId: string): Promise<DashboardKPIs> {
+export async function getDashboardKPIs(periodId: string, userId: string): Promise<DashboardKPIs> {
   const [incomeSources, expenseAgg, _incomeAgg, debtAgg] = await Promise.all([
     prisma.incomeSource.findMany({
-      where: { isActive: true },
+      where: { isActive: true, userId },
       select: { defaultAmount: true, frequency: true },
     }),
     prisma.transaction.aggregate({
       _sum: { amount: true },
-      where: { periodId, type: 'EXPENSE' },
+      where: { periodId, type: 'EXPENSE', userId },
     }),
     prisma.transaction.aggregate({
       _sum: { amount: true },
-      where: { periodId, type: 'INCOME' },
+      where: { periodId, type: 'INCOME', userId },
     }),
     prisma.debt.aggregate({
       _sum: { currentBalance: true },
-      where: { isActive: true },
+      where: { isActive: true, userId },
     }),
   ])
 
@@ -98,7 +98,7 @@ export async function getDashboardKPIs(periodId: string): Promise<DashboardKPIs>
   // Derived: debtToIncomeRatio = monthly debt payments / income * 100
   // Uses minimumPayment (credit cards) + monthlyPayment (loans) — standard DTI
   const activeDebts = await prisma.debt.findMany({
-    where: { isActive: true },
+    where: { isActive: true, userId },
     select: { minimumPayment: true, monthlyPayment: true },
   })
   let totalMonthlyPayments = BigInt(0)
@@ -129,11 +129,11 @@ export async function getDashboardKPIs(periodId: string): Promise<DashboardKPIs>
  * (Prisma groupBy does not support include).
  * Returns sorted by total descending.
  */
-export async function getCategoryExpenses(periodId: string): Promise<CategoryExpense[]> {
+export async function getCategoryExpenses(periodId: string, userId: string): Promise<CategoryExpense[]> {
   const grouped = await prisma.transaction.groupBy({
     by: ['categoryId'],
     _sum: { amount: true },
-    where: { periodId, type: 'EXPENSE' },
+    where: { periodId, type: 'EXPENSE', userId },
   })
 
   if (grouped.length === 0) {
@@ -168,16 +168,16 @@ export async function getCategoryExpenses(periodId: string): Promise<CategoryExp
  * Queries budgets with category include, then separately groups expense totals.
  * Budget monthly = quincenalAmount * 2.
  */
-export async function getBudgetVsSpent(periodId: string): Promise<BudgetVsSpent[]> {
+export async function getBudgetVsSpent(periodId: string, userId: string): Promise<BudgetVsSpent[]> {
   const [budgets, expensesByCategory] = await Promise.all([
     prisma.budget.findMany({
-      where: { periodId },
+      where: { periodId, userId },
       include: { category: { select: { name: true, color: true } } },
     }),
     prisma.transaction.groupBy({
       by: ['categoryId'],
       _sum: { amount: true },
-      where: { periodId, type: 'EXPENSE' },
+      where: { periodId, type: 'EXPENSE', userId },
     }),
   ])
 
@@ -201,8 +201,9 @@ export async function getBudgetVsSpent(periodId: string): Promise<BudgetVsSpent[
  * Returns up to 6 months of MonthlySummary data for the trend area chart.
  * Ordered chronologically (oldest first).
  */
-export async function getMonthlyTrend(): Promise<MonthlyTrendPoint[]> {
+export async function getMonthlyTrend(userId: string): Promise<MonthlyTrendPoint[]> {
   const summaries = await prisma.monthlySummary.findMany({
+    where: { userId },
     include: { period: { select: { month: true, year: true } } },
     orderBy: { period: { year: 'asc' } },
     take: 6,
@@ -231,9 +232,10 @@ export async function getMonthlyTrend(): Promise<MonthlyTrendPoint[]> {
  */
 export async function getRecentTransactions(
   periodId: string,
+  userId: string,
 ): Promise<RecentTransaction[]> {
   const transactions = await prisma.transaction.findMany({
-    where: { periodId },
+    where: { periodId, userId },
     include: {
       category: { select: { name: true, icon: true, color: true } },
     },
