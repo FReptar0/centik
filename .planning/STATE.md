@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Auth + Cloud Deploy
 current_phase: 27
-current_plan: 2
+current_plan: 3
 status: executing
-stopped_at: Completed 27-01-PLAN.md
-last_updated: "2026-04-18T05:52:47.304Z"
+stopped_at: Completed 27-03-PLAN.md
+last_updated: "2026-04-18T05:59:27.934Z"
 last_activity: 2026-04-18
 progress:
   total_phases: 6
   completed_phases: 2
   total_plans: 9
-  completed_plans: 7
+  completed_plans: 8
   percent: 91
 ---
 
@@ -28,9 +28,9 @@ See: .planning/PROJECT.md (updated 2026-04-16)
 ## Current Position
 
 **Current Phase:** 27
-**Current Plan:** 2
+**Current Plan:** 3
 **Total Plans in Phase:** 3
-**Status:** Executing
+**Status:** Ready to execute
 **Last Activity:** 2026-04-18
 
 Progress: [█████████░] 91%
@@ -56,6 +56,7 @@ Progress: [█████████░] 91%
 | Phase 26 P02 | 6min | 1 tasks | 48 files |
 | Phase 26 P03 | 11min | 3 tasks | 13 files |
 | Phase 27 P01 | 2min | 1 tasks | 2 files |
+| Phase 27 P03 | 4min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -83,6 +84,8 @@ Recent decisions affecting current work:
 - [Phase 26]: Mock next-auth module init in tests to avoid next/server ESM import chain
 - [Phase 26]: Integration test mocks only NextAuth init, uses real authorizeUser + real DB + real bcrypt
 - [Phase 27]: requireAuth() returns { userId } object (not bare string) for extensibility
+- [Phase 27]: connection() as first line of every page to prevent cross-user cache leakage
+- [Phase 27]: Non-null assertion on session (session!.user!.id) -- proxy.ts guarantees auth for (app) routes
 
 ### Pending Todos
 
@@ -95,6 +98,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-18T05:52:47.301Z
-Stopped at: Completed 27-01-PLAN.md
+Last session: 2026-04-18T05:59:27.931Z
+Stopped at: Completed 27-03-PLAN.md
 Resume file: None

@@ -20,7 +20,7 @@ Requirements for auth + cloud deploy. Security-first — this is real financial 
 - [x] **ISOL-01**: requireAuth() helper function that calls auth(), redirects if no session, returns { userId } — used as first line in every Server Action
 - [ ] **ISOL-02**: All Prisma queries across all 7 lib files scoped with userId filter (where: { userId })
 - [ ] **ISOL-03**: All Server Actions (6 action files) call requireAuth() before any database operation
-- [ ] **ISOL-04**: All page Server Components call auth() and pass userId to data-fetching functions
+- [x] **ISOL-04**: All page Server Components call auth() and pass userId to data-fetching functions
 - [ ] **ISOL-05**: Cross-user integration tests — authenticate as User B, assert zero access to User A's data
 
 ### TOTP 2FA
@@ -44,7 +44,7 @@ Requirements for auth + cloud deploy. Security-first — this is real financial 
 - [ ] **DEPLOY-02**: Security headers in next.config.ts — CSP with per-request nonce, HSTS, X-Frame-Options DENY, X-Content-Type-Options nosniff
 - [ ] **DEPLOY-03**: Production seed script that creates admin user (your email) with hashed password
 - [ ] **DEPLOY-04**: Vercel deployment configuration (vercel.json or project settings) with environment variables
-- [ ] **DEPLOY-05**: noStore() on all Server Components fetching user-specific data to prevent cross-user cache leakage
+- [x] **DEPLOY-05**: noStore() on all Server Components fetching user-specific data to prevent cross-user cache leakage
 
 ### Test Updates
 
@@ -85,7 +85,7 @@ Deferred to future milestones.
 | ISOL-01 | Phase 27 | Complete |
 | ISOL-02 | Phase 27 | Pending |
 | ISOL-03 | Phase 27 | Pending |
-| ISOL-04 | Phase 27 | Pending |
+| ISOL-04 | Phase 27 | Complete |
 | ISOL-05 | Phase 30 | Pending |
 | TOTP-01 | Phase 29 | Pending |
 | TOTP-02 | Phase 29 | Pending |
@@ -100,7 +100,7 @@ Deferred to future milestones.
 | DEPLOY-02 | Phase 30 | Pending |
 | DEPLOY-03 | Phase 30 | Pending |
 | DEPLOY-04 | Phase 30 | Pending |
-| DEPLOY-05 | Phase 27 | Pending |
+| DEPLOY-05 | Phase 27 | Complete |
 | TEST-01 | Phase 25 | Complete |
 | TEST-02 | Phase 26 | Complete |
 | TEST-03 | Phase 30 | Pending |
