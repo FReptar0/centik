@@ -1,22 +1,22 @@
-import prisma from '@/lib/prisma'
+import { redirect } from 'next/navigation'
+import { auth } from '@/auth'
 
 /**
- * Temporary helper to get the default (admin) user ID.
- * Used by pages and server actions until Phase 27 implements
- * requireAuth() with real session-based user resolution.
+ * Session-based auth guard for Server Actions and server components.
+ * Replaces getDefaultUserId() with real session validation.
  *
- * TODO(Phase-27): Replace all getDefaultUserId() calls with requireAuth()
+ * - Returns { userId } when a valid session exists
+ * - Redirects to /login when no session or no user ID
+ *
+ * CVE-2025-29927 defense-in-depth: middleware can be bypassed,
+ * so every Server Action MUST call requireAuth() before data access.
  */
-export async function getDefaultUserId(): Promise<string> {
-  const user = await prisma.user.findFirst({
-    where: { isApproved: true },
-    select: { id: true },
-    orderBy: { createdAt: 'asc' },
-  })
+export async function requireAuth(): Promise<{ userId: string }> {
+  const session = await auth()
 
-  if (!user) {
-    throw new Error('No approved user found. Run prisma db seed first.')
+  if (!session?.user?.id) {
+    redirect('/login')
   }
 
-  return user.id
+  return { userId: session.user.id }
 }
