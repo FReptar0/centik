@@ -39,12 +39,13 @@ created: 2026-04-18
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 27-01-01 | 01 | 1 | ISOL-01 | unit | `npx vitest run src/lib/auth-utils.test.ts` | ❌ W0 | ⬜ pending |
-| 27-01-02 | 01 | 1 | ISOL-02, ISOL-03 | unit+build | `npm test -- --run && npm run build` | ✅ existing | ⬜ pending |
-| 27-02-01 | 02 | 2 | ISOL-04, DEPLOY-05 | build+tests | `npm run build && npm test -- --run` | ✅ existing | ⬜ pending |
-| 27-02-02 | 02 | 2 | ISOL-02 | integration | `npm run test:integration` | ❌ Plan creates | ⬜ pending |
+| 27-01-01 | 01 | 1 | ISOL-01 | unit | `npx vitest run src/lib/auth-utils.test.ts` | W0 creates | pending |
+| 27-02-01 | 02 | 2 | ISOL-02, ISOL-03 | grep+unit | `! grep -rn 'getDefaultUserId' src/app/\(app\)/*/actions.ts && grep -c 'findFirst.*userId' src/app/\(app\)/*/actions.ts` | existing | pending |
+| 27-02-02 | 02 | 2 | ISOL-02, ISOL-03 | unit | `npx vitest run src/app/\(app\)/*/actions.test.ts --reporter=verbose` | existing | pending |
+| 27-03-01 | 03 | 2 | ISOL-04, DEPLOY-05 | grep+build | `! grep -rn 'getDefaultUserId' src/app/ && npm run build` | existing | pending |
+| 27-03-02 | 03 | 2 | ISOL-04 | integration | `npx vitest run tests/integration/isolation.test.ts --config vitest.integration.config.mts` | Plan creates | pending |
 
-*Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
+*Status: pending / green / red / flaky*
 
 ---
 
