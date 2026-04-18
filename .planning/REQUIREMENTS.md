@@ -10,10 +10,10 @@ Requirements for auth + cloud deploy. Security-first — this is real financial 
 ### Auth Foundation
 
 - [x] **AUTH-01**: Prisma schema updated with User model, Auth.js adapter tables (Account, Session, VerificationToken), and userId FK on all 10 existing data models
-- [ ] **AUTH-02**: Auth.js v5 configured with Prisma adapter, Credentials provider (email+password), JWT session strategy, and session callbacks exposing userId
+- [x] **AUTH-02**: Auth.js v5 configured with Prisma adapter, Credentials provider (email+password), JWT session strategy, and session callbacks exposing userId
 - [ ] **AUTH-03**: proxy.ts protects all routes except /login and /register — unauthenticated users redirected to /login
 - [ ] **AUTH-04**: Login page with email+password form, error handling, and Glyph Finance design
-- [ ] **AUTH-05**: Password hashing with bcryptjs (cost factor 12), passwords never stored in plaintext
+- [x] **AUTH-05**: Password hashing with bcryptjs (cost factor 12), passwords never stored in plaintext
 
 ### Per-User Data Isolation
 
@@ -78,10 +78,10 @@ Deferred to future milestones.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | AUTH-01 | Phase 25 | Complete |
-| AUTH-02 | Phase 26 | Pending |
+| AUTH-02 | Phase 26 | Complete |
 | AUTH-03 | Phase 26 | Pending |
 | AUTH-04 | Phase 26 | Pending |
-| AUTH-05 | Phase 26 | Pending |
+| AUTH-05 | Phase 26 | Complete |
 | ISOL-01 | Phase 27 | Pending |
 | ISOL-02 | Phase 27 | Pending |
 | ISOL-03 | Phase 27 | Pending |
