@@ -70,11 +70,11 @@ See `.planning/milestones/v2.1-ROADMAP.md` for full phase details.
   3. InviteToken model exists with token, email, expiresAt, usedAt fields
   4. All 10 existing data models (Transaction, Category, IncomeSource, Debt, Budget, Period, MonthlySummary, Asset, ValueUnit, UnitRate) have a userId field with foreign key to User
   5. All 479 existing unit tests pass with userId parameter additions (expand-contract: userId is optional during migration)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 25-01: TBD
-- [ ] 25-02: TBD
+- [ ] 25-01-PLAN.md — Schema migration + seed update (User, auth tables, InviteToken, userId optional on 10 models, admin user seed)
+- [ ] 25-02-PLAN.md — Lib function userId params + test updates + make userId required (expand-contract complete)
 
 ### Phase 26: Auth Wiring + Login
 **Goal**: Users can authenticate with email and password, and unauthenticated visitors are redirected to the login page
@@ -164,7 +164,7 @@ Note: Phases 28 and 29 both depend on 26, not on each other. They could theoreti
 | 12-16 | v1.1 | 9/9 | Complete | 2026-04-06 |
 | 17-22 | v2.0 | 17/17 | Complete | 2026-04-16 |
 | 23-24 | v2.1 | 4/4 | Complete | 2026-04-16 |
-| 25. Schema Migration | v3.0 | 0/? | Not started | - |
+| 25. Schema Migration | v3.0 | 0/2 | Not started | - |
 | 26. Auth Wiring + Login | v3.0 | 0/? | Not started | - |
 | 27. Per-User Data Isolation | v3.0 | 0/? | Not started | - |
 | 28. Invite-Only Registration | v3.0 | 0/? | Not started | - |
