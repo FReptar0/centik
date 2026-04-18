@@ -85,11 +85,13 @@ Plans:
   2. Unauthenticated visitors to any page except /login and /register are redirected to /login
   3. Passwords are hashed with bcryptjs (cost factor 12) and never stored or logged in plaintext
   4. Auth tests validate login flow, session creation, session callback with userId, and requireAuth() redirect behavior
-**Plans**: 2 plans
+**Plans**: 4 plans
 
 Plans:
-- [ ] 26-01-PLAN.md — Auth.js config + proxy.ts + route group migration (Credentials, JWT, PrismaAdapter, (app)/(auth) groups)
-- [ ] 26-02-PLAN.md — Login page + logout button + auth test suite (LoginForm, server actions, ~15 tests)
+- [ ] 26-00-PLAN.md — Wave 0: test stub files for auth, proxy, and auth actions
+- [ ] 26-01-PLAN.md — Auth.js config + proxy.ts + loginSchema + FloatingInput extension
+- [ ] 26-02-PLAN.md — Route group migration ((app)/(auth) groups, root layout split)
+- [ ] 26-03-PLAN.md — Login page + logout button + auth test suite (unit + integration + E2E)
 
 ### Phase 27: Per-User Data Isolation
 **Goal**: Every database query and mutation is scoped to the authenticated user -- no user can see or modify another user's financial data
@@ -165,7 +167,7 @@ Note: Phases 28 and 29 both depend on 26, not on each other. They could theoreti
 | 17-22 | v2.0 | 17/17 | Complete | 2026-04-16 |
 | 23-24 | v2.1 | 4/4 | Complete | 2026-04-16 |
 | 25. Schema Migration | 2/2 | Complete    | 2026-04-18 | - |
-| 26. Auth Wiring + Login | v3.0 | 0/2 | Planning | - |
+| 26. Auth Wiring + Login | v3.0 | 0/4 | Planning | - |
 | 27. Per-User Data Isolation | v3.0 | 0/? | Not started | - |
 | 28. Invite-Only Registration | v3.0 | 0/? | Not started | - |
 | 29. TOTP Two-Factor Auth | v3.0 | 0/? | Not started | - |
