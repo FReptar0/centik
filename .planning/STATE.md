@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Auth + Cloud Deploy
 current_phase: 28
-current_plan: 03
+current_plan: 02
 status: executing
-stopped_at: Phase 28 Plan 03 complete
-last_updated: "2026-04-18T17:15:31.000Z"
+stopped_at: Phase 28 Plan 02 complete (all 3 Phase 28 plans done)
+last_updated: "2026-04-18T17:16:06.000Z"
 last_activity: 2026-04-18
 progress:
   total_phases: 6
   completed_phases: 3
   total_plans: 13
-  completed_plans: 11
-  percent: 85
+  completed_plans: 12
+  percent: 92
 ---
 
 # Project State
@@ -23,17 +23,17 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-16)
 
 **Core value:** A single user can register a financial transaction in under 30 seconds and immediately see how it impacts their budget, debt ratio, and savings rate across all views.
-**Current focus:** v3.0 Auth + Cloud Deploy -- Phase 28 Plan 03 complete (registration flow); Phase 29 (TOTP 2FA) next
+**Current focus:** v3.0 Auth + Cloud Deploy -- Phase 28 done end-to-end (invite generation UI + registration flow); Phase 29 (TOTP 2FA) next
 
 ## Current Position
 
 **Current Phase:** 28
-**Current Plan:** 03 (complete)
+**Current Plan:** 02 (complete) -- plans 01, 02, 03 all complete
 **Total Plans in Phase:** 3
-**Status:** Plan 03 complete; Phase 28 registration loop is closed end-to-end
+**Status:** Phase 28 closed: admin can generate invite tokens from /configuracion, invitees can register via /register, all protected by requireAdmin() + requireAuth() gates
 **Last Activity:** 2026-04-18
 
-Progress: [█████████░] 92%
+Progress: [█████████▒] 92%
 
 ## Performance Metrics
 
@@ -61,6 +61,7 @@ Progress: [█████████░] 92%
 | Phase 27 P02 | 8min | 2 tasks | 12 files |
 | Phase 28 P01 | 5min | 2 tasks | 8 files |
 | Phase 28 P03 | 15min | 2 tasks | 7 files |
+| Phase 28 P02 | 10min | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -100,6 +101,11 @@ Recent decisions affecting current work:
 - [Phase 28 P03]: All INVITE_* errors collapse to one ambiguous "ya no es valido" form-level message on submit -- differentiated feedback only on page load, to avoid a token-state oracle
 - [Phase 28 P03]: Hidden `name="email"` input + disabled `name="email-display"` FloatingInput -- disabled form fields do not submit, but the Server Action needs email for defense-in-depth mismatch check
 - [Phase 28 P03]: `Date.now()` wrapped in `currentTimeMs()` helper in Server Component page.tsx -- React 19 `react-hooks/purity` rule rejects raw `Date.now()` at the render call site
+- [Phase 28 P02]: requireAdmin() always does a fresh DB lookup -- defense-in-depth against stale JWTs where isAdmin was revoked after issuance
+- [Phase 28 P02]: z.string().cuid() validation on revokeInviteToken runs BEFORE requireAdmin() -- invalid IDs never touch session or DB
+- [Phase 28 P02]: IDOR scope via findFirst({ createdBy }) not findUnique+post-check -- forward-compatible with multi-admin
+- [Phase 28 P02]: Origin derived server-side via next/headers in page.tsx and passed as prop -- avoids window.location.origin SSR mismatch
+- [Phase 28 P02]: InvitacionForm does NOT clear the email input on success -- React 19 react-hooks/set-state-in-effect rule forbids setState inside useEffect; toast + URL panel provide ample confirmation
 
 ### Pending Todos
 
@@ -112,6 +118,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-18T17:15:31.000Z
-Stopped at: Phase 28 Plan 03 complete -- registerAction + /register + RegisterForm + TokenErrorScreen + tests
-Resume file: .planning/phases/29-totp-2fa/ (next phase)
+Last session: 2026-04-18T17:16:06.000Z
+Stopped at: Phase 28 Plan 02 complete -- admin invite generation UI + createInviteToken/revokeInviteToken/listInviteTokens Server Actions + 17 unit + 3 integration tests
+Resume file: .planning/phases/29-totp-2fa/ (next phase -- Phase 28 fully closed)
