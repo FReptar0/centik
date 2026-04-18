@@ -35,8 +35,8 @@ Requirements for auth + cloud deploy. Security-first — this is real financial 
 
 - [x] **INVITE-01**: InviteToken model in Prisma schema (token, email, expiresAt, usedAt)
 - [ ] **INVITE-02**: Admin Server Action to generate invite tokens (crypto.randomBytes(32))
-- [ ] **INVITE-03**: Registration page — only accessible with valid invite token URL, creates user with isApproved=true
-- [ ] **INVITE-04**: No self-registration — /register without valid token shows error
+- [x] **INVITE-03**: Registration page — only accessible with valid invite token URL, creates user with isApproved=true
+- [x] **INVITE-04**: No self-registration — /register without valid token shows error
 
 ### Vercel Deploy + Security
 

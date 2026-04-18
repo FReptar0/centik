@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Auth + Cloud Deploy
 current_phase: 28
-current_plan: 02
+current_plan: 03
 status: executing
-stopped_at: Phase 28 Plan 01 complete
-last_updated: "2026-04-18T17:00:30.000Z"
+stopped_at: Phase 28 Plan 03 complete
+last_updated: "2026-04-18T17:15:31.000Z"
 last_activity: 2026-04-18
 progress:
   total_phases: 6
   completed_phases: 3
-  total_plans: 12
-  completed_plans: 10
-  percent: 83
+  total_plans: 13
+  completed_plans: 11
+  percent: 85
 ---
 
 # Project State
@@ -23,14 +23,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-16)
 
 **Core value:** A single user can register a financial transaction in under 30 seconds and immediately see how it impacts their budget, debt ratio, and savings rate across all views.
-**Current focus:** v3.0 Auth + Cloud Deploy -- Phase 28 Plan 01 complete, Plan 02 (admin invite generation) next
+**Current focus:** v3.0 Auth + Cloud Deploy -- Phase 28 Plan 03 complete (registration flow); Phase 29 (TOTP 2FA) next
 
 ## Current Position
 
 **Current Phase:** 28
-**Current Plan:** 02 (next)
+**Current Plan:** 03 (complete)
 **Total Plans in Phase:** 3
-**Status:** Plan 01 complete; schema + auth pipeline + validators ready for Plans 02/03
+**Status:** Plan 03 complete; Phase 28 registration loop is closed end-to-end
 **Last Activity:** 2026-04-18
 
 Progress: [█████████░] 92%
@@ -60,6 +60,7 @@ Progress: [█████████░] 92%
 | Phase 27 P03 | 4min | 2 tasks | 8 files |
 | Phase 27 P02 | 8min | 2 tasks | 12 files |
 | Phase 28 P01 | 5min | 2 tasks | 8 files |
+| Phase 28 P03 | 15min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -95,6 +96,10 @@ Recent decisions affecting current work:
 - [Phase 28 P01]: `sessionCallback` always writes `session.user.isAdmin` (true from token, or false fallback) so legacy pre-Phase-28 JWTs never render as undefined
 - [Phase 28 P01]: `User.isAdmin?: boolean` in next-auth.d.ts is optional so authorizeUser's return stays compatible with NextAuth's User contract; Session.user.isAdmin is required (always set by sessionCallback)
 - [Phase 28 P01]: Seed upsert `update: { isAdmin: true }` flips the admin flag on existing dev DBs, not just fresh ones
+- [Phase 28 P03]: registerAction hashes password BEFORE opening $transaction -- 12-cost bcrypt is slow (~300ms) and must not pin a DB connection
+- [Phase 28 P03]: All INVITE_* errors collapse to one ambiguous "ya no es valido" form-level message on submit -- differentiated feedback only on page load, to avoid a token-state oracle
+- [Phase 28 P03]: Hidden `name="email"` input + disabled `name="email-display"` FloatingInput -- disabled form fields do not submit, but the Server Action needs email for defense-in-depth mismatch check
+- [Phase 28 P03]: `Date.now()` wrapped in `currentTimeMs()` helper in Server Component page.tsx -- React 19 `react-hooks/purity` rule rejects raw `Date.now()` at the render call site
 
 ### Pending Todos
 
@@ -107,6 +112,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-18T17:00:30.000Z
-Stopped at: Phase 28 Plan 01 complete -- schema migration, isAdmin session pipeline, invite/register Zod schemas
-Resume file: .planning/phases/28-invite-only-registration/28-02-PLAN.md
+Last session: 2026-04-18T17:15:31.000Z
+Stopped at: Phase 28 Plan 03 complete -- registerAction + /register + RegisterForm + TokenErrorScreen + tests
+Resume file: .planning/phases/29-totp-2fa/ (next phase)

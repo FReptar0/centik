@@ -122,8 +122,8 @@ Plans:
 
 Plans:
 - [x] 28-01-PLAN.md — Schema migration (User.isAdmin + InviteToken.revokedAt) + seed update + JWT/session augmentation + Zod schemas (completed 2026-04-18)
-- [ ] 28-02-PLAN.md — Admin invite Server Actions + Invitaciones UI in /configuracion + integration tests
-- [ ] 28-03-PLAN.md — registerAction with $transaction + /register page + RegisterForm + TokenErrorScreen + tests
+- [x] 28-02-PLAN.md — Admin invite Server Actions + Invitaciones UI in /configuracion + integration tests (completed 2026-04-18)
+- [x] 28-03-PLAN.md — registerAction with $transaction + /register page + RegisterForm + TokenErrorScreen + tests (completed 2026-04-18)
 
 ### Phase 29: TOTP Two-Factor Authentication
 **Goal**: Users can enable TOTP-based 2FA for an additional layer of security on login, with backup codes for recovery
@@ -172,6 +172,6 @@ Note: Phases 28 and 29 both depend on 26, not on each other. They could theoreti
 | 25. Schema Migration | 2/2 | Complete    | 2026-04-18 | - |
 | 26. Auth Wiring + Login | 4/4 | Complete    | 2026-04-18 | - |
 | 27. Per-User Data Isolation | 3/3 | Complete    | 2026-04-18 | - |
-| 28. Invite-Only Registration | v3.0 | 0/? | Not started | - |
+| 28. Invite-Only Registration | v3.0 | 2/3 | In progress | - |
 | 29. TOTP Two-Factor Auth | v3.0 | 0/? | Not started | - |
 | 30. Vercel Deploy + Security | v3.0 | 0/? | Not started | - |
