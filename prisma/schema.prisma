@@ -49,6 +49,89 @@ enum AssetCategory {
   OTHER
 }
 
+// --- Auth Models (v3.0) ---
+
+/// User model for authentication and data ownership
+model User {
+  id             String    @id @default(cuid())
+  name           String?
+  email          String    @unique
+  emailVerified  DateTime?
+  image          String?
+  hashedPassword String?
+  isApproved     Boolean   @default(false)
+  totpSecret     String?
+  totpEnabled    Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  accounts         Account[]
+  sessions         Session[]
+  transactions     Transaction[]
+  incomeSources    IncomeSource[]
+  categories       Category[]
+  debts            Debt[]
+  budgets          Budget[]
+  periods          Period[]
+  monthlySummaries MonthlySummary[]
+  valueUnits       ValueUnit[]
+  unitRates        UnitRate[]
+  assets           Asset[]
+  inviteTokens     InviteToken[]
+}
+
+/// Auth.js adapter - OAuth/credential accounts
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+/// Auth.js adapter - User sessions
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+/// Auth.js adapter - Email verification tokens
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+/// Invite tokens for registration (v3.0 invite-only)
+model InviteToken {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  email     String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdBy String
+  createdAt DateTime  @default(now())
+
+  creator User @relation(fields: [createdBy], references: [id])
+}
+
 // --- MVP Models (DFR 2.1 - 2.7) ---
 
 /// DFR 2.1 - Income sources (employment, freelance, other)
@@ -61,8 +144,12 @@ model IncomeSource {
   isActive      Boolean     @default(true)
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+  userId        String?
 
+  user         User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions Transaction[]
+
+  @@index([userId])
 }
 
 /// DFR 2.2 - Financial transactions (income and expense)
@@ -79,13 +166,16 @@ model Transaction {
   notes          String?
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
+  userId         String?
 
+  user         User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
   category     Category     @relation(fields: [categoryId], references: [id])
   incomeSource IncomeSource? @relation(fields: [incomeSourceId], references: [id])
   period       Period       @relation(fields: [periodId], references: [id])
 
   @@index([periodId, date])
   @@index([categoryId])
+  @@index([userId])
 }
 
 /// DFR 2.3 - Expense and income categories
@@ -98,9 +188,13 @@ model Category {
   isDefault Boolean      @default(false)
   isActive  Boolean      @default(true)
   sortOrder Int          @default(0)
+  userId    String?
 
+  user         User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions Transaction[]
   budgets      Budget[]
+
+  @@index([userId])
 }
 
 /// DFR 2.4 - Debts (credit cards, loans)
@@ -120,6 +214,11 @@ model Debt {
   isActive        Boolean  @default(true)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  userId          String?
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 /// DFR 2.5 - Budget allocations per category per period
@@ -130,11 +229,14 @@ model Budget {
   periodId        String
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  userId          String?
 
+  user     User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   category Category @relation(fields: [categoryId], references: [id])
   period   Period   @relation(fields: [periodId], references: [id])
 
   @@unique([periodId, categoryId])
+  @@index([userId])
 }
 
 /// DFR 2.6 - Calendar month periods
@@ -147,12 +249,15 @@ model Period {
   isClosed  Boolean   @default(false)
   closedAt  DateTime?
   createdAt DateTime  @default(now())
+  userId    String?
 
+  user           User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions   Transaction[]
   budgets        Budget[]
   monthlySummary MonthlySummary?
 
   @@unique([month, year])
+  @@index([userId])
 }
 
 /// DFR 2.7 - Monthly summary snapshot created on period close
@@ -167,8 +272,12 @@ model MonthlySummary {
   debtPayments  BigInt
   notes         String?
   createdAt     DateTime @default(now())
+  userId        String?
 
+  user   User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
   period Period @relation(fields: [periodId], references: [id])
+
+  @@index([userId])
 }
 
 // --- v2 Models (DFR 2.8 - 2.10) ---
@@ -187,9 +296,13 @@ model ValueUnit {
   isActive        Boolean  @default(true)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  userId          String?
 
+  user   User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
   rates  UnitRate[]
   assets Asset[]
+
+  @@index([userId])
 }
 
 /// DFR 2.9 - Historical conversion rates from value units to MXN centavos
@@ -201,11 +314,14 @@ model UnitRate {
   rateRaw        String
   source         String
   createdAt      DateTime @default(now())
+  userId         String?
 
+  user User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   unit ValueUnit @relation(fields: [unitId], references: [id], onDelete: Cascade)
 
   @@unique([unitId, date])
   @@index([unitId])
+  @@index([userId])
 }
 
 /// DFR 2.10 - Assets and investments tracked in value units
@@ -220,8 +336,11 @@ model Asset {
   isActive    Boolean       @default(true)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+  userId      String?
 
+  user User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   unit ValueUnit @relation(fields: [unitId], references: [id], onDelete: Cascade)
 
   @@index([unitId])
+  @@index([userId])
 }
