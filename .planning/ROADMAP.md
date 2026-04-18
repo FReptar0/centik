@@ -6,6 +6,7 @@
 - v1.1 Glyph Finance Design System - Phases 12-16 (shipped 2026-04-06)
 - v2.0 Glyph Finance Implementation - Phases 17-22 (shipped 2026-04-16)
 - v2.1 Responsive Audit + Bug Fixes - Phases 23-24 (shipped 2026-04-16)
+- v3.0 Auth + Cloud Deploy - Phases 25-30 (in progress)
 
 ## Phases
 
@@ -46,7 +47,116 @@ See `.planning/milestones/v2.1-ROADMAP.md` for full phase details.
 
 </details>
 
+### v3.0 Auth + Cloud Deploy (In Progress)
+
+**Milestone Goal:** Llevar Centik a produccion en Vercel con autenticacion NextAuth (email+password+TOTP 2FA), invite-only access, Prisma Postgres, per-user data isolation, y security headers. Seguridad extrema — es informacion financiera real.
+
+- [ ] **Phase 25: Schema Migration** - User model, Auth.js adapter tables, InviteToken model, userId FK on 10 data tables, existing tests updated
+- [ ] **Phase 26: Auth Wiring + Login** - Auth.js v5 with Credentials provider, JWT sessions, proxy.ts route protection, login page, password hashing
+- [ ] **Phase 27: Per-User Data Isolation** - requireAuth() helper, all queries scoped by userId, all Server Actions protected, noStore() on user-specific pages
+- [ ] **Phase 28: Invite-Only Registration** - Admin invite generation, registration page with token validation, self-registration blocked
+- [ ] **Phase 29: TOTP Two-Factor Authentication** - TOTP setup with QR code, AES-256-GCM encrypted secrets, two-step login, backup codes, rate limiting
+- [ ] **Phase 30: Vercel Deploy + Security Hardening** - Prisma Postgres, security headers, production seed, Vercel config, cross-user isolation test suite
+
+## Phase Details
+
+### Phase 25: Schema Migration
+**Goal**: Database schema supports multi-user architecture with Auth.js session management and invite-only registration
+**Depends on**: Phase 24 (v2.1 complete)
+**Requirements**: AUTH-01, INVITE-01, TEST-01
+**Success Criteria** (what must be TRUE):
+  1. User model exists with email, hashedPassword, isApproved, totpSecret, totpEnabled fields
+  2. Auth.js adapter tables (Account, Session, VerificationToken) exist in Prisma schema
+  3. InviteToken model exists with token, email, expiresAt, usedAt fields
+  4. All 10 existing data models (Transaction, Category, IncomeSource, Debt, Budget, Period, MonthlySummary, Asset, ValueUnit, UnitRate) have a userId field with foreign key to User
+  5. All 479 existing unit tests pass with userId parameter additions (expand-contract: userId is optional during migration)
+**Plans**: TBD
+
+Plans:
+- [ ] 25-01: TBD
+- [ ] 25-02: TBD
+
+### Phase 26: Auth Wiring + Login
+**Goal**: Users can authenticate with email and password, and unauthenticated visitors are redirected to the login page
+**Depends on**: Phase 25
+**Requirements**: AUTH-02, AUTH-03, AUTH-04, AUTH-05, TEST-02
+**Success Criteria** (what must be TRUE):
+  1. User can log in with email and password on a Glyph Finance-styled login page and receive a JWT session
+  2. Unauthenticated visitors to any page except /login and /register are redirected to /login
+  3. Passwords are hashed with bcryptjs (cost factor 12) and never stored or logged in plaintext
+  4. Auth tests validate login flow, session creation, session callback with userId, and requireAuth() redirect behavior
+**Plans**: TBD
+
+Plans:
+- [ ] 26-01: TBD
+- [ ] 26-02: TBD
+
+### Phase 27: Per-User Data Isolation
+**Goal**: Every database query and mutation is scoped to the authenticated user -- no user can see or modify another user's financial data
+**Depends on**: Phase 26
+**Requirements**: ISOL-01, ISOL-02, ISOL-03, ISOL-04, DEPLOY-05
+**Success Criteria** (what must be TRUE):
+  1. requireAuth() helper exists, calls auth(), redirects unauthenticated users, and returns { userId } -- used as first line in every Server Action
+  2. All Prisma queries across all 7 lib/data files include userId in their where clause
+  3. All 6 Server Action files call requireAuth() before any database operation
+  4. All page Server Components call auth() and pass userId to data-fetching functions
+  5. noStore() is called on all Server Components that fetch user-specific data to prevent cross-user cache leakage
+**Plans**: TBD
+
+Plans:
+- [ ] 27-01: TBD
+- [ ] 27-02: TBD
+
+### Phase 28: Invite-Only Registration
+**Goal**: New users can only register via an admin-generated invite link -- no self-registration
+**Depends on**: Phase 26
+**Requirements**: INVITE-02, INVITE-03, INVITE-04
+**Success Criteria** (what must be TRUE):
+  1. Admin can generate an invite token via Server Action that produces a unique URL with a 32-byte random token
+  2. A user visiting /register with a valid, unused, non-expired invite token can create an account with email and password
+  3. A user visiting /register without a token, with an expired token, or with an already-used token sees an error and cannot register
+**Plans**: TBD
+
+Plans:
+- [ ] 28-01: TBD
+
+### Phase 29: TOTP Two-Factor Authentication
+**Goal**: Users can enable TOTP-based 2FA for an additional layer of security on login, with backup codes for recovery
+**Depends on**: Phase 26
+**Requirements**: TOTP-01, TOTP-02, TOTP-03, TOTP-04, TOTP-05
+**Success Criteria** (what must be TRUE):
+  1. User can enable 2FA by scanning a QR code with an authenticator app and verifying a code before the secret is persisted
+  2. TOTP secrets are encrypted at rest using AES-256-GCM with AUTH_TOTP_ENCRYPTION_KEY environment variable -- plaintext secrets never written to database
+  3. Login for 2FA-enabled users requires password verification first, then TOTP code verification before session is issued
+  4. User receives 10 single-use backup codes during 2FA setup, each hashed with bcryptjs, usable as TOTP code alternative
+  5. Login and TOTP verification endpoints are rate-limited to 5 attempts per minute via @upstash/ratelimit
+**Plans**: TBD
+
+Plans:
+- [ ] 29-01: TBD
+- [ ] 29-02: TBD
+
+### Phase 30: Vercel Deploy + Security Hardening
+**Goal**: Centik runs in production on Vercel with Prisma Postgres, security headers, and verified cross-user data isolation
+**Depends on**: Phase 25, 26, 27, 28, 29 (all previous phases)
+**Requirements**: ISOL-05, DEPLOY-01, DEPLOY-02, DEPLOY-03, DEPLOY-04, TEST-03
+**Success Criteria** (what must be TRUE):
+  1. Prisma Postgres is provisioned via Vercel Marketplace with pooled (runtime) and direct (migrations) connection strings configured
+  2. Security headers are set in next.config.ts: CSP with per-request nonce, HSTS, X-Frame-Options DENY, X-Content-Type-Options nosniff
+  3. Production seed script creates admin user (fmemije00@gmail.com) with hashed password
+  4. Centik is deployed and accessible on Vercel with all environment variables configured
+  5. Cross-user isolation integration tests pass -- User B authenticates and gets zero results when querying User A's transactions, debts, budgets, income sources, categories, and history
+**Plans**: TBD
+
+Plans:
+- [ ] 30-01: TBD
+- [ ] 30-02: TBD
+
 ## Progress
+
+**Execution Order:**
+Phases execute in numeric order: 25 -> 26 -> 27 -> 28 -> 29 -> 30
+Note: Phases 28 and 29 both depend on 26, not on each other. They could theoretically run in parallel but are sequenced for clarity.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -54,3 +164,9 @@ See `.planning/milestones/v2.1-ROADMAP.md` for full phase details.
 | 12-16 | v1.1 | 9/9 | Complete | 2026-04-06 |
 | 17-22 | v2.0 | 17/17 | Complete | 2026-04-16 |
 | 23-24 | v2.1 | 4/4 | Complete | 2026-04-16 |
+| 25. Schema Migration | v3.0 | 0/? | Not started | - |
+| 26. Auth Wiring + Login | v3.0 | 0/? | Not started | - |
+| 27. Per-User Data Isolation | v3.0 | 0/? | Not started | - |
+| 28. Invite-Only Registration | v3.0 | 0/? | Not started | - |
+| 29. TOTP Two-Factor Auth | v3.0 | 0/? | Not started | - |
+| 30. Vercel Deploy + Security | v3.0 | 0/? | Not started | - |

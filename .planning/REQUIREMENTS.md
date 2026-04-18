@@ -77,38 +77,39 @@ Deferred to future milestones.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | — | Pending |
-| AUTH-02 | — | Pending |
-| AUTH-03 | — | Pending |
-| AUTH-04 | — | Pending |
-| AUTH-05 | — | Pending |
-| ISOL-01 | — | Pending |
-| ISOL-02 | — | Pending |
-| ISOL-03 | — | Pending |
-| ISOL-04 | — | Pending |
-| ISOL-05 | — | Pending |
-| TOTP-01 | — | Pending |
-| TOTP-02 | — | Pending |
-| TOTP-03 | — | Pending |
-| TOTP-04 | — | Pending |
-| TOTP-05 | — | Pending |
-| INVITE-01 | — | Pending |
-| INVITE-02 | — | Pending |
-| INVITE-03 | — | Pending |
-| INVITE-04 | — | Pending |
-| DEPLOY-01 | — | Pending |
-| DEPLOY-02 | — | Pending |
-| DEPLOY-03 | — | Pending |
-| DEPLOY-04 | — | Pending |
-| DEPLOY-05 | — | Pending |
-| TEST-01 | — | Pending |
-| TEST-02 | — | Pending |
-| TEST-03 | — | Pending |
+| AUTH-01 | Phase 25 | Pending |
+| AUTH-02 | Phase 26 | Pending |
+| AUTH-03 | Phase 26 | Pending |
+| AUTH-04 | Phase 26 | Pending |
+| AUTH-05 | Phase 26 | Pending |
+| ISOL-01 | Phase 27 | Pending |
+| ISOL-02 | Phase 27 | Pending |
+| ISOL-03 | Phase 27 | Pending |
+| ISOL-04 | Phase 27 | Pending |
+| ISOL-05 | Phase 30 | Pending |
+| TOTP-01 | Phase 29 | Pending |
+| TOTP-02 | Phase 29 | Pending |
+| TOTP-03 | Phase 29 | Pending |
+| TOTP-04 | Phase 29 | Pending |
+| TOTP-05 | Phase 29 | Pending |
+| INVITE-01 | Phase 25 | Pending |
+| INVITE-02 | Phase 28 | Pending |
+| INVITE-03 | Phase 28 | Pending |
+| INVITE-04 | Phase 28 | Pending |
+| DEPLOY-01 | Phase 30 | Pending |
+| DEPLOY-02 | Phase 30 | Pending |
+| DEPLOY-03 | Phase 30 | Pending |
+| DEPLOY-04 | Phase 30 | Pending |
+| DEPLOY-05 | Phase 27 | Pending |
+| TEST-01 | Phase 25 | Pending |
+| TEST-02 | Phase 26 | Pending |
+| TEST-03 | Phase 30 | Pending |
 
 **Coverage:**
 - v3.0 requirements: 27 total
-- Mapped to phases: 0
-- Unmapped: 27 (awaiting roadmap)
+- Mapped to phases: 27
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-17*
+*Traceability updated: 2026-04-17*

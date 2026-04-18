@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Auth + Cloud Deploy
 current_plan: Not started
-status: defining_requirements
-stopped_at: null
-last_updated: "2026-04-16"
-last_activity: 2026-04-16
+status: ready_to_plan
+stopped_at: Roadmap created for v3.0
+last_updated: "2026-04-17"
+last_activity: 2026-04-17
 progress:
-  total_phases: 0
+  total_phases: 6
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -22,40 +22,31 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-16)
 
 **Core value:** A single user can register a financial transaction in under 30 seconds and immediately see how it impacts their budget, debt ratio, and savings rate across all views.
-**Current focus:** Phase 24 -- Touch Targets + Table Optimization (complete)
+**Current focus:** v3.0 Auth + Cloud Deploy -- Phase 25 ready to plan
 
 ## Current Position
 
-**Current Phase:** 24
+**Current Phase:** 25 of 30 (Schema Migration)
 **Current Plan:** Not started
-**Total Plans in Phase:** 2
-**Status:** v2.1 milestone complete
-**Last Activity:** 2026-04-16
+**Total Plans in Phase:** TBD (awaiting plan-phase)
+**Status:** Ready to plan Phase 25
+**Last Activity:** 2026-04-17 -- Roadmap created for v3.0 milestone (6 phases, 27 requirements)
 
-Progress: [██████████] 100%
+Progress: [..........] 0%
 
 ## Performance Metrics
 
-**Velocity (v2.0 reference):**
-- Total plans completed: 53 (27 v1.0 + 9 v1.1 + 17 v2.0)
+**Velocity (cumulative):**
+- Total plans completed: 57 (27 v1.0 + 9 v1.1 + 17 v2.0 + 4 v2.1)
 - v2.0 average duration: ~6 min per plan
-- Expect v2.1 plans to be faster (CSS-only changes, no new components)
+- v2.1 average duration: ~3 min per plan
 
-**By Phase (v2.0):**
+**By Phase (v2.1):**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 17 | 3 | 11min | 3.7min |
-| 18 | 3 | 41min | 13.7min |
-| 19 | 3 | 14min | 4.7min |
-| 20 | 2 | 13min | 6.5min |
-| 21 | 3 | 18min | 6min |
-| 22 | 3 | 20min | 6.7min |
-| 23 | 1/2 | 3min | 3min |
-| Phase 23 P01 | 3min | 2 tasks | 6 files |
-| Phase 23 P02 | 4min | 2 tasks | 7 files |
-| Phase 24 P02 | 2min | 2 tasks | 2 files |
-| Phase 24 P01 | 3min | 2 tasks | 3 files |
+| 23 | 2 | 7min | 3.5min |
+| 24 | 2 | 5min | 2.5min |
 
 ## Accumulated Context
 
@@ -64,18 +55,12 @@ Progress: [██████████] 100%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- [Roadmap v2.1]: 2 phases (23-24) for 12 requirements; layout/grid first, then touch/tables
-- [Roadmap v2.1]: All changes are CSS/Tailwind class updates -- no new components, no new features
-- [Roadmap v2.1]: Phase 23 covers 7 requirements (BUG-01, BUG-02, RESP-01-05), Phase 24 covers 5 (TOUCH-01-03, TABLE-01-02)
-- [23-01]: items-start on CSS grids with expandable children to prevent row stretching
-- [23-01]: max-w-7xl for wider pages (Dashboard/Budget/History) vs max-w-4xl for narrower pages (Deudas)
-- [Phase 23]: items-start on CSS grids with expandable children to prevent row stretching
-- [Phase 23]: max-w-7xl for wider pages (Dashboard/Budget/History) vs max-w-4xl for narrower pages (Deudas)
-- [Phase 23]: CategoryForm icon grid uses grid-cols-2 (not 1) on mobile to keep 16 icons compact
-- [Phase 23]: TransactionForm category grid uses grid-cols-3 on mobile since category circles are small
-- [Phase 24]: AnnualPivotTable min-width reduced from 900px to 700px (not removed) since 14-column tables genuinely need horizontal scroll
-- [Phase 24]: Styled webkit scrollbar pseudo-elements for horizontal scroll visibility hints
-- [Phase 24]: Touch target expansion via min-w/min-h rather than padding increase to preserve visual density
+- [Roadmap v3.0]: 6 phases (25-30) for 27 requirements; strict ordering schema -> auth -> isolation -> invite -> TOTP -> deploy
+- [Roadmap v3.0]: Expand-contract pattern for userId FK migration -- userId optional during migration, then made required
+- [Roadmap v3.0]: CVE-2025-29927 mitigation -- proxy.ts alone is NOT sufficient, requireAuth() mandatory in every Server Action
+- [Roadmap v3.0]: TOTP secrets encrypted at rest with AES-256-GCM, never stored in plaintext
+- [Roadmap v3.0]: JWT session strategy (not database sessions) for proxy.ts compatibility with Next.js 16
+- [Roadmap v3.0]: Phase 28 and 29 both depend on Phase 26, sequenced for clarity but could parallelize
 
 ### Pending Todos
 
@@ -83,10 +68,11 @@ None yet.
 
 ### Blockers/Concerns
 
-None.
+- Schema migration (Phase 25) is highest risk -- userId FK on 10 tables requires careful expand-contract to avoid breaking 479 existing tests
+- CVE-2025-29927: proxy.ts middleware bypass -- requireAuth() in every Server Action is non-negotiable defense-in-depth
 
 ## Session Continuity
 
-Last session: 2026-04-16T17:27:24.443Z
-Stopped at: Completed 24-01-PLAN.md
+Last session: 2026-04-17
+Stopped at: Roadmap created for v3.0 Auth + Cloud Deploy milestone
 Resume file: None
