@@ -22,6 +22,7 @@ export async function authorizeUser(credentials: Partial<Record<'email' | 'passw
       name: true,
       hashedPassword: true,
       isApproved: true,
+      isAdmin: true,
     },
   })
 
@@ -31,13 +32,14 @@ export async function authorizeUser(credentials: Partial<Record<'email' | 'passw
   const isValid = await bcrypt.compare(password, user.hashedPassword)
   if (!isValid) return null
 
-  return { id: user.id, email: user.email, name: user.name }
+  return { id: user.id, email: user.email, name: user.name, isAdmin: user.isAdmin }
 }
 
 /** JWT callback -- exported for testability */
 export async function jwtCallback({ token, user }: { token: JWT; user?: User | AdapterUser }) {
   if (user) {
     token.userId = user.id
+    token.isAdmin = (user as User).isAdmin ?? false
   }
   return token
 }
@@ -46,6 +48,11 @@ export async function jwtCallback({ token, user }: { token: JWT; user?: User | A
 export async function sessionCallback({ session, token }: { session: Session; token: JWT }) {
   if (token.userId) {
     session.user.id = token.userId as string
+  }
+  if (typeof token.isAdmin === 'boolean') {
+    session.user.isAdmin = token.isAdmin
+  } else {
+    session.user.isAdmin = false
   }
   return session
 }

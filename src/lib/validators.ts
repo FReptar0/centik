@@ -156,3 +156,34 @@ export const loginSchema = z.object({
     .string({ error: 'La contrasena es requerida' })
     .min(1, { error: 'La contrasena es requerida' }),
 })
+
+/** Validates POST from InvitacionForm — admin generates invite token */
+export const createInviteSchema = z.object({
+  email: z
+    .string({ error: 'El correo es requerido' })
+    .email({ error: 'Correo no valido' })
+    .trim(),
+})
+
+/** Validates POST from RegisterForm — invitee creates account */
+export const registerSchema = z
+  .object({
+    token: z.string({ error: 'Token requerido' }).min(1, { error: 'Token requerido' }),
+    email: z
+      .string({ error: 'El correo es requerido' })
+      .email({ error: 'Correo no valido' })
+      .trim(),
+    name: z
+      .string({ error: 'Ingresa tu nombre' })
+      .trim()
+      .min(1, { error: 'Ingresa tu nombre' }),
+    password: z
+      .string({ error: 'La contrasena es requerida' })
+      .min(8, { error: 'Usa al menos 8 caracteres' })
+      .regex(/\d/, { error: 'Incluye al menos un numero' }),
+    confirmPassword: z.string({ error: 'Confirma la contrasena' }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    error: 'Las contrasenas no coinciden',
+    path: ['confirmPassword'],
+  })

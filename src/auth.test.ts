@@ -54,6 +54,7 @@ const testUser = {
   name: 'Test User',
   hashedPassword: '$2a$12$hashedpassword',
   isApproved: true,
+  isAdmin: false,
 }
 
 describe('authorizeUser', () => {
@@ -67,10 +68,22 @@ describe('authorizeUser', () => {
 
     const result = await authorizeUser({ email: 'test@example.com', password: 'correct' })
 
-    expect(result).toEqual({ id: 'user-1', email: 'test@example.com', name: 'Test User' })
+    expect(result).toEqual({
+      id: 'user-1',
+      email: 'test@example.com',
+      name: 'Test User',
+      isAdmin: false,
+    })
     expect(mockPrisma.user.findUnique).toHaveBeenCalledWith({
       where: { email: 'test@example.com' },
-      select: { id: true, email: true, name: true, hashedPassword: true, isApproved: true },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        hashedPassword: true,
+        isApproved: true,
+        isAdmin: true,
+      },
     })
   })
 
@@ -119,32 +132,77 @@ describe('authorizeUser', () => {
 })
 
 describe('jwtCallback', () => {
-  it('adds userId to token on initial sign-in', async () => {
+  it('adds userId and isAdmin to token on initial sign-in', async () => {
+    const token: JWT = { sub: 'sub-1' }
+    const user = {
+      id: 'user-1',
+      email: 'test@example.com',
+      name: 'Test',
+      emailVerified: null,
+      isAdmin: true,
+    }
+
+    const result = await jwtCallback({ token, user })
+
+    expect(result.userId).toBe('user-1')
+    expect(result.isAdmin).toBe(true)
+  })
+
+  it('defaults isAdmin to false when user.isAdmin is undefined', async () => {
     const token: JWT = { sub: 'sub-1' }
     const user = { id: 'user-1', email: 'test@example.com', name: 'Test', emailVerified: null }
 
     const result = await jwtCallback({ token, user })
 
     expect(result.userId).toBe('user-1')
+    expect(result.isAdmin).toBe(false)
   })
 
   it('preserves existing token when no user (subsequent calls)', async () => {
-    const token: JWT = { sub: 'sub-1', userId: 'user-1' }
+    const token: JWT = { sub: 'sub-1', userId: 'user-1', isAdmin: true }
 
     const result = await jwtCallback({ token })
 
     expect(result.userId).toBe('user-1')
     expect(result.sub).toBe('sub-1')
+    expect(result.isAdmin).toBe(true)
   })
 })
 
 describe('sessionCallback', () => {
   it('sets session.user.id from token.userId', async () => {
-    const session = { user: { id: '', name: 'Test', email: 'test@example.com' }, expires: '' } as Session
+    const session = {
+      user: { id: '', isAdmin: false, name: 'Test', email: 'test@example.com' },
+      expires: '',
+    } as Session
     const token: JWT = { userId: 'user-1' }
 
     const result = await sessionCallback({ session, token })
 
     expect(result.user.id).toBe('user-1')
+  })
+
+  it('sets session.user.isAdmin to true when token.isAdmin is true', async () => {
+    const session = {
+      user: { id: '', isAdmin: false, name: 'Test', email: 'test@example.com' },
+      expires: '',
+    } as Session
+    const token: JWT = { userId: 'user-1', isAdmin: true }
+
+    const result = await sessionCallback({ session, token })
+
+    expect(result.user.isAdmin).toBe(true)
+  })
+
+  it('defaults session.user.isAdmin to false when token.isAdmin is missing (legacy JWT)', async () => {
+    const session = {
+      user: { id: '', isAdmin: true, name: 'Test', email: 'test@example.com' },
+      expires: '',
+    } as Session
+    const token: JWT = { userId: 'user-1' }
+
+    const result = await sessionCallback({ session, token })
+
+    expect(result.user.isAdmin).toBe(false)
   })
 })
