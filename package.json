@@ -21,6 +21,7 @@
   "dependencies": {
     "@prisma/adapter-pg": "latest",
     "@prisma/client": "latest",
+    "bcryptjs": "^3.0.3",
     "clsx": "latest",
     "dotenv": "latest",
     "lucide-react": "latest",
@@ -39,6 +40,7 @@
     "@tailwindcss/postcss": "^4",
     "@testing-library/dom": "latest",
     "@testing-library/react": "latest",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/pg": "latest",
     "@types/react": "^19",

@@ -1,6 +1,7 @@
 // Transaction seed data builders for April and March 2026
 
 export function buildCurrentMonthTransactions(
+  userId: string,
   categories: Record<string, string>,
   periodId: string,
   tersoftId: string,
@@ -15,6 +16,7 @@ export function buildCurrentMonthTransactions(
       incomeSourceId: tersoftId,
       date: new Date('2026-04-01'),
       periodId,
+      userId,
     },
     {
       type: 'INCOME' as const,
@@ -24,6 +26,7 @@ export function buildCurrentMonthTransactions(
       incomeSourceId: freelanceId,
       date: new Date('2026-04-03'),
       periodId,
+      userId,
     },
     {
       type: 'EXPENSE' as const,
@@ -33,6 +36,7 @@ export function buildCurrentMonthTransactions(
       date: new Date('2026-04-01'),
       paymentMethod: 'DEBITO' as const,
       periodId,
+      userId,
     },
     {
       type: 'EXPENSE' as const,
@@ -42,6 +46,7 @@ export function buildCurrentMonthTransactions(
       date: new Date('2026-04-02'),
       paymentMethod: 'DEBITO' as const,
       periodId,
+      userId,
     },
     {
       type: 'EXPENSE' as const,
@@ -51,6 +56,7 @@ export function buildCurrentMonthTransactions(
       date: new Date('2026-04-01'),
       paymentMethod: 'TRANSFERENCIA' as const,
       periodId,
+      userId,
     },
     {
       type: 'EXPENSE' as const,
@@ -60,6 +66,7 @@ export function buildCurrentMonthTransactions(
       date: new Date('2026-04-02'),
       paymentMethod: 'TRANSFERENCIA' as const,
       periodId,
+      userId,
     },
     {
       type: 'EXPENSE' as const,
@@ -69,6 +76,7 @@ export function buildCurrentMonthTransactions(
       date: new Date('2026-04-02'),
       paymentMethod: 'CREDITO' as const,
       periodId,
+      userId,
     },
     {
       type: 'EXPENSE' as const,
@@ -78,6 +86,7 @@ export function buildCurrentMonthTransactions(
       date: new Date('2026-04-01'),
       paymentMethod: 'CREDITO' as const,
       periodId,
+      userId,
     },
     {
       type: 'EXPENSE' as const,
@@ -87,6 +96,7 @@ export function buildCurrentMonthTransactions(
       date: new Date('2026-04-01'),
       paymentMethod: 'CREDITO' as const,
       periodId,
+      userId,
     },
     {
       type: 'EXPENSE' as const,
@@ -96,6 +106,7 @@ export function buildCurrentMonthTransactions(
       date: new Date('2026-04-01'),
       paymentMethod: 'DEBITO' as const,
       periodId,
+      userId,
     },
     {
       type: 'EXPENSE' as const,
@@ -105,6 +116,7 @@ export function buildCurrentMonthTransactions(
       date: new Date('2026-04-03'),
       paymentMethod: 'EFECTIVO' as const,
       periodId,
+      userId,
     },
     {
       type: 'EXPENSE' as const,
@@ -114,6 +126,7 @@ export function buildCurrentMonthTransactions(
       date: new Date('2026-04-02'),
       paymentMethod: 'EFECTIVO' as const,
       periodId,
+      userId,
     },
     {
       type: 'EXPENSE' as const,
@@ -124,11 +137,13 @@ export function buildCurrentMonthTransactions(
       paymentMethod: 'TRANSFERENCIA' as const,
       notes: 'Pago de deuda',
       periodId,
+      userId,
     },
   ]
 }
 
 export function buildPreviousMonthTransactions(
+  userId: string,
   categories: Record<string, string>,
   periodId: string,
   tersoftId: string,
@@ -142,6 +157,7 @@ export function buildPreviousMonthTransactions(
       incomeSourceId: tersoftId,
       date: new Date('2026-03-01'),
       periodId,
+      userId,
     },
     {
       type: 'INCOME' as const,
@@ -151,6 +167,7 @@ export function buildPreviousMonthTransactions(
       incomeSourceId: tersoftId,
       date: new Date('2026-03-15'),
       periodId,
+      userId,
     },
     {
       type: 'EXPENSE' as const,
@@ -160,6 +177,7 @@ export function buildPreviousMonthTransactions(
       date: new Date('2026-03-02'),
       paymentMethod: 'DEBITO' as const,
       periodId,
+      userId,
     },
     {
       type: 'EXPENSE' as const,
@@ -169,6 +187,7 @@ export function buildPreviousMonthTransactions(
       date: new Date('2026-03-05'),
       paymentMethod: 'TRANSFERENCIA' as const,
       periodId,
+      userId,
     },
     {
       type: 'EXPENSE' as const,
@@ -178,6 +197,7 @@ export function buildPreviousMonthTransactions(
       date: new Date('2026-03-08'),
       paymentMethod: 'CREDITO' as const,
       periodId,
+      userId,
     },
     {
       type: 'EXPENSE' as const,
@@ -187,6 +207,7 @@ export function buildPreviousMonthTransactions(
       date: new Date('2026-03-01'),
       paymentMethod: 'CREDITO' as const,
       periodId,
+      userId,
     },
     {
       type: 'EXPENSE' as const,
@@ -196,6 +217,7 @@ export function buildPreviousMonthTransactions(
       date: new Date('2026-03-10'),
       paymentMethod: 'DEBITO' as const,
       periodId,
+      userId,
     },
     {
       type: 'EXPENSE' as const,
@@ -206,6 +228,7 @@ export function buildPreviousMonthTransactions(
       paymentMethod: 'TRANSFERENCIA' as const,
       notes: 'Pago de deuda',
       periodId,
+      userId,
     },
     {
       type: 'EXPENSE' as const,
@@ -216,6 +239,7 @@ export function buildPreviousMonthTransactions(
       paymentMethod: 'TRANSFERENCIA' as const,
       notes: 'Pago de deuda',
       periodId,
+      userId,
     },
   ]
 }

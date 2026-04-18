@@ -52,6 +52,7 @@ export async function getMonthlySummariesForYear(year: number): Promise<MonthSum
           debtPayments: summary.debtPayments.toString(),
           notes: summary.notes,
           createdAt: summary.createdAt,
+          userId: summary.userId,
         },
       })
     } else {

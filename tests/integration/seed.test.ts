@@ -20,7 +20,7 @@ describe('Seed data correctness', () => {
       env: execEnv,
       stdio: 'pipe',
     })
-  })
+  }, 60000)
 
   it('seeds 8 categories (6 expense, 2 income)', async () => {
     const categories = await prisma.category.findMany()
@@ -204,7 +204,7 @@ describe('Seed idempotency', () => {
         stdio: 'pipe',
       })
     }).not.toThrow()
-  })
+  }, 30000)
 
   it('running seed twice produces no duplicate categories', async () => {
     const count = await prisma.category.count()

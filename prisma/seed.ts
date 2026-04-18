@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import { PrismaClient } from '../generated/prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
+import bcrypt from 'bcryptjs'
 import {
   CATEGORIES,
   BUDGET_AMOUNTS,
@@ -19,7 +20,27 @@ const prisma = new PrismaClient({ adapter })
 
 // --- Seed functions ---
 
-async function seedCategories() {
+async function seedAdminUser(): Promise<string> {
+  const email = process.env.ADMIN_EMAIL || 'fmemije00@gmail.com'
+  const password = process.env.ADMIN_PASSWORD || 'centik-dev-2026'
+  const hashedPassword = await bcrypt.hash(password, 12)
+
+  const user = await prisma.user.upsert({
+    where: { email },
+    update: {},
+    create: {
+      email,
+      hashedPassword,
+      isApproved: true,
+      totpEnabled: false,
+    },
+  })
+
+  console.log(`Seeded admin user: ${email}`)
+  return user.id
+}
+
+async function seedCategories(userId: string) {
   const categories: Record<string, string> = {}
 
   for (const cat of CATEGORIES) {
@@ -34,6 +55,7 @@ async function seedCategories() {
         isDefault: true,
         isActive: true,
         sortOrder: cat.sortOrder,
+        userId,
       },
     })
     categories[cat.name] = result.id
@@ -47,7 +69,7 @@ function lastDayOfMonth(year: number, month: number): Date {
   return new Date(year, month, 0)
 }
 
-async function seedPeriods() {
+async function seedPeriods(userId: string) {
   const previousPeriod = await prisma.period.upsert({
     where: { month_year: { month: 3, year: 2026 } },
     update: {},
@@ -58,6 +80,7 @@ async function seedPeriods() {
       endDate: lastDayOfMonth(2026, 3),
       isClosed: true,
       closedAt: new Date('2026-04-01T00:00:00Z'),
+      userId,
     },
   })
 
@@ -70,6 +93,7 @@ async function seedPeriods() {
       startDate: new Date(2026, 3, 1),
       endDate: lastDayOfMonth(2026, 4),
       isClosed: false,
+      userId,
     },
   })
 
@@ -77,7 +101,7 @@ async function seedPeriods() {
   return { previousPeriod, currentPeriod }
 }
 
-async function seedIncomeSources() {
+async function seedIncomeSources(userId: string) {
   const results: Record<string, { id: string }> = {}
 
   for (const source of INCOME_SOURCES) {
@@ -90,6 +114,7 @@ async function seedIncomeSources() {
         frequency: source.frequency,
         type: source.type,
         isActive: true,
+        userId,
       },
     })
     results[source.name] = result
@@ -102,26 +127,26 @@ async function seedIncomeSources() {
   }
 }
 
-async function seedDebts() {
+async function seedDebts(userId: string) {
   for (const debt of DEBTS) {
     await prisma.debt.upsert({
       where: { name: debt.name },
       update: {},
-      create: { ...debt, isActive: true },
+      create: { ...debt, isActive: true, userId },
     })
   }
 
   console.log(`Seeded ${DEBTS.length} debts`)
 }
 
-async function seedValueUnits() {
+async function seedValueUnits(userId: string) {
   const results: Record<string, { id: string }> = {}
 
   for (const unit of VALUE_UNITS) {
     const result = await prisma.valueUnit.upsert({
       where: { code: unit.code },
       update: {},
-      create: { ...unit, isActive: true },
+      create: { ...unit, isActive: true, userId },
     })
     results[unit.code] = result
   }
@@ -134,7 +159,11 @@ async function seedValueUnits() {
   }
 }
 
-async function seedBudgets(categories: Record<string, string>, currentPeriodId: string) {
+async function seedBudgets(
+  categories: Record<string, string>,
+  currentPeriodId: string,
+  userId: string,
+) {
   let count = 0
 
   for (const [categoryName, quincenalAmount] of Object.entries(BUDGET_AMOUNTS)) {
@@ -153,6 +182,7 @@ async function seedBudgets(categories: Record<string, string>, currentPeriodId: 
         periodId: currentPeriodId,
         categoryId,
         quincenalAmount,
+        userId,
       },
     })
     count++
@@ -166,6 +196,7 @@ async function seedTransactions(
   currentPeriodId: string,
   previousPeriodId: string,
   incomeSources: { tersoft: { id: string }; freelance: { id: string } },
+  userId: string,
 ) {
   const currentCount = await prisma.transaction.count({
     where: { periodId: currentPeriodId },
@@ -176,6 +207,7 @@ async function seedTransactions(
 
   if (currentCount === 0) {
     const txns = buildCurrentMonthTransactions(
+      userId,
       categories,
       currentPeriodId,
       incomeSources.tersoft.id,
@@ -188,6 +220,7 @@ async function seedTransactions(
 
   if (previousCount === 0) {
     const txns = buildPreviousMonthTransactions(
+      userId,
       categories,
       previousPeriodId,
       incomeSources.tersoft.id,
@@ -206,20 +239,24 @@ async function seedTransactions(
   console.log(`Seeded transactions: ${totalCurrent} for April, ${totalPrevious} for March`)
 }
 
-async function seedMonthlySummary(previousPeriodId: string) {
+async function seedMonthlySummary(previousPeriodId: string, userId: string) {
   await prisma.monthlySummary.upsert({
     where: { periodId: previousPeriodId },
     update: {},
     create: {
       periodId: previousPeriodId,
       ...MARCH_SUMMARY,
+      userId,
     },
   })
 
   console.log('Seeded MonthlySummary for March 2026')
 }
 
-async function seedUnitRates(valueUnits: { udi: { id: string }; uma: { id: string } }) {
+async function seedUnitRates(
+  valueUnits: { udi: { id: string }; uma: { id: string } },
+  userId: string,
+) {
   const udiRate = UNIT_RATES.udi
   const existingUdiRate = await prisma.unitRate.findUnique({
     where: {
@@ -228,7 +265,7 @@ async function seedUnitRates(valueUnits: { udi: { id: string }; uma: { id: strin
   })
   if (!existingUdiRate) {
     await prisma.unitRate.create({
-      data: { unitId: valueUnits.udi.id, ...udiRate },
+      data: { unitId: valueUnits.udi.id, ...udiRate, userId },
     })
   }
 
@@ -240,7 +277,7 @@ async function seedUnitRates(valueUnits: { udi: { id: string }; uma: { id: strin
   })
   if (!existingUmaRate) {
     await prisma.unitRate.create({
-      data: { unitId: valueUnits.uma.id, ...umaRate },
+      data: { unitId: valueUnits.uma.id, ...umaRate, userId },
     })
   }
 
@@ -250,15 +287,16 @@ async function seedUnitRates(valueUnits: { udi: { id: string }; uma: { id: strin
 // --- Main ---
 
 async function main() {
-  const categories = await seedCategories()
-  const { previousPeriod, currentPeriod } = await seedPeriods()
-  const incomeSources = await seedIncomeSources()
-  await seedDebts()
-  const valueUnits = await seedValueUnits()
-  await seedBudgets(categories, currentPeriod.id)
-  await seedTransactions(categories, currentPeriod.id, previousPeriod.id, incomeSources)
-  await seedMonthlySummary(previousPeriod.id)
-  await seedUnitRates(valueUnits)
+  const adminUserId = await seedAdminUser()
+  const categories = await seedCategories(adminUserId)
+  const { previousPeriod, currentPeriod } = await seedPeriods(adminUserId)
+  const incomeSources = await seedIncomeSources(adminUserId)
+  await seedDebts(adminUserId)
+  const valueUnits = await seedValueUnits(adminUserId)
+  await seedBudgets(categories, currentPeriod.id, adminUserId)
+  await seedTransactions(categories, currentPeriod.id, previousPeriod.id, incomeSources, adminUserId)
+  await seedMonthlySummary(previousPeriod.id, adminUserId)
+  await seedUnitRates(valueUnits, adminUserId)
 
   console.log('\nSeed completed successfully')
 }
