@@ -5,13 +5,22 @@ import { Plus } from 'lucide-react'
 import PageHeader from '@/components/layout/PageHeader'
 import CategoryList from '@/components/categories/CategoryList'
 import CategoryForm from '@/components/categories/CategoryForm'
-import type { Category } from '@/types'
+import InvitacionesSection from '@/components/configuracion/InvitacionesSection'
+import type { Category, InviteToken } from '@/types'
 
 interface ConfiguracionClientWrapperProps {
   categories: Category[]
+  inviteTokens: InviteToken[]
+  isAdmin: boolean
+  origin: string
 }
 
-export default function ConfiguracionClientWrapper({ categories }: ConfiguracionClientWrapperProps) {
+export default function ConfiguracionClientWrapper({
+  categories,
+  inviteTokens,
+  isAdmin,
+  origin,
+}: ConfiguracionClientWrapperProps) {
   const [isFormOpen, setIsFormOpen] = useState(false)
 
   function handleAdd() {
@@ -41,6 +50,16 @@ export default function ConfiguracionClientWrapper({ categories }: Configuracion
         <h2 className="text-lg font-semibold text-text-primary mb-4">Categorias</h2>
         <CategoryList categories={categories} onAdd={handleAdd} />
       </section>
+
+      {isAdmin && (
+        <section className="mt-8">
+          <h2 className="text-lg font-semibold text-text-primary mb-2">Invitaciones</h2>
+          <p className="text-sm text-text-secondary mb-4">
+            Genera un enlace de invitacion para dar acceso a un nuevo usuario.
+          </p>
+          <InvitacionesSection inviteTokens={inviteTokens} origin={origin} />
+        </section>
+      )}
 
       <CategoryForm isOpen={isFormOpen} onClose={handleClose} />
     </div>

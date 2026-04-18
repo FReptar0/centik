@@ -12,6 +12,7 @@ export type { MonthlySummary } from '../../generated/prisma/client'
 export type { ValueUnit } from '../../generated/prisma/client'
 export type { UnitRate } from '../../generated/prisma/client'
 export type { Asset } from '../../generated/prisma/client'
+export type { InviteToken } from '../../generated/prisma/client'
 
 // --- Enum re-exports (runtime values for validation/display) ---
 export {
