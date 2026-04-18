@@ -169,7 +169,7 @@ Note: Phases 28 and 29 both depend on 26, not on each other. They could theoreti
 | 23-24 | v2.1 | 4/4 | Complete | 2026-04-16 |
 | 25. Schema Migration | 2/2 | Complete    | 2026-04-18 | - |
 | 26. Auth Wiring + Login | 4/4 | Complete    | 2026-04-18 | - |
-| 27. Per-User Data Isolation | 3/3 | Complete   | 2026-04-18 | - |
+| 27. Per-User Data Isolation | 3/3 | Complete    | 2026-04-18 | - |
 | 28. Invite-Only Registration | v3.0 | 0/? | Not started | - |
 | 29. TOTP Two-Factor Auth | v3.0 | 0/? | Not started | - |
 | 30. Vercel Deploy + Security | v3.0 | 0/? | Not started | - |
