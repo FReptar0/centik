@@ -5,8 +5,8 @@ milestone_name: Auth + Cloud Deploy
 current_phase: 28
 current_plan: Not started
 status: planning
-stopped_at: Phase 28 context gathered
-last_updated: "2026-04-18T16:14:08.195Z"
+stopped_at: Phase 28 UI-SPEC approved
+last_updated: "2026-04-18T16:25:12.878Z"
 last_activity: 2026-04-18
 progress:
   total_phases: 6
@@ -102,6 +102,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-18T16:14:08.174Z
-Stopped at: Phase 28 context gathered
-Resume file: .planning/phases/28-invite-only-registration/28-CONTEXT.md
+Last session: 2026-04-18T16:25:12.862Z
+Stopped at: Phase 28 UI-SPEC approved
+Resume file: .planning/phases/28-invite-only-registration/28-UI-SPEC.md
