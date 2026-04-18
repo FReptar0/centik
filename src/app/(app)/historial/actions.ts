@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { getClosePeriodPreview, type ClosePeriodPreview } from '@/lib/history'
-import { getDefaultUserId } from '@/lib/auth-utils'
+import { requireAuth } from '@/lib/auth-utils'
 
 type ActionResult = { success: true } | { error: Record<string, string[]> }
 
@@ -21,10 +21,11 @@ function revalidateHistoryPaths(): void {
  * create next period, copy budgets.
  */
 export async function closePeriod(periodId: string): Promise<ActionResult> {
+  const { userId } = await requireAuth()
+
   try {
-    const userId = await getDefaultUserId()
-    const period = await prisma.period.findUnique({
-      where: { id: periodId },
+    const period = await prisma.period.findFirst({
+      where: { id: periodId, userId },
     })
 
     if (!period) {
@@ -139,9 +140,11 @@ export async function closePeriod(periodId: string): Promise<ActionResult> {
  * Does NOT delete the next period or its budgets.
  */
 export async function reopenPeriod(periodId: string): Promise<ActionResult> {
+  const { userId } = await requireAuth()
+
   try {
-    const period = await prisma.period.findUnique({
-      where: { id: periodId },
+    const period = await prisma.period.findFirst({
+      where: { id: periodId, userId },
     })
 
     if (!period) {
@@ -175,6 +178,6 @@ export async function reopenPeriod(periodId: string): Promise<ActionResult> {
 export async function getClosePeriodPreviewAction(
   periodId: string,
 ): Promise<ClosePeriodPreview> {
-  const userId = await getDefaultUserId()
+  const { userId } = await requireAuth()
   return getClosePeriodPreview(periodId, userId)
 }

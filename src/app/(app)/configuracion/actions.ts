@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { createCategorySchema } from '@/lib/validators'
-import { getDefaultUserId } from '@/lib/auth-utils'
+import { requireAuth } from '@/lib/auth-utils'
 
 type ActionResult = { success: true } | { error: Record<string, string[]> }
 
@@ -33,8 +33,9 @@ export async function createCategory(data: unknown): Promise<ActionResult> {
     return { error: parsed.error.flatten().fieldErrors }
   }
 
+  const { userId } = await requireAuth()
+
   try {
-    const userId = await getDefaultUserId()
     const maxSort = await prisma.category.aggregate({
       _max: { sortOrder: true },
     })
@@ -72,9 +73,11 @@ export async function createCategory(data: unknown): Promise<ActionResult> {
  * Preserves transaction history by keeping the record.
  */
 export async function deleteCategory(id: string): Promise<ActionResult> {
+  const { userId } = await requireAuth()
+
   try {
-    const category = await prisma.category.findUnique({
-      where: { id },
+    const category = await prisma.category.findFirst({
+      where: { id, userId },
       select: { isDefault: true },
     })
 

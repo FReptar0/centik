@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { createIncomeSourceSchema } from '@/lib/validators'
-import { getDefaultUserId } from '@/lib/auth-utils'
+import { requireAuth } from '@/lib/auth-utils'
 
 type ActionResult = { success: true } | { error: Record<string, string[]> }
 
@@ -32,8 +32,9 @@ export async function createIncomeSource(data: unknown): Promise<ActionResult> {
     return { error: parsed.error.flatten().fieldErrors }
   }
 
+  const { userId } = await requireAuth()
+
   try {
-    const userId = await getDefaultUserId()
     await prisma.incomeSource.create({
       data: {
         name: parsed.data.name,
@@ -68,7 +69,15 @@ export async function updateIncomeSource(id: string, data: unknown): Promise<Act
     return { error: parsed.error.flatten().fieldErrors }
   }
 
+  const { userId } = await requireAuth()
+
   try {
+    const existing = await prisma.incomeSource.findFirst({ where: { id, userId } })
+
+    if (!existing) {
+      return { error: { _form: ['Fuente de ingreso no encontrada'] } }
+    }
+
     await prisma.incomeSource.update({
       where: { id },
       data: {
@@ -84,10 +93,6 @@ export async function updateIncomeSource(id: string, data: unknown): Promise<Act
   } catch (error: unknown) {
     const code = getPrismaErrorCode(error)
 
-    if (code === 'P2025') {
-      return { error: { _form: ['Fuente de ingreso no encontrada'] } }
-    }
-
     if (code === 'P2002') {
       return { error: { name: ['Ya existe una fuente con ese nombre'] } }
     }
@@ -101,20 +106,22 @@ export async function updateIncomeSource(id: string, data: unknown): Promise<Act
  * Catches P2025 (not found) for graceful error handling.
  */
 export async function deleteIncomeSource(id: string): Promise<ActionResult> {
+  const { userId } = await requireAuth()
+
   try {
+    const existing = await prisma.incomeSource.findFirst({ where: { id, userId } })
+
+    if (!existing) {
+      return { error: { _form: ['Fuente de ingreso no encontrada'] } }
+    }
+
     await prisma.incomeSource.delete({
       where: { id },
     })
 
     revalidateIncomePaths()
     return { success: true }
-  } catch (error: unknown) {
-    const code = getPrismaErrorCode(error)
-
-    if (code === 'P2025') {
-      return { error: { _form: ['Fuente de ingreso no encontrada'] } }
-    }
-
+  } catch {
     return { error: { _form: ['Error de servidor'] } }
   }
 }

@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { createDebtSchema, updateDebtBalanceSchema } from '@/lib/validators'
-import { getDefaultUserId } from '@/lib/auth-utils'
+import { requireAuth } from '@/lib/auth-utils'
 
 type ActionResult = { success: true } | { error: Record<string, string[]> }
 
@@ -33,8 +33,9 @@ export async function createDebt(data: unknown): Promise<ActionResult> {
     return { error: parsed.error.flatten().fieldErrors }
   }
 
+  const { userId } = await requireAuth()
+
   try {
-    const userId = await getDefaultUserId()
     await prisma.debt.create({
       data: {
         name: parsed.data.name,
@@ -76,7 +77,15 @@ export async function updateDebt(id: string, data: unknown): Promise<ActionResul
     return { error: parsed.error.flatten().fieldErrors }
   }
 
+  const { userId } = await requireAuth()
+
   try {
+    const existing = await prisma.debt.findFirst({ where: { id, userId } })
+
+    if (!existing) {
+      return { error: { _form: ['Deuda no encontrada'] } }
+    }
+
     await prisma.debt.update({
       where: { id },
       data: {
@@ -99,10 +108,6 @@ export async function updateDebt(id: string, data: unknown): Promise<ActionResul
   } catch (error: unknown) {
     const code = getPrismaErrorCode(error)
 
-    if (code === 'P2025') {
-      return { error: { _form: ['Deuda no encontrada'] } }
-    }
-
     if (code === 'P2002') {
       return { error: { name: ['Ya existe una deuda con ese nombre'] } }
     }
@@ -123,7 +128,15 @@ export async function updateDebtBalance(id: string, data: unknown): Promise<Acti
     return { error: parsed.error.flatten().fieldErrors }
   }
 
+  const { userId } = await requireAuth()
+
   try {
+    const existing = await prisma.debt.findFirst({ where: { id, userId } })
+
+    if (!existing) {
+      return { error: { _form: ['Deuda no encontrada'] } }
+    }
+
     await prisma.debt.update({
       where: { id },
       data: { currentBalance: BigInt(parsed.data.currentBalance) },
@@ -131,13 +144,7 @@ export async function updateDebtBalance(id: string, data: unknown): Promise<Acti
 
     revalidateDebtPaths()
     return { success: true }
-  } catch (error: unknown) {
-    const code = getPrismaErrorCode(error)
-
-    if (code === 'P2025') {
-      return { error: { _form: ['Deuda no encontrada'] } }
-    }
-
+  } catch {
     return { error: { _form: ['Error de servidor'] } }
   }
 }
@@ -147,20 +154,22 @@ export async function updateDebtBalance(id: string, data: unknown): Promise<Acti
  * Catches P2025 (not found) for graceful error handling.
  */
 export async function deleteDebt(id: string): Promise<ActionResult> {
+  const { userId } = await requireAuth()
+
   try {
+    const existing = await prisma.debt.findFirst({ where: { id, userId } })
+
+    if (!existing) {
+      return { error: { _form: ['Deuda no encontrada'] } }
+    }
+
     await prisma.debt.delete({
       where: { id },
     })
 
     revalidateDebtPaths()
     return { success: true }
-  } catch (error: unknown) {
-    const code = getPrismaErrorCode(error)
-
-    if (code === 'P2025') {
-      return { error: { _form: ['Deuda no encontrada'] } }
-    }
-
+  } catch {
     return { error: { _form: ['Error de servidor'] } }
   }
 }

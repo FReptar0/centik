@@ -5,7 +5,7 @@ import prisma from '@/lib/prisma'
 import { serializeBigInts } from '@/lib/serialize'
 import { createTransactionSchema } from '@/lib/validators'
 import { getPeriodForDate } from '@/lib/period'
-import { getDefaultUserId } from '@/lib/auth-utils'
+import { requireAuth } from '@/lib/auth-utils'
 import type { Category, SerializedIncomeSource } from '@/types'
 
 type ActionResult = { success: true } | { error: Record<string, string[]> }
@@ -18,7 +18,7 @@ export async function getTransactionFormData(): Promise<{
   categories: Category[]
   incomeSources: SerializedIncomeSource[]
 }> {
-  const userId = await getDefaultUserId()
+  const { userId } = await requireAuth()
   const [categories, rawSources] = await Promise.all([
     prisma.category.findMany({
       where: { isActive: true, userId },
@@ -57,8 +57,9 @@ export async function createTransaction(data: unknown): Promise<ActionResult> {
     return { error: parsed.error.flatten().fieldErrors }
   }
 
+  const { userId } = await requireAuth()
+
   try {
-    const userId = await getDefaultUserId()
     const period = await getPeriodForDate(parsed.data.date, userId)
 
     if (period.isClosed) {
@@ -98,9 +99,11 @@ export async function updateTransaction(id: string, data: unknown): Promise<Acti
     return { error: parsed.error.flatten().fieldErrors }
   }
 
+  const { userId } = await requireAuth()
+
   try {
-    const existing = await prisma.transaction.findUnique({
-      where: { id },
+    const existing = await prisma.transaction.findFirst({
+      where: { id, userId },
       include: { period: true },
     })
 
@@ -112,7 +115,6 @@ export async function updateTransaction(id: string, data: unknown): Promise<Acti
       return { error: { _form: [CLOSED_PERIOD_ERROR] } }
     }
 
-    const userId = await getDefaultUserId()
     const newPeriod = await getPeriodForDate(parsed.data.date, userId)
 
     if (newPeriod.isClosed) {
@@ -146,9 +148,11 @@ export async function updateTransaction(id: string, data: unknown): Promise<Acti
  * Enforces closed-period protection before deletion.
  */
 export async function deleteTransaction(id: string): Promise<ActionResult> {
+  const { userId } = await requireAuth()
+
   try {
-    const existing = await prisma.transaction.findUnique({
-      where: { id },
+    const existing = await prisma.transaction.findFirst({
+      where: { id, userId },
       include: { period: true },
     })
 

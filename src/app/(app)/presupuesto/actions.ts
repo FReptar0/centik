@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { createBudgetSchema } from '@/lib/validators'
-import { getDefaultUserId } from '@/lib/auth-utils'
+import { requireAuth } from '@/lib/auth-utils'
 
 type ActionResult = { success: true } | { error: Record<string, string[]> }
 
@@ -25,8 +25,9 @@ export async function upsertBudgets(periodId: string, data: unknown): Promise<Ac
     return { error: parsed.error.flatten().fieldErrors }
   }
 
+  const { userId } = await requireAuth()
+
   try {
-    const userId = await getDefaultUserId()
     await Promise.all(
       parsed.data.entries.map(async (entry) => {
         const existing = await prisma.budget.findFirst({
