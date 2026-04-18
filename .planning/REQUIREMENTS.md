@@ -9,7 +9,7 @@ Requirements for auth + cloud deploy. Security-first — this is real financial 
 
 ### Auth Foundation
 
-- [ ] **AUTH-01**: Prisma schema updated with User model, Auth.js adapter tables (Account, Session, VerificationToken), and userId FK on all 10 existing data models
+- [x] **AUTH-01**: Prisma schema updated with User model, Auth.js adapter tables (Account, Session, VerificationToken), and userId FK on all 10 existing data models
 - [ ] **AUTH-02**: Auth.js v5 configured with Prisma adapter, Credentials provider (email+password), JWT session strategy, and session callbacks exposing userId
 - [ ] **AUTH-03**: proxy.ts protects all routes except /login and /register — unauthenticated users redirected to /login
 - [ ] **AUTH-04**: Login page with email+password form, error handling, and Glyph Finance design
@@ -33,7 +33,7 @@ Requirements for auth + cloud deploy. Security-first — this is real financial 
 
 ### Invite-Only Registration
 
-- [ ] **INVITE-01**: InviteToken model in Prisma schema (token, email, expiresAt, usedAt)
+- [x] **INVITE-01**: InviteToken model in Prisma schema (token, email, expiresAt, usedAt)
 - [ ] **INVITE-02**: Admin Server Action to generate invite tokens (crypto.randomBytes(32))
 - [ ] **INVITE-03**: Registration page — only accessible with valid invite token URL, creates user with isApproved=true
 - [ ] **INVITE-04**: No self-registration — /register without valid token shows error
@@ -77,7 +77,7 @@ Deferred to future milestones.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | Phase 25 | Pending |
+| AUTH-01 | Phase 25 | Complete |
 | AUTH-02 | Phase 26 | Pending |
 | AUTH-03 | Phase 26 | Pending |
 | AUTH-04 | Phase 26 | Pending |
@@ -92,7 +92,7 @@ Deferred to future milestones.
 | TOTP-03 | Phase 29 | Pending |
 | TOTP-04 | Phase 29 | Pending |
 | TOTP-05 | Phase 29 | Pending |
-| INVITE-01 | Phase 25 | Pending |
+| INVITE-01 | Phase 25 | Complete |
 | INVITE-02 | Phase 28 | Pending |
 | INVITE-03 | Phase 28 | Pending |
 | INVITE-04 | Phase 28 | Pending |
