@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Auth + Cloud Deploy
 current_phase: 27
-current_plan: Not started
-status: planning
-stopped_at: Phase 27 context gathered
-last_updated: "2026-04-18T05:27:48.048Z"
+current_plan: 2
+status: executing
+stopped_at: Completed 27-01-PLAN.md
+last_updated: "2026-04-18T05:52:47.304Z"
 last_activity: 2026-04-18
 progress:
   total_phases: 6
   completed_phases: 2
-  total_plans: 6
-  completed_plans: 6
+  total_plans: 9
+  completed_plans: 7
   percent: 91
 ---
 
@@ -23,14 +23,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-16)
 
 **Core value:** A single user can register a financial transaction in under 30 seconds and immediately see how it impacts their budget, debt ratio, and savings rate across all views.
-**Current focus:** v3.0 Auth + Cloud Deploy -- Phase 26 Plan 00 complete, Plan 01 next
+**Current focus:** v3.0 Auth + Cloud Deploy -- Phase 27 Plan 01 complete, Plan 02 next
 
 ## Current Position
 
 **Current Phase:** 27
-**Current Plan:** Not started
-**Total Plans in Phase:** 4
-**Status:** Ready to plan
+**Current Plan:** 2
+**Total Plans in Phase:** 3
+**Status:** Executing
 **Last Activity:** 2026-04-18
 
 Progress: [█████████░] 91%
@@ -55,6 +55,7 @@ Progress: [█████████░] 91%
 | Phase 26 P01 | 4min | 1 tasks | 8 files |
 | Phase 26 P02 | 6min | 1 tasks | 48 files |
 | Phase 26 P03 | 11min | 3 tasks | 13 files |
+| Phase 27 P01 | 2min | 1 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -81,6 +82,7 @@ Recent decisions affecting current work:
 - [Phase 26]: All @/app/X/actions imports updated to @/app/(app)/X/actions for route group compatibility
 - [Phase 26]: Mock next-auth module init in tests to avoid next/server ESM import chain
 - [Phase 26]: Integration test mocks only NextAuth init, uses real authorizeUser + real DB + real bcrypt
+- [Phase 27]: requireAuth() returns { userId } object (not bare string) for extensibility
 
 ### Pending Todos
 
@@ -93,6 +95,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-18T05:27:48.038Z
-Stopped at: Phase 27 context gathered
-Resume file: .planning/phases/27-per-user-data-isolation/27-CONTEXT.md
+Last session: 2026-04-18T05:52:47.301Z
+Stopped at: Completed 27-01-PLAN.md
+Resume file: None
