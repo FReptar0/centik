@@ -1,7 +1,8 @@
+import { connection } from 'next/server'
+import { auth } from '@/auth'
 import prisma from '@/lib/prisma'
 import { serializeBigInts } from '@/lib/serialize'
 import { getCurrentPeriod } from '@/lib/period'
-import { getDefaultUserId } from '@/lib/auth-utils'
 import MovimientosClientWrapper from './MovimientosClientWrapper'
 import type { SerializedIncomeSource, SerializedTransaction } from '@/types'
 import type { TransactionType, PaymentMethod, Prisma } from '../../../../generated/prisma/client'
@@ -24,11 +25,14 @@ interface PageProps {
 }
 
 export default async function MovimientosPage({ searchParams }: PageProps) {
+  await connection()
+  const session = await auth()
+  // proxy.ts guarantees session exists for (app) routes
+  const userId = session!.user!.id
   const params = await searchParams
 
   const month = params.month ? Number(params.month) : undefined
   const year = params.year ? Number(params.year) : undefined
-  const userId = await getDefaultUserId()
 
   let period
   if (month && year) {

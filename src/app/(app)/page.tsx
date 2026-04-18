@@ -1,3 +1,5 @@
+import { connection } from 'next/server'
+import { auth } from '@/auth'
 import PageHeader from '@/components/layout/PageHeader'
 import PeriodSelector from '@/components/layout/PeriodSelector'
 import KPIGrid from '@/components/dashboard/KPIGrid'
@@ -13,15 +15,17 @@ import {
   getMonthlyTrend,
   getRecentTransactions,
 } from '@/lib/dashboard'
-import { getDefaultUserId } from '@/lib/auth-utils'
 
 interface PageProps {
   searchParams: Promise<{ month?: string; year?: string }>
 }
 
 export default async function HomePage({ searchParams }: PageProps) {
+  await connection()
+  const session = await auth()
+  // proxy.ts guarantees session exists for (app) routes
+  const userId = session!.user!.id
   const params = await searchParams
-  const userId = await getDefaultUserId()
 
   const period = params.month && params.year
     ? await getPeriodForDate(

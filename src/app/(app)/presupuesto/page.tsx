@@ -1,7 +1,8 @@
+import { connection } from 'next/server'
+import { auth } from '@/auth'
 import prisma from '@/lib/prisma'
 import { serializeBigInts } from '@/lib/serialize'
 import { getCurrentPeriod } from '@/lib/period'
-import { getDefaultUserId } from '@/lib/auth-utils'
 import { calculateIncomeSummary } from '@/lib/income'
 import { getBudgetsWithSpent, copyBudgetsFromPreviousPeriod } from '@/lib/budget'
 import PresupuestoClientWrapper from './PresupuestoClientWrapper'
@@ -12,11 +13,13 @@ interface PageProps {
 }
 
 export default async function PresupuestoPage({ searchParams }: PageProps) {
+  await connection()
+  const session = await auth()
+  // proxy.ts guarantees session exists for (app) routes
+  const userId = session!.user!.id
   const params = await searchParams
   const month = params.month ? Number(params.month) : undefined
   const year = params.year ? Number(params.year) : undefined
-
-  const userId = await getDefaultUserId()
 
   // Resolve period: URL params or current
   let period

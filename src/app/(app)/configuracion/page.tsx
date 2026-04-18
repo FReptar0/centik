@@ -1,9 +1,13 @@
+import { connection } from 'next/server'
+import { auth } from '@/auth'
 import prisma from '@/lib/prisma'
-import { getDefaultUserId } from '@/lib/auth-utils'
 import ConfiguracionClientWrapper from './ConfiguracionClientWrapper'
 
 export default async function ConfiguracionPage() {
-  const userId = await getDefaultUserId()
+  await connection()
+  const session = await auth()
+  // proxy.ts guarantees session exists for (app) routes
+  const userId = session!.user!.id
   const categories = await prisma.category.findMany({
     where: { isActive: true, userId },
     orderBy: { sortOrder: 'asc' },

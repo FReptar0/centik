@@ -1,7 +1,8 @@
+import { connection } from 'next/server'
+import { auth } from '@/auth'
 import prisma from '@/lib/prisma'
 import { getMonthlySummariesForYear, getAvailableYears } from '@/lib/history'
 import { getCurrentPeriod } from '@/lib/period'
-import { getDefaultUserId } from '@/lib/auth-utils'
 import HistorialClientWrapper from '@/components/history/HistorialClientWrapper'
 
 interface PageProps {
@@ -9,12 +10,15 @@ interface PageProps {
 }
 
 export default async function HistorialPage({ searchParams }: PageProps) {
+  await connection()
+  const session = await auth()
+  // proxy.ts guarantees session exists for (app) routes
+  const userId = session!.user!.id
   const params = await searchParams
 
   const now = new Date()
   const defaultYear = now.getFullYear()
   const year = params.year ? Number(params.year) : defaultYear
-  const userId = await getDefaultUserId()
 
   const [data, availableYears, periodsForYear, currentPeriod] =
     await Promise.all([

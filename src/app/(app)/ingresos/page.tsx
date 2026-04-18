@@ -1,11 +1,15 @@
+import { connection } from 'next/server'
+import { auth } from '@/auth'
 import prisma from '@/lib/prisma'
 import { serializeBigInts } from '@/lib/serialize'
-import { getDefaultUserId } from '@/lib/auth-utils'
 import IngresosClientWrapper from './IngresosClientWrapper'
 import type { SerializedIncomeSource } from '@/types'
 
 export default async function IngresosPage() {
-  const userId = await getDefaultUserId()
+  await connection()
+  const session = await auth()
+  // proxy.ts guarantees session exists for (app) routes
+  const userId = session!.user!.id
   const sources = await prisma.incomeSource.findMany({
     where: { isActive: true, userId },
     orderBy: { createdAt: 'asc' },
