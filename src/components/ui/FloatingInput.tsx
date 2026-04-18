@@ -7,7 +7,7 @@ interface FloatingInputProps {
   label: string
   value: string
   onChange: (value: string) => void
-  type?: 'text' | 'number' | 'decimal' | 'date'
+  type?: 'text' | 'number' | 'decimal' | 'date' | 'password' | 'email'
   prefix?: string
   suffix?: string
   error?: string
@@ -93,11 +93,7 @@ export default function FloatingInput({
           'transition-all duration-200',
           prefix && 'pl-5',
           suffix && 'pr-5',
-          error
-            ? 'border-negative'
-            : isFocused
-              ? 'border-accent'
-              : 'border-border-divider',
+          error ? 'border-negative' : isFocused ? 'border-accent' : 'border-border-divider',
           disabled && 'opacity-50 cursor-not-allowed',
         )}
       />
@@ -110,7 +106,11 @@ export default function FloatingInput({
       )}
 
       {/* Error message */}
-      {error && <p id={errorId} className="mt-1 text-[11px] text-negative">{error}</p>}
+      {error && (
+        <p id={errorId} className="mt-1 text-[11px] text-negative">
+          {error}
+        </p>
+      )}
     </div>
   )
 }

@@ -145,3 +145,14 @@ export const createValueUnitSchema = z.object({
   providerPath: z.string().optional(),
   refreshInterval: z.number().int().nonnegative().optional(),
 })
+
+/** Validates login form submission */
+export const loginSchema = z.object({
+  email: z
+    .string({ error: 'El correo es requerido' })
+    .email({ error: 'Correo electronico no valido' })
+    .trim(),
+  password: z
+    .string({ error: 'La contrasena es requerida' })
+    .min(1, { error: 'La contrasena es requerida' }),
+})
