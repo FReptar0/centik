@@ -164,7 +164,7 @@ Note: Phases 28 and 29 both depend on 26, not on each other. They could theoreti
 | 12-16 | v1.1 | 9/9 | Complete | 2026-04-06 |
 | 17-22 | v2.0 | 17/17 | Complete | 2026-04-16 |
 | 23-24 | v2.1 | 4/4 | Complete | 2026-04-16 |
-| 25. Schema Migration | 2/2 | Complete   | 2026-04-18 | - |
+| 25. Schema Migration | 2/2 | Complete    | 2026-04-18 | - |
 | 26. Auth Wiring + Login | v3.0 | 0/? | Not started | - |
 | 27. Per-User Data Isolation | v3.0 | 0/? | Not started | - |
 | 28. Invite-Only Registration | v3.0 | 0/? | Not started | - |
