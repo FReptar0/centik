@@ -79,6 +79,7 @@ model User {
   unitRates        UnitRate[]
   assets           Asset[]
   inviteTokens     InviteToken[]
+  backupCodes      BackupCode[]
 }
 
 /// Auth.js adapter - OAuth/credential accounts
@@ -138,17 +139,17 @@ model InviteToken {
 
 /// DFR 2.1 - Income sources (employment, freelance, other)
 model IncomeSource {
-  id            String      @id @default(cuid())
-  name          String      @unique
+  id            String    @id @default(cuid())
+  name          String    @unique
   defaultAmount BigInt
   frequency     Frequency
-  type          String      // "EMPLOYMENT", "FREELANCE", "OTHER" — not an enum per DFR
-  isActive      Boolean     @default(true)
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  type          String // "EMPLOYMENT", "FREELANCE", "OTHER" — not an enum per DFR
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   userId        String
 
-  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions Transaction[]
 
   @@index([userId])
@@ -170,10 +171,10 @@ model Transaction {
   updatedAt      DateTime        @updatedAt
   userId         String
 
-  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  category     Category     @relation(fields: [categoryId], references: [id])
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category     Category      @relation(fields: [categoryId], references: [id])
   incomeSource IncomeSource? @relation(fields: [incomeSourceId], references: [id])
-  period       Period       @relation(fields: [periodId], references: [id])
+  period       Period        @relation(fields: [periodId], references: [id])
 
   @@index([periodId, date])
   @@index([categoryId])
@@ -206,7 +207,7 @@ model Debt {
   type            DebtType
   currentBalance  BigInt
   creditLimit     BigInt?
-  annualRate      Int      // basis points (4500 = 45.00%)
+  annualRate      Int // basis points (4500 = 45.00%)
   minimumPayment  BigInt?
   monthlyPayment  BigInt?
   originalAmount  BigInt?
@@ -269,7 +270,7 @@ model MonthlySummary {
   totalIncome   BigInt
   totalExpenses BigInt
   totalSavings  BigInt
-  savingsRate   Int      // basis points (2050 = 20.50%)
+  savingsRate   Int // basis points (2050 = 20.50%)
   debtAtClose   BigInt
   debtPayments  BigInt
   notes         String?
@@ -344,5 +345,18 @@ model Asset {
   unit ValueUnit @relation(fields: [unitId], references: [id], onDelete: Cascade)
 
   @@index([unitId])
+  @@index([userId])
+}
+
+/// Single-use backup codes for 2FA recovery (v3.0 TOTP — D-09, D-28)
+model BackupCode {
+  id        String    @id @default(cuid())
+  userId    String
+  codeHash  String
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
 }
