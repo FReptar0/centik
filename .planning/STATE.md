@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Auth + Cloud Deploy
-current_phase: 28
-current_plan: 02
-status: executing
-stopped_at: Phase 28 Plan 02 complete (all 3 Phase 28 plans done)
-last_updated: "2026-04-18T17:16:06.000Z"
-last_activity: 2026-04-18
+current_phase: 29
+current_plan: Not started
+status: planning
+stopped_at: Phase 28 Plan 02 complete -- admin invite generation UI + createInviteToken/revokeInviteToken/listInviteTokens Server Actions + 17 unit + 3 integration tests
+last_updated: "2026-04-20T18:52:22.486Z"
+last_activity: 2026-04-20
 progress:
   total_phases: 6
-  completed_phases: 3
-  total_plans: 13
+  completed_phases: 4
+  total_plans: 12
   completed_plans: 12
-  percent: 92
+  percent: 100
 ---
 
 # Project State
@@ -27,11 +27,11 @@ See: .planning/PROJECT.md (updated 2026-04-16)
 
 ## Current Position
 
-**Current Phase:** 28
-**Current Plan:** 02 (complete) -- plans 01, 02, 03 all complete
+**Current Phase:** 29
+**Current Plan:** Not started
 **Total Plans in Phase:** 3
-**Status:** Phase 28 closed: admin can generate invite tokens from /configuracion, invitees can register via /register, all protected by requireAdmin() + requireAuth() gates
-**Last Activity:** 2026-04-18
+**Status:** Ready to plan
+**Last Activity:** 2026-04-20
 
 Progress: [█████████▒] 92%
 
@@ -39,7 +39,7 @@ Progress: [█████████▒] 92%
 
 **Velocity (cumulative):**
 
-- Total plans completed: 58 (27 v1.0 + 9 v1.1 + 17 v2.0 + 4 v2.1 + 1 v3.0)
+- Total plans completed: 61 (27 v1.0 + 9 v1.1 + 17 v2.0 + 4 v2.1 + 1 v3.0)
 - v2.0 average duration: ~6 min per plan
 - v2.1 average duration: ~3 min per plan
 - v3.0 average duration: ~10 min per plan
@@ -62,6 +62,7 @@ Progress: [█████████▒] 92%
 | Phase 28 P01 | 5min | 2 tasks | 8 files |
 | Phase 28 P03 | 15min | 2 tasks | 7 files |
 | Phase 28 P02 | 10min | 2 tasks | 11 files |
+| 28 | 3 | - | - |
 
 ## Accumulated Context
 
