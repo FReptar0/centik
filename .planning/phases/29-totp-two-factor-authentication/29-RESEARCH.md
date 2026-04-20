@@ -1062,48 +1062,47 @@ vi.mock('@upstash/redis', () => ({
 | A7 | Setting `RATE_LIMIT_DISABLED=true` in `.env.test` is sufficient to make the full integration test suite bypass Upstash without mocking. | Test Strategy | LOW — the bypass is the first check in `checkRateLimit`; test DB already loads `.env.test`. |
 | A8 | Postgres READ COMMITTED (Prisma default) + `updateMany({ where: { id, usedAt: null } })` gives exactly-once backup-code consumption even under concurrent calls. | Pattern 8 | LOW — documented Postgres behavior: UPDATE acquires a row lock and re-evaluates WHERE under that lock. An integration test with `Promise.all([consume, consume])` for the same code should verify exactly one returns true. |
 
-## Open Questions
+## Open Questions (RESOLVED)
+
+> All seven questions are resolved below. Each `RESOLVED:` line is the locked answer that the planner relied on; `Rationale` preserves the supporting analysis. Downstream agents must treat the `RESOLVED:` lines as binding.
 
 ### 1. Where to compute + pass the QR data URL to the wizard
 
+**RESOLVED:** `prepareTotpSecretAction` (Server Action) returns `{ secret, qrDataUrl }`; the client holds both in `useActionState` between wizard step 1 and step 2. No Server Component preload.
 **What we know:** D-02 locks server-side rendering. The data URL is ~2-3KB for a short OTPAUTH URI. Step 1 of the wizard needs it; step 2 doesn't.
-**What's unclear:** Whether `prepareTotpSecretAction` should return both `{ secret, qrDataUrl }` as a Server Action result (client holds them in state) OR whether the page Server Component should preload them on first render.
-**Recommendation:** Server Action returning both. The user doesn't always want to enable 2FA; preloading would be wasteful and expose the secret in SSR HTML. Server Action triggered when the user clicks "Activar 2FA" → return values flow into wizard state via `useActionState`. `secret` stays in client state only until step 2 submits it back. This matches `prepareTotpSecretAction` in CONTEXT `code_context` L195.
+**Rationale:** The user doesn't always want to enable 2FA; preloading would be wasteful and expose the secret in SSR HTML. Server Action triggered when the user clicks "Activar 2FA" → return values flow into wizard state via `useActionState`. `secret` stays in client state only until step 2 submits it back. Matches `prepareTotpSecretAction` in CONTEXT `code_context` L195.
 
 ### 2. How to call `signIn` in step 2 without re-requiring the password
 
+**RESOLVED:** Extended `authorizeUser` branches on `(challenge && totpCode)` presence FIRST — if both present and the HMAC challenge verifies, the password check is skipped and the 2FA factor alone authenticates. The client passes `password: ''` as a uniform-signature placeholder; the 2FA branch never reads it. Integration test in Plan 29-05 is the canary that proves NextAuth doesn't pre-reject the empty value before reaching `authorize`.
 **What we know:** D-15 locks "calls `signIn('credentials', ...)` so the session is finally issued." The user typed their password in step 1; the client has discarded it by step 2.
-**What's unclear:** NextAuth's `signIn('credentials', { ... })` posts form data to `/api/auth/callback/credentials` which runs `authorize(credentials, request)`. If `authorize` receives `{ email, challenge, totpCode, password: '' }`, does `authorize` get a chance to process this OR does NextAuth prevalidate and reject empty passwords before calling `authorize`?
-**What the docs say:** `CredentialsConfig.authorize` receives `Partial<Record<keyof CredentialsInputs, unknown>>` — NextAuth does NOT validate individual field presence or value. [VERIFIED: `@auth/core/providers/credentials.d.ts` L55-65]. The authorize function is fully responsible.
-**Recommendation:** The extended `authorize` branches on `(challenge && totpCode)` presence FIRST: if both present and challenge verifies, skip the bcrypt.compare on password and use only the 2FA factor. If absent, fall through to password path. Passing `password: ''` keeps the signature uniform; the 2FA branch never reads it. An integration test should exercise exactly this: `signIn('credentials', { email, challenge, totpCode: '123456', password: '' })` with a valid challenge must succeed if code is valid.
+**Docs evidence:** `CredentialsConfig.authorize` receives `Partial<Record<keyof CredentialsInputs, unknown>>` — NextAuth does NOT validate individual field presence or value. [VERIFIED: `@auth/core/providers/credentials.d.ts` L55-65.]
 **Risk:** LOW — matches documented authorize contract. Integration test is the canary.
 
 ### 3. Should `User.totpEnabled` be denormalized into the JWT?
 
-**What we know:** Currently JWT contains only `userId` + `isAdmin`. Login flow reads `totpEnabled` from DB inside `loginAction` and `authorizeUser`.
-**What's unclear:** Whether storing `totpEnabled` in the JWT would avoid one DB lookup per login.
-**Recommendation:** DON'T. Stale JWTs are worse than the extra DB read. If a user disables 2FA, their JWT would still read `totpEnabled: true` until it refreshes, and their login flow would (incorrectly) still demand the second factor. Keep the DB read. Performance cost is ~1ms; correctness matters more.
+**RESOLVED:** No. JWT stays at `{ userId, isAdmin }`; `totpEnabled` is read from the DB on every login flow.
+**Rationale:** Stale JWTs are worse than the extra DB read. If a user disables 2FA, their JWT would still read `totpEnabled: true` until it refreshes, and their login flow would (incorrectly) still demand the second factor. Performance cost is ~1ms; correctness matters more.
 
 ### 4. Should the `code` input in step 2 of login be a segmented 6-digit component?
 
-**What we know:** D-23 says "FloatingInput for the code." D-18 says the same input accepts TOTP (6 digits) or backup (XXXX-XXXX, 8 hex). Claude's Discretion allows extracting a `<TotpCodeInput />` primitive.
-**Recommendation:** Start with FloatingInput + a small "Usar código de respaldo" toggle that swaps label + placeholder. Segmented inputs are fiddly with paste, IME, mobile keyboards. The plain input already auto-formats nothing (user types 6 digits). If real-user feedback suggests otherwise post-launch, extract a primitive. Avoid pre-optimizing.
+**RESOLVED:** No. Use the existing `FloatingInput` + a small "Usar código de respaldo" toggle that swaps label + placeholder. No new segmented primitive in this phase.
+**Rationale:** Segmented inputs are fiddly with paste, IME, mobile keyboards. The plain input already auto-formats nothing (user types 6 digits). If real-user feedback suggests otherwise post-launch, extract a primitive then. Avoid pre-optimizing.
 
 ### 5. Transaction scope around `prepareTotpSecretAction`
 
-**What we know:** Step 1 of setup generates a secret but does NOT persist it. Persistence happens in step 2 (`enableTotpAction`).
-**What's unclear:** Whether step 1 should pre-reserve anything in the DB (lock a row, set `totpEnabled = 'pending'`, etc.).
-**Recommendation:** No. Zero DB writes in `prepareTotpSecretAction`. The secret lives in client memory between step 1 and step 2. If the user abandons the wizard, nothing persists. If the user completes it, step 2 does the whole $transaction atomically. This matches the no-server-state-between-steps principle of two-step Server Actions.
+**RESOLVED:** Zero DB writes in `prepareTotpSecretAction`. Secret + QR live in client state between step 1 and step 2; persistence happens entirely inside step 2's atomic `$transaction`.
+**Rationale:** If the user abandons the wizard, nothing persists. If the user completes it, step 2 does encrypt-secret + flip-`totpEnabled` + insert-10-`BackupCode`s in one transaction. This matches the no-server-state-between-steps principle of two-step Server Actions.
 
 ### 6. Should the disable flow allow a 6-digit code only, or accept backup codes too?
 
-**What we know:** D-21 says "requires a current TOTP code (or backup code)." Clear: either.
-**What's unclear:** Whether using a backup code to disable should ALSO consume that backup code (since backup codes are single-use).
-**Recommendation:** Yes — consume it. If the code is a backup code, it is marked used before the `totpSecret` is cleared. After disable, all `BackupCode` rows are deleted (per D-21), so the consumed row is deleted along with the rest. Net effect: the consume flag is moot but the code path stays uniform with login's `consumeBackupCode` — one consistent implementation.
+**RESOLVED:** Yes — accept either, and consume the backup code if one is used. Path: `consumeBackupCode` runs (marking the row `usedAt`); then the `$transaction` clears `totpSecret`, sets `totpEnabled = false`, and deletes all `BackupCode` rows for the user. The consume flag becomes moot once the rows are deleted, but the code path stays uniform with login's `consumeBackupCode`.
+**Rationale:** D-21 already locked "requires a current TOTP code (or backup code)." One consistent implementation across login and disable beats a special case.
 
 ### 7. Where does `getClientIp()` belong — `rate-limit.ts` or a separate `headers-utils.ts`?
 
-**Recommendation:** Keep in `rate-limit.ts` for this phase. It's the only consumer. If future phases add IP-aware logic elsewhere (geo-block, audit log), refactor to `lib/request-context.ts`. Premature abstraction otherwise.
+**RESOLVED:** `getClientIp()` lives in `src/lib/rate-limit.ts` for this phase as a co-located helper. Refactor to `src/lib/request-context.ts` later only if a second consumer appears.
+**Rationale:** Premature abstraction otherwise. The rate limiter is the sole consumer; co-location keeps the surface small.
 
 ## Environment Availability
 

@@ -135,11 +135,14 @@ Plans:
   3. Login for 2FA-enabled users requires password verification first, then TOTP code verification before session is issued
   4. User receives 10 single-use backup codes during 2FA setup, each hashed with bcryptjs, usable as TOTP code alternative
   5. Login and TOTP verification endpoints are rate-limited to 5 attempts per minute via @upstash/ratelimit
-**Plans**: TBD
+**Plans**: 5 plans
 
 Plans:
-- [ ] 29-01: TBD
-- [ ] 29-02: TBD
+- [ ] 29-01-PLAN.md — Wave 0: BackupCode schema + [BLOCKING] migration + install otplib/qrcode/@upstash deps + .env.example/.env.test updates + 8 test stubs
+- [ ] 29-02-PLAN.md — Wave 1: 5 pure lib modules (totp-crypto AES-256-GCM, totp otplib wrapper, backup-codes atomic consume, challenge HMAC, rate-limit sliding-window) + 4 Zod schemas + paired tests
+- [ ] 29-03-PLAN.md — Wave 2: two-step login wiring (extend authorizeUser + split loginAction + verifyTotpAction + TotpStep component + LoginForm requiresTotp branch) + unit tests
+- [ ] 29-04-PLAN.md — Wave 2: Setup/Disable/Regen flows (4 Server Actions in totp-actions.ts + SeguridadSection + 3 bottom-sheet modals + BackupCodesScreen) + page wiring
+- [ ] 29-05-PLAN.md — Wave 3: integration suite (enable/login-code/login-backup/concurrent-consume/cross-user-isolation/disable/regen) + E2E happy path + final quality gate
 
 ### Phase 30: Vercel Deploy + Security Hardening
 **Goal**: Centik runs in production on Vercel with Prisma Postgres, security headers, and verified cross-user data isolation
@@ -173,5 +176,5 @@ Note: Phases 28 and 29 both depend on 26, not on each other. They could theoreti
 | 26. Auth Wiring + Login | 4/4 | Complete    | 2026-04-18 | - |
 | 27. Per-User Data Isolation | 3/3 | Complete    | 2026-04-18 | - |
 | 28. Invite-Only Registration | v3.0 | 3/3 | Complete    | 2026-04-20 |
-| 29. TOTP Two-Factor Auth | v3.0 | 0/? | Not started | - |
+| 29. TOTP Two-Factor Auth | v3.0 | 0/5 | Planned | - |
 | 30. Vercel Deploy + Security | v3.0 | 0/? | Not started | - |
