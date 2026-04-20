@@ -1,9 +1,13 @@
 -- Make userId required on all 10 data models (contract step of expand-contract)
 -- All existing rows already have userId backfilled from seed
 
--- Drop old unique constraints that don't include userId
+-- Drop old unique constraints/indexes that don't include userId
+-- Prisma names these as INDEXes (not CONSTRAINTs) when declared via @@unique without explicit constraint name,
+-- so we must DROP INDEX, not DROP CONSTRAINT (the latter silently no-ops with IF EXISTS).
 ALTER TABLE "Budget" DROP CONSTRAINT IF EXISTS "Budget_periodId_categoryId_key";
+DROP INDEX IF EXISTS "Budget_periodId_categoryId_key";
 ALTER TABLE "Period" DROP CONSTRAINT IF EXISTS "Period_month_year_key";
+DROP INDEX IF EXISTS "Period_month_year_key";
 
 -- Make userId NOT NULL on all 10 models
 ALTER TABLE "IncomeSource" ALTER COLUMN "userId" SET NOT NULL;
