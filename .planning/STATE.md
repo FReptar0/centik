@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Auth + Cloud Deploy
 current_phase: 30
-current_plan: 2
+current_plan: 3
 status: executing
-stopped_at: Phase 30 context gathered (Vercel deploy + security)
-last_updated: "2026-04-21T23:39:59.735Z"
+stopped_at: Plan 30-02 complete — boot-time env validator shipped
+last_updated: "2026-04-21T23:55:00.000Z"
 last_activity: 2026-04-21
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 23
-  completed_plans: 18
-  percent: 78
+  completed_plans: 19
+  percent: 83
 ---
 
 # Project State
@@ -28,14 +28,14 @@ See: .planning/PROJECT.md (updated 2026-04-16)
 ## Current Position
 
 Phase: 30 (Vercel Deploy + Security Hardening) — EXECUTING
-Plan: 2 of 6
+Plan: 3 of 6
 **Current Phase:** 30
-**Current Plan:** 2
+**Current Plan:** 3
 **Total Plans in Phase:** 6
 **Status:** Ready to execute
 **Last Activity:** 2026-04-21
 
-Progress: [███████▎▒▒] 73%
+Progress: [████████▎▒] 83%
 
 ## Performance Metrics
 
@@ -70,6 +70,7 @@ Progress: [███████▎▒▒] 73%
 | Phase 29 P03 | 13min | 3 tasks | 9 files |
 | Phase 29 P04 | 52min | 3 tasks | 9 files |
 | Phase 30 P01 | 6min | 3 tasks | 6 files |
+| Phase 30 P02 | 12min | 3 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -137,6 +138,13 @@ Recent decisions affecting current work:
 - [Phase 30]: [30-01]: Local DIRECT_URL aliased to DATABASE_URL in .env and .env.test because Docker Postgres has no pooler; production diverges (pooled.db.prisma.io vs db.prisma.io)
 - [Phase 30]: [30-01]: Wave-0 src/lib/env.ts is a typed passthrough (not validator); Plan 30-02 replaces internals with Zod but freezes exported env shape + Env type now so downstream consumers never refactor
 - [Phase 30]: [30-01]: .env.example documents Vercel Marketplace contract explicitly: DATABASE_URL auto-injected by Vercel; DIRECT_URL MUST be copied manually from Prisma Console into Vercel Project Settings
+- [Phase 30]: [30-02]: Zod superRefine runs conditionally on NODE_ENV==='production' (one schema, not two types); env.ts throws an aggregated Error listing every failing key (D-31: no console.log)
+- [Phase 30]: [30-02]: totp-crypto.ts's hand-rolled loadKey()+KEY_HEX_LENGTH deleted -- env.ts's /^[0-9a-fA-F]{64}$/ regex is single source of truth
+- [Phase 30]: [30-02]: challenge.ts BLOCKER fix (plan-checker round 1) -- getSecret() reads env.AUTH_SECRET + dropped unreachable null-throw; env.ts's min(32) gates at boot
+- [Phase 30]: [30-02]: rate-limit.ts KEEPS Redis.fromEnv() -- Upstash SDK reads UPSTASH_* from process.env internally (SDK convention); env.ts superRefine has already validated both vars exist in production
+- [Phase 30]: [30-02]: challenge.test.ts rewritten from static `import { signChallenge } from './challenge'` to dynamic `await import('./challenge')` inside each test -- ESM import hoisting evaluated the module BEFORE vi.stubEnv could set required env vars
+- [Phase 30]: [30-02]: auth.test.ts + register/page.test.tsx use `vi.mock('@/lib/env', ...)` hoisted above other mocks -- simplest way to bypass env.ts's Zod parse in test files that transitively import @/auth
+- [Phase 30]: [30-02]: Removed 2 obsolete tests (RATE_LIMIT_DISABLED=true bypass in prod, throws when AUTH_SECRET missing at sign time) -- env.ts's module-load validation makes both scenarios unreachable; coverage semantics shifted to env.test.ts
 
 ### Pending Todos
 
@@ -149,6 +157,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-21T23:39:12.562Z
-Stopped at: Phase 30 context gathered (Vercel deploy + security)
+Last session: 2026-04-21T23:55:00.000Z
+Stopped at: Completed Plan 30-02 — boot-time env validator + consumer sweep (env.ts 100% coverage; grep gate closed)
 Resume file: None
