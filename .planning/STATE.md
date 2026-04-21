@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Auth + Cloud Deploy
 current_phase: 29
-current_plan: 3
+current_plan: 4
 status: executing
-stopped_at: Plan 29-02 complete (Wave 1 library modules + Zod schemas)
-last_updated: "2026-04-21T11:42:00Z"
+stopped_at: Plan 29-03 complete (Wave 2 two-step login wiring)
+last_updated: "2026-04-21T17:58:50Z"
 last_activity: 2026-04-21
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 22
-  completed_plans: 14
-  percent: 63
+  completed_plans: 15
+  percent: 68
 ---
 
 # Project State
@@ -28,14 +28,14 @@ See: .planning/PROJECT.md (updated 2026-04-16)
 ## Current Position
 
 Phase: 29 (TOTP Two-Factor Authentication) — EXECUTING
-Plan: 3 of 5
+Plan: 4 of 5
 **Current Phase:** 29
-**Current Plan:** 3
+**Current Plan:** 4
 **Total Plans in Phase:** 5
-**Status:** Executing Phase 29 (Plans 29-01 + 29-02 complete, Wave 1 library + Zod schemas in place)
+**Status:** Executing Phase 29 (Plans 29-01 + 29-02 + 29-03 complete, Wave 2 two-step login wiring in place)
 **Last Activity:** 2026-04-21
 
-Progress: [██████▎▒▒▒] 63%
+Progress: [██████▊▒▒▒] 68%
 
 ## Performance Metrics
 
@@ -67,6 +67,7 @@ Progress: [██████▎▒▒▒] 63%
 | 28 | 3 | - | - |
 | Phase 29 P01 | 22min | 3 tasks | 14 files |
 | Phase 29 P02 | 18min | 3 tasks | 12 files |
+| Phase 29 P03 | 13min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -119,6 +120,11 @@ Recent decisions affecting current work:
 - [Phase 29 P02]: backup-code normalization (strip dashes + lowercase) happens BEFORE bcrypt.hash AND before bcrypt.compare, so display form AB12-CD34 and raw ab12cd34 verify against the same hash
 - [Phase 29 P02]: Rate-limit test mock uses class-shim (class FakeRatelimit with static slidingWindow) rather than Object.assign(vi.fn(), ...) — the class preserves `new Ratelimit(...)` semantics through vi.resetModules() re-imports
 - [Phase 29 P02]: loginSchema retained alongside new loginPasswordSchema in validators.ts — Plan 29-03 will migrate loginAction's import; coexistence prevents breakage during transition
+- [Phase 29 P03]: authorizeUser branches on (challenge && totpCode) presence BEFORE bcrypt.compare — verifyTotpAction sends password: '' so we must skip bcrypt on step-2; the 5-min HMAC-signed challenge (userId+email binding) IS the proof of step-1 password verification
+- [Phase 29 P03]: authorizeUser's 1FA path explicitly rejects 2FA-enabled users (return null) even with correct password — defense-in-depth against a faulty loginAction, T-29-AUTH-001
+- [Phase 29 P03]: verifyTotpAction runs verifyChallenge BEFORE checkRateLimit so the rate-limit key can be composed from a verified userId (IDOR-safe, Pitfall 7); Zod runs BEFORE rate-limit so malformed payloads don't burn legitimate users' quota
+- [Phase 29 P03]: FloatingInput extended additively with inputMode + placeholder optional props (placeholder only renders while the label floats) — 20+ existing consumers unaffected
+- [Phase 29 P03]: register/page.test.tsx mocked the 5 Phase-29 lib modules as Rule-3 deviation — Task 1's src/auth.ts changes transitively pull @/lib/totp-crypto, which validates AUTH_TOTP_ENCRYPTION_KEY at module load; targeted mocks are lower-risk than a global setupFiles hook
 
 ### Pending Todos
 
@@ -131,6 +137,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-21T11:42:00Z
-Stopped at: Plan 29-02 complete — Wave 1 library modules + 4 Zod schemas shipped (totp-crypto + totp + backup-codes + challenge + rate-limit + validators extensions at 100% coverage)
-Resume file: .planning/phases/29-totp-two-factor-authentication/29-03-PLAN.md
+Last session: 2026-04-21T17:58:50Z
+Stopped at: Plan 29-03 complete — Wave 2 two-step login wiring shipped (authorizeUser 2FA branch + split loginAction + verifyTotpAction + TotpStep component + LoginForm branch + FloatingInput additive props, 672 unit tests passing)
+Resume file: .planning/phases/29-totp-two-factor-authentication/29-04-PLAN.md

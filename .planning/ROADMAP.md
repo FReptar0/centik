@@ -140,7 +140,7 @@ Plans:
 Plans:
 - [x] 29-01-PLAN.md — Wave 0: BackupCode schema + [BLOCKING] migration + install otplib/qrcode/@upstash deps + .env.example/.env.test updates + 8 test stubs (completed 2026-04-21)
 - [x] 29-02-PLAN.md — Wave 1: 5 pure lib modules (totp-crypto AES-256-GCM, totp otplib wrapper, backup-codes atomic consume, challenge HMAC, rate-limit sliding-window) + 4 Zod schemas + paired tests (completed 2026-04-21)
-- [ ] 29-03-PLAN.md — Wave 2: two-step login wiring (extend authorizeUser + split loginAction + verifyTotpAction + TotpStep component + LoginForm requiresTotp branch) + unit tests
+- [x] 29-03-PLAN.md — Wave 2: two-step login wiring (extend authorizeUser + split loginAction + verifyTotpAction + TotpStep component + LoginForm requiresTotp branch) + unit tests (completed 2026-04-21)
 - [ ] 29-04-PLAN.md — Wave 2: Setup/Disable/Regen flows (4 Server Actions in totp-actions.ts + SeguridadSection + 3 bottom-sheet modals + BackupCodesScreen) + page wiring
 - [ ] 29-05-PLAN.md — Wave 3: integration suite (enable/login-code/login-backup/concurrent-consume/cross-user-isolation/disable/regen) + E2E happy path + final quality gate
 
@@ -176,5 +176,5 @@ Note: Phases 28 and 29 both depend on 26, not on each other. They could theoreti
 | 26. Auth Wiring + Login | 4/4 | Complete    | 2026-04-18 | - |
 | 27. Per-User Data Isolation | 3/3 | Complete    | 2026-04-18 | - |
 | 28. Invite-Only Registration | v3.0 | 3/3 | Complete    | 2026-04-20 |
-| 29. TOTP Two-Factor Auth | v3.0 | 2/5 | In progress | - |
+| 29. TOTP Two-Factor Auth | v3.0 | 3/5 | In progress | - |
 | 30. Vercel Deploy + Security | v3.0 | 0/? | Not started | - |
