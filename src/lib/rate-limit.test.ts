@@ -173,5 +173,13 @@ describe('rate-limit (Phase 29 — Wave 1)', () => {
       const { getClientIp } = await import('./rate-limit')
       expect(await getClientIp()).toBe('203.0.113.5')
     })
+
+    it('falls back to x-real-ip when x-forwarded-for first hop is empty after trim', async () => {
+      mockedHeaders.mockResolvedValue(
+        new Headers({ 'x-forwarded-for': ',  10.0.0.1', 'x-real-ip': '10.0.0.5' }),
+      )
+      const { getClientIp } = await import('./rate-limit')
+      expect(await getClientIp()).toBe('10.0.0.5')
+    })
   })
 })
