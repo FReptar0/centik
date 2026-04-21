@@ -1,0 +1,43 @@
+import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto'
+
+const ALGO = 'aes-256-gcm'
+const IV_LENGTH = 12 // 96 bits — NIST SP 800-38D recommendation for GCM
+const KEY_HEX_LENGTH = 64 // 32 bytes × 2 hex chars
+
+/** Valida AUTH_TOTP_ENCRYPTION_KEY al importar. Falla rapido con mensaje accionable. D-07 */
+function loadKey(): Buffer {
+  const hex = process.env.AUTH_TOTP_ENCRYPTION_KEY
+  if (!hex || hex.length !== KEY_HEX_LENGTH || !/^[0-9a-fA-F]+$/.test(hex)) {
+    throw new Error(
+      'AUTH_TOTP_ENCRYPTION_KEY must be a 64-character hex string (32 bytes). ' +
+        'Generate one with: openssl rand -hex 32',
+    )
+  }
+  return Buffer.from(hex, 'hex')
+}
+
+const KEY = loadKey() // Validates on first import — fail fast at boot (Pitfall 3)
+
+/** Cifra un secreto TOTP. Devuelve `iv:ciphertext:authTag` (hex). TOTP-02, D-05, D-06 */
+export function encryptSecret(plaintext: string): string {
+  const iv = randomBytes(IV_LENGTH)
+  const cipher = createCipheriv(ALGO, KEY, iv)
+  const ciphertext = Buffer.concat([cipher.update(plaintext, 'utf8'), cipher.final()])
+  const authTag = cipher.getAuthTag()
+  return `${iv.toString('hex')}:${ciphertext.toString('hex')}:${authTag.toString('hex')}`
+}
+
+/** Descifra un secreto TOTP almacenado. Arroja en caso de tampering (authTag invalido). TOTP-02 */
+export function decryptSecret(stored: string): string {
+  const parts = stored.split(':')
+  if (parts.length !== 3) throw new Error('Invalid ciphertext format')
+  const [ivHex, ctHex, tagHex] = parts
+  const iv = Buffer.from(ivHex, 'hex')
+  const ciphertext = Buffer.from(ctHex, 'hex')
+  const authTag = Buffer.from(tagHex, 'hex')
+
+  const decipher = createDecipheriv(ALGO, KEY, iv)
+  decipher.setAuthTag(authTag)
+  const plaintext = Buffer.concat([decipher.update(ciphertext), decipher.final()])
+  return plaintext.toString('utf8')
+}
