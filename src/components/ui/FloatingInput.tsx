@@ -17,6 +17,10 @@ interface FloatingInputProps {
   className?: string
   disabled?: boolean
   autoFocus?: boolean
+  /** Phase 29 D-18 — hints mobile keyboard (`numeric` for TOTP, `text` for backup codes) */
+  inputMode?: 'text' | 'numeric' | 'decimal' | 'tel' | 'email' | 'url' | 'search' | 'none'
+  /** Phase 29 D-18 — placeholder hint rendered inside the input (e.g., "123456" or "XXXX-XXXX") */
+  placeholder?: string
 }
 
 /**
@@ -39,6 +43,8 @@ export default function FloatingInput({
   className,
   disabled = false,
   autoFocus = false,
+  inputMode,
+  placeholder,
 }: FloatingInputProps) {
   const generatedId = useId()
   const id = providedId ?? generatedId
@@ -84,6 +90,8 @@ export default function FloatingInput({
         onBlur={() => setIsFocused(false)}
         disabled={disabled}
         autoFocus={autoFocus}
+        inputMode={inputMode}
+        placeholder={isFloating ? placeholder : undefined}
         aria-invalid={error ? 'true' : undefined}
         aria-describedby={error ? errorId : undefined}
         className={cn(

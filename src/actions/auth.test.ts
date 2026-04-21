@@ -114,7 +114,9 @@ describe('loginAction', () => {
       totpEnabled: false,
     })
     vi.mocked(bcrypt.compare).mockResolvedValue(true as never)
-    mockSignIn.mockRejectedValue(new (AuthError as new (msg?: string) => Error)('CredentialsSignin'))
+    mockSignIn.mockRejectedValue(
+      new (AuthError as new (msg?: string) => Error)('CredentialsSignin'),
+    )
 
     const fd = createFormData({ email: 'test@example.com', password: 'wrong' })
     const result = await loginAction(undefined, fd)
@@ -386,7 +388,9 @@ describe('verifyTotpAction', () => {
   it('returns generic error on AuthError (wrong code path, no oracle)', async () => {
     const { AuthError } = await import('next-auth')
     mockVerifyChallenge.mockReturnValue({ userId: 'user-1', email: 'a@b.co' })
-    mockSignIn.mockRejectedValue(new (AuthError as new (msg?: string) => Error)('CredentialsSignin'))
+    mockSignIn.mockRejectedValue(
+      new (AuthError as new (msg?: string) => Error)('CredentialsSignin'),
+    )
 
     const fd = createFormData({ challenge: 'valid.token.here', code: '000000' })
     const result = await verifyTotpAction(undefined, fd)
@@ -557,7 +561,9 @@ describe('registerAction', () => {
     mockTokenFindUnique.mockResolvedValue(validToken())
     mockUserCreate.mockResolvedValue({ id: 'new-user-id' })
     mockTokenUpdate.mockResolvedValue(validToken({ usedAt: new Date() }))
-    mockSignIn.mockRejectedValue(new (AuthError as new (msg?: string) => Error)('CredentialsSignin'))
+    mockSignIn.mockRejectedValue(
+      new (AuthError as new (msg?: string) => Error)('CredentialsSignin'),
+    )
 
     const result = await registerAction(undefined, validFormData())
 

@@ -5,8 +5,13 @@ import { useSearchParams } from 'next/navigation'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import FloatingInput from '@/components/ui/FloatingInput'
 import { loginAction } from '@/actions/auth'
+import TotpStep from './TotpStep'
 
-/** Login form with email/password fields, password toggle, and loading state */
+/**
+ * Login form with email/password fields, password toggle, and loading state.
+ * Phase 29 D-17 — when the Server Action returns { requiresTotp: true }, this
+ * component swaps to <TotpStep> on the same /login route (no new page).
+ */
 export default function LoginForm() {
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') ?? '/'
@@ -15,6 +20,14 @@ export default function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+
+  // Phase 29 Step-2 branch: swap to TotpStep once loginAction returns requiresTotp
+  if (state && 'requiresTotp' in state && state.requiresTotp && state.challenge) {
+    return <TotpStep email={email} challenge={state.challenge} callbackUrl={state.callbackUrl} />
+  }
+
+  // Step-1 branch: password form (narrow state to the { error?: string } shape)
+  const stepOneError = state && 'error' in state ? state.error : undefined
 
   return (
     <form action={action} className="space-y-6">
@@ -47,9 +60,7 @@ export default function LoginForm() {
         </button>
       </div>
 
-      {state?.error && (
-        <p className="text-sm text-negative">{state.error}</p>
-      )}
+      {stepOneError && <p className="text-sm text-negative">{stepOneError}</p>}
 
       <button
         type="submit"

@@ -9,6 +9,35 @@ vi.mock('next-auth', () => ({
 vi.mock('@auth/prisma-adapter', () => ({ PrismaAdapter: vi.fn() }))
 vi.mock('next-auth/providers/credentials', () => ({ default: vi.fn(() => ({})) }))
 
+// Phase 29 — @/auth now transitively imports TOTP crypto, which validates
+// AUTH_TOTP_ENCRYPTION_KEY at module load. Mock the lib modules so this test
+// never triggers the env-coupled validation path.
+vi.mock('@/lib/totp-crypto', () => ({
+  encryptSecret: vi.fn(),
+  decryptSecret: vi.fn(),
+}))
+vi.mock('@/lib/totp', () => ({
+  createTotpSecret: vi.fn(),
+  buildOtpauthUri: vi.fn(),
+  verifyTotp: vi.fn(),
+}))
+vi.mock('@/lib/backup-codes', () => ({
+  generateBackupCodes: vi.fn(),
+  formatForDisplay: vi.fn(),
+  hashBackupCodes: vi.fn(),
+  consumeBackupCode: vi.fn(),
+}))
+vi.mock('@/lib/challenge', () => ({
+  signChallenge: vi.fn(),
+  verifyChallenge: vi.fn(),
+}))
+vi.mock('@/lib/rate-limit', () => ({
+  checkRateLimit: vi.fn(),
+  loginLimiter: null,
+  totpLimiter: null,
+  getClientIp: vi.fn(),
+}))
+
 const mockNotFound = vi.fn(() => {
   throw new Error('NEXT_NOT_FOUND')
 })
