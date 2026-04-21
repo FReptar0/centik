@@ -38,25 +38,17 @@ export default function TransactionFilters({
     activeFilters.endDate ||
     activeFilters.paymentMethod
 
-  const selectedCategory = categories.find(
-    (c) => c.id === activeFilters.categoryId,
-  )
+  const selectedCategory = categories.find((c) => c.id === activeFilters.categoryId)
 
   const selectedPaymentLabel = activeFilters.paymentMethod
     ? PAYMENT_METHODS_DISPLAY[activeFilters.paymentMethod]
     : null
 
   const handleClickOutside = useCallback((event: MouseEvent) => {
-    if (
-      categoryRef.current &&
-      !categoryRef.current.contains(event.target as Node)
-    ) {
+    if (categoryRef.current && !categoryRef.current.contains(event.target as Node)) {
       setCategoryOpen(false)
     }
-    if (
-      paymentRef.current &&
-      !paymentRef.current.contains(event.target as Node)
-    ) {
+    if (paymentRef.current && !paymentRef.current.contains(event.target as Node)) {
       setPaymentOpen(false)
     }
   }, [])
@@ -88,8 +80,7 @@ export default function TransactionFilters({
   function selectPaymentMethod(method: string) {
     onFilterChange({
       ...activeFilters,
-      paymentMethod:
-        activeFilters.paymentMethod === method ? undefined : method,
+      paymentMethod: activeFilters.paymentMethod === method ? undefined : method,
     })
     setPaymentOpen(false)
   }
@@ -121,8 +112,7 @@ export default function TransactionFilters({
   )
 
   const chipActive = 'bg-accent/15 text-accent border-accent'
-  const chipInactive =
-    'bg-surface-elevated text-text-secondary border-border-divider'
+  const chipInactive = 'bg-surface-elevated text-text-secondary border-border-divider'
 
   return (
     <div className="flex flex-wrap items-center gap-2 pb-2 mb-4">
@@ -130,20 +120,14 @@ export default function TransactionFilters({
       <button
         type="button"
         onClick={() => toggleType('EXPENSE')}
-        className={cn(
-          chipBase,
-          activeFilters.type === 'EXPENSE' ? chipActive : chipInactive,
-        )}
+        className={cn(chipBase, activeFilters.type === 'EXPENSE' ? chipActive : chipInactive)}
       >
         Gastos
       </button>
       <button
         type="button"
         onClick={() => toggleType('INCOME')}
-        className={cn(
-          chipBase,
-          activeFilters.type === 'INCOME' ? chipActive : chipInactive,
-        )}
+        className={cn(chipBase, activeFilters.type === 'INCOME' ? chipActive : chipInactive)}
       >
         Ingresos
       </button>
@@ -151,11 +135,7 @@ export default function TransactionFilters({
       {/* Category dropdown chip */}
       <div className="relative shrink-0" ref={categoryRef}>
         {selectedCategory ? (
-          <button
-            type="button"
-            onClick={clearCategory}
-            className={cn(chipBase, chipActive)}
-          >
+          <button type="button" onClick={clearCategory} className={cn(chipBase, chipActive)}>
             <DynamicIcon name={selectedCategory.icon} size={14} />
             {selectedCategory.name}
             <X size={14} />
@@ -191,15 +171,10 @@ export default function TransactionFilters({
                   'flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm text-left',
                   'transition-colors duration-200',
                   'hover:bg-surface-hover',
-                  activeFilters.categoryId === cat.id &&
-                    'bg-accent/10 text-accent',
+                  activeFilters.categoryId === cat.id && 'bg-accent/10 text-accent',
                 )}
               >
-                <DynamicIcon
-                  name={cat.icon}
-                  size={16}
-                  style={{ color: cat.color }}
-                />
+                <DynamicIcon name={cat.icon} size={16} style={{ color: cat.color }} />
                 <span className="text-text-primary">{cat.name}</span>
               </button>
             ))}
@@ -229,11 +204,7 @@ export default function TransactionFilters({
       {/* Payment method dropdown chip */}
       <div className="relative shrink-0" ref={paymentRef}>
         {selectedPaymentLabel ? (
-          <button
-            type="button"
-            onClick={clearPaymentMethod}
-            className={cn(chipBase, chipActive)}
-          >
+          <button type="button" onClick={clearPaymentMethod} className={cn(chipBase, chipActive)}>
             {selectedPaymentLabel}
             <X size={14} />
           </button>
@@ -267,8 +238,7 @@ export default function TransactionFilters({
                   'flex items-center w-full px-3 py-2 rounded-lg text-sm text-left',
                   'transition-colors duration-200',
                   'hover:bg-surface-hover text-text-primary',
-                  activeFilters.paymentMethod === key &&
-                    'bg-accent/10 text-accent',
+                  activeFilters.paymentMethod === key && 'bg-accent/10 text-accent',
                 )}
               >
                 {label}

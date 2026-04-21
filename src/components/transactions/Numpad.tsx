@@ -63,12 +63,7 @@ export default function Numpad({ value, onChange }: NumpadProps) {
       <button type="button" className={KEY_CLASS} onClick={() => handleDigit('3')}>
         3
       </button>
-      <button
-        type="button"
-        className={KEY_CLASS}
-        onClick={handleBackspace}
-        aria-label="Borrar"
-      >
+      <button type="button" className={KEY_CLASS} onClick={handleBackspace} aria-label="Borrar">
         <Delete size={20} className="mx-auto" aria-hidden="true" />
       </button>
 

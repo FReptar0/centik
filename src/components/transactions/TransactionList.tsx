@@ -36,9 +36,7 @@ export default function TransactionList({
           className="text-text-tertiary mb-3"
           aria-hidden="true"
         />
-        <p className="text-text-secondary text-lg">
-          Sin movimientos este mes
-        </p>
+        <p className="text-text-secondary text-lg">Sin movimientos este mes</p>
         <p className="mt-1 text-sm text-text-tertiary">
           Usa el boton + para registrar tu primer movimiento
         </p>
@@ -50,7 +48,12 @@ export default function TransactionList({
     <div>
       <div className="divide-y divide-border-divider rounded-2xl overflow-hidden">
         {transactions.map((txn) => (
-          <TransactionRow key={txn.id} transaction={txn} onEdit={onEdit} isNew={newTransactionIds?.has(txn.id)} />
+          <TransactionRow
+            key={txn.id}
+            transaction={txn}
+            onEdit={onEdit}
+            isNew={newTransactionIds?.has(txn.id)}
+          />
         ))}
       </div>
 

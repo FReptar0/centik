@@ -31,11 +31,7 @@ vi.mock('@/lib/auth-utils', () => ({
   requireAuth: vi.fn().mockResolvedValue({ userId: 'test-user-id' }),
 }))
 
-import {
-  createInviteToken,
-  revokeInviteToken,
-  listInviteTokens,
-} from './invite-actions'
+import { createInviteToken, revokeInviteToken, listInviteTokens } from './invite-actions'
 import { INVITE_TTL_MS } from '@/lib/invite-utils'
 
 /** Helper to create FormData with given fields */
@@ -83,9 +79,7 @@ describe('createInviteToken', () => {
 
   it('creates token with 64-char hex, email, 7d expiry, createdBy', async () => {
     // 1st findUnique → requireAdmin (isAdmin true); 2nd findUnique → existing user check (null)
-    mockUserFindUnique
-      .mockResolvedValueOnce({ isAdmin: true })
-      .mockResolvedValueOnce(null)
+    mockUserFindUnique.mockResolvedValueOnce({ isAdmin: true }).mockResolvedValueOnce(null)
     mockInviteFindFirst.mockResolvedValue(null)
     mockInviteCreate.mockResolvedValue({ id: 'new-token-id' })
 
@@ -104,9 +98,7 @@ describe('createInviteToken', () => {
   })
 
   it('returns the raw token in the result so UI can render it', async () => {
-    mockUserFindUnique
-      .mockResolvedValueOnce({ isAdmin: true })
-      .mockResolvedValueOnce(null)
+    mockUserFindUnique.mockResolvedValueOnce({ isAdmin: true }).mockResolvedValueOnce(null)
     mockInviteFindFirst.mockResolvedValue(null)
     mockInviteCreate.mockResolvedValue({ id: 'new-token-id' })
 
@@ -133,9 +125,7 @@ describe('createInviteToken', () => {
   })
 
   it('rejects email with existing active invite token', async () => {
-    mockUserFindUnique
-      .mockResolvedValueOnce({ isAdmin: true })
-      .mockResolvedValueOnce(null)
+    mockUserFindUnique.mockResolvedValueOnce({ isAdmin: true }).mockResolvedValueOnce(null)
     mockInviteFindFirst.mockResolvedValue({ id: 'existing-token' })
 
     const fd = createFormData({ email: 'pending@example.com' })
@@ -161,9 +151,7 @@ describe('createInviteToken', () => {
   })
 
   it('calls revalidatePath("/configuracion") after successful create', async () => {
-    mockUserFindUnique
-      .mockResolvedValueOnce({ isAdmin: true })
-      .mockResolvedValueOnce(null)
+    mockUserFindUnique.mockResolvedValueOnce({ isAdmin: true }).mockResolvedValueOnce(null)
     mockInviteFindFirst.mockResolvedValue(null)
     mockInviteCreate.mockResolvedValue({ id: 'new-token-id' })
 
@@ -174,9 +162,7 @@ describe('createInviteToken', () => {
   })
 
   it('maps Prisma P2002 to the "activa" field error', async () => {
-    mockUserFindUnique
-      .mockResolvedValueOnce({ isAdmin: true })
-      .mockResolvedValueOnce(null)
+    mockUserFindUnique.mockResolvedValueOnce({ isAdmin: true }).mockResolvedValueOnce(null)
     mockInviteFindFirst.mockResolvedValue(null)
     mockInviteCreate.mockRejectedValue({ code: 'P2002' })
 

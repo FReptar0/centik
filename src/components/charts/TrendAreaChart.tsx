@@ -1,12 +1,6 @@
 'use client'
 
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts'
+import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from 'recharts'
 import type { MonthlyTrendPoint } from '@/types'
 import { formatMoney } from '@/lib/utils'
 import { MONTH_NAMES_ES } from '@/lib/constants'
@@ -66,9 +60,7 @@ export default function TrendAreaChart({ data }: TrendAreaChartProps) {
   if (data.length === 0) {
     return (
       <div className="bg-surface-elevated rounded-lg p-5">
-        <h3 className="text-lg font-semibold text-text-primary mb-4">
-          Tendencia 6 Meses
-        </h3>
+        <h3 className="text-lg font-semibold text-text-primary mb-4">Tendencia 6 Meses</h3>
         <div className="flex flex-col items-center justify-center py-12 text-center">
           <DynamicIcon
             name="trending-up"
@@ -76,9 +68,7 @@ export default function TrendAreaChart({ data }: TrendAreaChartProps) {
             className="text-text-tertiary mb-3"
             aria-hidden="true"
           />
-          <p className="text-text-secondary text-sm">
-            Sin datos de tendencia
-          </p>
+          <p className="text-text-secondary text-sm">Sin datos de tendencia</p>
           <p className="text-text-tertiary text-xs mt-1">
             Los datos aparecen al cerrar periodos mensuales
           </p>
@@ -98,35 +88,17 @@ export default function TrendAreaChart({ data }: TrendAreaChartProps) {
 
   return (
     <div className="bg-surface-elevated rounded-lg p-5">
-      <h3 className="text-lg font-semibold text-text-primary mb-4">
-        Tendencia 6 Meses
-      </h3>
+      <h3 className="text-lg font-semibold text-text-primary mb-4">Tendencia 6 Meses</h3>
       <ResponsiveContainer width="100%" height={280}>
         <AreaChart data={chartData}>
           <defs>
             <linearGradient id="incomeGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop
-                offset="0%"
-                stopColor={CHART_COLORS.positive}
-                stopOpacity={0.12}
-              />
-              <stop
-                offset="100%"
-                stopColor={CHART_COLORS.positive}
-                stopOpacity={0}
-              />
+              <stop offset="0%" stopColor={CHART_COLORS.positive} stopOpacity={0.12} />
+              <stop offset="100%" stopColor={CHART_COLORS.positive} stopOpacity={0} />
             </linearGradient>
             <linearGradient id="expensesGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop
-                offset="0%"
-                stopColor={CHART_COLORS.negative}
-                stopOpacity={0.12}
-              />
-              <stop
-                offset="100%"
-                stopColor={CHART_COLORS.negative}
-                stopOpacity={0}
-              />
+              <stop offset="0%" stopColor={CHART_COLORS.negative} stopOpacity={0.12} />
+              <stop offset="100%" stopColor={CHART_COLORS.negative} stopOpacity={0} />
             </linearGradient>
           </defs>
           <XAxis
@@ -135,10 +107,7 @@ export default function TrendAreaChart({ data }: TrendAreaChartProps) {
             axisLine={false}
             tickLine={false}
           />
-          <Tooltip
-            content={<CustomTooltip />}
-            cursor={false}
-          />
+          <Tooltip content={<CustomTooltip />} cursor={false} />
           <Area
             type="monotone"
             dataKey="incomeNum"

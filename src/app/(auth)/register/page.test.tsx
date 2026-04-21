@@ -61,10 +61,7 @@ import TokenErrorScreen from '@/components/configuracion/TokenErrorScreen'
 import RegisterForm from '@/components/auth/RegisterForm'
 
 /** Walk a React element tree and return the first element whose `.type` matches */
-function findByType(
-  node: unknown,
-  type: React.ElementType,
-): ReactElement | null {
+function findByType(node: unknown, type: React.ElementType): ReactElement | null {
   if (!node || typeof node !== 'object') return null
   const el = node as ReactElement
   if (el.type === type) return el
@@ -86,9 +83,9 @@ describe('RegisterPage', () => {
   })
 
   it('calls notFound() when no token query param', async () => {
-    await expect(
-      RegisterPage({ searchParams: Promise.resolve({}) }),
-    ).rejects.toThrow('NEXT_NOT_FOUND')
+    await expect(RegisterPage({ searchParams: Promise.resolve({}) })).rejects.toThrow(
+      'NEXT_NOT_FOUND',
+    )
     expect(mockNotFound).toHaveBeenCalledTimes(1)
     expect(mockTokenFindUnique).not.toHaveBeenCalled()
   })

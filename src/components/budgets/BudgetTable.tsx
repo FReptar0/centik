@@ -69,19 +69,34 @@ export default function BudgetTable({ budgets, onSave, isClosed }: BudgetTablePr
         <table className="w-full">
           <thead>
             <tr className="border-b border-border-divider">
-              <th scope="col" className="bg-bg px-4 py-3 text-left text-xs font-medium uppercase tracking-[2px] text-text-secondary">
+              <th
+                scope="col"
+                className="bg-bg px-4 py-3 text-left text-xs font-medium uppercase tracking-[2px] text-text-secondary"
+              >
                 Categoria
               </th>
-              <th scope="col" className="bg-bg px-4 py-3 text-right text-xs font-medium uppercase tracking-[2px] text-text-secondary">
+              <th
+                scope="col"
+                className="bg-bg px-4 py-3 text-right text-xs font-medium uppercase tracking-[2px] text-text-secondary"
+              >
                 Quincenal
               </th>
-              <th scope="col" className="hidden bg-bg px-4 py-3 text-right text-xs font-medium uppercase tracking-[2px] text-text-secondary xl:table-cell">
+              <th
+                scope="col"
+                className="hidden bg-bg px-4 py-3 text-right text-xs font-medium uppercase tracking-[2px] text-text-secondary xl:table-cell"
+              >
                 Mensual
               </th>
-              <th scope="col" className="hidden bg-bg px-4 py-3 text-right text-xs font-medium uppercase tracking-[2px] text-text-secondary lg:table-cell">
+              <th
+                scope="col"
+                className="hidden bg-bg px-4 py-3 text-right text-xs font-medium uppercase tracking-[2px] text-text-secondary lg:table-cell"
+              >
                 Semestral
               </th>
-              <th scope="col" className="hidden bg-bg px-4 py-3 text-right text-xs font-medium uppercase tracking-[2px] text-text-secondary 2xl:table-cell">
+              <th
+                scope="col"
+                className="hidden bg-bg px-4 py-3 text-right text-xs font-medium uppercase tracking-[2px] text-text-secondary 2xl:table-cell"
+              >
                 Anual
               </th>
             </tr>

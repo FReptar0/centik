@@ -50,8 +50,8 @@ import { signChallenge } from '@/lib/challenge'
 
 const TEST_PASSWORD = 'totp-integration-password-2026'
 const BCRYPT_COST = 12
-// cost-12 bcrypt x 10 codes + DB roundtrips easily exceeds the 5s default
-const TEST_TIMEOUT_MS = 60000
+// Per-test timeout is set to 60s globally in vitest.integration.config.mts because
+// cost-12 bcrypt x 10 codes + DB roundtrips easily exceeds the 5s default.
 let userAId: string
 let userBId: string
 const userAEmail = `totp-int-a-${Date.now()}@test.com`
@@ -67,9 +67,7 @@ async function setup2FA(userId: string): Promise<{ secret: string; plainCodes: s
   const secret = createTotpSecret()
   const encrypted = encryptSecret(secret)
   const plainCodes = generateBackupCodes(10)
-  const hashes = await Promise.all(
-    plainCodes.map((c) => bcrypt.hash(c.toLowerCase(), BCRYPT_COST)),
-  )
+  const hashes = await Promise.all(plainCodes.map((c) => bcrypt.hash(c.toLowerCase(), BCRYPT_COST)))
 
   await prisma.$transaction([
     prisma.user.update({
@@ -183,7 +181,7 @@ describe('TOTP 2FA — login flows with real authorizeUser', () => {
     expect(result).toMatchObject({ id: userAId, email: userAEmail })
   })
 
-  it("2FA user — valid challenge + valid backup code returns user AND marks BackupCode.usedAt", async () => {
+  it('2FA user — valid challenge + valid backup code returns user AND marks BackupCode.usedAt', async () => {
     const { plainCodes } = await setup2FA(userAId)
     const challenge = signChallenge(userAId, userAEmail)
     const code = plainCodes[0]

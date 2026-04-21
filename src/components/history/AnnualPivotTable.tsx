@@ -22,8 +22,18 @@ interface AnnualPivotTableProps {
 
 /** Short month names for column headers */
 const SHORT_MONTHS = [
-  'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
-  'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic',
+  'Ene',
+  'Feb',
+  'Mar',
+  'Abr',
+  'May',
+  'Jun',
+  'Jul',
+  'Ago',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dic',
 ] as const
 
 /** Row labels for the pivot table */
@@ -59,7 +69,10 @@ export default function AnnualPivotTable({
         <thead>
           <tr className="border-b border-border-divider bg-bg">
             {/* Sticky first column header */}
-            <th scope="col" className="sticky left-0 z-10 bg-bg px-4 py-3 text-left text-xs font-medium uppercase tracking-[2px] text-text-secondary">
+            <th
+              scope="col"
+              className="sticky left-0 z-10 bg-bg px-4 py-3 text-left text-xs font-medium uppercase tracking-[2px] text-text-secondary"
+            >
               Metrica
             </th>
             {SHORT_MONTHS.map((monthName, idx) => {
@@ -97,9 +110,7 @@ export default function AnnualPivotTable({
                     {isCurrentPeriod && period && !isClosed && (
                       <button
                         type="button"
-                        onClick={() =>
-                          onCloseClick(period.id, period.month, period.year)
-                        }
+                        onClick={() => onCloseClick(period.id, period.month, period.year)}
                         className={cn(
                           'text-[10px] font-semibold text-negative',
                           'hover:text-negative/80 underline underline-offset-2',
@@ -113,7 +124,10 @@ export default function AnnualPivotTable({
                 </th>
               )
             })}
-            <th scope="col" className="px-2 py-3 text-center text-xs font-medium uppercase tracking-[2px] text-accent">
+            <th
+              scope="col"
+              className="px-2 py-3 text-center text-xs font-medium uppercase tracking-[2px] text-accent"
+            >
               Total Anual
             </th>
           </tr>
@@ -122,14 +136,14 @@ export default function AnnualPivotTable({
           {ROW_LABELS.map((label) => (
             <tr key={label} className="border-b border-border-divider last:border-b-0">
               {/* Sticky first column */}
-              <th scope="row" className="sticky left-0 z-10 bg-surface-elevated px-4 py-3 text-left text-sm font-medium text-text-primary whitespace-nowrap">
+              <th
+                scope="row"
+                className="sticky left-0 z-10 bg-surface-elevated px-4 py-3 text-left text-sm font-medium text-text-primary whitespace-nowrap"
+              >
                 {label}
               </th>
               {data.map((slot, idx) => (
-                <td
-                  key={idx}
-                  className="px-2 py-3 text-center font-mono tabular-nums text-sm"
-                >
+                <td key={idx} className="px-2 py-3 text-center font-mono tabular-nums text-sm">
                   {renderCellValue(label, slot)}
                 </td>
               ))}
@@ -146,10 +160,7 @@ export default function AnnualPivotTable({
 }
 
 /** Extract cell value from a MonthSummarySlot for a given row label */
-function renderCellValue(
-  label: string,
-  slot: MonthSummarySlot,
-): React.ReactNode {
+function renderCellValue(label: string, slot: MonthSummarySlot): React.ReactNode {
   if (!slot.data) {
     return <span className="text-text-tertiary">--</span>
   }
@@ -158,13 +169,9 @@ function renderCellValue(
 
   switch (label) {
     case 'Ingresos':
-      return (
-        <span className="text-positive">{formatMoney(summary.totalIncome)}</span>
-      )
+      return <span className="text-positive">{formatMoney(summary.totalIncome)}</span>
     case 'Gastos':
-      return (
-        <span className="text-negative">{formatMoney(summary.totalExpenses)}</span>
-      )
+      return <span className="text-negative">{formatMoney(summary.totalExpenses)}</span>
     case 'Ahorro': {
       const isPositive = Number(summary.totalSavings) >= 0
       return (
@@ -174,11 +181,7 @@ function renderCellValue(
       )
     }
     case '% Ahorro':
-      return (
-        <span className="text-text-primary">
-          {formatRate(summary.savingsRate)}
-        </span>
-      )
+      return <span className="text-text-primary">{formatRate(summary.savingsRate)}</span>
     case 'Deuda (cierre)': {
       const hasDebt = Number(summary.debtAtClose) > 0
       return (
@@ -188,11 +191,7 @@ function renderCellValue(
       )
     }
     case 'Pagos a deudas':
-      return (
-        <span className="text-text-primary">
-          {formatMoney(summary.debtPayments)}
-        </span>
-      )
+      return <span className="text-text-primary">{formatMoney(summary.debtPayments)}</span>
     default:
       return <span className="text-text-tertiary">--</span>
   }
@@ -232,8 +231,7 @@ function computeAnnualTotals(data: MonthSummarySlot[]): AnnualTotals {
 
   debtAtClose = lastDebtAtClose
 
-  const savingsRate =
-    totalIncome > 0 ? Math.round((totalSavings / totalIncome) * 10000) : 0
+  const savingsRate = totalIncome > 0 ? Math.round((totalSavings / totalIncome) * 10000) : 0
 
   return {
     totalIncome,
@@ -247,27 +245,16 @@ function computeAnnualTotals(data: MonthSummarySlot[]): AnnualTotals {
 }
 
 /** Render annual total cell for a given row */
-function renderAnnualTotal(
-  label: string,
-  totals: AnnualTotals,
-): React.ReactNode {
+function renderAnnualTotal(label: string, totals: AnnualTotals): React.ReactNode {
   if (!totals.hasData) {
     return <span className="text-text-tertiary">--</span>
   }
 
   switch (label) {
     case 'Ingresos':
-      return (
-        <span className="text-positive">
-          {formatMoney(String(totals.totalIncome))}
-        </span>
-      )
+      return <span className="text-positive">{formatMoney(String(totals.totalIncome))}</span>
     case 'Gastos':
-      return (
-        <span className="text-negative">
-          {formatMoney(String(totals.totalExpenses))}
-        </span>
-      )
+      return <span className="text-negative">{formatMoney(String(totals.totalExpenses))}</span>
     case 'Ahorro': {
       const isPositive = totals.totalSavings >= 0
       return (
@@ -277,11 +264,7 @@ function renderAnnualTotal(
       )
     }
     case '% Ahorro':
-      return (
-        <span className="text-text-primary">
-          {formatRate(totals.savingsRate)}
-        </span>
-      )
+      return <span className="text-text-primary">{formatRate(totals.savingsRate)}</span>
     case 'Deuda (cierre)': {
       const hasDebt = totals.debtAtClose > 0
       return (
@@ -291,11 +274,7 @@ function renderAnnualTotal(
       )
     }
     case 'Pagos a deudas':
-      return (
-        <span className="text-text-primary">
-          {formatMoney(String(totals.debtPayments))}
-        </span>
-      )
+      return <span className="text-text-primary">{formatMoney(String(totals.debtPayments))}</span>
     default:
       return <span className="text-text-tertiary">--</span>
   }

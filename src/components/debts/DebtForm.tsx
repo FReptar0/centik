@@ -35,9 +35,7 @@ export default function DebtForm({ isOpen, onClose, debt }: DebtFormProps) {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title}>
-      {isOpen && (
-        <DebtFormContent key={debt?.id ?? 'new'} debt={debt} onClose={onClose} />
-      )}
+      {isOpen && <DebtFormContent key={debt?.id ?? 'new'} debt={debt} onClose={onClose} />}
     </Modal>
   )
 }
@@ -60,9 +58,7 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
   const [name, setName] = useState(debt?.name ?? '')
   const [type, setType] = useState<string>(debt?.type ?? 'CREDIT_CARD')
   const [currentBalance, setCurrentBalance] = useState(centsToPesos(debt?.currentBalance ?? null))
-  const [annualRate, setAnnualRate] = useState(
-    debt ? (debt.annualRate / 100).toString() : '',
-  )
+  const [annualRate, setAnnualRate] = useState(debt ? (debt.annualRate / 100).toString() : '')
 
   // Credit card fields
   const [creditLimit, setCreditLimit] = useState(centsToPesos(debt?.creditLimit ?? null))
@@ -116,7 +112,7 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
         .map((issue) => issue.message)
       setErrors((prev) => ({
         ...prev,
-        [fieldName]: fieldErrors.length > 0 ? fieldErrors : prev[fieldName] ?? [],
+        [fieldName]: fieldErrors.length > 0 ? fieldErrors : (prev[fieldName] ?? []),
       }))
     }
   }
@@ -171,9 +167,7 @@ function DebtFormContent({ debt, onClose }: FormContentProps) {
       if (remainingMonths) payload.remainingMonths = parseInt(remainingMonths, 10)
     }
 
-    const result = isEditing
-      ? await updateDebt(debt.id, payload)
-      : await createDebt(payload)
+    const result = isEditing ? await updateDebt(debt.id, payload) : await createDebt(payload)
 
     setSubmitting(false)
 

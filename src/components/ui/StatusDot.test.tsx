@@ -46,9 +46,7 @@ describe('StatusDot', () => {
   })
 
   it('accepts and applies additional className for positioning', () => {
-    const { container } = render(
-      <StatusDot className="absolute bottom-[-8px] left-1/2" />,
-    )
+    const { container } = render(<StatusDot className="absolute bottom-[-8px] left-1/2" />)
     const dot = container.firstElementChild
     expect(dot?.className).toContain('absolute')
     expect(dot?.className).toContain('left-1/2')

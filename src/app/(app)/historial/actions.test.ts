@@ -119,9 +119,7 @@ describe('closePeriod', () => {
 
   it('executes atomic $transaction with all 5 steps', async () => {
     // First call: top-level period lookup; Second call: next period lookup in $transaction
-    mockPeriodFindFirst
-      .mockResolvedValueOnce(openPeriod)
-      .mockResolvedValueOnce(null)
+    mockPeriodFindFirst.mockResolvedValueOnce(openPeriod).mockResolvedValueOnce(null)
 
     const mockTx = createMockTx()
     mockTransaction.mockImplementation(async (cb: (tx: unknown) => Promise<void>) => {
@@ -185,8 +183,18 @@ describe('closePeriod', () => {
     // Verify budgets were copied with userId
     expect(mockBudgetCreateMany).toHaveBeenCalledWith({
       data: [
-        { categoryId: 'cat-1', quincenalAmount: BigInt(50000), periodId: 'period-may', userId: TEST_USER_ID },
-        { categoryId: 'cat-2', quincenalAmount: BigInt(25000), periodId: 'period-may', userId: TEST_USER_ID },
+        {
+          categoryId: 'cat-1',
+          quincenalAmount: BigInt(50000),
+          periodId: 'period-may',
+          userId: TEST_USER_ID,
+        },
+        {
+          categoryId: 'cat-2',
+          quincenalAmount: BigInt(25000),
+          periodId: 'period-may',
+          userId: TEST_USER_ID,
+        },
       ],
     })
   })
@@ -200,9 +208,7 @@ describe('closePeriod', () => {
     }
 
     // First call: top-level period lookup; Second call: next period lookup in $transaction
-    mockPeriodFindFirst
-      .mockResolvedValueOnce(decemberPeriod)
-      .mockResolvedValueOnce(null)
+    mockPeriodFindFirst.mockResolvedValueOnce(decemberPeriod).mockResolvedValueOnce(null)
 
     const mockTx = createMockTx()
     mockTransaction.mockImplementation(async (cb: (tx: unknown) => Promise<void>) => {
@@ -238,9 +244,7 @@ describe('closePeriod', () => {
     }
 
     // First call: top-level period lookup; Second call: next period lookup in $transaction
-    mockPeriodFindFirst
-      .mockResolvedValueOnce(januaryPeriod)
-      .mockResolvedValueOnce(null)
+    mockPeriodFindFirst.mockResolvedValueOnce(januaryPeriod).mockResolvedValueOnce(null)
 
     const mockTx = createMockTx()
     mockTransaction.mockImplementation(async (cb: (tx: unknown) => Promise<void>) => {
@@ -276,9 +280,7 @@ describe('closePeriod', () => {
     }
 
     // First call: top-level period lookup; Second call: next period lookup in $transaction
-    mockPeriodFindFirst
-      .mockResolvedValueOnce(junePeriod)
-      .mockResolvedValueOnce(null)
+    mockPeriodFindFirst.mockResolvedValueOnce(junePeriod).mockResolvedValueOnce(null)
 
     const mockTx = createMockTx()
     mockTransaction.mockImplementation(async (cb: (tx: unknown) => Promise<void>) => {
@@ -307,9 +309,7 @@ describe('closePeriod', () => {
 
   it('skips budget copy when next period already has budgets', async () => {
     // First call: top-level period lookup; Second call: next period lookup in $transaction
-    mockPeriodFindFirst
-      .mockResolvedValueOnce(openPeriod)
-      .mockResolvedValueOnce(null)
+    mockPeriodFindFirst.mockResolvedValueOnce(openPeriod).mockResolvedValueOnce(null)
 
     const mockTx = createMockTx()
     mockTransaction.mockImplementation(async (cb: (tx: unknown) => Promise<void>) => {
@@ -337,9 +337,7 @@ describe('closePeriod', () => {
 
   it('revalidates /, /historial, /presupuesto, /movimientos after close', async () => {
     // First call: top-level period lookup; Second call: next period lookup in $transaction
-    mockPeriodFindFirst
-      .mockResolvedValueOnce(openPeriod)
-      .mockResolvedValueOnce(null)
+    mockPeriodFindFirst.mockResolvedValueOnce(openPeriod).mockResolvedValueOnce(null)
 
     const mockTx = createMockTx()
     mockTransaction.mockImplementation(async (cb: (tx: unknown) => Promise<void>) => {

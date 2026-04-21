@@ -24,8 +24,10 @@ export default function IncomeSourceCard({ source, onEdit }: IncomeSourceCardPro
   const isVariable = source.frequency === 'VARIABLE'
 
   /** Icon and color per type (Phase 17 decision: Empleo #6BAF8E, Freelance #7AACB8) */
-  const typeIcon = source.type === 'EMPLOYMENT' ? 'briefcase' : source.type === 'FREELANCE' ? 'laptop' : 'banknote'
-  const typeColor = source.type === 'EMPLOYMENT' ? '#6BAF8E' : source.type === 'FREELANCE' ? '#7AACB8' : '#8A9099'
+  const typeIcon =
+    source.type === 'EMPLOYMENT' ? 'briefcase' : source.type === 'FREELANCE' ? 'laptop' : 'banknote'
+  const typeColor =
+    source.type === 'EMPLOYMENT' ? '#6BAF8E' : source.type === 'FREELANCE' ? '#7AACB8' : '#8A9099'
 
   useEffect(() => {
     if (!confirmingDelete) return
@@ -59,10 +61,7 @@ export default function IncomeSourceCard({ source, onEdit }: IncomeSourceCardPro
   }, [])
 
   return (
-    <div className={cn(
-      'rounded-2xl bg-surface-elevated p-5',
-      'transition-all duration-200',
-    )}>
+    <div className={cn('rounded-2xl bg-surface-elevated p-5', 'transition-all duration-200')}>
       {/* Top row: icon + name + type label */}
       <div className="flex items-center gap-3 mb-3">
         {/* Circular icon container with category color at 12% opacity */}
@@ -70,25 +69,26 @@ export default function IncomeSourceCard({ source, onEdit }: IncomeSourceCardPro
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
           style={{ backgroundColor: `${typeColor}1F` }}
         >
-          <DynamicIcon
-            name={typeIcon}
-            size={18}
-            style={{ color: typeColor }}
-            aria-hidden="true"
-          />
+          <DynamicIcon name={typeIcon} size={18} style={{ color: typeColor }} aria-hidden="true" />
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="text-sm font-medium text-text-primary truncate">{source.name}</h3>
           <span className="text-xs font-medium uppercase tracking-[2px] text-text-secondary">
-            {source.type === 'EMPLOYMENT' ? 'Empleo' : source.type === 'FREELANCE' ? 'Freelance' : 'Otro'}
+            {source.type === 'EMPLOYMENT'
+              ? 'Empleo'
+              : source.type === 'FREELANCE'
+                ? 'Freelance'
+                : 'Otro'}
           </span>
         </div>
         {/* Frequency badge */}
-        <span className={cn(
-          'text-[11px] font-semibold uppercase tracking-[2px]',
-          'px-2 py-0.5 rounded-full shrink-0',
-          'bg-positive-subtle text-positive',
-        )}>
+        <span
+          className={cn(
+            'text-[11px] font-semibold uppercase tracking-[2px]',
+            'px-2 py-0.5 rounded-full shrink-0',
+            'bg-positive-subtle text-positive',
+          )}
+        >
           {FREQUENCY_DISPLAY[source.frequency] ?? source.frequency}
         </span>
       </div>
@@ -96,13 +96,16 @@ export default function IncomeSourceCard({ source, onEdit }: IncomeSourceCardPro
       {/* Amount row: MoneyAmount with positive color */}
       <div className="mb-3">
         <div className="flex items-baseline gap-2">
-          <MoneyAmount value={source.defaultAmount} variant="income" size="xl" className="text-xl font-bold" />
-          {isVariable && (
-            <span className="text-sm text-accent">(estimado)</span>
-          )}
+          <MoneyAmount
+            value={source.defaultAmount}
+            variant="income"
+            size="xl"
+            className="text-xl font-bold"
+          />
+          {isVariable && <span className="text-sm text-accent">(estimado)</span>}
         </div>
         <p className="text-xs font-medium uppercase tracking-[2px] text-text-secondary mt-1">
-          Mensual: <span className="font-mono tabular-nums normal-case tracking-normal">{' '}</span>
+          Mensual: <span className="font-mono tabular-nums normal-case tracking-normal"> </span>
           <MoneyAmount value={monthlyAmount} variant="income" size="sm" className="text-xs" />
         </p>
       </div>

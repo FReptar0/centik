@@ -60,9 +60,7 @@ export async function closePeriod(periodId: string): Promise<ActionResult> {
       const debtPayments = BigInt(0) // MVP: no explicit debt-payment category
 
       const savingsRate =
-        totalIncome > BigInt(0)
-          ? Number((totalSavings * BigInt(10000)) / totalIncome)
-          : 0
+        totalIncome > BigInt(0) ? Number((totalSavings * BigInt(10000)) / totalIncome) : 0
 
       // Step 2: Create MonthlySummary
       await tx.monthlySummary.create({
@@ -175,9 +173,7 @@ export async function reopenPeriod(periodId: string): Promise<ActionResult> {
  * Thin Server Action wrapper for getClosePeriodPreview.
  * Allows Client Components to invoke the preview as a Server Action.
  */
-export async function getClosePeriodPreviewAction(
-  periodId: string,
-): Promise<ClosePeriodPreview> {
+export async function getClosePeriodPreviewAction(periodId: string): Promise<ClosePeriodPreview> {
   const { userId } = await requireAuth()
   return getClosePeriodPreview(periodId, userId)
 }

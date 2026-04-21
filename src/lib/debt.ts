@@ -116,8 +116,7 @@ export function calculateDebtSummary(debts: SerializedDebt[], monthlyIncome: str
   const income = BigInt(monthlyIncome)
   if (income > BigInt(0) && totalMonthlyPayments > BigInt(0)) {
     // Use basis-point precision: (payments * 10000) / income gives bps, then / 100 for percentage
-    debtToIncomeRatio =
-      Number((totalMonthlyPayments * BigInt(10000)) / income) / 100
+    debtToIncomeRatio = Number((totalMonthlyPayments * BigInt(10000)) / income) / 100
   }
 
   return {

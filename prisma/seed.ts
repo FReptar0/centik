@@ -296,7 +296,13 @@ async function main() {
   await seedDebts(adminUserId)
   const valueUnits = await seedValueUnits(adminUserId)
   await seedBudgets(categories, currentPeriod.id, adminUserId)
-  await seedTransactions(categories, currentPeriod.id, previousPeriod.id, incomeSources, adminUserId)
+  await seedTransactions(
+    categories,
+    currentPeriod.id,
+    previousPeriod.id,
+    incomeSources,
+    adminUserId,
+  )
   await seedMonthlySummary(previousPeriod.id, adminUserId)
   await seedUnitRates(valueUnits, adminUserId)
 

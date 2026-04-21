@@ -60,18 +60,14 @@ describe('FloatingInput', () => {
   })
 
   it('when error prop is set, underline shows negative color and error message appears', () => {
-    render(
-      <FloatingInput label="Monto" value="" onChange={() => {}} error="Campo requerido" />,
-    )
+    render(<FloatingInput label="Monto" value="" onChange={() => {}} error="Campo requerido" />)
     const input = screen.getByRole('textbox')
     expect(input.className).toContain('border-negative')
     expect(screen.getByText('Campo requerido')).toBeDefined()
   })
 
   it('error message text content matches error prop value', () => {
-    render(
-      <FloatingInput label="Monto" value="" onChange={() => {}} error="Monto invalido" />,
-    )
+    render(<FloatingInput label="Monto" value="" onChange={() => {}} error="Monto invalido" />)
     const errorEl = screen.getByText('Monto invalido')
     expect(errorEl.textContent).toBe('Monto invalido')
   })
@@ -87,9 +83,7 @@ describe('FloatingInput', () => {
   })
 
   it('prefix and suffix do not float (always visible in same position)', () => {
-    render(
-      <FloatingInput label="Monto" value="" onChange={() => {}} prefix="$" suffix="%" />,
-    )
+    render(<FloatingInput label="Monto" value="" onChange={() => {}} prefix="$" suffix="%" />)
     const prefix = screen.getByText('$')
     const suffix = screen.getByText('%')
     // Both should be absolute positioned at the same vertical position
@@ -114,9 +108,7 @@ describe('FloatingInput', () => {
   })
 
   it('optional label shows "(opcional)" text when optional prop is true', () => {
-    render(
-      <FloatingInput label="Notas" value="algo" onChange={() => {}} optional={true} />,
-    )
+    render(<FloatingInput label="Notas" value="algo" onChange={() => {}} optional={true} />)
     // When floating (value is non-empty), show "(opcional)"
     expect(screen.getByText(/opcional/i)).toBeDefined()
   })
@@ -130,9 +122,7 @@ describe('FloatingInput', () => {
   })
 
   it('input type defaults to text but can be overridden', () => {
-    const { unmount } = render(
-      <FloatingInput label="Monto" value="" onChange={() => {}} />,
-    )
+    const { unmount } = render(<FloatingInput label="Monto" value="" onChange={() => {}} />)
     expect(screen.getByRole('textbox').getAttribute('type')).toBe('text')
     unmount()
 

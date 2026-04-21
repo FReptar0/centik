@@ -1,14 +1,6 @@
 'use client'
 
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  Cell,
-} from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import type { BudgetVsSpent } from '@/types'
 import { formatMoney } from '@/lib/utils'
 import DynamicIcon from '@/components/ui/DynamicIcon'
@@ -44,9 +36,7 @@ function CustomTooltip({
 
   const data = payload[0].payload
   const budgetNum = data.budgetNum
-  const percentUsed = budgetNum > 0
-    ? Math.round((data.spentNum / budgetNum) * 100)
-    : 0
+  const percentUsed = budgetNum > 0 ? Math.round((data.spentNum / budgetNum) * 100) : 0
 
   return (
     <div
@@ -56,12 +46,8 @@ function CustomTooltip({
       }}
     >
       <p className="font-medium text-text-primary mb-1">{data.name}</p>
-      <p className="font-mono text-text-secondary">
-        Presupuesto: {formatMoney(data.budgetStr)}
-      </p>
-      <p className="font-mono text-text-secondary">
-        Gastado: {formatMoney(data.spentStr)}
-      </p>
+      <p className="font-mono text-text-secondary">Presupuesto: {formatMoney(data.budgetStr)}</p>
+      <p className="font-mono text-text-secondary">Gastado: {formatMoney(data.spentStr)}</p>
       <p className="text-text-tertiary mt-1">{percentUsed}% usado</p>
     </div>
   )
@@ -71,9 +57,7 @@ export default function BudgetBarChart({ data }: BudgetBarChartProps) {
   if (data.length === 0) {
     return (
       <div className="bg-surface-elevated rounded-lg p-5">
-        <h3 className="text-lg font-semibold text-text-primary mb-4">
-          Presupuesto vs Gastado
-        </h3>
+        <h3 className="text-lg font-semibold text-text-primary mb-4">Presupuesto vs Gastado</h3>
         <div className="flex flex-col items-center justify-center py-12 text-center">
           <DynamicIcon
             name="bar-chart-3"
@@ -81,9 +65,7 @@ export default function BudgetBarChart({ data }: BudgetBarChartProps) {
             className="text-text-tertiary mb-3"
             aria-hidden="true"
           />
-          <p className="text-text-secondary text-sm">
-            Sin datos de presupuesto
-          </p>
+          <p className="text-text-secondary text-sm">Sin datos de presupuesto</p>
           <p className="text-text-tertiary text-xs mt-1">
             Configura tu presupuesto en la seccion de Presupuesto
           </p>
@@ -103,13 +85,8 @@ export default function BudgetBarChart({ data }: BudgetBarChartProps) {
 
   return (
     <div className="bg-surface-elevated rounded-lg p-5">
-      <h3 className="text-lg font-semibold text-text-primary mb-4">
-        Presupuesto vs Gastado
-      </h3>
-      <ResponsiveContainer
-        width="100%"
-        height={Math.max(data.length * 50, 200)}
-      >
+      <h3 className="text-lg font-semibold text-text-primary mb-4">Presupuesto vs Gastado</h3>
+      <ResponsiveContainer width="100%" height={Math.max(data.length * 50, 200)}>
         <BarChart data={chartData} layout="vertical" barGap={4}>
           <YAxis
             dataKey="name"
@@ -126,10 +103,7 @@ export default function BudgetBarChart({ data }: BudgetBarChartProps) {
             tickLine={false}
             tickFormatter={(v: number) => `$${(v / 1000).toFixed(0)}K`}
           />
-          <Tooltip
-            content={<CustomTooltip />}
-            cursor={false}
-          />
+          <Tooltip content={<CustomTooltip />} cursor={false} />
           <Bar
             dataKey="budgetNum"
             fill={CHART_COLORS.budgetMuted}
@@ -137,12 +111,7 @@ export default function BudgetBarChart({ data }: BudgetBarChartProps) {
             barSize={8}
             name="Presupuesto"
           />
-          <Bar
-            dataKey="spentNum"
-            radius={0}
-            barSize={8}
-            name="Gastado"
-          >
+          <Bar dataKey="spentNum" radius={0} barSize={8} name="Gastado">
             {chartData.map((entry) => (
               <Cell key={entry.name} fill={entry.color} />
             ))}

@@ -17,10 +17,7 @@ interface InvitacionesSectionProps {
  * (visible only right after a successful create), and the recent-tokens list.
  * Per D-04: one compound section, not multiple pages.
  */
-export default function InvitacionesSection({
-  inviteTokens,
-  origin,
-}: InvitacionesSectionProps) {
+export default function InvitacionesSection({ inviteTokens, origin }: InvitacionesSectionProps) {
   const [generated, setGenerated] = useState<{ token: string; expiresAt: Date } | null>(null)
 
   function handleTokenGenerated(token: string, expiresAt: Date) {

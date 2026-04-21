@@ -7,9 +7,7 @@ import FloatingInput from '@/components/ui/FloatingInput'
 import { createInviteToken } from '@/app/(app)/configuracion/invite-actions'
 import { INVITE_TTL_MS } from '@/lib/invite-utils'
 
-type CreateInviteResult =
-  | { success: true; token: string }
-  | { error: Record<string, string[]> }
+type CreateInviteResult = { success: true; token: string } | { error: Record<string, string[]> }
 
 interface InvitacionFormProps {
   onTokenGenerated: (token: string, expiresAt: Date) => void

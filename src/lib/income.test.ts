@@ -29,7 +29,8 @@ describe('getMonthlyEquivalent', () => {
 
 /** Helper to build a minimal SerializedIncomeSource for tests */
 function makeSource(
-  overrides: Partial<SerializedIncomeSource> & Pick<SerializedIncomeSource, 'defaultAmount' | 'frequency'>,
+  overrides: Partial<SerializedIncomeSource> &
+    Pick<SerializedIncomeSource, 'defaultAmount' | 'frequency'>,
 ): SerializedIncomeSource {
   return {
     id: 'test-id',
@@ -55,9 +56,7 @@ describe('calculateIncomeSummary', () => {
   })
 
   it('calculates correct multiples for a single QUINCENAL source', () => {
-    const sources = [
-      makeSource({ defaultAmount: '1000000', frequency: 'QUINCENAL' }),
-    ]
+    const sources = [makeSource({ defaultAmount: '1000000', frequency: 'QUINCENAL' })]
     const result = calculateIncomeSummary(sources)
     // quincenal = 1000000, monthly = 2000000, semester = 12000000, annual = 24000000
     expect(result).toEqual({
@@ -69,9 +68,7 @@ describe('calculateIncomeSummary', () => {
   })
 
   it('calculates correct quincenal for SEMANAL source (x2 weeks per quincena)', () => {
-    const sources = [
-      makeSource({ defaultAmount: '500000', frequency: 'SEMANAL' }),
-    ]
+    const sources = [makeSource({ defaultAmount: '500000', frequency: 'SEMANAL' })]
     const result = calculateIncomeSummary(sources)
     // quincenal = 500000 * 2 = 1000000
     // monthly = 1000000 * 2 = 2000000
@@ -80,9 +77,7 @@ describe('calculateIncomeSummary', () => {
   })
 
   it('calculates correct quincenal for MENSUAL source (half per quincena)', () => {
-    const sources = [
-      makeSource({ defaultAmount: '6000000', frequency: 'MENSUAL' }),
-    ]
+    const sources = [makeSource({ defaultAmount: '6000000', frequency: 'MENSUAL' })]
     const result = calculateIncomeSummary(sources)
     // quincenal = 6000000 / 2 = 3000000
     // monthly = 3000000 * 2 = 6000000
@@ -91,9 +86,7 @@ describe('calculateIncomeSummary', () => {
   })
 
   it('calculates correct quincenal for VARIABLE source (estimate, half per quincena)', () => {
-    const sources = [
-      makeSource({ defaultAmount: '4000000', frequency: 'VARIABLE' }),
-    ]
+    const sources = [makeSource({ defaultAmount: '4000000', frequency: 'VARIABLE' })]
     const result = calculateIncomeSummary(sources)
     // quincenal = 4000000 / 2 = 2000000
     // monthly = 2000000 * 2 = 4000000

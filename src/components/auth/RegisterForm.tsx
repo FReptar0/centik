@@ -90,9 +90,7 @@ export default function RegisterForm({ email, token }: RegisterFormProps) {
         </button>
       </div>
 
-      {state?.error?._form && (
-        <p className="text-sm text-negative">{state.error._form[0]}</p>
-      )}
+      {state?.error?._form && <p className="text-sm text-negative">{state.error._form[0]}</p>}
 
       <button
         type="submit"

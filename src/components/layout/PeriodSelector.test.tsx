@@ -23,8 +23,18 @@ describe('PeriodSelector', () => {
     render(<PeriodSelector />)
     const currentMonth = new Date().getMonth()
     const monthNames = [
-      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre',
     ]
     expect(screen.getByText(new RegExp(monthNames[currentMonth]))).toBeDefined()
   })
@@ -60,9 +70,7 @@ describe('PeriodSelector', () => {
 
   it('shows StatusDot when viewing current period', () => {
     render(<PeriodSelector />)
-    const periodText = screen.getByText(
-      new RegExp(new Date().getFullYear().toString()),
-    )
+    const periodText = screen.getByText(new RegExp(new Date().getFullYear().toString()))
     const container = periodText.closest('span')
     expect(container).not.toBeNull()
     const dot = container!.querySelector('.bg-accent.animate-status-pulse')
@@ -70,9 +78,7 @@ describe('PeriodSelector', () => {
   })
 
   it('does not show StatusDot when viewing past period', () => {
-    mockUseSearchParams.mockReturnValue(
-      new URLSearchParams('month=1&year=2024'),
-    )
+    mockUseSearchParams.mockReturnValue(new URLSearchParams('month=1&year=2024'))
     render(<PeriodSelector />)
     const container = screen.getByText(/Enero 2024/).closest('span')
     expect(container).not.toBeNull()

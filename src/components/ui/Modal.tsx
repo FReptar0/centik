@@ -94,9 +94,7 @@ export default function Modal({
 
       {/* Desktop centered modal (md+) */}
       <div
-        className={cn(
-          'fixed inset-0 z-50 hidden md:flex items-center justify-center p-4',
-        )}
+        className={cn('fixed inset-0 z-50 hidden md:flex items-center justify-center p-4')}
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? `${titleId}-desktop` : undefined}

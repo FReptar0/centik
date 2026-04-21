@@ -23,15 +23,8 @@ export default function CategoryList({ categories, onAdd }: CategoryListProps) {
   if (categories.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
-        <DynamicIcon
-          name="tag"
-          size={32}
-          className="text-text-tertiary mb-3"
-          aria-hidden="true"
-        />
-        <p className="text-text-secondary text-lg mb-4">
-          No hay categorias configuradas
-        </p>
+        <DynamicIcon name="tag" size={32} className="text-text-tertiary mb-3" aria-hidden="true" />
+        <p className="text-text-secondary text-lg mb-4">No hay categorias configuradas</p>
         <button
           onClick={onAdd}
           className="bg-accent text-black font-semibold rounded-full px-4 py-2 transition-all duration-200 hover:bg-accent-hover active:scale-[0.98]"

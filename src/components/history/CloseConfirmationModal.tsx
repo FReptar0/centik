@@ -26,11 +26,7 @@ export default function CloseConfirmationModal({
   preview,
 }: CloseConfirmationModalProps) {
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={`Cerrar el periodo de ${monthName} ${year}?`}
-    >
+    <Modal isOpen={isOpen} onClose={onClose} title={`Cerrar el periodo de ${monthName} ${year}?`}>
       <div className="space-y-5">
         {/* Preview grid */}
         <div className="grid grid-cols-2 gap-3">
@@ -49,11 +45,7 @@ export default function CloseConfirmationModal({
               <PreviewItem
                 label="Ahorro"
                 value={formatMoney(preview.totalSavings)}
-                colorClass={
-                  Number(preview.totalSavings) >= 0
-                    ? 'text-positive'
-                    : 'text-negative'
-                }
+                colorClass={Number(preview.totalSavings) >= 0 ? 'text-positive' : 'text-negative'}
               />
               <PreviewItem
                 label="Tasa de Ahorro"
@@ -63,11 +55,7 @@ export default function CloseConfirmationModal({
               <PreviewItem
                 label="Deuda al Cierre"
                 value={formatMoney(preview.debtAtClose)}
-                colorClass={
-                  Number(preview.debtAtClose) > 0
-                    ? 'text-negative'
-                    : 'text-text-primary'
-                }
+                colorClass={Number(preview.debtAtClose) > 0 ? 'text-negative' : 'text-text-primary'}
               />
               <PreviewItem
                 label="Pagos a Deudas"
@@ -78,10 +66,7 @@ export default function CloseConfirmationModal({
           ) : (
             <>
               {Array.from({ length: 6 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="rounded-xl bg-surface p-3 space-y-2"
-                >
+                <div key={i} className="rounded-xl bg-surface p-3 space-y-2">
                   <div className="h-3 w-16 bg-border rounded animate-pulse" />
                   <div className="h-5 w-24 bg-border rounded animate-pulse" />
                 </div>
@@ -147,10 +132,10 @@ interface PreviewItemProps {
 function PreviewItem({ label, value, colorClass }: PreviewItemProps) {
   return (
     <div className="rounded-xl bg-surface p-3">
-      <p className="text-xs font-medium uppercase tracking-[2px] text-text-secondary mb-1">{label}</p>
-      <p className={cn('text-base font-semibold font-mono tabular-nums', colorClass)}>
-        {value}
+      <p className="text-xs font-medium uppercase tracking-[2px] text-text-secondary mb-1">
+        {label}
       </p>
+      <p className={cn('text-base font-semibold font-mono tabular-nums', colorClass)}>{value}</p>
     </div>
   )
 }

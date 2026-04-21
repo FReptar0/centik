@@ -87,10 +87,8 @@ function InvitacionRow({ token }: InvitacionRowProps) {
   const sublabel = (() => {
     if (status === 'revoked' && token.revokedAt)
       return `Revocada ${formatInviteDate(token.revokedAt, 'date')}`
-    if (status === 'used' && token.usedAt)
-      return `Usada ${formatInviteDate(token.usedAt, 'date')}`
-    if (status === 'expired')
-      return `Expiro ${formatInviteDate(token.expiresAt, 'date')}`
+    if (status === 'used' && token.usedAt) return `Usada ${formatInviteDate(token.usedAt, 'date')}`
+    if (status === 'expired') return `Expiro ${formatInviteDate(token.expiresAt, 'date')}`
     return `Expira ${formatInviteDate(token.expiresAt, 'date')}`
   })()
 
@@ -107,9 +105,7 @@ function InvitacionRow({ token }: InvitacionRowProps) {
 
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium text-text-primary truncate">{token.email}</p>
-        <p className="font-mono tabular-nums text-xs text-text-secondary mt-0.5">
-          {sublabel}
-        </p>
+        <p className="font-mono tabular-nums text-xs text-text-secondary mt-0.5">{sublabel}</p>
       </div>
 
       <span

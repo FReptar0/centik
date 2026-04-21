@@ -137,9 +137,7 @@ describe('BatteryBar', () => {
   })
 
   it('custom thresholds change color breakpoints', () => {
-    const { container } = render(
-      <BatteryBar value={35} thresholds={{ warning: 31, danger: 71 }} />,
-    )
+    const { container } = render(<BatteryBar value={35} thresholds={{ warning: 31, danger: 71 }} />)
     const fills = container.querySelectorAll('[data-testid^="segment-fill-"]')
 
     // Segments 0-2: accent (end range 10, 20, 30 -- all <= 31)
@@ -153,9 +151,7 @@ describe('BatteryBar', () => {
   })
 
   it('accepts and applies custom className', () => {
-    const { container } = render(
-      <BatteryBar value={50} className="mt-4" />,
-    )
+    const { container } = render(<BatteryBar value={50} className="mt-4" />)
     const wrapper = container.firstElementChild
     expect(wrapper?.className).toContain('mt-4')
   })

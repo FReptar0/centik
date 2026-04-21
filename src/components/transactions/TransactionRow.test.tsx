@@ -157,9 +157,7 @@ describe('TransactionRow', () => {
 
   it('applies animate-scanline-reveal class when isNew is true', () => {
     const txn = makeTransaction()
-    const { container } = render(
-      <TransactionRow transaction={txn} onEdit={vi.fn()} isNew={true} />,
-    )
+    const { container } = render(<TransactionRow transaction={txn} onEdit={vi.fn()} isNew={true} />)
 
     const outerDiv = container.firstElementChild as HTMLElement
     expect(outerDiv.className).toContain('animate-scanline-reveal')
@@ -169,9 +167,7 @@ describe('TransactionRow', () => {
     const txn = makeTransaction()
 
     // Without isNew prop
-    const { container: container1 } = render(
-      <TransactionRow transaction={txn} onEdit={vi.fn()} />,
-    )
+    const { container: container1 } = render(<TransactionRow transaction={txn} onEdit={vi.fn()} />)
     const div1 = container1.firstElementChild as HTMLElement
     expect(div1.className).not.toContain('animate-scanline-reveal')
 

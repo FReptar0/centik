@@ -40,9 +40,7 @@ function makeCategory(overrides: Partial<Category> = {}): Category {
   }
 }
 
-function makeIncomeSource(
-  overrides: Partial<SerializedIncomeSource> = {},
-): SerializedIncomeSource {
+function makeIncomeSource(overrides: Partial<SerializedIncomeSource> = {}): SerializedIncomeSource {
   return {
     id: 'src-1',
     name: 'TerSoft',
@@ -274,9 +272,7 @@ describe('TransactionForm', () => {
     fireEvent.click(toggleButtons[0])
 
     // Now income source dropdown should be visible
-    expect(
-      screen.getAllByLabelText(/fuente de ingreso/i).length,
-    ).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByLabelText(/fuente de ingreso/i).length).toBeGreaterThanOrEqual(1)
   })
 
   it('successful submit closes modal by calling onClose', async () => {

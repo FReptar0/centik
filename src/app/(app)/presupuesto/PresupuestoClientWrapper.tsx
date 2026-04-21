@@ -81,9 +81,7 @@ export default function PresupuestoClientWrapper({
           <h2 className="text-lg font-semibold text-text-primary">Configuracion</h2>
           <BudgetSummaryRow budgets={budgets} quincenalIncome={quincenalIncome} />
           <BudgetTable budgets={budgets} onSave={handleSave} isClosed={isClosed} />
-          {error && (
-            <p className="text-sm text-negative">{error}</p>
-          )}
+          {error && <p className="text-sm text-negative">{error}</p>}
         </div>
 
         {/* Right: Progress */}

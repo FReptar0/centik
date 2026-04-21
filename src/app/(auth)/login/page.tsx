@@ -6,9 +6,7 @@ export default function LoginPage() {
   return (
     <div className="max-w-sm w-full px-6">
       <h1 className="text-4xl font-bold text-accent mb-2">Centik</h1>
-      <p className="text-text-secondary text-sm mb-10">
-        Tus finanzas, simplificadas
-      </p>
+      <p className="text-text-secondary text-sm mb-10">Tus finanzas, simplificadas</p>
       <Suspense
         fallback={
           <div className="space-y-6">

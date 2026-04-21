@@ -24,17 +24,13 @@ describe('MoneyAmount', () => {
   })
 
   it('applies text-positive color when variant="income"', () => {
-    const { container } = render(
-      <MoneyAmount value="15075" variant="income" />,
-    )
+    const { container } = render(<MoneyAmount value="15075" variant="income" />)
     const wrapper = container.querySelector('[data-testid="money-wrapper"]')
     expect(wrapper?.className).toContain('text-positive')
   })
 
   it('applies text-negative color when variant="expense"', () => {
-    const { container } = render(
-      <MoneyAmount value="15075" variant="expense" />,
-    )
+    const { container } = render(<MoneyAmount value="15075" variant="expense" />)
     const wrapper = container.querySelector('[data-testid="money-wrapper"]')
     expect(wrapper?.className).toContain('text-negative')
   })
@@ -46,9 +42,7 @@ describe('MoneyAmount', () => {
   })
 
   it('renders with custom className passed through', () => {
-    const { container } = render(
-      <MoneyAmount value="15075" className="mt-4 text-lg" />,
-    )
+    const { container } = render(<MoneyAmount value="15075" className="mt-4 text-lg" />)
     const wrapper = container.querySelector('[data-testid="money-wrapper"]')
     expect(wrapper?.className).toContain('mt-4')
   })

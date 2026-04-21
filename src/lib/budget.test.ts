@@ -72,9 +72,7 @@ describe('getBudgetsWithSpent', () => {
       },
     ])
 
-    mockGroupBy.mockResolvedValue([
-      { categoryId: 'cat1', _sum: { amount: BigInt(350000) } },
-    ])
+    mockGroupBy.mockResolvedValue([{ categoryId: 'cat1', _sum: { amount: BigInt(350000) } }])
 
     const result = await getBudgetsWithSpent('p1', TEST_USER_ID)
 
@@ -134,17 +132,25 @@ describe('copyBudgetsFromPreviousPeriod', () => {
     })
     expect(mockCreateMany).toHaveBeenCalledWith({
       data: [
-        { categoryId: 'cat1', quincenalAmount: BigInt(500000), periodId: 'current-period', userId: TEST_USER_ID },
-        { categoryId: 'cat2', quincenalAmount: BigInt(200000), periodId: 'current-period', userId: TEST_USER_ID },
+        {
+          categoryId: 'cat1',
+          quincenalAmount: BigInt(500000),
+          periodId: 'current-period',
+          userId: TEST_USER_ID,
+        },
+        {
+          categoryId: 'cat2',
+          quincenalAmount: BigInt(200000),
+          periodId: 'current-period',
+          userId: TEST_USER_ID,
+        },
       ],
     })
   })
 
   it('handles January wrapping to December of previous year', async () => {
     mockFindFirst.mockResolvedValue({ id: 'dec-period' })
-    mockFindMany.mockResolvedValue([
-      { categoryId: 'cat1', quincenalAmount: BigInt(300000) },
-    ])
+    mockFindMany.mockResolvedValue([{ categoryId: 'cat1', quincenalAmount: BigInt(300000) }])
     mockCreateMany.mockResolvedValue({ count: 1 })
 
     const result = await copyBudgetsFromPreviousPeriod('jan-period', 1, 2026, TEST_USER_ID)

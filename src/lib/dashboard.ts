@@ -1,10 +1,5 @@
 import prisma from '@/lib/prisma'
-import type {
-  DashboardKPIs,
-  CategoryExpense,
-  BudgetVsSpent,
-  MonthlyTrendPoint,
-} from '@/types'
+import type { DashboardKPIs, CategoryExpense, BudgetVsSpent, MonthlyTrendPoint } from '@/types'
 
 /** Transaction with joined category fields for recent transactions display */
 export interface RecentTransaction {
@@ -75,10 +70,7 @@ export async function getDashboardKPIs(periodId: string, userId: string): Promis
   // Compute monthly estimated income from active sources using BigInt arithmetic
   let monthlyEstimatedIncome = BigInt(0)
   for (const source of incomeSources) {
-    monthlyEstimatedIncome += computeMonthlyFromFrequency(
-      source.defaultAmount,
-      source.frequency,
-    )
+    monthlyEstimatedIncome += computeMonthlyFromFrequency(source.defaultAmount, source.frequency)
   }
 
   const monthExpenses = expenseAgg._sum.amount ?? BigInt(0)
@@ -90,9 +82,7 @@ export async function getDashboardKPIs(periodId: string, userId: string): Promis
   // Derived: savingsRate = (income - expenses) / income * 10000 (basis points)
   let savingsRate = 0
   if (monthlyEstimatedIncome > BigInt(0)) {
-    savingsRate = Number(
-      (available * BigInt(10000)) / monthlyEstimatedIncome,
-    )
+    savingsRate = Number((available * BigInt(10000)) / monthlyEstimatedIncome)
   }
 
   // Derived: debtToIncomeRatio = monthly debt payments / income * 100
@@ -129,7 +119,10 @@ export async function getDashboardKPIs(periodId: string, userId: string): Promis
  * (Prisma groupBy does not support include).
  * Returns sorted by total descending.
  */
-export async function getCategoryExpenses(periodId: string, userId: string): Promise<CategoryExpense[]> {
+export async function getCategoryExpenses(
+  periodId: string,
+  userId: string,
+): Promise<CategoryExpense[]> {
   const grouped = await prisma.transaction.groupBy({
     by: ['categoryId'],
     _sum: { amount: true },

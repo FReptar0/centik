@@ -58,20 +58,17 @@ export default function HistorialClientWrapper({
     [router],
   )
 
-  const handleCloseClick = useCallback(
-    async (periodId: string, month: number, year: number) => {
-      setSelectedPeriodId(periodId)
-      setSelectedMonth(month)
-      setSelectedYear(year)
-      setPreview(null)
-      setIsModalOpen(true)
+  const handleCloseClick = useCallback(async (periodId: string, month: number, year: number) => {
+    setSelectedPeriodId(periodId)
+    setSelectedMonth(month)
+    setSelectedYear(year)
+    setPreview(null)
+    setIsModalOpen(true)
 
-      // Load preview data
-      const previewData = await getClosePeriodPreviewAction(periodId)
-      setPreview(previewData)
-    },
-    [],
-  )
+    // Load preview data
+    const previewData = await getClosePeriodPreviewAction(periodId)
+    setPreview(previewData)
+  }, [])
 
   const handleConfirmClose = useCallback(async () => {
     if (!selectedPeriodId) return

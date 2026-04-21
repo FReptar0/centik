@@ -35,12 +35,23 @@ const bgColorMap: Record<SemanticColor, string> = {
   info: 'bg-info/15',
 }
 
-export default function KPICard({ label, value, icon, color, subtitle, hero, rawValue, moneyVariant }: KPICardProps) {
+export default function KPICard({
+  label,
+  value,
+  icon,
+  color,
+  subtitle,
+  hero,
+  rawValue,
+  moneyVariant,
+}: KPICardProps) {
   return (
-    <div className={cn(
-      'rounded-lg bg-surface-elevated p-6 transition-all duration-200',
-      hero && 'dot-matrix-hero',
-    )}>
+    <div
+      className={cn(
+        'rounded-lg bg-surface-elevated p-6 transition-all duration-200',
+        hero && 'dot-matrix-hero',
+      )}
+    >
       <div className="relative z-[2]">
         <div className="mb-3 flex items-center gap-3">
           <div
@@ -53,16 +64,21 @@ export default function KPICard({ label, value, icon, color, subtitle, hero, raw
           </div>
         </div>
         {rawValue ? (
-          <MoneyAmount value={rawValue} variant={moneyVariant} size="2xl" className="text-2xl font-bold" />
+          <MoneyAmount
+            value={rawValue}
+            variant={moneyVariant}
+            size="2xl"
+            className="text-2xl font-bold"
+          />
         ) : (
           <p className={cn('text-2xl font-bold font-mono tabular-nums', textColorMap[color])}>
             {value}
           </p>
         )}
-        <p className="mt-1 text-xs font-medium uppercase tracking-widest text-text-secondary">{label}</p>
-        {subtitle ? (
-          <p className="mt-1 text-[11px] text-text-tertiary">{subtitle}</p>
-        ) : null}
+        <p className="mt-1 text-xs font-medium uppercase tracking-widest text-text-secondary">
+          {label}
+        </p>
+        {subtitle ? <p className="mt-1 text-[11px] text-text-tertiary">{subtitle}</p> : null}
       </div>
     </div>
   )

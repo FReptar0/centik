@@ -66,33 +66,28 @@ export default async function MovimientosPage({ searchParams }: PageProps) {
 
   const limit = Math.min(Number(params.limit) || 25, 200)
 
-  const [rawTransactions, totalCount, categories, rawSources] =
-    await Promise.all([
-      prisma.transaction.findMany({
-        where,
-        include: {
-          category: { select: { name: true, icon: true, color: true } },
-        },
-        orderBy: [{ date: 'desc' }, { createdAt: 'desc' }],
-        take: limit,
-      }),
-      prisma.transaction.count({ where }),
-      prisma.category.findMany({
-        where: { isActive: true, userId },
-        orderBy: { sortOrder: 'asc' },
-      }),
-      prisma.incomeSource.findMany({
-        where: { isActive: true, userId },
-        orderBy: { createdAt: 'asc' },
-      }),
-    ])
+  const [rawTransactions, totalCount, categories, rawSources] = await Promise.all([
+    prisma.transaction.findMany({
+      where,
+      include: {
+        category: { select: { name: true, icon: true, color: true } },
+      },
+      orderBy: [{ date: 'desc' }, { createdAt: 'desc' }],
+      take: limit,
+    }),
+    prisma.transaction.count({ where }),
+    prisma.category.findMany({
+      where: { isActive: true, userId },
+      orderBy: { sortOrder: 'asc' },
+    }),
+    prisma.incomeSource.findMany({
+      where: { isActive: true, userId },
+      orderBy: { createdAt: 'asc' },
+    }),
+  ])
 
-  const transactions = serializeBigInts(
-    rawTransactions,
-  ) as unknown as TransactionWithCategory[]
-  const incomeSources = serializeBigInts(
-    rawSources,
-  ) as unknown as SerializedIncomeSource[]
+  const transactions = serializeBigInts(rawTransactions) as unknown as TransactionWithCategory[]
+  const incomeSources = serializeBigInts(rawSources) as unknown as SerializedIncomeSource[]
 
   return (
     <MovimientosClientWrapper

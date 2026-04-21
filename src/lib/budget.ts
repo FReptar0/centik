@@ -10,7 +10,10 @@ export { getBudgetColor } from './budget-shared'
  * Uses parallel queries: budget findMany (with category include) + transaction groupBy.
  * Joins results via a spentMap keyed by categoryId.
  */
-export async function getBudgetsWithSpent(periodId: string, userId: string): Promise<BudgetWithSpent[]> {
+export async function getBudgetsWithSpent(
+  periodId: string,
+  userId: string,
+): Promise<BudgetWithSpent[]> {
   const [budgets, expenseGroups] = await Promise.all([
     prisma.budget.findMany({
       where: { periodId, userId },

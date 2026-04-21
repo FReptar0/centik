@@ -14,12 +14,7 @@ interface TogglePillsProps {
  * Used for Expense/Income toggles, period selectors, etc.
  * Active pill: chartreuse bg with black text. Inactive: transparent with secondary text.
  */
-export default function TogglePills({
-  options,
-  value,
-  onChange,
-  className,
-}: TogglePillsProps) {
+export default function TogglePills({ options, value, onChange, className }: TogglePillsProps) {
   function handleKeyDown(event: React.KeyboardEvent, currentIndex: number) {
     let nextIndex: number | null = null
 

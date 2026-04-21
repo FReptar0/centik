@@ -117,7 +117,9 @@ describe('updateIncomeSource', () => {
     const result = await updateIncomeSource('existing-id', validData)
 
     expect(result).toEqual({ success: true })
-    expect(mockFindFirst).toHaveBeenCalledWith({ where: { id: 'existing-id', userId: TEST_USER_ID } })
+    expect(mockFindFirst).toHaveBeenCalledWith({
+      where: { id: 'existing-id', userId: TEST_USER_ID },
+    })
     expect(mockUpdate).toHaveBeenCalledWith({
       where: { id: 'existing-id' },
       data: {
@@ -189,7 +191,9 @@ describe('deleteIncomeSource', () => {
     const result = await deleteIncomeSource('existing-id')
 
     expect(result).toEqual({ success: true })
-    expect(mockFindFirst).toHaveBeenCalledWith({ where: { id: 'existing-id', userId: TEST_USER_ID } })
+    expect(mockFindFirst).toHaveBeenCalledWith({
+      where: { id: 'existing-id', userId: TEST_USER_ID },
+    })
     expect(mockDelete).toHaveBeenCalledWith({
       where: { id: 'existing-id' },
     })

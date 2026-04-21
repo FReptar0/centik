@@ -26,10 +26,7 @@ vi.mock('next/cache', () => ({
 }))
 
 import { requireAuth } from '@/lib/auth-utils'
-import {
-  createInviteToken,
-  revokeInviteToken,
-} from '@/app/(app)/configuracion/invite-actions'
+import { createInviteToken, revokeInviteToken } from '@/app/(app)/configuracion/invite-actions'
 import { INVITE_TTL_MS } from '@/lib/invite-utils'
 
 const ADMIN_EMAIL = 'invite-int-admin@test.example'

@@ -27,25 +27,48 @@ export default function BudgetSummaryRow({ budgets, quincenalIncome }: BudgetSum
       {/* Income vs Budget */}
       <div className="flex items-center justify-between gap-4">
         <div>
-          <p className="text-xs font-medium text-text-secondary uppercase tracking-[2px]">Ingreso quincenal</p>
-          <MoneyAmount value={quincenalIncome} variant="neutral" size="lg" className="text-lg font-bold" />
+          <p className="text-xs font-medium text-text-secondary uppercase tracking-[2px]">
+            Ingreso quincenal
+          </p>
+          <MoneyAmount
+            value={quincenalIncome}
+            variant="neutral"
+            size="lg"
+            className="text-lg font-bold"
+          />
         </div>
         <div className="text-right">
-          <p className="text-xs font-medium text-text-secondary uppercase tracking-[2px]">Presupuesto quincenal</p>
-          <MoneyAmount value={totalQuincenalBudget.toString()} variant="neutral" size="lg" className="text-lg font-bold" />
+          <p className="text-xs font-medium text-text-secondary uppercase tracking-[2px]">
+            Presupuesto quincenal
+          </p>
+          <MoneyAmount
+            value={totalQuincenalBudget.toString()}
+            variant="neutral"
+            size="lg"
+            className="text-lg font-bold"
+          />
         </div>
       </div>
 
       {/* Surplus / Deficit */}
       <div className="mt-3 border-t border-border-divider pt-3">
         <div className="flex items-center justify-between">
-          <span className={cn('text-sm font-semibold', isPositive ? 'text-positive' : 'text-negative')}>
+          <span
+            className={cn('text-sm font-semibold', isPositive ? 'text-positive' : 'text-negative')}
+          >
             {isPositive ? 'Sobrante' : 'Faltante'}
           </span>
-          <MoneyAmount value={absStr} variant={isPositive ? 'income' : 'expense'} size="lg" className="text-lg font-bold" />
+          <MoneyAmount
+            value={absStr}
+            variant={isPositive ? 'income' : 'expense'}
+            size="lg"
+            className="text-lg font-bold"
+          />
         </div>
         <p className="mt-1 text-xs text-text-tertiary">
-          Mensual: <MoneyAmount value={monthlyDiff} size="sm" variant={isPositive ? 'income' : 'expense'} /> {isPositive ? 'sobrante' : 'faltante'}
+          Mensual:{' '}
+          <MoneyAmount value={monthlyDiff} size="sm" variant={isPositive ? 'income' : 'expense'} />{' '}
+          {isPositive ? 'sobrante' : 'faltante'}
         </p>
       </div>
     </div>

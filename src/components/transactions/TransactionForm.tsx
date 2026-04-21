@@ -79,19 +79,12 @@ function TransactionFormContent({
 }: FormContentProps) {
   const isEditing = !!transaction
 
-  const [type, setType] = useState<string>(
-    transaction?.type ?? TransactionType.EXPENSE,
-  )
-  const rawAmountInit = transaction
-    ? (Number(transaction.amount) / 100).toString()
-    : ''
+  const [type, setType] = useState<string>(transaction?.type ?? TransactionType.EXPENSE)
+  const rawAmountInit = transaction ? (Number(transaction.amount) / 100).toString() : ''
   const [amount, setAmount] = useState(rawAmountInit)
-  const [categoryId, setCategoryId] = useState<string | null>(
-    transaction?.categoryId ?? null,
-  )
+  const [categoryId, setCategoryId] = useState<string | null>(transaction?.categoryId ?? null)
   const [showDetails, setShowDetails] = useState(
-    isEditing &&
-      !!(transaction.description || transaction.notes || transaction.paymentMethod),
+    isEditing && !!(transaction.description || transaction.notes || transaction.paymentMethod),
   )
   const [description, setDescription] = useState(transaction?.description ?? '')
   const [paymentMethod, setPaymentMethod] = useState<string | null>(
@@ -103,9 +96,7 @@ function TransactionFormContent({
       ? new Date(transaction.date).toISOString().split('T')[0]
       : new Date().toISOString().split('T')[0],
   )
-  const [incomeSourceId, setIncomeSourceId] = useState<string>(
-    transaction?.incomeSourceId ?? '',
-  )
+  const [incomeSourceId, setIncomeSourceId] = useState<string>(transaction?.incomeSourceId ?? '')
   const [errors, setErrors] = useState<Record<string, string[]>>({})
   const [submitting, setSubmitting] = useState(false)
   const [showCheckmark, setShowCheckmark] = useState(false)
@@ -163,9 +154,7 @@ function TransactionFormContent({
       setShowCheckmark(true)
       setTimeout(() => {
         onClose()
-        toast.success(
-          isEditing ? 'Movimiento actualizado' : 'Movimiento registrado',
-        )
+        toast.success(isEditing ? 'Movimiento actualizado' : 'Movimiento registrado')
       }, 200)
     } else {
       setErrors(result.error)
@@ -241,11 +230,7 @@ function TransactionFormContent({
                   )}
                   style={{ backgroundColor: `${cat.color}1F` }}
                 >
-                  <DynamicIcon
-                    name={cat.icon}
-                    size={20}
-                    style={{ color: cat.color }}
-                  />
+                  <DynamicIcon name={cat.icon} size={20} style={{ color: cat.color }} />
                 </div>
                 <span className="text-[11px] text-center text-text-secondary truncate w-full">
                   {cat.name}
@@ -273,10 +258,7 @@ function TransactionFormContent({
           <span>Mas detalles</span>
           <ChevronDown
             size={16}
-            className={cn(
-              'transition-transform duration-200',
-              showDetails && 'rotate-180',
-            )}
+            className={cn('transition-transform duration-200', showDetails && 'rotate-180')}
           />
         </button>
 
@@ -291,12 +273,7 @@ function TransactionFormContent({
             />
 
             {/* Date */}
-            <FloatingInput
-              type="date"
-              label="Fecha"
-              value={date}
-              onChange={setDate}
-            />
+            <FloatingInput type="date" label="Fecha" value={date} onChange={setDate} />
 
             {/* Payment method -- only for expenses */}
             {type === TransactionType.EXPENSE && (
@@ -309,9 +286,7 @@ function TransactionFormContent({
                     <button
                       key={key}
                       type="button"
-                      onClick={() =>
-                        setPaymentMethod(paymentMethod === key ? null : key)
-                      }
+                      onClick={() => setPaymentMethod(paymentMethod === key ? null : key)}
                       className={cn(
                         'rounded-full border px-3 py-2 text-sm font-medium transition-all duration-200 active:scale-[0.98]',
                         paymentMethod === key
@@ -371,14 +346,10 @@ function TransactionFormContent({
         )}
 
         {/* Amount error */}
-        {errors.amount && (
-          <p className="text-xs text-negative">{errors.amount[0]}</p>
-        )}
+        {errors.amount && <p className="text-xs text-negative">{errors.amount[0]}</p>}
 
         {/* Form-level errors */}
-        {errors._form && (
-          <p className="text-xs text-negative">{errors._form[0]}</p>
-        )}
+        {errors._form && <p className="text-xs text-negative">{errors._form[0]}</p>}
       </div>
     </Modal>
   )

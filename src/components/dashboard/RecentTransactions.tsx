@@ -19,15 +19,11 @@ function formatShortDate(date: Date): string {
   })
 }
 
-export default function RecentTransactions({
-  transactions,
-}: RecentTransactionsProps) {
+export default function RecentTransactions({ transactions }: RecentTransactionsProps) {
   if (transactions.length === 0) {
     return (
       <div className="bg-surface-elevated rounded-lg p-5">
-        <h3 className="text-lg font-semibold text-text-primary mb-4">
-          Ultimos Movimientos
-        </h3>
+        <h3 className="text-lg font-semibold text-text-primary mb-4">Ultimos Movimientos</h3>
         <div className="flex flex-col items-center justify-center py-12 text-center">
           <DynamicIcon
             name="receipt"
@@ -46,9 +42,7 @@ export default function RecentTransactions({
 
   return (
     <div className="bg-surface-elevated rounded-lg p-5">
-      <h3 className="text-lg font-semibold text-text-primary mb-4">
-        Ultimos Movimientos
-      </h3>
+      <h3 className="text-lg font-semibold text-text-primary mb-4">Ultimos Movimientos</h3>
 
       <div className="divide-y divide-border-divider">
         {transactions.map((txn) => {
@@ -74,12 +68,8 @@ export default function RecentTransactions({
 
               {/* Text stack */}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-text-primary truncate">
-                  {displayName}
-                </p>
-                <p className="text-[11px] text-text-tertiary">
-                  {formatShortDate(txn.date)}
-                </p>
+                <p className="text-sm font-medium text-text-primary truncate">{displayName}</p>
+                <p className="text-[11px] text-text-tertiary">{formatShortDate(txn.date)}</p>
               </div>
 
               {/* Amount via MoneyAmount */}

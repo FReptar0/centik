@@ -20,17 +20,19 @@ export default function IncomeSummaryCards({ sources }: IncomeSummaryCardsProps)
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-8">
       {SUMMARY_ITEMS.map(({ key, label, Icon }) => (
-        <div
-          key={key}
-          className="rounded-2xl bg-surface-elevated p-5"
-        >
+        <div key={key} className="rounded-2xl bg-surface-elevated p-5">
           <div className="flex items-center gap-2 mb-2">
             <Icon size={16} className="text-positive" aria-hidden="true" />
             <span className="text-xs font-medium text-text-secondary uppercase tracking-[2px]">
               {label}
             </span>
           </div>
-          <MoneyAmount value={summary[key]} variant="income" size="xl" className="text-xl font-bold" />
+          <MoneyAmount
+            value={summary[key]}
+            variant="income"
+            size="xl"
+            className="text-xl font-bold"
+          />
         </div>
       ))}
     </div>

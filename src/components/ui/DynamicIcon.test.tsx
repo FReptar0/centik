@@ -14,12 +14,9 @@ describe('DynamicIcon', () => {
     'laptop',
   ]
 
-  it.each(defaultCategoryIcons)(
-    'resolves "%s" to a non-fallback icon',
-    (iconName) => {
-      expect(ICON_MAP[iconName]).toBeDefined()
-    },
-  )
+  it.each(defaultCategoryIcons)('resolves "%s" to a non-fallback icon', (iconName) => {
+    expect(ICON_MAP[iconName]).toBeDefined()
+  })
 
   it('renders fallback Package icon for unknown name', () => {
     render(<DynamicIcon name="unknown-icon" data-testid="icon" />)
@@ -36,9 +33,7 @@ describe('DynamicIcon', () => {
   })
 
   it('passes through className prop', () => {
-    const { container } = render(
-      <DynamicIcon name="utensils" className="text-red-500" />,
-    )
+    const { container } = render(<DynamicIcon name="utensils" className="text-red-500" />)
     const svg = container.querySelector('svg')
     expect(svg).not.toBeNull()
     expect(svg?.classList.contains('text-red-500')).toBe(true)
@@ -76,9 +71,7 @@ describe('DynamicIcon', () => {
   })
 
   it('allows strokeWidth override', () => {
-    const { container } = render(
-      <DynamicIcon name="utensils" strokeWidth={2} />,
-    )
+    const { container } = render(<DynamicIcon name="utensils" strokeWidth={2} />)
     const svg = container.querySelector('svg')
     expect(svg).not.toBeNull()
     expect(svg?.getAttribute('stroke-width')).toBe('2')

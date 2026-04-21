@@ -23,7 +23,10 @@ export interface MonthSummarySlot {
  * Each slot contains serialized MonthlySummary data or null if no summary exists.
  * Index 0 = January, index 11 = December.
  */
-export async function getMonthlySummariesForYear(year: number, userId: string): Promise<MonthSummarySlot[]> {
+export async function getMonthlySummariesForYear(
+  year: number,
+  userId: string,
+): Promise<MonthSummarySlot[]> {
   const summaries = await prisma.monthlySummary.findMany({
     where: { userId, period: { year } },
     include: { period: { select: { month: true, year: true } } },
@@ -83,7 +86,10 @@ export async function getAvailableYears(userId: string): Promise<number[]> {
  * Uses parallel aggregate queries for income, expenses, and debt.
  * Returns all monetary fields as serialized strings; savingsRate as basis points.
  */
-export async function getClosePeriodPreview(periodId: string, userId: string): Promise<ClosePeriodPreview> {
+export async function getClosePeriodPreview(
+  periodId: string,
+  userId: string,
+): Promise<ClosePeriodPreview> {
   const [incomeAgg, expenseAgg, debtAgg] = await Promise.all([
     prisma.transaction.aggregate({
       _sum: { amount: true },

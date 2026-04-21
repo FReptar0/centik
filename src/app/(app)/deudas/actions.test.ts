@@ -177,7 +177,9 @@ describe('updateDebt', () => {
     const result = await updateDebt('existing-id', validCreditCard)
 
     expect(result).toEqual({ success: true })
-    expect(mockFindFirst).toHaveBeenCalledWith({ where: { id: 'existing-id', userId: TEST_USER_ID } })
+    expect(mockFindFirst).toHaveBeenCalledWith({
+      where: { id: 'existing-id', userId: TEST_USER_ID },
+    })
     expect(mockUpdate).toHaveBeenCalledWith({
       where: { id: 'existing-id' },
       data: {
@@ -256,7 +258,9 @@ describe('updateDebtBalance', () => {
     const result = await updateDebtBalance('existing-id', { currentBalance: '2000000' })
 
     expect(result).toEqual({ success: true })
-    expect(mockFindFirst).toHaveBeenCalledWith({ where: { id: 'existing-id', userId: TEST_USER_ID } })
+    expect(mockFindFirst).toHaveBeenCalledWith({
+      where: { id: 'existing-id', userId: TEST_USER_ID },
+    })
     expect(mockUpdate).toHaveBeenCalledWith({
       where: { id: 'existing-id' },
       data: { currentBalance: BigInt('2000000') },
@@ -319,7 +323,9 @@ describe('deleteDebt', () => {
     const result = await deleteDebt('existing-id')
 
     expect(result).toEqual({ success: true })
-    expect(mockFindFirst).toHaveBeenCalledWith({ where: { id: 'existing-id', userId: TEST_USER_ID } })
+    expect(mockFindFirst).toHaveBeenCalledWith({
+      where: { id: 'existing-id', userId: TEST_USER_ID },
+    })
     expect(mockDelete).toHaveBeenCalledWith({
       where: { id: 'existing-id' },
     })

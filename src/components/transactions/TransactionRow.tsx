@@ -87,9 +87,7 @@ export default function TransactionRow({ transaction, onEdit, isNew }: Transacti
 
       {/* Text stack */}
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-text-primary truncate">
-          {displayName}
-        </p>
+        <p className="text-sm font-medium text-text-primary truncate">{displayName}</p>
         <div className="flex items-center gap-2">
           <p className="text-[11px] text-text-tertiary">{formattedDate}</p>
           {transaction.paymentMethod && (
@@ -121,7 +119,12 @@ export default function TransactionRow({ transaction, onEdit, isNew }: Transacti
           </div>
         ) : (
           <>
-            <span className={cn('font-mono text-xs sm:text-sm font-semibold tabular-nums', isIncome ? 'text-positive' : 'text-negative')}>
+            <span
+              className={cn(
+                'font-mono text-xs sm:text-sm font-semibold tabular-nums',
+                isIncome ? 'text-positive' : 'text-negative',
+              )}
+            >
               {isIncome ? '+' : '-'}
             </span>
             <MoneyAmount

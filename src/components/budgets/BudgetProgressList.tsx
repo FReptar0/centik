@@ -17,7 +17,6 @@ const COLOR_TEXT = {
   negative: 'text-negative',
 } as const
 
-
 /** Calculates budget usage percentage. Monthly budget = quincenal x2. */
 function calculatePercentUsed(quincenalAmount: string, spent: string): number {
   const monthly = BigInt(quincenalAmount) * BigInt(2)
@@ -66,21 +65,21 @@ export default function BudgetProgressList({ budgets }: BudgetProgressListProps)
                     aria-hidden="true"
                   />
                 </div>
-                <span className="text-sm font-medium text-text-primary">
-                  {budget.categoryName}
-                </span>
+                <span className="text-sm font-medium text-text-primary">{budget.categoryName}</span>
               </div>
               <span className="text-sm text-text-secondary">
-                <MoneyAmount value={budget.spent} size="sm" variant="neutral" />
-                {' '}
-                <span className="text-text-tertiary">/</span>
-                {' '}
+                <MoneyAmount value={budget.spent} size="sm" variant="neutral" />{' '}
+                <span className="text-text-tertiary">/</span>{' '}
                 <MoneyAmount value={monthlyBudget} size="sm" variant="neutral" />
               </span>
             </div>
 
             {/* Progress bar */}
-            <BatteryBar value={percentUsed} variant="compact" label={`Presupuesto ${budget.categoryName} ${percentUsed.toFixed(1)}%`} />
+            <BatteryBar
+              value={percentUsed}
+              variant="compact"
+              label={`Presupuesto ${budget.categoryName} ${percentUsed.toFixed(1)}%`}
+            />
 
             {/* Percentage text */}
             <p className={cn('mt-1 text-xs tabular-nums', COLOR_TEXT[color])}>

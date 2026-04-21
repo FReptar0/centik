@@ -27,21 +27,18 @@ export default async function HomePage({ searchParams }: PageProps) {
   const userId = session!.user!.id
   const params = await searchParams
 
-  const period = params.month && params.year
-    ? await getPeriodForDate(
-        `${params.year}-${String(params.month).padStart(2, '0')}-01`,
-        userId,
-      )
-    : await getCurrentPeriod(userId)
+  const period =
+    params.month && params.year
+      ? await getPeriodForDate(`${params.year}-${String(params.month).padStart(2, '0')}-01`, userId)
+      : await getCurrentPeriod(userId)
 
-  const [kpis, categoryExpenses, budgetVsSpent, trend, recentTransactions] =
-    await Promise.all([
-      getDashboardKPIs(period.id, userId),
-      getCategoryExpenses(period.id, userId),
-      getBudgetVsSpent(period.id, userId),
-      getMonthlyTrend(userId),
-      getRecentTransactions(period.id, userId),
-    ])
+  const [kpis, categoryExpenses, budgetVsSpent, trend, recentTransactions] = await Promise.all([
+    getDashboardKPIs(period.id, userId),
+    getCategoryExpenses(period.id, userId),
+    getBudgetVsSpent(period.id, userId),
+    getMonthlyTrend(userId),
+    getRecentTransactions(period.id, userId),
+  ])
 
   return (
     <div className="max-w-7xl space-y-8">
@@ -52,12 +49,16 @@ export default async function HomePage({ searchParams }: PageProps) {
       />
 
       <section aria-labelledby="kpi-heading">
-        <h2 id="kpi-heading" className="sr-only">Indicadores clave</h2>
+        <h2 id="kpi-heading" className="sr-only">
+          Indicadores clave
+        </h2>
         <KPIGrid kpis={kpis} />
       </section>
 
       <section aria-labelledby="charts-heading">
-        <h2 id="charts-heading" className="sr-only">Graficas</h2>
+        <h2 id="charts-heading" className="sr-only">
+          Graficas
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <BudgetBarChart data={budgetVsSpent} />
           <ExpenseDonutChart data={categoryExpenses} />
@@ -65,7 +66,9 @@ export default async function HomePage({ searchParams }: PageProps) {
       </section>
 
       <section aria-labelledby="recent-heading">
-        <h2 id="recent-heading" className="sr-only">Tendencia y movimientos recientes</h2>
+        <h2 id="recent-heading" className="sr-only">
+          Tendencia y movimientos recientes
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <TrendAreaChart data={trend} />
           <RecentTransactions transactions={recentTransactions} />

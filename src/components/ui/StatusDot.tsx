@@ -13,10 +13,7 @@ export default function StatusDot({ className }: StatusDotProps) {
   return (
     <div
       aria-hidden="true"
-      className={cn(
-        'h-1 w-1 rounded-full bg-accent animate-status-pulse',
-        className,
-      )}
+      className={cn('h-1 w-1 rounded-full bg-accent animate-status-pulse', className)}
     />
   )
 }

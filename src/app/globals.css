@@ -3,44 +3,44 @@
 @theme {
   /* Fondos */
   --color-bg: #000000;
-  --color-surface: #0A0A0A;
+  --color-surface: #0a0a0a;
   --color-surface-elevated: #141414;
-  --color-surface-hover: #1A1A1A;
+  --color-surface-hover: #1a1a1a;
 
   /* Bordes */
   --color-border-divider: #222222;
 
   /* Textura */
-  --color-dot-matrix: #1E1E1E;
+  --color-dot-matrix: #1e1e1e;
 
   /* Texto */
-  --color-text-primary: #E8E8E8;
+  --color-text-primary: #e8e8e8;
   --color-text-secondary: #999999;
   --color-text-tertiary: #666666;
   --color-text-disabled: #444444;
 
   /* Acento */
-  --color-accent: #CCFF00;
-  --color-accent-hover: #B8E600;
+  --color-accent: #ccff00;
+  --color-accent-hover: #b8e600;
   --color-accent-subtle: rgba(204, 255, 0, 0.12);
 
   /* Semanticos */
-  --color-positive: #00E676;
+  --color-positive: #00e676;
   --color-positive-subtle: rgba(0, 230, 118, 0.12);
-  --color-negative: #FF3333;
+  --color-negative: #ff3333;
   --color-negative-subtle: rgba(255, 51, 51, 0.12);
-  --color-warning: #FF9100;
+  --color-warning: #ff9100;
   --color-warning-subtle: rgba(255, 145, 0, 0.12);
-  --color-info: #448AFF;
+  --color-info: #448aff;
   --color-info-subtle: rgba(68, 138, 255, 0.12);
 
   /* Categorias (desaturadas) */
-  --color-cat-food: #C88A5A;
-  --color-cat-services: #7A9EC4;
-  --color-cat-entertainment: #9B89C4;
-  --color-cat-subscriptions: #C48AA3;
-  --color-cat-transport: #C4A84E;
-  --color-cat-other: #8A9099;
+  --color-cat-food: #c88a5a;
+  --color-cat-services: #7a9ec4;
+  --color-cat-entertainment: #9b89c4;
+  --color-cat-subscriptions: #c48aa3;
+  --color-cat-transport: #c4a84e;
+  --color-cat-other: #8a9099;
 
   /* Tipografia */
   --font-mono: 'IBM Plex Mono', 'Fira Code', monospace;
@@ -55,15 +55,26 @@
   /* Animation: status dot pulse */
   --animate-status-pulse: status-pulse 2.5s ease-in-out infinite;
   @keyframes status-pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.85); }
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.5;
+      transform: scale(0.85);
+    }
   }
 
   /* Animation: pixel-dissolve scanline reveal */
   --animate-scanline-reveal: scanline-reveal 500ms steps(12, end) forwards;
   @keyframes scanline-reveal {
-    0% { clip-path: inset(0 0 100% 0); }
-    100% { clip-path: inset(0 0 0% 0); }
+    0% {
+      clip-path: inset(0 0 100% 0);
+    }
+    100% {
+      clip-path: inset(0 0 0% 0);
+    }
   }
 }
 
@@ -74,7 +85,7 @@
 
 /* Accessibility: visible focus rings (UX_RULES.md 9.1) */
 :focus-visible {
-  outline: 2px solid var(--color-accent, #CCFF00);
+  outline: 2px solid var(--color-accent, #ccff00);
   outline-offset: 2px;
   border-radius: inherit;
 }

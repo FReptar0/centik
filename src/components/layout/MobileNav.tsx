@@ -69,10 +69,7 @@ export default function MobileNav() {
         </button>
       </nav>
 
-      <MobileMoreSheet
-        isOpen={isMoreOpen}
-        onClose={() => setIsMoreOpen(false)}
-      />
+      <MobileMoreSheet isOpen={isMoreOpen} onClose={() => setIsMoreOpen(false)} />
     </>
   )
 }

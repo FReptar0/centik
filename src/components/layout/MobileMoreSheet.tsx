@@ -12,10 +12,7 @@ interface MobileMoreSheetProps {
 }
 
 /** Slide-up sheet for mobile "Mas" overflow items */
-export default function MobileMoreSheet({
-  isOpen,
-  onClose,
-}: MobileMoreSheetProps) {
+export default function MobileMoreSheet({ isOpen, onClose }: MobileMoreSheetProps) {
   const pathname = usePathname()
 
   function isActive(href: string): boolean {

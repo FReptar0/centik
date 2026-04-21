@@ -40,8 +40,7 @@ export default function MovimientosClientWrapper({
   const pathname = usePathname()
 
   const [isFormOpen, setIsFormOpen] = useState(false)
-  const [editingTransaction, setEditingTransaction] =
-    useState<SerializedTransaction | null>(null)
+  const [editingTransaction, setEditingTransaction] = useState<SerializedTransaction | null>(null)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
 
   const currentLimit = Number(searchParams.get('limit')) || 25

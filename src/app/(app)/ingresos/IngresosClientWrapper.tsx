@@ -48,17 +48,9 @@ export default function IngresosClientWrapper({ sources }: IngresosClientWrapper
 
       <IncomeSummaryCards sources={sources} />
 
-      <IncomeSourceList
-        sources={sources}
-        onEdit={handleEdit}
-        onAdd={handleAdd}
-      />
+      <IncomeSourceList sources={sources} onEdit={handleEdit} onAdd={handleAdd} />
 
-      <IncomeSourceForm
-        isOpen={isFormOpen}
-        onClose={handleClose}
-        source={editingSource}
-      />
+      <IncomeSourceForm isOpen={isFormOpen} onClose={handleClose} source={editingSource} />
     </div>
   )
 }

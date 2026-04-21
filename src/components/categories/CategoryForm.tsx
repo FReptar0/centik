@@ -51,9 +51,7 @@ const PRESET_COLORS = [
 export default function CategoryForm({ isOpen, onClose }: CategoryFormProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Nueva categoria">
-      {isOpen && (
-        <CategoryFormContent key="new-category" onClose={onClose} />
-      )}
+      {isOpen && <CategoryFormContent key="new-category" onClose={onClose} />}
     </Modal>
   )
 }
@@ -89,7 +87,7 @@ function CategoryFormContent({ onClose }: FormContentProps) {
         .map((issue) => issue.message)
       setErrors((prev) => ({
         ...prev,
-        [fieldName]: fieldErrors.length > 0 ? fieldErrors : prev[fieldName] ?? [],
+        [fieldName]: fieldErrors.length > 0 ? fieldErrors : (prev[fieldName] ?? []),
       }))
     }
   }
@@ -163,9 +161,7 @@ function CategoryFormContent({ onClose }: FormContentProps) {
               <DynamicIcon
                 name={iconName}
                 size={20}
-                className={cn(
-                  icon === iconName ? 'text-accent' : 'text-text-secondary',
-                )}
+                className={cn(icon === iconName ? 'text-accent' : 'text-text-secondary')}
               />
               <span
                 className={cn(
@@ -178,9 +174,7 @@ function CategoryFormContent({ onClose }: FormContentProps) {
             </button>
           ))}
         </div>
-        {errors.icon && (
-          <p className="mt-1 text-xs text-negative">{errors.icon[0]}</p>
-        )}
+        {errors.icon && <p className="mt-1 text-xs text-negative">{errors.icon[0]}</p>}
       </div>
 
       {/* Color selector */}
@@ -205,15 +199,11 @@ function CategoryFormContent({ onClose }: FormContentProps) {
             />
           ))}
         </div>
-        {errors.color && (
-          <p className="mt-1 text-xs text-negative">{errors.color[0]}</p>
-        )}
+        {errors.color && <p className="mt-1 text-xs text-negative">{errors.color[0]}</p>}
       </div>
 
       {/* Form-level errors */}
-      {errors._form && (
-        <p className="text-xs text-negative">{errors._form[0]}</p>
-      )}
+      {errors._form && <p className="text-xs text-negative">{errors._form[0]}</p>}
 
       {/* Submit button */}
       <button

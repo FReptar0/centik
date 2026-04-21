@@ -135,10 +135,7 @@ describe('getAvailableYears', () => {
   })
 
   it('returns sorted distinct years from periods', async () => {
-    mockPeriodFindMany.mockResolvedValue([
-      { year: 2025 },
-      { year: 2026 },
-    ])
+    mockPeriodFindMany.mockResolvedValue([{ year: 2025 }, { year: 2026 }])
 
     const result = await getAvailableYears(TEST_USER_ID)
 

@@ -65,12 +65,7 @@ export default function PeriodSelector({ isClosed = false }: PeriodSelectorProps
 
       <span className="text-sm font-medium text-text-secondary flex items-center gap-1.5">
         {isClosed && (
-          <Lock
-            size={14}
-            data-testid="period-lock-icon"
-            className="text-info"
-            aria-hidden="true"
-          />
+          <Lock size={14} data-testid="period-lock-icon" className="text-info" aria-hidden="true" />
         )}
         {MONTH_NAMES_ES[month - 1]} {year}
         {isCurrentPeriod && <StatusDot />}
@@ -86,7 +81,8 @@ export default function PeriodSelector({ isClosed = false }: PeriodSelectorProps
           'text-text-secondary hover:text-text-primary',
           'hover:bg-surface-hover',
           'transition-colors duration-200',
-          isCurrentPeriod && 'opacity-30 cursor-not-allowed hover:bg-transparent hover:text-text-secondary',
+          isCurrentPeriod &&
+            'opacity-30 cursor-not-allowed hover:bg-transparent hover:text-text-secondary',
         )}
       >
         <ChevronRight size={16} aria-hidden="true" />

@@ -14,10 +14,7 @@ export default function ConfiguracionLoading() {
       {/* Category row skeletons */}
       <div className="space-y-3">
         {Array.from({ length: 8 }).map((_, i) => (
-          <div
-            key={i}
-            className="h-14 bg-surface-elevated rounded-xl animate-pulse"
-          />
+          <div key={i} className="h-14 bg-surface-elevated rounded-xl animate-pulse" />
         ))}
       </div>
     </div>

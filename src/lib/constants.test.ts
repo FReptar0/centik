@@ -160,12 +160,7 @@ describe('MORE_MENU_ITEMS', () => {
 
 describe('PERIOD_AWARE_ROUTES', () => {
   it('contains exactly the 4 expected paths', () => {
-    expect(PERIOD_AWARE_ROUTES).toEqual([
-      '/',
-      '/movimientos',
-      '/presupuesto',
-      '/historial',
-    ])
+    expect(PERIOD_AWARE_ROUTES).toEqual(['/', '/movimientos', '/presupuesto', '/historial'])
   })
 })
 

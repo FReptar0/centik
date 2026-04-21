@@ -208,9 +208,7 @@ describe('getBudgetVsSpent', () => {
         category: { name: 'Servicios', color: '#7A9EC4' },
       },
     ])
-    mockGroupBy.mockResolvedValue([
-      { categoryId: 'cat-1', _sum: { amount: BigInt(300000) } },
-    ])
+    mockGroupBy.mockResolvedValue([{ categoryId: 'cat-1', _sum: { amount: BigInt(300000) } }])
 
     const result = await getBudgetVsSpent('period-1', TEST_USER_ID)
 

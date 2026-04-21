@@ -96,12 +96,7 @@ export const MORE_MENU_ITEMS: NavItem[] = [
 ]
 
 /** Routes where the period selector should appear */
-export const PERIOD_AWARE_ROUTES = [
-  '/',
-  '/movimientos',
-  '/presupuesto',
-  '/historial',
-]
+export const PERIOD_AWARE_ROUTES = ['/', '/movimientos', '/presupuesto', '/historial']
 
 /** Spanish month names for period display (i18n-ready) */
 export const MONTH_NAMES_ES = [

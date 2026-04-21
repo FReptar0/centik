@@ -70,9 +70,7 @@ export default function BatteryBar({
 }: BatteryBarProps) {
   const isOverflow = value > thresholds.danger
   const clampedValue = Math.min(value, 100)
-  const overflowAmount = isOverflow
-    ? Math.round(value - thresholds.danger)
-    : 0
+  const overflowAmount = isOverflow ? Math.round(value - thresholds.danger) : 0
 
   const heightClass = variant === 'detailed' ? 'h-[8px]' : 'h-[6px]'
 
@@ -85,10 +83,7 @@ export default function BatteryBar({
       aria-valuemax={max ?? 100}
       aria-label={label ?? `${Math.round(value)}% progress`}
     >
-      <div
-        className={cn('flex flex-1 gap-[2px]', heightClass)}
-        data-testid="battery-bar"
-      >
+      <div className={cn('flex flex-1 gap-[2px]', heightClass)} data-testid="battery-bar">
         {Array.from({ length: SEGMENT_COUNT }, (_, i) => {
           const segmentStart = i * 10
           const segmentEnd = segmentStart + 10
@@ -105,11 +100,7 @@ export default function BatteryBar({
           const colorClass = getSegmentColor(i, isOverflow, thresholds)
 
           return (
-            <div
-              key={i}
-              data-testid={`segment-${i}`}
-              className="flex-1 bg-accent-subtle"
-            >
+            <div key={i} data-testid={`segment-${i}`} className="flex-1 bg-accent-subtle">
               <div
                 data-testid={`segment-fill-${i}`}
                 className={cn('h-full transition-all duration-300', colorClass)}

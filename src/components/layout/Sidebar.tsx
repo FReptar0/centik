@@ -29,13 +29,9 @@ export default function Sidebar() {
       {/* App name header */}
       <div className="px-4 pt-6 pb-4">
         {/* Desktop: full name */}
-        <span className="hidden lg:block text-xl font-bold text-accent">
-          Centik
-        </span>
+        <span className="hidden lg:block text-xl font-bold text-accent">Centik</span>
         {/* Tablet: single letter */}
-        <span className="block lg:hidden text-xl font-bold text-accent text-center">
-          C
-        </span>
+        <span className="block lg:hidden text-xl font-bold text-accent text-center">C</span>
       </div>
 
       {/* Navigation items */}

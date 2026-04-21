@@ -105,9 +105,7 @@ describe('Modal', () => {
     )
     // The mobile sheet is the div with role="dialog" that has md:hidden
     const dialogs = container.querySelectorAll('[role="dialog"]')
-    const mobileSheet = Array.from(dialogs).find((el) =>
-      el.className.includes('md:hidden'),
-    )
+    const mobileSheet = Array.from(dialogs).find((el) => el.className.includes('md:hidden'))
     expect(mobileSheet).toBeDefined()
     expect(mobileSheet?.className).toContain('max-h-[85vh]')
   })
@@ -119,9 +117,7 @@ describe('Modal', () => {
       </Modal>,
     )
     const dialogs = container.querySelectorAll('[role="dialog"]')
-    const mobileSheet = Array.from(dialogs).find((el) =>
-      el.className.includes('md:hidden'),
-    )
+    const mobileSheet = Array.from(dialogs).find((el) => el.className.includes('md:hidden'))
     expect(mobileSheet).toBeDefined()
     expect(mobileSheet?.className).toContain('rounded-t-[24px]')
   })

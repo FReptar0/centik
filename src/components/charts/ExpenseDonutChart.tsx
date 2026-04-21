@@ -33,9 +33,7 @@ function CustomTooltip({
   if (!active || !payload?.[0]) return null
 
   const data = payload[0].payload
-  const percentage = totalValue > 0
-    ? ((data.value / totalValue) * 100).toFixed(1)
-    : '0.0'
+  const percentage = totalValue > 0 ? ((data.value / totalValue) * 100).toFixed(1) : '0.0'
 
   return (
     <div
@@ -45,9 +43,7 @@ function CustomTooltip({
       }}
     >
       <p className="font-medium text-text-primary mb-1">{data.name}</p>
-      <p className="font-mono text-text-secondary">
-        {formatMoney(data.originalTotal)}
-      </p>
+      <p className="font-mono text-text-secondary">{formatMoney(data.originalTotal)}</p>
       <p className="text-text-tertiary mt-1">{percentage}%</p>
     </div>
   )
@@ -64,18 +60,8 @@ function CenterLabel({
   if (!viewBox?.cx || !viewBox?.cy) return null
 
   return (
-    <text
-      x={viewBox.cx}
-      y={viewBox.cy}
-      textAnchor="middle"
-      dominantBaseline="central"
-    >
-      <tspan
-        x={viewBox.cx}
-        dy="-8"
-        fill="#666666"
-        fontSize="11"
-      >
+    <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="central">
+      <tspan x={viewBox.cx} dy="-8" fill="#666666" fontSize="11">
         Total
       </tspan>
       <tspan
@@ -96,9 +82,7 @@ export default function ExpenseDonutChart({ data }: ExpenseDonutChartProps) {
   if (data.length === 0) {
     return (
       <div className="bg-surface-elevated rounded-lg p-5">
-        <h3 className="text-lg font-semibold text-text-primary mb-4">
-          Distribucion de Gastos
-        </h3>
+        <h3 className="text-lg font-semibold text-text-primary mb-4">Distribucion de Gastos</h3>
         <div className="flex flex-col items-center justify-center py-12 text-center">
           <DynamicIcon
             name="pie-chart"
@@ -123,15 +107,11 @@ export default function ExpenseDonutChart({ data }: ExpenseDonutChartProps) {
   }))
 
   const totalValue = chartData.reduce((sum, d) => sum + d.value, 0)
-  const totalStr = data
-    .reduce((sum, d) => sum + BigInt(d.total), BigInt(0))
-    .toString()
+  const totalStr = data.reduce((sum, d) => sum + BigInt(d.total), BigInt(0)).toString()
 
   return (
     <div className="bg-surface-elevated rounded-lg p-5">
-      <h3 className="text-lg font-semibold text-text-primary mb-4">
-        Distribucion de Gastos
-      </h3>
+      <h3 className="text-lg font-semibold text-text-primary mb-4">Distribucion de Gastos</h3>
       <ResponsiveContainer width="100%" height={280}>
         <PieChart>
           <Pie
@@ -148,9 +128,7 @@ export default function ExpenseDonutChart({ data }: ExpenseDonutChartProps) {
             ))}
             <CenterLabel totalStr={totalStr} />
           </Pie>
-          <Tooltip
-            content={<CustomTooltip totalValue={totalValue} />}
-          />
+          <Tooltip content={<CustomTooltip totalValue={totalValue} />} />
         </PieChart>
       </ResponsiveContainer>
 

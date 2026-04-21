@@ -37,11 +37,7 @@ export default function IncomeSourceForm({ isOpen, onClose, source }: IncomeSour
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title}>
       {isOpen && (
-        <IncomeSourceFormContent
-          key={source?.id ?? 'new'}
-          source={source}
-          onClose={onClose}
-        />
+        <IncomeSourceFormContent key={source?.id ?? 'new'} source={source} onClose={onClose} />
       )}
     </Modal>
   )
@@ -88,7 +84,7 @@ function IncomeSourceFormContent({ source, onClose }: FormContentProps) {
         .map((issue) => issue.message)
       setErrors((prev) => ({
         ...prev,
-        [fieldName]: fieldErrors.length > 0 ? fieldErrors : prev[fieldName] ?? [],
+        [fieldName]: fieldErrors.length > 0 ? fieldErrors : (prev[fieldName] ?? []),
       }))
     }
   }
@@ -185,9 +181,7 @@ function IncomeSourceFormContent({ source, onClose }: FormContentProps) {
             </button>
           ))}
         </div>
-        {errors.frequency && (
-          <p className="mt-1 text-xs text-negative">{errors.frequency[0]}</p>
-        )}
+        {errors.frequency && <p className="mt-1 text-xs text-negative">{errors.frequency[0]}</p>}
       </div>
 
       {/* Type radio group */}
@@ -212,15 +206,11 @@ function IncomeSourceFormContent({ source, onClose }: FormContentProps) {
             </button>
           ))}
         </div>
-        {errors.type && (
-          <p className="mt-1 text-xs text-negative">{errors.type[0]}</p>
-        )}
+        {errors.type && <p className="mt-1 text-xs text-negative">{errors.type[0]}</p>}
       </div>
 
       {/* Form-level errors */}
-      {errors._form && (
-        <p className="text-xs text-negative">{errors._form[0]}</p>
-      )}
+      {errors._form && <p className="text-xs text-negative">{errors._form[0]}</p>}
 
       {/* Submit button */}
       <button

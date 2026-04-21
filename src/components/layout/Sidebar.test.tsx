@@ -43,14 +43,7 @@ describe('Sidebar', () => {
 
   it('renders all 6 nav item labels', () => {
     render(<Sidebar />)
-    const labels = [
-      'Inicio',
-      'Movimientos',
-      'Deudas',
-      'Presupuesto',
-      'Ingresos',
-      'Historial',
-    ]
+    const labels = ['Inicio', 'Movimientos', 'Deudas', 'Presupuesto', 'Ingresos', 'Historial']
     for (const label of labels) {
       const elements = screen.getAllByText(label)
       expect(elements.length).toBeGreaterThanOrEqual(1)
@@ -69,9 +62,7 @@ describe('Sidebar', () => {
     }
     for (const [label, href] of Object.entries(expectedLinks)) {
       const links = screen.getAllByRole('link', { name: new RegExp(label) })
-      const matchingLink = links.find(
-        (link) => link.getAttribute('href') === href,
-      )
+      const matchingLink = links.find((link) => link.getAttribute('href') === href)
       expect(matchingLink).toBeDefined()
     }
   })
@@ -81,9 +72,7 @@ describe('Sidebar', () => {
     render(<Sidebar />)
     const links = screen.getAllByRole('link', { name: /Inicio/ })
     const hasAccent = links.some(
-      (link) =>
-        link.className.includes('text-accent') ||
-        link.className.includes('bg-accent'),
+      (link) => link.className.includes('text-accent') || link.className.includes('bg-accent'),
     )
     expect(hasAccent).toBe(true)
   })
@@ -101,9 +90,7 @@ describe('Sidebar', () => {
     vi.mocked(usePathname).mockReturnValue('/')
     render(<Sidebar />)
     const links = screen.getAllByRole('link', { name: /Inicio/ })
-    const activeLink = links.find(
-      (link) => link.className.includes('bg-accent'),
-    )
+    const activeLink = links.find((link) => link.className.includes('bg-accent'))
     expect(activeLink).toBeDefined()
     const dot = activeLink!.querySelector('.bg-accent.animate-status-pulse')
     expect(dot).not.toBeNull()

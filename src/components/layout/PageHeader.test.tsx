@@ -16,12 +16,7 @@ describe('PageHeader', () => {
   })
 
   it('renders action slot when provided', () => {
-    render(
-      <PageHeader
-        title="Movimientos"
-        action={<button type="button">Registrar</button>}
-      />,
-    )
+    render(<PageHeader title="Movimientos" action={<button type="button">Registrar</button>} />)
     expect(screen.getByText('Registrar')).toBeDefined()
   })
 
@@ -31,12 +26,7 @@ describe('PageHeader', () => {
   })
 
   it('renders periodSelector content when provided', () => {
-    render(
-      <PageHeader
-        title="Inicio"
-        periodSelector={<span>Abril 2026</span>}
-      />,
-    )
+    render(<PageHeader title="Inicio" periodSelector={<span>Abril 2026</span>} />)
     expect(screen.getByText('Abril 2026')).toBeDefined()
   })
 

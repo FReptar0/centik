@@ -30,17 +30,13 @@ export default function PageHeader({
       </div>
 
       {/* Second row: period selector */}
-      {periodSelector && (
-        <div className="flex items-center gap-3 mt-1">{periodSelector}</div>
-      )}
+      {periodSelector && <div className="flex items-center gap-3 mt-1">{periodSelector}</div>}
 
       {/* Closed period banner */}
       {closedBanner && (
         <div className="mt-3 px-4 py-2.5 rounded-lg bg-info/10 border border-info/20 flex items-center gap-2">
           <Lock size={14} className="text-info" aria-hidden="true" />
-          <span className="text-sm text-info">
-            Periodo cerrado -- solo lectura
-          </span>
+          <span className="text-sm text-info">Periodo cerrado -- solo lectura</span>
           {reopenAction && <div className="ml-auto">{reopenAction}</div>}
         </div>
       )}

@@ -21,7 +21,6 @@ const SEMANTIC_COLORS = {
   negative: 'text-negative',
 } as const
 
-
 /** Strip commas and non-numeric chars (except one decimal point) */
 function cleanAmountInput(value: string): string {
   return value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')
@@ -136,10 +135,7 @@ export default function DebtCard({ debt, onEdit }: DebtCardProps) {
         <div className="flex items-center gap-3">
           {/* Balance display / inline edit */}
           {isEditingBalance ? (
-            <div
-              className="relative"
-              onClick={(e) => e.stopPropagation()}
-            >
+            <div className="relative" onClick={(e) => e.stopPropagation()}>
               <span className="absolute left-0 bottom-[6px] text-xs text-text-tertiary pointer-events-none">
                 $
               </span>
@@ -258,21 +254,27 @@ function CreditCardDetails({ debt, metrics }: DetailsProps) {
             {utilization.toFixed(1)}%
           </span>
         </div>
-        <BatteryBar value={utilization} variant="compact" thresholds={{ warning: 31, danger: 71 }} label={`Utilizacion de credito ${utilization.toFixed(1)}%`} />
+        <BatteryBar
+          value={utilization}
+          variant="compact"
+          thresholds={{ warning: 31, danger: 71 }}
+          label={`Utilizacion de credito ${utilization.toFixed(1)}%`}
+        />
       </div>
 
       {/* Metrics grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {debt.minimumPayment !== null && (
-          <MetricItem label="Pago minimo" value={<MoneyAmount value={debt.minimumPayment} size="sm" />} />
+          <MetricItem
+            label="Pago minimo"
+            value={<MoneyAmount value={debt.minimumPayment} size="sm" />}
+          />
         )}
         <MetricItem
           label="Interes mensual estimado"
           value={<MoneyAmount value={metrics.estimatedMonthlyInterest} size="sm" />}
         />
-        {debt.cutOffDay !== null && (
-          <MetricItem label="Corte" value={`Dia ${debt.cutOffDay}`} />
-        )}
+        {debt.cutOffDay !== null && <MetricItem label="Corte" value={`Dia ${debt.cutOffDay}`} />}
         {debt.paymentDueDay !== null && (
           <MetricItem label="Pago" value={`Dia ${debt.paymentDueDay}`} />
         )}
@@ -291,26 +293,39 @@ function LoanDetails({ debt, metrics }: DetailsProps) {
       {/* Progress bar */}
       <div>
         <div className="flex items-center justify-between mb-1.5">
-          <span className="text-xs font-medium text-text-secondary uppercase tracking-[2px]">Progreso</span>
+          <span className="text-xs font-medium text-text-secondary uppercase tracking-[2px]">
+            Progreso
+          </span>
           <span
             className={cn('text-sm font-semibold tabular-nums', SEMANTIC_COLORS[progressColor])}
           >
             {percentPaid.toFixed(1)}%
           </span>
         </div>
-        <BatteryBar value={percentPaid} variant="compact" thresholds={{ warning: 101, danger: 102 }} label={`Progreso de pago ${percentPaid.toFixed(1)}%`} />
+        <BatteryBar
+          value={percentPaid}
+          variant="compact"
+          thresholds={{ warning: 101, danger: 102 }}
+          label={`Progreso de pago ${percentPaid.toFixed(1)}%`}
+        />
       </div>
 
       {/* Metrics grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {debt.monthlyPayment !== null && (
-          <MetricItem label="Mensualidad" value={<MoneyAmount value={debt.monthlyPayment} size="sm" />} />
+          <MetricItem
+            label="Mensualidad"
+            value={<MoneyAmount value={debt.monthlyPayment} size="sm" />}
+          />
         )}
         {debt.remainingMonths !== null && (
           <MetricItem label="Meses restantes" value={`${debt.remainingMonths}`} />
         )}
         {metrics.totalRemainingPayment !== null && (
-          <MetricItem label="Total por pagar" value={<MoneyAmount value={metrics.totalRemainingPayment} size="sm" />} />
+          <MetricItem
+            label="Total por pagar"
+            value={<MoneyAmount value={metrics.totalRemainingPayment} size="sm" />}
+          />
         )}
         <MetricItem label="Tasa anual" value={formatRate(debt.annualRate)} />
       </div>
@@ -326,7 +341,9 @@ interface MetricItemProps {
 function MetricItem({ label, value }: MetricItemProps) {
   return (
     <div>
-      <p className="text-xs font-medium text-text-secondary uppercase tracking-[2px] mb-0.5">{label}</p>
+      <p className="text-xs font-medium text-text-secondary uppercase tracking-[2px] mb-0.5">
+        {label}
+      </p>
       <p className="text-sm font-semibold text-text-primary">{value}</p>
     </div>
   )
