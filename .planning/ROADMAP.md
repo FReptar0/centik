@@ -157,7 +157,7 @@ Plans:
 **Plans**: 6 plans
 
 Plans:
-- [ ] 30-01-PLAN.md -- Prisma 7 dual-URL config (prisma.config.ts -> DIRECT_URL) + .env.example/.env/.env.test updates + Wave-0 env.ts/env.test.ts stubs
+- [x] 30-01-PLAN.md -- Prisma 7 dual-URL config (prisma.config.ts -> DIRECT_URL) + .env.example/.env/.env.test updates + Wave-0 env.ts/env.test.ts stubs
 - [ ] 30-02-PLAN.md -- Boot-time Zod env validator (src/lib/env.ts) + test suite + consumer sweep (prisma.ts, totp-crypto.ts, rate-limit.ts, auth.ts)
 - [ ] 30-03-PLAN.md -- Security headers: next.config.ts async headers() + src/proxy.ts CSP-with-nonce (preserves Phase-26 auth redirects) + 4 new proxy tests
 - [ ] 30-04-PLAN.md -- Production admin seed (prisma/seed.prod.ts, idempotent, no rotate, admin-only) + npm run db:seed:prod script
@@ -181,4 +181,4 @@ Note: Phases 28 and 29 both depend on 26, not on each other. They could theoreti
 | 27. Per-User Data Isolation | 3/3 | Complete    | 2026-04-18 | - |
 | 28. Invite-Only Registration | v3.0 | 3/3 | Complete    | 2026-04-20 |
 | 29. TOTP Two-Factor Auth | v3.0 | 5/5 | Complete   | 2026-04-21 |
-| 30. Vercel Deploy + Security | v3.0 | 0/? | Not started | - |
+| 30. Vercel Deploy + Security | v3.0 | 1/6 | In Progress|  |

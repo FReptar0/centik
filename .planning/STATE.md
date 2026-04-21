@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Auth + Cloud Deploy
 current_phase: 30
-current_plan: 1
+current_plan: 2
 status: executing
 stopped_at: Phase 30 context gathered (Vercel deploy + security)
-last_updated: "2026-04-21T23:28:48.690Z"
+last_updated: "2026-04-21T23:39:59.735Z"
 last_activity: 2026-04-21
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 23
-  completed_plans: 17
-  percent: 74
+  completed_plans: 18
+  percent: 78
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (updated 2026-04-16)
 ## Current Position
 
 Phase: 30 (Vercel Deploy + Security Hardening) — EXECUTING
-Plan: 1 of 6
+Plan: 2 of 6
 **Current Phase:** 30
-**Current Plan:** 1
+**Current Plan:** 2
 **Total Plans in Phase:** 6
-**Status:** Executing Phase 30
+**Status:** Ready to execute
 **Last Activity:** 2026-04-21
 
 Progress: [███████▎▒▒] 73%
@@ -69,6 +69,7 @@ Progress: [███████▎▒▒] 73%
 | Phase 29 P02 | 18min | 3 tasks | 12 files |
 | Phase 29 P03 | 13min | 3 tasks | 9 files |
 | Phase 29 P04 | 52min | 3 tasks | 9 files |
+| Phase 30 P01 | 6min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -132,6 +133,10 @@ Recent decisions affecting current work:
 - [Phase 29 P04]: Seguridad section is NOT admin-gated (D-19) — every authenticated user manages their own 2FA; Invitaciones stays admin-gated; both coexist in ConfiguracionClientWrapper
 - [Phase 29 P04]: Activar2faModal + RegenerarCodigosModal derive step/codes from useActionState result (const successCodes = state.success ? state.backupCodes : null) rather than syncing via useEffect+setState — React 19 react-hooks/set-state-in-effect compliance; toast stays in useEffect as a pure external-system side-effect
 - [Phase 29 P04]: BackupCodesScreen download uses client-side Blob URL (<a download> + URL.createObjectURL) rather than a Server Action file response — codes are already in client memory, server round-trip would waste bandwidth + marginally risk a log capture; D-12 Claude's Discretion
+- [Phase 30]: [30-01]: Prisma 7.6 dual-URL via prisma.config.ts -- datasource.url = env('DIRECT_URL') for CLI; runtime keeps DATABASE_URL via @prisma/adapter-pg (D-03 mechanism correction per RESEARCH)
+- [Phase 30]: [30-01]: Local DIRECT_URL aliased to DATABASE_URL in .env and .env.test because Docker Postgres has no pooler; production diverges (pooled.db.prisma.io vs db.prisma.io)
+- [Phase 30]: [30-01]: Wave-0 src/lib/env.ts is a typed passthrough (not validator); Plan 30-02 replaces internals with Zod but freezes exported env shape + Env type now so downstream consumers never refactor
+- [Phase 30]: [30-01]: .env.example documents Vercel Marketplace contract explicitly: DATABASE_URL auto-injected by Vercel; DIRECT_URL MUST be copied manually from Prisma Console into Vercel Project Settings
 
 ### Pending Todos
 
@@ -144,6 +149,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-21T22:36:58.798Z
+Last session: 2026-04-21T23:39:12.562Z
 Stopped at: Phase 30 context gathered (Vercel deploy + security)
-Resume file: .planning/phases/30-vercel-deploy-security-hardening/30-CONTEXT.md
+Resume file: None
