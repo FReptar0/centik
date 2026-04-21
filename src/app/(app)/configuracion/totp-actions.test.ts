@@ -180,10 +180,7 @@ describe('enableTotpAction', () => {
 
   it('persists encrypted secret + 10 backup codes in one $transaction on success', async () => {
     vi.mocked(verifyTotp).mockResolvedValue(true)
-    await enableTotpAction(
-      undefined,
-      fd({ secret: 'JBSWY3DPEHPK3PXP', code: '123456' }),
-    )
+    await enableTotpAction(undefined, fd({ secret: 'JBSWY3DPEHPK3PXP', code: '123456' }))
 
     expect(mockTransaction).toHaveBeenCalledTimes(1)
     const txOps = mockTransaction.mock.calls[0][0] as unknown[]
@@ -207,10 +204,7 @@ describe('enableTotpAction', () => {
 
   it('plaintext secret NEVER leaks to user.update — only ciphertext', async () => {
     vi.mocked(verifyTotp).mockResolvedValue(true)
-    await enableTotpAction(
-      undefined,
-      fd({ secret: 'JBSWY3DPEHPK3PXP', code: '123456' }),
-    )
+    await enableTotpAction(undefined, fd({ secret: 'JBSWY3DPEHPK3PXP', code: '123456' }))
     const updateArgs = mockUserUpdate.mock.calls[0][0]
     expect(updateArgs.data.totpSecret).not.toBe('JBSWY3DPEHPK3PXP')
     expect(updateArgs.data.totpSecret).toMatch(/^enc:/)
@@ -234,10 +228,7 @@ describe('enableTotpAction', () => {
   it('hashes all 10 codes BEFORE opening $transaction (Pitfall 9)', async () => {
     vi.mocked(verifyTotp).mockResolvedValue(true)
     const hashSpy = vi.mocked(bcrypt.hash)
-    await enableTotpAction(
-      undefined,
-      fd({ secret: 'JBSWY3DPEHPK3PXP', code: '123456' }),
-    )
+    await enableTotpAction(undefined, fd({ secret: 'JBSWY3DPEHPK3PXP', code: '123456' }))
 
     expect(hashSpy).toHaveBeenCalledTimes(10)
     const lastHashOrder = Math.max(...hashSpy.mock.invocationCallOrder)
@@ -265,10 +256,7 @@ describe('enableTotpAction', () => {
 
   it('calls revalidatePath("/configuracion") on success', async () => {
     vi.mocked(verifyTotp).mockResolvedValue(true)
-    await enableTotpAction(
-      undefined,
-      fd({ secret: 'JBSWY3DPEHPK3PXP', code: '123456' }),
-    )
+    await enableTotpAction(undefined, fd({ secret: 'JBSWY3DPEHPK3PXP', code: '123456' }))
     expect(mockRevalidatePath).toHaveBeenCalledWith('/configuracion')
   })
 

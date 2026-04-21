@@ -12,15 +12,11 @@ import { generateBackupCodes, formatForDisplay, consumeBackupCode } from '@/lib/
 
 type PrepareResult = { secret: string; qrDataUrl: string } | { error: string }
 
-type EnableResult =
-  | { success: true; backupCodes: string[] }
-  | { error: Record<string, string[]> }
+type EnableResult = { success: true; backupCodes: string[] } | { error: Record<string, string[]> }
 
 type SimpleFormResult = { success: true } | { error: Record<string, string[]> }
 
-type RegenResult =
-  | { success: true; backupCodes: string[] }
-  | { error: Record<string, string[]> }
+type RegenResult = { success: true; backupCodes: string[] } | { error: Record<string, string[]> }
 
 const BCRYPT_COST = 12
 
@@ -79,9 +75,7 @@ export async function enableTotpAction(
 
   // Hash BEFORE opening the transaction (Phase 28 P03)
   const plainCodes = generateBackupCodes(10)
-  const hashes = await Promise.all(
-    plainCodes.map((c) => bcrypt.hash(c.toLowerCase(), BCRYPT_COST)),
-  )
+  const hashes = await Promise.all(plainCodes.map((c) => bcrypt.hash(c.toLowerCase(), BCRYPT_COST)))
   const encryptedSecret = encryptSecret(parsed.data.secret)
 
   try {
@@ -157,9 +151,7 @@ export async function regenerateBackupCodesAction(
 
   // Hash BEFORE opening the transaction (Phase 28 P03)
   const plainCodes = generateBackupCodes(10)
-  const hashes = await Promise.all(
-    plainCodes.map((c) => bcrypt.hash(c.toLowerCase(), BCRYPT_COST)),
-  )
+  const hashes = await Promise.all(plainCodes.map((c) => bcrypt.hash(c.toLowerCase(), BCRYPT_COST)))
 
   try {
     await prisma.$transaction([
