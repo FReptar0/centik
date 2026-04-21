@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Auth + Cloud Deploy
 current_phase: 29
-current_plan: 2
+current_plan: 3
 status: executing
-stopped_at: Plan 29-01 complete (Wave 0 foundation)
-last_updated: "2026-04-21T03:32:06Z"
+stopped_at: Plan 29-02 complete (Wave 1 library modules + Zod schemas)
+last_updated: "2026-04-21T11:42:00Z"
 last_activity: 2026-04-21
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 22
-  completed_plans: 13
-  percent: 59
+  completed_plans: 14
+  percent: 63
 ---
 
 # Project State
@@ -28,14 +28,14 @@ See: .planning/PROJECT.md (updated 2026-04-16)
 ## Current Position
 
 Phase: 29 (TOTP Two-Factor Authentication) — EXECUTING
-Plan: 2 of 5
+Plan: 3 of 5
 **Current Phase:** 29
-**Current Plan:** 2
+**Current Plan:** 3
 **Total Plans in Phase:** 5
-**Status:** Executing Phase 29 (Plan 29-01 complete, Wave 0 foundation in place)
+**Status:** Executing Phase 29 (Plans 29-01 + 29-02 complete, Wave 1 library + Zod schemas in place)
 **Last Activity:** 2026-04-21
 
-Progress: [█████▉▒▒▒▒] 59%
+Progress: [██████▎▒▒▒] 63%
 
 ## Performance Metrics
 
@@ -66,6 +66,7 @@ Progress: [█████▉▒▒▒▒] 59%
 | Phase 28 P02 | 10min | 2 tasks | 11 files |
 | 28 | 3 | - | - |
 | Phase 29 P01 | 22min | 3 tasks | 14 files |
+| Phase 29 P02 | 18min | 3 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -114,6 +115,10 @@ Recent decisions affecting current work:
 - [Phase 29 P01]: Used prisma migrate diff + migrate deploy instead of migrate dev to bypass pre-existing benign checksum drift on 20260418030000_make_userid_required (from 5108bcc forward-fix) — zero data loss, canonical non-destructive path
 - [Phase 29 P01]: Excluded tests/integration/** from default vitest unit runner (vitest.config.mts) — those files have their own DB-coupled singleFork runner and were producing intermittent parallel-write races under the default pool
 - [Phase 29 P01]: Installed otplib@13.4.0, qrcode@1.5.4, @upstash/ratelimit@2.0.8, @upstash/redis@1.37.0, @types/qrcode@1.5.6 at RESEARCH-verified versions (2026-04-20); no --legacy-peer-deps required
+- [Phase 29 P02]: verifyTotp wraps otplib verify in try/catch and returns false on SecretTooShort / base32-decode exceptions — matches contract "returns false for wrong code without throwing", simplifies Wave-2 consumers
+- [Phase 29 P02]: backup-code normalization (strip dashes + lowercase) happens BEFORE bcrypt.hash AND before bcrypt.compare, so display form AB12-CD34 and raw ab12cd34 verify against the same hash
+- [Phase 29 P02]: Rate-limit test mock uses class-shim (class FakeRatelimit with static slidingWindow) rather than Object.assign(vi.fn(), ...) — the class preserves `new Ratelimit(...)` semantics through vi.resetModules() re-imports
+- [Phase 29 P02]: loginSchema retained alongside new loginPasswordSchema in validators.ts — Plan 29-03 will migrate loginAction's import; coexistence prevents breakage during transition
 
 ### Pending Todos
 
@@ -126,6 +131,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-21T03:32:06Z
-Stopped at: Plan 29-01 complete — Wave 0 foundation shipped (BackupCode schema + migration + 5 deps + 8 test stubs)
-Resume file: .planning/phases/29-totp-two-factor-authentication/29-02-PLAN.md
+Last session: 2026-04-21T11:42:00Z
+Stopped at: Plan 29-02 complete — Wave 1 library modules + 4 Zod schemas shipped (totp-crypto + totp + backup-codes + challenge + rate-limit + validators extensions at 100% coverage)
+Resume file: .planning/phases/29-totp-two-factor-authentication/29-03-PLAN.md
