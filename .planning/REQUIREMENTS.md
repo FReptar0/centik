@@ -25,10 +25,10 @@ Requirements for auth + cloud deploy. Security-first — this is real financial 
 
 ### TOTP 2FA
 
-- [ ] **TOTP-01**: TOTP setup flow — generate secret, display QR code (otpauth URI), verify first code before persisting
-- [ ] **TOTP-02**: TOTP secrets encrypted at rest with AES-256-GCM using AUTH_TOTP_ENCRYPTION_KEY env var
+- [x] **TOTP-01**: TOTP setup flow — generate secret, display QR code (otpauth URI), verify first code before persisting
+- [x] **TOTP-02**: TOTP secrets encrypted at rest with AES-256-GCM using AUTH_TOTP_ENCRYPTION_KEY env var
 - [ ] **TOTP-03**: Two-step login flow — password verification first, then TOTP code verification before session issuance
-- [ ] **TOTP-04**: 10 backup codes generated during 2FA setup, hashed with bcryptjs, single-use
+- [x] **TOTP-04**: 10 backup codes generated during 2FA setup, hashed with bcryptjs, single-use
 - [ ] **TOTP-05**: Rate limiting on login and TOTP endpoints via @upstash/ratelimit (max 5 attempts per minute)
 
 ### Invite-Only Registration
@@ -87,10 +87,10 @@ Deferred to future milestones.
 | ISOL-03 | Phase 27 | Complete |
 | ISOL-04 | Phase 27 | Complete |
 | ISOL-05 | Phase 30 | Pending |
-| TOTP-01 | Phase 29 | Pending |
-| TOTP-02 | Phase 29 | Pending |
+| TOTP-01 | Phase 29 | Complete |
+| TOTP-02 | Phase 29 | Complete |
 | TOTP-03 | Phase 29 | Pending |
-| TOTP-04 | Phase 29 | Pending |
+| TOTP-04 | Phase 29 | Complete |
 | TOTP-05 | Phase 29 | Pending |
 | INVITE-01 | Phase 25 | Complete |
 | INVITE-02 | Phase 28 | Pending |

@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Auth + Cloud Deploy
 current_phase: 29
-current_plan: 4
+current_plan: 5
 status: executing
-stopped_at: Plan 29-03 complete (Wave 2 two-step login wiring)
-last_updated: "2026-04-21T17:58:50Z"
+stopped_at: Plan 29-04 complete (Wave 2 TOTP setup/disable/regen UX)
+last_updated: "2026-04-21T19:13:12Z"
 last_activity: 2026-04-21
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 22
-  completed_plans: 15
-  percent: 68
+  completed_plans: 16
+  percent: 73
 ---
 
 # Project State
@@ -28,14 +28,14 @@ See: .planning/PROJECT.md (updated 2026-04-16)
 ## Current Position
 
 Phase: 29 (TOTP Two-Factor Authentication) — EXECUTING
-Plan: 4 of 5
+Plan: 5 of 5
 **Current Phase:** 29
-**Current Plan:** 4
+**Current Plan:** 5
 **Total Plans in Phase:** 5
-**Status:** Executing Phase 29 (Plans 29-01 + 29-02 + 29-03 complete, Wave 2 two-step login wiring in place)
+**Status:** Executing Phase 29 (Plans 29-01 + 29-02 + 29-03 + 29-04 complete, Seguridad section + lifecycle UX wired in /configuracion)
 **Last Activity:** 2026-04-21
 
-Progress: [██████▊▒▒▒] 68%
+Progress: [███████▎▒▒] 73%
 
 ## Performance Metrics
 
@@ -68,6 +68,7 @@ Progress: [██████▊▒▒▒] 68%
 | Phase 29 P01 | 22min | 3 tasks | 14 files |
 | Phase 29 P02 | 18min | 3 tasks | 12 files |
 | Phase 29 P03 | 13min | 3 tasks | 9 files |
+| Phase 29 P04 | 52min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -125,6 +126,12 @@ Recent decisions affecting current work:
 - [Phase 29 P03]: verifyTotpAction runs verifyChallenge BEFORE checkRateLimit so the rate-limit key can be composed from a verified userId (IDOR-safe, Pitfall 7); Zod runs BEFORE rate-limit so malformed payloads don't burn legitimate users' quota
 - [Phase 29 P03]: FloatingInput extended additively with inputMode + placeholder optional props (placeholder only renders while the label floats) — 20+ existing consumers unaffected
 - [Phase 29 P03]: register/page.test.tsx mocked the 5 Phase-29 lib modules as Rule-3 deviation — Task 1's src/auth.ts changes transitively pull @/lib/totp-crypto, which validates AUTH_TOTP_ENCRYPTION_KEY at module load; targeted mocks are lower-risk than a global setupFiles hook
+- [Phase 29 P04]: prepareTotpSecretAction does zero DB writes — secret + QR return via Server Action response, client holds in wizard state until step 2 submits it back (Open Q5 RESOLVED; avoids orphan provisional-secret rows)
+- [Phase 29 P04]: enableTotpAction + regenerateBackupCodesAction hash all 10 backup codes via Promise.all(bcrypt.hash) BEFORE opening prisma.$transaction — Phase 28 P03 rule reapplied to prevent connection pinning during cost-12 bcrypt runs (~3s)
+- [Phase 29 P04]: verifyCurrentCode private helper detects TOTP (^\d{6}$) vs backup (^[0-9a-f]{8}$ after dash strip) and collapses both failure paths into a single boolean; callers map to generic "_form: ['Codigo invalido']" (oracle-resistance per D-21)
+- [Phase 29 P04]: Seguridad section is NOT admin-gated (D-19) — every authenticated user manages their own 2FA; Invitaciones stays admin-gated; both coexist in ConfiguracionClientWrapper
+- [Phase 29 P04]: Activar2faModal + RegenerarCodigosModal derive step/codes from useActionState result (const successCodes = state.success ? state.backupCodes : null) rather than syncing via useEffect+setState — React 19 react-hooks/set-state-in-effect compliance; toast stays in useEffect as a pure external-system side-effect
+- [Phase 29 P04]: BackupCodesScreen download uses client-side Blob URL (<a download> + URL.createObjectURL) rather than a Server Action file response — codes are already in client memory, server round-trip would waste bandwidth + marginally risk a log capture; D-12 Claude's Discretion
 
 ### Pending Todos
 
@@ -137,6 +144,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-21T17:58:50Z
-Stopped at: Plan 29-03 complete — Wave 2 two-step login wiring shipped (authorizeUser 2FA branch + split loginAction + verifyTotpAction + TotpStep component + LoginForm branch + FloatingInput additive props, 672 unit tests passing)
-Resume file: .planning/phases/29-totp-two-factor-authentication/29-04-PLAN.md
+Last session: 2026-04-21T19:13:12Z
+Stopped at: Plan 29-04 complete — Wave 2 TOTP lifecycle UX shipped (4 Server Actions + Seguridad section + 3 bottom-sheet modals + shared BackupCodesScreen + user.totpEnabled fetch in /configuracion; 701 unit tests passing, zero lint errors in new files)
+Resume file: .planning/phases/29-totp-two-factor-authentication/29-05-PLAN.md
