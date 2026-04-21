@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Auth + Cloud Deploy
 current_phase: 29
-current_plan: 1
+current_plan: 2
 status: executing
-stopped_at: Phase 29 context gathered
-last_updated: "2026-04-20T21:08:17.790Z"
-last_activity: 2026-04-20
+stopped_at: Plan 29-01 complete (Wave 0 foundation)
+last_updated: "2026-04-21T03:32:06Z"
+last_activity: 2026-04-21
 progress:
   total_phases: 6
   completed_phases: 4
-  total_plans: 17
-  completed_plans: 12
-  percent: 71
+  total_plans: 22
+  completed_plans: 13
+  percent: 59
 ---
 
 # Project State
@@ -28,14 +28,14 @@ See: .planning/PROJECT.md (updated 2026-04-16)
 ## Current Position
 
 Phase: 29 (TOTP Two-Factor Authentication) — EXECUTING
-Plan: 1 of 5
+Plan: 2 of 5
 **Current Phase:** 29
-**Current Plan:** 1
+**Current Plan:** 2
 **Total Plans in Phase:** 5
-**Status:** Executing Phase 29
-**Last Activity:** 2026-04-20
+**Status:** Executing Phase 29 (Plan 29-01 complete, Wave 0 foundation in place)
+**Last Activity:** 2026-04-21
 
-Progress: [█████████▒] 92%
+Progress: [█████▉▒▒▒▒] 59%
 
 ## Performance Metrics
 
@@ -65,6 +65,7 @@ Progress: [█████████▒] 92%
 | Phase 28 P03 | 15min | 2 tasks | 7 files |
 | Phase 28 P02 | 10min | 2 tasks | 11 files |
 | 28 | 3 | - | - |
+| Phase 29 P01 | 22min | 3 tasks | 14 files |
 
 ## Accumulated Context
 
@@ -109,6 +110,10 @@ Recent decisions affecting current work:
 - [Phase 28 P02]: IDOR scope via findFirst({ createdBy }) not findUnique+post-check -- forward-compatible with multi-admin
 - [Phase 28 P02]: Origin derived server-side via next/headers in page.tsx and passed as prop -- avoids window.location.origin SSR mismatch
 - [Phase 28 P02]: InvitacionForm does NOT clear the email input on success -- React 19 react-hooks/set-state-in-effect rule forbids setState inside useEffect; toast + URL panel provide ample confirmation
+- [Phase 29 P01]: BackupCode Prisma model with @@index([userId]) + onDelete: Cascade — enables single-$transaction disable/delete flows (D-09, D-28)
+- [Phase 29 P01]: Used prisma migrate diff + migrate deploy instead of migrate dev to bypass pre-existing benign checksum drift on 20260418030000_make_userid_required (from 5108bcc forward-fix) — zero data loss, canonical non-destructive path
+- [Phase 29 P01]: Excluded tests/integration/** from default vitest unit runner (vitest.config.mts) — those files have their own DB-coupled singleFork runner and were producing intermittent parallel-write races under the default pool
+- [Phase 29 P01]: Installed otplib@13.4.0, qrcode@1.5.4, @upstash/ratelimit@2.0.8, @upstash/redis@1.37.0, @types/qrcode@1.5.6 at RESEARCH-verified versions (2026-04-20); no --legacy-peer-deps required
 
 ### Pending Todos
 
@@ -121,6 +126,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-20T19:01:12.997Z
-Stopped at: Phase 29 context gathered
-Resume file: .planning/phases/29-totp-two-factor-authentication/29-CONTEXT.md
+Last session: 2026-04-21T03:32:06Z
+Stopped at: Plan 29-01 complete — Wave 0 foundation shipped (BackupCode schema + migration + 5 deps + 8 test stubs)
+Resume file: .planning/phases/29-totp-two-factor-authentication/29-02-PLAN.md
