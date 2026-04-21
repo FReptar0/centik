@@ -1,3 +1,5 @@
+// D-21 side-effect import — forces src/lib/env.ts validation at module load.
+import '@/lib/env'
 import NextAuth from 'next-auth'
 import type { User, Session } from 'next-auth'
 import type { AdapterUser } from 'next-auth/adapters'

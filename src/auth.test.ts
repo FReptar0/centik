@@ -1,5 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
+// Plan 30-02: src/auth.ts has a top-level `import '@/lib/env'` side-effect that runs env.ts's
+// Zod validator against process.env. Mock the module so the test harness never trips it.
+vi.mock('@/lib/env', () => ({
+  env: {
+    NODE_ENV: 'test',
+    DATABASE_URL: 'postgresql://x:x@localhost:5432/x',
+    AUTH_SECRET: 'a'.repeat(32),
+    AUTH_TOTP_ENCRYPTION_KEY: '0'.repeat(64),
+  },
+}))
+
 // Mock prisma before importing auth module
 vi.mock('@/lib/prisma', () => ({
   default: {

@@ -69,6 +69,12 @@ describe('env.ts (Plan 30-02 — boot-time validator)', () => {
     await expect(import('./env')).rejects.toThrow(/UPSTASH_REDIS_REST_URL/)
   })
 
+  it('throws in production when UPSTASH_REDIS_REST_TOKEN is missing (D-19)', async () => {
+    baseProdEnv()
+    vi.stubEnv('UPSTASH_REDIS_REST_TOKEN', '')
+    await expect(import('./env')).rejects.toThrow(/UPSTASH_REDIS_REST_TOKEN/)
+  })
+
   it('throws in production when RATE_LIMIT_DISABLED=true (D-20)', async () => {
     baseProdEnv()
     vi.stubEnv('RATE_LIMIT_DISABLED', 'true')
