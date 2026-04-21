@@ -907,32 +907,29 @@ RATE_LIMIT_DISABLED=true
 | A9 | `prisma/seed.prod.ts` using `DATABASE_URL` (pooled) is safe for a single-row upsert | §Code Excerpts | LOW — upsert is a single statement; the pooler handles it fine. If operator prefers `DIRECT_URL`, one-line change. Document both options. [ASSUMED] |
 | A10 | Existing `tests/integration/isolation.test.ts` two-user pattern extends cleanly to MonthlySummary + Asset + ValueUnit + UnitRate + BackupCode | §D-22 | LOW — inspected the test file; models have `userId` + `onDelete: Cascade` (schema.prisma L72-82). Same `createMany` + `findMany where userId` shape works. [VERIFIED by code inspection] |
 
-## Open Questions
+## Open Questions (RESOLVED)
+
+> All five questions are resolved below. Each `RESOLVED:` line is the locked answer that downstream agents must honor.
 
 1. **`DIRECT_URL` naming consistency across integrations.**
-   - What we know: Prisma Postgres Console exposes both hostnames; Vercel injects only `DATABASE_URL`.
-   - What's unclear: Does the operator copy the direct URL as `DIRECT_URL`, `DIRECT_DATABASE_URL`, or `POSTGRES_URL_NON_POOLING`? (The Prisma docs variously use each name.)
-   - Recommendation: Pick `DIRECT_URL` (shortest, matches Prisma 6.x convention, avoids confusion with the legacy Vercel Postgres variable). Document in `.env.example` and `30-VERIFICATION.md`.
+   - **RESOLVED:** Use `DIRECT_URL` as the env-var name. Document in `.env.example` and `30-VERIFICATION.md`.
+   - Rationale: Shortest, matches Prisma 6.x convention, avoids confusion with the legacy Vercel Postgres `POSTGRES_URL_NON_POOLING` variable.
 
 2. **Should the production seed use `DATABASE_URL` or `DIRECT_URL`?**
-   - What we know: Prisma Postgres's pooler handles simple upserts fine; no transaction-mode-incompatible SQL in the seed.
-   - What's unclear: Does an operator-level preference favor the direct connection for audit/visibility?
-   - Recommendation: Use `DATABASE_URL` in `seed.prod.ts` (simpler — pooler is fine for one row). Document the `DIRECT_URL` alternative as a one-line change if the operator hits pooler quirks.
+   - **RESOLVED:** Use `DATABASE_URL` (pooled) in `seed.prod.ts`. The pooler handles single-row upserts fine.
+   - Rationale: Simpler; no transaction-mode-incompatible SQL in the seed. Document `DIRECT_URL` as a one-line fallback if the operator ever hits pooler quirks.
 
 3. **Does `next.config.ts` `async headers()` run on `api/auth/*` routes?**
-   - What we know: `source: '/(.*)'` matches everything. The proxy matcher excludes `api/auth` but that's a different control.
-   - What's unclear: Does HSTS + static headers on Auth.js's NextAuth-handled routes break Auth.js redirect flow?
-   - Recommendation: It shouldn't — Auth.js handles its own responses but inherits response-header merges from Next. Verify with `curl -I https://<prod>/api/auth/csrf` in the smoke checklist. If problematic, narrow the matcher to exclude `api/auth`.
+   - **RESOLVED:** Yes, and that's fine. `source: '/(.*)'` covers everything; Auth.js response-merges Next's headers without issue.
+   - Rationale + verification: covered by smoke-checklist step `curl -I https://<prod>/api/auth/csrf` in 30-VERIFICATION.md. If an issue surfaces, narrow the matcher to exclude `api/auth` as a follow-up.
 
 4. **Does Tailwind v4 need `style-src 'unsafe-inline'` in production builds?**
-   - What we know: CONTEXT D-06 accepts the trade-off; anecdotal reports suggest Tailwind v4 inlines styles React 19 can nonce only at `<style>` tag level.
-   - What's unclear: Whether Centik's specific Tailwind v4 config + Recharts SVG output triggers `style` attribute violations.
-   - Recommendation: Ship with `'unsafe-inline'` (D-06) and add a smoke-check item: open production URL in browser DevTools → Console tab → confirm zero CSP violations. If violations appear from a third-party lib (unlikely — Recharts uses SVG attributes, not inline styles), file a follow-up to narrow.
+   - **RESOLVED:** Yes — accept `'unsafe-inline'` for `style-src` per CONTEXT D-06. Add a smoke-check item to verify zero CSP violations in DevTools Console.
+   - Rationale: Tailwind v4 emits styles React 19 can nonce only at `<style>` tag level, not at attribute level. Trade-off documented in CONTEXT D-06.
 
 5. **Should `isolation-actions.test.ts` also cover READ actions (not just mutations)?**
-   - What we know: D-24 says "pages do NOT need separate isolation tests" — read surface is covered by the existing `isolation.test.ts` query-level tests.
-   - What's unclear: Whether Server Actions that RETURN data (e.g., a getter action) should be tested.
-   - Recommendation: Phase 30 focuses on MUTATIONS (D-23). If a future phase adds a getter Server Action, extend the file then.
+   - **RESOLVED:** No — Phase 30 focuses on MUTATIONS (D-23). The read surface is already covered by the extended `isolation.test.ts` query-level tests.
+   - Rationale: D-24 explicitly scopes this phase to mutation IDOR defense. Future phase can extend the file if a getter Server Action is added.
 
 ## Recommended Plan Decomposition
 
