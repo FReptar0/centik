@@ -159,10 +159,7 @@ export const loginSchema = z.object({
 
 /** Validates POST from InvitacionForm — admin generates invite token */
 export const createInviteSchema = z.object({
-  email: z
-    .string({ error: 'El correo es requerido' })
-    .email({ error: 'Correo no valido' })
-    .trim(),
+  email: z.string({ error: 'El correo es requerido' }).email({ error: 'Correo no valido' }).trim(),
 })
 
 /** Validates POST from RegisterForm — invitee creates account */
@@ -173,10 +170,7 @@ export const registerSchema = z
       .string({ error: 'El correo es requerido' })
       .email({ error: 'Correo no valido' })
       .trim(),
-    name: z
-      .string({ error: 'Ingresa tu nombre' })
-      .trim()
-      .min(1, { error: 'Ingresa tu nombre' }),
+    name: z.string({ error: 'Ingresa tu nombre' }).trim().min(1, { error: 'Ingresa tu nombre' }),
     password: z
       .string({ error: 'La contrasena es requerida' })
       .min(8, { error: 'Usa al menos 8 caracteres' })
@@ -187,3 +181,45 @@ export const registerSchema = z
     error: 'Las contrasenas no coinciden',
     path: ['confirmPassword'],
   })
+
+// --- Phase 29 TOTP schemas (D-30, D-31) ---
+// Plan 29-03 will migrate loginAction from loginSchema to loginPasswordSchema.
+// Both are kept during the transition so legacy imports keep compiling.
+
+/** Phase 29 D-30 — email+password for step 1 of the two-step login */
+export const loginPasswordSchema = z.object({
+  email: z
+    .string({ error: 'El correo es requerido' })
+    .email({ error: 'Correo electronico no valido' })
+    .trim(),
+  password: z
+    .string({ error: 'La contrasena es requerida' })
+    .min(1, { error: 'La contrasena es requerida' }),
+})
+
+/** Phase 29 D-30 — challenge + TOTP code (or 8-hex backup) for step 2 of login */
+export const verifyTotpSchema = z.object({
+  challenge: z.string({ error: 'Sesion expirada' }).min(10, { error: 'Sesion expirada' }),
+  code: z
+    .string({ error: 'Ingresa un codigo' })
+    .trim()
+    .min(6, { error: 'Codigo invalido' })
+    .max(9, { error: 'Codigo invalido' }),
+})
+
+/** Phase 29 D-30 — enable 2FA wizard step 2: secret (from step 1) + first 6-digit code */
+export const enableTotpSchema = z.object({
+  secret: z.string({ error: 'Reinicia el asistente' }).min(16, { error: 'Reinicia el asistente' }),
+  code: z
+    .string({ error: 'Ingresa un codigo de 6 digitos' })
+    .regex(/^\d{6}$/, { error: 'Ingresa un codigo de 6 digitos' }),
+})
+
+/** Phase 29 D-30 — disable 2FA / regenerate backup codes: current TOTP or backup code */
+export const disableTotpSchema = z.object({
+  code: z
+    .string({ error: 'Ingresa un codigo' })
+    .trim()
+    .min(6, { error: 'Codigo invalido' })
+    .max(9, { error: 'Codigo invalido' }),
+})

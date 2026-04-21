@@ -9,6 +9,10 @@ import {
   createAssetSchema,
   createValueUnitSchema,
   loginSchema,
+  loginPasswordSchema,
+  verifyTotpSchema,
+  enableTotpSchema,
+  disableTotpSchema,
 } from './validators'
 
 // Helper to get first error message from a failed parse result
@@ -581,6 +585,208 @@ describe('loginSchema', () => {
 
   it('rejects missing email', () => {
     const result = loginSchema.safeParse({ password: 'secret123' })
+    expect(result.success).toBe(false)
+  })
+})
+
+// --- Phase 29 TOTP schemas (D-30, D-31) ---
+
+describe('loginPasswordSchema', () => {
+  it('accepts valid email and non-empty password', () => {
+    const result = loginPasswordSchema.safeParse({
+      email: 'user@example.com',
+      password: 'a',
+    })
+    expect(result.success).toBe(true)
+  })
+
+  it('normalizes email (trim runs after email parse, so no-whitespace valid input round-trips unchanged)', () => {
+    const result = loginPasswordSchema.safeParse({
+      email: 'user@example.com',
+      password: 'a',
+    })
+    expect(result.success).toBe(true)
+    if (result.success) expect(result.data.email).toBe('user@example.com')
+  })
+
+  it('rejects invalid email with Spanish message', () => {
+    const result = loginPasswordSchema.safeParse({ email: 'nope', password: 'a' })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      const emailIssue = result.error.issues.find((i) => i.path.includes('email'))
+      expect(emailIssue?.message).toBe('Correo electronico no valido')
+    }
+  })
+
+  it('rejects empty password with Spanish message', () => {
+    const result = loginPasswordSchema.safeParse({ email: 'user@example.com', password: '' })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      const pwIssue = result.error.issues.find((i) => i.path.includes('password'))
+      expect(pwIssue?.message).toBe('La contrasena es requerida')
+    }
+  })
+
+  it('rejects missing email field entirely', () => {
+    const result = loginPasswordSchema.safeParse({ password: 'a' })
+    expect(result.success).toBe(false)
+  })
+})
+
+describe('verifyTotpSchema', () => {
+  it('accepts a 6-digit TOTP code with a valid challenge', () => {
+    const result = verifyTotpSchema.safeParse({
+      challenge: 'abcdefghij.signature',
+      code: '123456',
+    })
+    expect(result.success).toBe(true)
+  })
+
+  it('accepts a 9-char backup code (XXXX-XXXX format)', () => {
+    const result = verifyTotpSchema.safeParse({
+      challenge: 'abcdefghij.signature',
+      code: 'AB12-CD34',
+    })
+    expect(result.success).toBe(true)
+  })
+
+  it('trims whitespace from code', () => {
+    const result = verifyTotpSchema.safeParse({
+      challenge: 'abcdefghij.signature',
+      code: '  123456  ',
+    })
+    expect(result.success).toBe(true)
+    if (result.success) expect(result.data.code).toBe('123456')
+  })
+
+  it('rejects challenge shorter than 10 chars with Spanish message', () => {
+    const result = verifyTotpSchema.safeParse({ challenge: 'short', code: '123456' })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      const issue = result.error.issues.find((i) => i.path.includes('challenge'))
+      expect(issue?.message).toBe('Sesion expirada')
+    }
+  })
+
+  it('rejects code shorter than 6 chars', () => {
+    const result = verifyTotpSchema.safeParse({
+      challenge: 'abcdefghij.signature',
+      code: '12345',
+    })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      const issue = result.error.issues.find((i) => i.path.includes('code'))
+      expect(issue?.message).toBe('Codigo invalido')
+    }
+  })
+
+  it('rejects code longer than 9 chars', () => {
+    const result = verifyTotpSchema.safeParse({
+      challenge: 'abcdefghij.signature',
+      code: 'AB12-CD345',
+    })
+    expect(result.success).toBe(false)
+  })
+
+  it('rejects missing code', () => {
+    const result = verifyTotpSchema.safeParse({ challenge: 'abcdefghij.signature' })
+    expect(result.success).toBe(false)
+  })
+
+  it('rejects missing challenge', () => {
+    const result = verifyTotpSchema.safeParse({ code: '123456' })
+    expect(result.success).toBe(false)
+  })
+})
+
+describe('enableTotpSchema', () => {
+  it('accepts a valid base32 secret + 6-digit code', () => {
+    const result = enableTotpSchema.safeParse({
+      secret: 'JBSWY3DPEHPK3PXP',
+      code: '123456',
+    })
+    expect(result.success).toBe(true)
+  })
+
+  it('rejects a non-6-digit code (5 digits)', () => {
+    const result = enableTotpSchema.safeParse({
+      secret: 'JBSWY3DPEHPK3PXP',
+      code: '12345',
+    })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      const issue = result.error.issues.find((i) => i.path.includes('code'))
+      expect(issue?.message).toBe('Ingresa un codigo de 6 digitos')
+    }
+  })
+
+  it('rejects a non-6-digit code (7 digits)', () => {
+    const result = enableTotpSchema.safeParse({
+      secret: 'JBSWY3DPEHPK3PXP',
+      code: '1234567',
+    })
+    expect(result.success).toBe(false)
+  })
+
+  it('rejects alphabetic chars in code', () => {
+    const result = enableTotpSchema.safeParse({
+      secret: 'JBSWY3DPEHPK3PXP',
+      code: 'abc123',
+    })
+    expect(result.success).toBe(false)
+  })
+
+  it('rejects secret shorter than 16 chars', () => {
+    const result = enableTotpSchema.safeParse({
+      secret: 'short',
+      code: '123456',
+    })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      const issue = result.error.issues.find((i) => i.path.includes('secret'))
+      expect(issue?.message).toBe('Reinicia el asistente')
+    }
+  })
+
+  it('rejects missing secret', () => {
+    const result = enableTotpSchema.safeParse({ code: '123456' })
+    expect(result.success).toBe(false)
+  })
+})
+
+describe('disableTotpSchema', () => {
+  it('accepts a 6-digit TOTP code', () => {
+    const result = disableTotpSchema.safeParse({ code: '123456' })
+    expect(result.success).toBe(true)
+  })
+
+  it('accepts a 9-char backup code', () => {
+    const result = disableTotpSchema.safeParse({ code: 'AB12-CD34' })
+    expect(result.success).toBe(true)
+  })
+
+  it('trims whitespace', () => {
+    const result = disableTotpSchema.safeParse({ code: '  123456  ' })
+    expect(result.success).toBe(true)
+    if (result.success) expect(result.data.code).toBe('123456')
+  })
+
+  it('rejects code shorter than 6 chars with Spanish message', () => {
+    const result = disableTotpSchema.safeParse({ code: '12345' })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      const issue = result.error.issues.find((i) => i.path.includes('code'))
+      expect(issue?.message).toBe('Codigo invalido')
+    }
+  })
+
+  it('rejects code longer than 9 chars', () => {
+    const result = disableTotpSchema.safeParse({ code: 'AB12-CD345' })
+    expect(result.success).toBe(false)
+  })
+
+  it('rejects missing code', () => {
+    const result = disableTotpSchema.safeParse({})
     expect(result.success).toBe(false)
   })
 })
