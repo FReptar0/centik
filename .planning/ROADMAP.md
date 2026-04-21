@@ -154,11 +154,15 @@ Plans:
   3. Production seed script creates admin user (fmemije00@gmail.com) with hashed password
   4. Centik is deployed and accessible on Vercel with all environment variables configured
   5. Cross-user isolation integration tests pass -- User B authenticates and gets zero results when querying User A's transactions, debts, budgets, income sources, categories, and history
-**Plans**: TBD
+**Plans**: 6 plans
 
 Plans:
-- [ ] 30-01: TBD
-- [ ] 30-02: TBD
+- [ ] 30-01-PLAN.md -- Prisma 7 dual-URL config (prisma.config.ts -> DIRECT_URL) + .env.example/.env/.env.test updates + Wave-0 env.ts/env.test.ts stubs
+- [ ] 30-02-PLAN.md -- Boot-time Zod env validator (src/lib/env.ts) + test suite + consumer sweep (prisma.ts, totp-crypto.ts, rate-limit.ts, auth.ts)
+- [ ] 30-03-PLAN.md -- Security headers: next.config.ts async headers() + src/proxy.ts CSP-with-nonce (preserves Phase-26 auth redirects) + 4 new proxy tests
+- [ ] 30-04-PLAN.md -- Production admin seed (prisma/seed.prod.ts, idempotent, no rotate, admin-only) + npm run db:seed:prod script
+- [ ] 30-05-PLAN.md -- Cross-user isolation test expansion (+5 read tests in isolation.test.ts; NEW isolation-actions.test.ts with ≥10 Server-Action IDOR tests)
+- [ ] 30-06-PLAN.md -- 30-VERIFICATION.md runbook + 11-item smoke checklist + HSTS preload submission + final quality gate (checkpoint)
 
 ## Progress
 
