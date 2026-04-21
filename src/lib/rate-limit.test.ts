@@ -30,6 +30,17 @@ import { headers } from 'next/headers'
 
 const mockedHeaders = vi.mocked(headers)
 
+const VALID_AUTH_SECRET = 'a'.repeat(32)
+const VALID_TOTP_KEY = '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
+
+/** Plan 30-02: env.ts (transitively imported via rate-limit.ts -> './env') validates
+ *  all required vars at module load. Stub them before each import so env.ts parses cleanly. */
+function stubRequiredEnvAround() {
+  vi.stubEnv('DATABASE_URL', 'postgresql://x:x@localhost:5432/x')
+  vi.stubEnv('AUTH_SECRET', VALID_AUTH_SECRET)
+  vi.stubEnv('AUTH_TOTP_ENCRYPTION_KEY', VALID_TOTP_KEY)
+}
+
 describe('rate-limit (Phase 29 — Wave 1)', () => {
   beforeEach(() => {
     vi.resetModules()
@@ -42,6 +53,7 @@ describe('rate-limit (Phase 29 — Wave 1)', () => {
 
   describe('bypass logic (loginLimiter / totpLimiter as null)', () => {
     it('loginLimiter + totpLimiter are null when NODE_ENV=test (default)', async () => {
+      stubRequiredEnvAround()
       vi.stubEnv('NODE_ENV', 'test')
       vi.stubEnv('RATE_LIMIT_DISABLED', 'false')
       const mod = await import('./rate-limit')
@@ -49,16 +61,16 @@ describe('rate-limit (Phase 29 — Wave 1)', () => {
       expect(mod.totpLimiter).toBeNull()
     })
 
-    it('loginLimiter + totpLimiter are null when RATE_LIMIT_DISABLED=true even in production', async () => {
-      vi.stubEnv('NODE_ENV', 'production')
-      vi.stubEnv('RATE_LIMIT_DISABLED', 'true')
-      const mod = await import('./rate-limit')
-      expect(mod.loginLimiter).toBeNull()
-      expect(mod.totpLimiter).toBeNull()
-    })
+    // Plan 30-02 D-20 removed the "RATE_LIMIT_DISABLED=true works as bypass in production"
+    // scenario: env.ts's superRefine now rejects that combination at boot, so the limiter
+    // cannot be instantiated in that state. The former test here exercised an unreachable
+    // runtime state and has been removed. The D-20 guard is tested in env.test.ts.
 
     it('loginLimiter + totpLimiter are NOT null when NODE_ENV=production and RATE_LIMIT_DISABLED is unset', async () => {
+      stubRequiredEnvAround()
       vi.stubEnv('NODE_ENV', 'production')
+      vi.stubEnv('UPSTASH_REDIS_REST_URL', 'https://upstash.example.io')
+      vi.stubEnv('UPSTASH_REDIS_REST_TOKEN', 'token')
       vi.stubEnv('RATE_LIMIT_DISABLED', '')
       const mod = await import('./rate-limit')
       expect(mod.loginLimiter).not.toBeNull()
@@ -67,6 +79,11 @@ describe('rate-limit (Phase 29 — Wave 1)', () => {
   })
 
   describe('checkRateLimit', () => {
+    beforeEach(() => {
+      stubRequiredEnvAround()
+      vi.stubEnv('NODE_ENV', 'test')
+    })
+
     it('returns { success: true } when limiter is null (bypass)', async () => {
       const { checkRateLimit } = await import('./rate-limit')
       const result = await checkRateLimit(null, 'any-key')
@@ -142,6 +159,11 @@ describe('rate-limit (Phase 29 — Wave 1)', () => {
   })
 
   describe('getClientIp', () => {
+    beforeEach(() => {
+      stubRequiredEnvAround()
+      vi.stubEnv('NODE_ENV', 'test')
+    })
+
     it('returns first hop of x-forwarded-for (comma-separated)', async () => {
       mockedHeaders.mockResolvedValue(new Headers({ 'x-forwarded-for': '203.0.113.5, 10.0.0.1' }))
       const { getClientIp } = await import('./rate-limit')

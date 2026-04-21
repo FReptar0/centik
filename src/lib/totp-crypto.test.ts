@@ -1,13 +1,23 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const VALID_KEY = '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
+const VALID_AUTH_SECRET = 'a'.repeat(32)
 
-/** Dynamically re-import the module under test after env stubs so loadKey() re-runs. */
+/** Plan 30-02: env.ts validates ALL required vars at module load, not just AUTH_TOTP_ENCRYPTION_KEY.
+ *  Tests that stub a fresh key must also stub the other required env vars or env.ts throws first. */
+function stubRequiredEnvAround() {
+  vi.stubEnv('NODE_ENV', 'test')
+  vi.stubEnv('DATABASE_URL', 'postgresql://x:x@localhost:5432/x')
+  vi.stubEnv('AUTH_SECRET', VALID_AUTH_SECRET)
+}
+
+/** Dynamically re-import the module under test after env stubs so env.ts re-runs. */
 async function importFreshWithKey(key: string | undefined) {
   vi.resetModules()
+  stubRequiredEnvAround()
   if (key === undefined) {
     vi.stubEnv('AUTH_TOTP_ENCRYPTION_KEY', '')
-    // stubEnv can't truly unset; simulate absence via empty string — loadKey rejects empty
+    // stubEnv can't truly unset; simulate absence via empty string — env.ts rejects empty
   } else {
     vi.stubEnv('AUTH_TOTP_ENCRYPTION_KEY', key)
   }
@@ -16,6 +26,7 @@ async function importFreshWithKey(key: string | undefined) {
 
 describe('totp-crypto (Phase 29 — Wave 1)', () => {
   beforeEach(() => {
+    stubRequiredEnvAround()
     vi.stubEnv('AUTH_TOTP_ENCRYPTION_KEY', VALID_KEY)
   })
 
@@ -88,26 +99,30 @@ describe('totp-crypto (Phase 29 — Wave 1)', () => {
 
   it('throws at module import when AUTH_TOTP_ENCRYPTION_KEY is unset', async () => {
     vi.resetModules()
+    stubRequiredEnvAround()
     vi.stubEnv('AUTH_TOTP_ENCRYPTION_KEY', '')
     await expect(import('./totp-crypto')).rejects.toThrow(/AUTH_TOTP_ENCRYPTION_KEY/)
   })
 
   it('throws at module import when AUTH_TOTP_ENCRYPTION_KEY is too short (63 chars)', async () => {
     vi.resetModules()
+    stubRequiredEnvAround()
     vi.stubEnv('AUTH_TOTP_ENCRYPTION_KEY', 'a'.repeat(63))
-    await expect(import('./totp-crypto')).rejects.toThrow(/64-character hex/)
+    await expect(import('./totp-crypto')).rejects.toThrow(/AUTH_TOTP_ENCRYPTION_KEY/)
   })
 
   it('throws at module import when AUTH_TOTP_ENCRYPTION_KEY is too long (65 chars)', async () => {
     vi.resetModules()
+    stubRequiredEnvAround()
     vi.stubEnv('AUTH_TOTP_ENCRYPTION_KEY', 'a'.repeat(65))
-    await expect(import('./totp-crypto')).rejects.toThrow(/64-character hex/)
+    await expect(import('./totp-crypto')).rejects.toThrow(/AUTH_TOTP_ENCRYPTION_KEY/)
   })
 
   it('throws at module import when AUTH_TOTP_ENCRYPTION_KEY contains non-hex chars', async () => {
     vi.resetModules()
+    stubRequiredEnvAround()
     // 64 chars but contains 'z' (non-hex)
     vi.stubEnv('AUTH_TOTP_ENCRYPTION_KEY', 'z'.repeat(64))
-    await expect(import('./totp-crypto')).rejects.toThrow(/64-character hex/)
+    await expect(import('./totp-crypto')).rejects.toThrow(/AUTH_TOTP_ENCRYPTION_KEY/)
   })
 })

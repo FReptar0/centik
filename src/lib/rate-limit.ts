@@ -1,16 +1,21 @@
 import { Ratelimit } from '@upstash/ratelimit'
 import { Redis } from '@upstash/redis'
 import { headers } from 'next/headers'
+import { env } from './env'
 
 /** True cuando se debe bypass (dev/test o flag explicito). D-26 */
 function isBypassed(): boolean {
-  return process.env.NODE_ENV !== 'production' || process.env.RATE_LIMIT_DISABLED === 'true'
+  return env.NODE_ENV !== 'production' || env.RATE_LIMIT_DISABLED === 'true'
 }
 
 /** Construye un Ratelimit nuevo con ventana deslizante 5/60s. Solo se llama en produccion. D-24, D-25 */
 function buildLimiter(): Ratelimit {
   return new Ratelimit({
-    redis: Redis.fromEnv(), // UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN
+    // Upstash SDK reads UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN from process.env
+    // directly (SDK convention). src/lib/env.ts's superRefine has already validated both vars
+    // are set when NODE_ENV==='production' (D-19), so Redis.fromEnv() cannot silently fall back
+    // to an undefined instance in prod. This is the canonical Upstash init path.
+    redis: Redis.fromEnv(),
     limiter: Ratelimit.slidingWindow(5, '60 s'), // D-25 — 5 intentos por 60s
     analytics: false,
     prefix: '@centik/ratelimit',

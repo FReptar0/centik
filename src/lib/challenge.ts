@@ -1,12 +1,11 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
+import { env } from './env'
 
 const CHALLENGE_TTL_MS = 5 * 60 * 1000 // 5 minutos per D-16
 
-/** Carga AUTH_SECRET en cada llamada (permite tests dinamicos via vi.stubEnv). */
+/** AUTH_SECRET validated at boot by src/lib/env.ts — env.AUTH_SECRET is guaranteed >=32 chars. */
 function getSecret(): Buffer {
-  const s = process.env.AUTH_SECRET
-  if (!s) throw new Error('AUTH_SECRET missing — required for challenge signing')
-  return Buffer.from(s, 'utf8')
+  return Buffer.from(env.AUTH_SECRET, 'utf8')
 }
 
 /** Payload firmado: base64url(payloadJson).base64url(hmac). D-16, TOTP-03 */
