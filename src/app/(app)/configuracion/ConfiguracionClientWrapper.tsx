@@ -6,6 +6,7 @@ import PageHeader from '@/components/layout/PageHeader'
 import CategoryList from '@/components/categories/CategoryList'
 import CategoryForm from '@/components/categories/CategoryForm'
 import InvitacionesSection from '@/components/configuracion/InvitacionesSection'
+import SeguridadSection from '@/components/configuracion/SeguridadSection'
 import type { Category, InviteToken } from '@/types'
 
 interface ConfiguracionClientWrapperProps {
@@ -13,6 +14,7 @@ interface ConfiguracionClientWrapperProps {
   inviteTokens: InviteToken[]
   isAdmin: boolean
   origin: string
+  totpEnabled: boolean
 }
 
 export default function ConfiguracionClientWrapper({
@@ -20,6 +22,7 @@ export default function ConfiguracionClientWrapper({
   inviteTokens,
   isAdmin,
   origin,
+  totpEnabled,
 }: ConfiguracionClientWrapperProps) {
   const [isFormOpen, setIsFormOpen] = useState(false)
 
@@ -60,6 +63,14 @@ export default function ConfiguracionClientWrapper({
           <InvitacionesSection inviteTokens={inviteTokens} origin={origin} />
         </section>
       )}
+
+      <section className="mt-8">
+        <h2 className="text-lg font-semibold text-text-primary mb-2">Seguridad</h2>
+        <p className="text-sm text-text-secondary mb-4">
+          Agrega un segundo factor de autenticacion para proteger tu cuenta.
+        </p>
+        <SeguridadSection totpEnabled={totpEnabled} />
+      </section>
 
       <CategoryForm isOpen={isFormOpen} onClose={handleClose} />
     </div>

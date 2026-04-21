@@ -11,7 +11,7 @@ export default async function ConfiguracionPage() {
   const userId = session!.user!.id
   const isAdmin = session!.user!.isAdmin === true
 
-  const [categories, inviteTokens] = await Promise.all([
+  const [categories, inviteTokens, userMeta] = await Promise.all([
     prisma.category.findMany({
       where: { isActive: true, userId },
       orderBy: { sortOrder: 'asc' },
@@ -23,7 +23,12 @@ export default async function ConfiguracionPage() {
           take: 20,
         })
       : Promise.resolve([]),
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: { totpEnabled: true },
+    }),
   ])
+  const totpEnabled = userMeta?.totpEnabled ?? false
 
   const h = await headers()
   const origin = `${h.get('x-forwarded-proto') ?? 'http'}://${h.get('host') ?? 'localhost:3000'}`
@@ -34,6 +39,7 @@ export default async function ConfiguracionPage() {
       inviteTokens={inviteTokens}
       isAdmin={isAdmin}
       origin={origin}
+      totpEnabled={totpEnabled}
     />
   )
 }
