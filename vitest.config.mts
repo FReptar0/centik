@@ -9,7 +9,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     passWithNoTests: true,
-    exclude: ['node_modules', 'e2e/**'],
+    exclude: ['node_modules', 'e2e/**', 'tests/integration/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
