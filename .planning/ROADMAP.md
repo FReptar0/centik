@@ -55,7 +55,7 @@ See `.planning/milestones/v2.1-ROADMAP.md` for full phase details.
 - [x] **Phase 26: Auth Wiring + Login** - Auth.js v5 with Credentials provider, JWT sessions, proxy.ts route protection, login page, password hashing (completed 2026-04-18)
 - [x] **Phase 27: Per-User Data Isolation** - requireAuth() helper, all queries scoped by userId, all Server Actions protected, noStore() on user-specific pages (completed 2026-04-18)
 - [x] **Phase 28: Invite-Only Registration** - Admin invite generation, registration page with token validation, self-registration blocked (completed 2026-04-20)
-- [ ] **Phase 29: TOTP Two-Factor Authentication** - TOTP setup with QR code, AES-256-GCM encrypted secrets, two-step login, backup codes, rate limiting
+- [x] **Phase 29: TOTP Two-Factor Authentication** - TOTP setup with QR code, AES-256-GCM encrypted secrets, two-step login, backup codes, rate limiting (completed 2026-04-21)
 - [ ] **Phase 30: Vercel Deploy + Security Hardening** - Prisma Postgres, security headers, production seed, Vercel config, cross-user isolation test suite
 
 ## Phase Details
@@ -142,7 +142,7 @@ Plans:
 - [x] 29-02-PLAN.md — Wave 1: 5 pure lib modules (totp-crypto AES-256-GCM, totp otplib wrapper, backup-codes atomic consume, challenge HMAC, rate-limit sliding-window) + 4 Zod schemas + paired tests (completed 2026-04-21)
 - [x] 29-03-PLAN.md — Wave 2: two-step login wiring (extend authorizeUser + split loginAction + verifyTotpAction + TotpStep component + LoginForm requiresTotp branch) + unit tests (completed 2026-04-21)
 - [x] 29-04-PLAN.md — Wave 2: Setup/Disable/Regen flows (4 Server Actions in totp-actions.ts + SeguridadSection + 3 bottom-sheet modals + BackupCodesScreen) + page wiring (completed 2026-04-21)
-- [ ] 29-05-PLAN.md — Wave 3: integration suite (enable/login-code/login-backup/concurrent-consume/cross-user-isolation/disable/regen) + E2E happy path + final quality gate
+- [x] 29-05-PLAN.md — Wave 3: integration suite (enable/login-code/login-backup/concurrent-consume/cross-user-isolation/disable/regen) + E2E happy path + final quality gate
 
 ### Phase 30: Vercel Deploy + Security Hardening
 **Goal**: Centik runs in production on Vercel with Prisma Postgres, security headers, and verified cross-user data isolation
@@ -176,5 +176,5 @@ Note: Phases 28 and 29 both depend on 26, not on each other. They could theoreti
 | 26. Auth Wiring + Login | 4/4 | Complete    | 2026-04-18 | - |
 | 27. Per-User Data Isolation | 3/3 | Complete    | 2026-04-18 | - |
 | 28. Invite-Only Registration | v3.0 | 3/3 | Complete    | 2026-04-20 |
-| 29. TOTP Two-Factor Auth | v3.0 | 4/5 | In progress | - |
+| 29. TOTP Two-Factor Auth | v3.0 | 5/5 | Complete   | 2026-04-21 |
 | 30. Vercel Deploy + Security | v3.0 | 0/? | Not started | - |

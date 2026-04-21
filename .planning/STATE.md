@@ -5,15 +5,15 @@ milestone_name: Auth + Cloud Deploy
 current_phase: 29
 current_plan: 5
 status: executing
-stopped_at: Plan 29-04 complete (Wave 2 TOTP setup/disable/regen UX)
-last_updated: "2026-04-21T19:13:12Z"
+stopped_at: Phase 29 complete -- TOTP 2FA shipped (5/5 plans, 17 commits, 53 integration + 701 unit tests green)
+last_updated: "2026-04-21T22:31:20.906Z"
 last_activity: 2026-04-21
 progress:
   total_phases: 6
-  completed_phases: 4
-  total_plans: 22
-  completed_plans: 16
-  percent: 73
+  completed_phases: 5
+  total_plans: 17
+  completed_plans: 17
+  percent: 100
 ---
 
 # Project State
@@ -144,6 +144,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-21T19:13:12Z
-Stopped at: Plan 29-04 complete — Wave 2 TOTP lifecycle UX shipped (4 Server Actions + Seguridad section + 3 bottom-sheet modals + shared BackupCodesScreen + user.totpEnabled fetch in /configuracion; 701 unit tests passing, zero lint errors in new files)
-Resume file: .planning/phases/29-totp-two-factor-authentication/29-05-PLAN.md
+Last session: 2026-04-21T22:31:20.894Z
+Stopped at: Phase 29 complete -- TOTP 2FA shipped (5/5 plans, 17 commits, 53 integration + 701 unit tests green)
+Resume file: .planning/phases/29-totp-two-factor-authentication/29-05-SUMMARY.md
