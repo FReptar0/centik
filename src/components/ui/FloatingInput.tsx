@@ -96,7 +96,7 @@ export default function FloatingInput({
         aria-describedby={error ? errorId : undefined}
         className={cn(
           'w-full bg-transparent font-sans text-sm text-text-primary',
-          'border-0 border-b',
+          'border-0 border-b outline-none focus:outline-none focus:ring-0',
           'py-[10px] px-0',
           'transition-all duration-200',
           prefix && 'pl-5',

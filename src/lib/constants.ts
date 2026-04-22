@@ -78,6 +78,7 @@ export const SIDEBAR_NAV_ITEMS: NavItem[] = [
     icon: 'history',
     periodAware: true,
   },
+  { label: 'Configuracion', href: '/configuracion', icon: 'settings' },
 ]
 
 /** Mobile bottom tab bar items (4 items; 5th "Mas" handled in MobileNav) */
