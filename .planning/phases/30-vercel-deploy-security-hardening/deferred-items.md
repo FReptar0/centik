@@ -44,3 +44,48 @@ behaviour affected. Adding `vi.resetAllMocks()` to the `backup-codes.test.ts`
 
 **Suggested owner:** A future test-stability plan; not blocking for 30-04.
 
+## upsertBudgets partial-IDOR hole (discovered Plan 30-05)
+
+**File:** `src/app/(app)/presupuesto/actions.ts` L21-60 (`upsertBudgetsAction`)
+
+**Severity:** Low — NO mutation of another user's data. An authenticated
+User A can submit a `periodId` owned by User B with a `categoryId` owned by
+User B; the action falls through to `create` and writes a stale
+User-A-owned Budget row referencing User B's period and category. User B's
+own budget is untouched, but stale rows accumulate.
+
+**Reproduction:**
+```
+User A (session) → upsertBudgets(userB_periodId, { entries: [{ categoryId: userB_categoryId, quincenalAmount: '999' }] })
+→ findFirst({ periodId: userB_periodId, categoryId: userB_categoryId, userId: userA_id }) → null
+→ create({ periodId: userB_periodId, categoryId: userB_categoryId, userId: userA_id, quincenalAmount: 999n })
+→ returns { success: true }
+```
+
+**Why it slipped past Phase 27:** The D-IDOR `findFirst({ id, userId })`
+pattern protects UPDATE/DELETE paths that take a row id. `upsertBudgets`
+takes a `periodId` (not a budget row id); the existing
+`findFirst({ periodId, categoryId, userId })` guard correctly blocks
+hijacking User B's EXISTING budget row (returns null → falls through) but
+does NOT block CREATING a new row inside User B's period.
+
+**Proposed fix:** add a period-ownership guard at the top of
+`upsertBudgetsAction`:
+```ts
+const period = await prisma.period.findFirst({ where: { id: periodId, userId } })
+if (!period) return { error: { _form: ['Periodo no encontrado'] } }
+```
+Matches the existing `closePeriod` / `reopenPeriod` pattern in the same file.
+
+**Test coverage to add:** assert
+`prisma.budget.count({ where: { periodId: userBPeriodId, userId: userAId } }) === 0`
+after the attack in `tests/integration/isolation-actions.test.ts`.
+
+**Why deferred:** Plan 30-05's `<sequential_execution>` scope prohibited
+modifying `src/`. Plan 30-06 is documentation-only. Both called this out —
+it is tracked here for the next code plan (Phase 30.1 gap-closure or a
+follow-up issue).
+
+**Surfaced in:** `30-VERIFICATION.md` §8.1 (operator post-deploy
+watch-item).
+
