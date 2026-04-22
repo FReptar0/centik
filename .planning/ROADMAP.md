@@ -162,7 +162,7 @@ Plans:
 - [x] 30-03-PLAN.md -- Security headers: next.config.ts async headers() + src/proxy.ts CSP-with-nonce (preserves Phase-26 auth redirects) + 4 new proxy tests (completed 2026-04-22)
 - [x] 30-04-PLAN.md -- Production admin seed (prisma/seed.prod.ts, idempotent, no rotate, admin-only) + npm run db:seed:prod script (completed 2026-04-22)
 - [x] 30-05-PLAN.md -- Cross-user isolation test expansion (+5 read tests in isolation.test.ts; NEW isolation-actions.test.ts with ≥10 Server-Action IDOR tests) (completed 2026-04-22)
-- [ ] 30-06-PLAN.md -- 30-VERIFICATION.md runbook + 11-item smoke checklist + HSTS preload submission + final quality gate (checkpoint)
+- [x] 30-06-PLAN.md -- 30-VERIFICATION.md runbook + 11-item smoke checklist + HSTS preload submission + final quality gate (docs Task 1 complete 2026-04-22; operator smoke-check Task 2 PENDING before DEPLOY-04 + Phase 30 sign-off)
 
 ## Progress
 
@@ -181,4 +181,4 @@ Note: Phases 28 and 29 both depend on 26, not on each other. They could theoreti
 | 27. Per-User Data Isolation | 3/3 | Complete    | 2026-04-18 | - |
 | 28. Invite-Only Registration | v3.0 | 3/3 | Complete    | 2026-04-20 |
 | 29. TOTP Two-Factor Auth | v3.0 | 5/5 | Complete   | 2026-04-21 |
-| 30. Vercel Deploy + Security | v3.0 | 5/6 | In Progress|  |
+| 30. Vercel Deploy + Security | v3.0 | 6/6 docs | Awaiting Operator Smoke-Check | - |

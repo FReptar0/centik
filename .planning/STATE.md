@@ -4,16 +4,16 @@ milestone: v3.0
 milestone_name: Auth + Cloud Deploy
 current_phase: 30
 current_plan: 6
-status: executing
-stopped_at: Plan 30-05 complete — cross-user isolation tests expanded (12 read tests in isolation.test.ts + 13 mutation IDOR tests split across isolation-actions.test.ts and isolation-actions-totp.test.ts); 71/71 integration + 710/710 unit green
-last_updated: "2026-04-22T00:30:00.000Z"
+status: awaiting-operator-smoke-check
+stopped_at: Plan 30-06 runbook written (Task 1 complete) — 30-VERIFICATION.md 476 lines / 11 sections / 11-item smoke checklist / upsertBudgets IDOR watch-item surfaced; pre-runbook gate green (710/710 unit + 71/71 integration); Task 2 (operator smoke-check on real Vercel deploy) PENDING before DEPLOY-04 can be marked Complete and Phase 30 closed
+last_updated: "2026-04-22T00:47:00.000Z"
 last_activity: 2026-04-22
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 23
-  completed_plans: 22
-  percent: 95
+  completed_plans: 23
+  percent: 100
 ---
 
 # Project State
@@ -27,15 +27,15 @@ See: .planning/PROJECT.md (updated 2026-04-16)
 
 ## Current Position
 
-Phase: 30 (Vercel Deploy + Security Hardening) — EXECUTING
-Plan: 6 of 6
+Phase: 30 (Vercel Deploy + Security Hardening) — AWAITING OPERATOR SMOKE-CHECK
+Plan: 6 of 6 (docs Task 1 COMPLETE; operator Task 2 PENDING)
 **Current Phase:** 30
 **Current Plan:** 6
 **Total Plans in Phase:** 6
-**Status:** Ready to execute
+**Status:** Runbook written; operator must run 30-VERIFICATION.md §6 smoke checklist against real Vercel deploy to close Phase 30 and mark DEPLOY-04 complete
 **Last Activity:** 2026-04-22
 
-Progress: [█████████▌] 95%
+Progress: [██████████] 100% (docs 5/6 shipped as code; Plan 30-06 docs complete, operator smoke-check pending)
 
 ## Performance Metrics
 
@@ -74,6 +74,7 @@ Progress: [█████████▌] 95%
 | Phase 30 P03 | 5min | 3 tasks | 3 files |
 | Phase 30 P04 | 10min | 2 tasks | 2 files |
 | Phase 30 P05 | 11min | 2 tasks | 3 files |
+| Phase 30 P06 | 12min | 1 task (docs) + 1 checkpoint | 2 files (30-VERIFICATION.md + deferred-items.md) |
 
 ## Accumulated Context
 
@@ -165,6 +166,9 @@ Recent decisions affecting current work:
 - [Phase 30]: [30-05]: upsertBudgets test asserts "User B row byte-identical" only (dropped the 'if success throw' guard) — action currently DOES succeed on cross-user period, creating a User-A-owned Budget row; load-bearing check still catches any mutation of User B data. Partial-IDOR finding documented in 30-05-SUMMARY as a follow-up for next plan (scope boundary blocks src/ edit here)
 - [Phase 30]: [30-05]: afterAll cleanup filters by userId IN [userAId, userBId] — not just userBId — because the upsertBudgets partial-IDOR creates a stale User-A row; sweeping both userIds keeps the test DB pristine across back-to-back runs
 - [Phase 30]: [30-05]: TOTP tests wrap disableTotpAction + regenerateBackupCodesAction calls in try/catch; the actions actually return gracefully (User A's totpEnabled: false → verifyCurrentCode returns false → graceful error) so the try/catch is defensive, not load-bearing — the post-call User B row check is the truth source
+- [Phase 30]: [30-06]: 30-VERIFICATION.md expanded from plan's 6 sections to 11 per special-instructions — added Rollback Plan (§9) and Appendix (§11); elevated upsertBudgets IDOR finding to deferred-items.md with cross-reference at §8.1 so the operator sees it during deploy verification
+- [Phase 30]: [30-06]: Pre-flight prettier violations on 3 Phase-30 files (seed.prod.ts from 30-04; 2 isolation test files from 30-05) fixed as Rule 1 inline deviation (style(30-06) e52fb8d) — whitespace/line-break only, no behavior change, unblocks the pre-runbook quality gate
+- [Phase 30]: [30-06]: Plan pauses at checkpoint:human-action after runbook written — operator must run §1-§6 against a real Vercel deploy before DEPLOY-04 can be marked Complete; no Claude-runnable verification substitutes for real-Vercel + real-Upstash + real-authenticator
 
 ### Pending Todos
 
@@ -177,6 +181,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-22T00:30:00.000Z
-Stopped at: Completed Plan 30-05 — cross-user isolation tests expanded. +5 entity read tests in isolation.test.ts (MonthlySummary/Asset/ValueUnit/UnitRate/BackupCode) = 12/12 passing. NEW isolation-actions.test.ts (11 mutation IDOR tests) + isolation-actions-totp.test.ts (2 session-scope TOTP tests) both green. 71/71 integration + 710/710 unit + build + lint all green. ISOL-05 + TEST-03 complete. Partial-IDOR finding in upsertBudgets documented in 30-05-SUMMARY for follow-up
-Resume file: None
+Last session: 2026-04-22T00:47:00.000Z
+Stopped at: Completed Plan 30-06 Task 1 (docs) — 30-VERIFICATION.md runbook written (476 lines / 11 sections / 11-item smoke checklist / HSTS preload / rollback plan / upsertBudgets IDOR watch-item). Pre-runbook gate green (710/710 unit + 71/71 integration) after a Rule-1 prettier fix on 3 Phase-30 files left unformatted by prior plans. Plan 30-06 Task 2 (operator smoke-check on real Vercel deploy) is PENDING — no Claude-runnable verification substitutes. Phase 30 is "code-complete, awaiting operator smoke-check"; DEPLOY-04 requirement moves to Complete only after §6 smoke-checklist items 1-11 all pass and the operator records sign-off per §10.
+Resume file: .planning/phases/30-vercel-deploy-security-hardening/30-VERIFICATION.md (operator-facing runbook; follow §1 through §10)
