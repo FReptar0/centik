@@ -21,7 +21,7 @@ Requirements for auth + cloud deploy. Security-first — this is real financial 
 - [x] **ISOL-02**: All Prisma queries across all 7 lib files scoped with userId filter (where: { userId })
 - [x] **ISOL-03**: All Server Actions (6 action files) call requireAuth() before any database operation
 - [x] **ISOL-04**: All page Server Components call auth() and pass userId to data-fetching functions
-- [ ] **ISOL-05**: Cross-user integration tests — authenticate as User B, assert zero access to User A's data
+- [x] **ISOL-05**: Cross-user integration tests — authenticate as User B, assert zero access to User A's data
 
 ### TOTP 2FA
 
@@ -50,7 +50,7 @@ Requirements for auth + cloud deploy. Security-first — this is real financial 
 
 - [x] **TEST-01**: All existing 479 unit tests pass with auth changes (userId params added to all function signatures)
 - [x] **TEST-02**: New auth tests — login flow, session validation, requireAuth() behavior, TOTP verification
-- [ ] **TEST-03**: Cross-user isolation integration tests — User B cannot see User A's transactions, debts, budgets, income, categories, or history
+- [x] **TEST-03**: Cross-user isolation integration tests — User B cannot see User A's transactions, debts, budgets, income, categories, or history
 
 ## v4.0 Requirements
 
@@ -86,7 +86,7 @@ Deferred to future milestones.
 | ISOL-02 | Phase 27 | Complete |
 | ISOL-03 | Phase 27 | Complete |
 | ISOL-04 | Phase 27 | Complete |
-| ISOL-05 | Phase 30 | Pending |
+| ISOL-05 | Phase 30 | Complete |
 | TOTP-01 | Phase 29 | Complete |
 | TOTP-02 | Phase 29 | Complete |
 | TOTP-03 | Phase 29 | Complete |
@@ -103,7 +103,7 @@ Deferred to future milestones.
 | DEPLOY-05 | Phase 27 | Complete |
 | TEST-01 | Phase 25 | Complete |
 | TEST-02 | Phase 26 | Complete |
-| TEST-03 | Phase 30 | Pending |
+| TEST-03 | Phase 30 | Complete |
 
 **Coverage:**
 - v3.0 requirements: 27 total

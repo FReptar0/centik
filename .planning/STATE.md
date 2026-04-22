@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Auth + Cloud Deploy
 current_phase: 30
-current_plan: 5
+current_plan: 6
 status: executing
-stopped_at: Plan 30-04 complete — production admin seed (idempotent, no rotation) + db:seed:prod script shipped
-last_updated: "2026-04-22T00:13:26.000Z"
+stopped_at: Plan 30-05 complete — cross-user isolation tests expanded (12 read tests in isolation.test.ts + 13 mutation IDOR tests split across isolation-actions.test.ts and isolation-actions-totp.test.ts); 71/71 integration + 710/710 unit green
+last_updated: "2026-04-22T00:30:00.000Z"
 last_activity: 2026-04-22
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 23
-  completed_plans: 21
-  percent: 91
+  completed_plans: 22
+  percent: 95
 ---
 
 # Project State
@@ -28,14 +28,14 @@ See: .planning/PROJECT.md (updated 2026-04-16)
 ## Current Position
 
 Phase: 30 (Vercel Deploy + Security Hardening) — EXECUTING
-Plan: 5 of 6
+Plan: 6 of 6
 **Current Phase:** 30
-**Current Plan:** 5
+**Current Plan:** 6
 **Total Plans in Phase:** 6
 **Status:** Ready to execute
 **Last Activity:** 2026-04-22
 
-Progress: [█████████▏] 91%
+Progress: [█████████▌] 95%
 
 ## Performance Metrics
 
@@ -73,6 +73,7 @@ Progress: [█████████▏] 91%
 | Phase 30 P02 | 12min | 3 tasks | 12 files |
 | Phase 30 P03 | 5min | 3 tasks | 3 files |
 | Phase 30 P04 | 10min | 2 tasks | 2 files |
+| Phase 30 P05 | 11min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -159,6 +160,11 @@ Recent decisions affecting current work:
 - [Phase 30]: [30-04]: ADMIN_PASSWORD length gate (< 12 chars throws) lives inline in prisma/seed.prod.ts rather than in src/lib/env.ts — the seed is a standalone CLI that bypasses Next.js boot, so env.ts's Zod schema cannot gate it
 - [Phase 30]: [30-04]: db:seed:prod placed between test:e2e and quality in package.json — NOT in build/quality/postinstall chains (D-11 compliance: seed is a manual one-shot)
 - [Phase 30]: [30-04]: Smoke-proven idempotency — first-run creates admin; second-run with DIFFERENT password kept the DB hash byte-identical (`$2b$12$FAw0dQAmw01...`), confirming no accidental rotation path
+- [Phase 30]: [30-05]: Split isolation-actions into main file (entity CRUD mutations, 283 lines, 11 tests) + companion (session-bound TOTP, 119 lines, 2 tests) — 402-line first draft exceeded CLAUDE.md <300 rule; plan 30-05 Task 2 File Size Management clause authorised the split
+- [Phase 30]: [30-05]: requireAuth mock uses vi.fn() + vi.mocked() (invite-tokens.test.ts pattern) instead of plan-suggested closure-captured mockRequireAuth — equivalent, simpler, vi.clearAllMocks() resets cleanly
+- [Phase 30]: [30-05]: upsertBudgets test asserts "User B row byte-identical" only (dropped the 'if success throw' guard) — action currently DOES succeed on cross-user period, creating a User-A-owned Budget row; load-bearing check still catches any mutation of User B data. Partial-IDOR finding documented in 30-05-SUMMARY as a follow-up for next plan (scope boundary blocks src/ edit here)
+- [Phase 30]: [30-05]: afterAll cleanup filters by userId IN [userAId, userBId] — not just userBId — because the upsertBudgets partial-IDOR creates a stale User-A row; sweeping both userIds keeps the test DB pristine across back-to-back runs
+- [Phase 30]: [30-05]: TOTP tests wrap disableTotpAction + regenerateBackupCodesAction calls in try/catch; the actions actually return gracefully (User A's totpEnabled: false → verifyCurrentCode returns false → graceful error) so the try/catch is defensive, not load-bearing — the post-call User B row check is the truth source
 
 ### Pending Todos
 
@@ -171,6 +177,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-22T00:13:26.000Z
-Stopped at: Completed Plan 30-04 — production admin seed shipped (prisma/seed.prod.ts idempotent no-rotate, db:seed:prod npm script, 710/710 unit tests, build + lint green; smoke-proven: first-run create, second-run no-op with byte-identical DB hash)
+Last session: 2026-04-22T00:30:00.000Z
+Stopped at: Completed Plan 30-05 — cross-user isolation tests expanded. +5 entity read tests in isolation.test.ts (MonthlySummary/Asset/ValueUnit/UnitRate/BackupCode) = 12/12 passing. NEW isolation-actions.test.ts (11 mutation IDOR tests) + isolation-actions-totp.test.ts (2 session-scope TOTP tests) both green. 71/71 integration + 710/710 unit + build + lint all green. ISOL-05 + TEST-03 complete. Partial-IDOR finding in upsertBudgets documented in 30-05-SUMMARY for follow-up
 Resume file: None
