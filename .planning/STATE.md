@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Auth + Cloud Deploy
 current_phase: 30
-current_plan: 3
+current_plan: 4
 status: executing
-stopped_at: Plan 30-02 complete — boot-time env validator shipped
-last_updated: "2026-04-21T23:55:00.000Z"
-last_activity: 2026-04-21
+stopped_at: Plan 30-03 complete — security headers + CSP-with-nonce shipped
+last_updated: "2026-04-22T00:05:00.000Z"
+last_activity: 2026-04-22
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 23
-  completed_plans: 19
-  percent: 83
+  completed_plans: 20
+  percent: 87
 ---
 
 # Project State
@@ -28,14 +28,14 @@ See: .planning/PROJECT.md (updated 2026-04-16)
 ## Current Position
 
 Phase: 30 (Vercel Deploy + Security Hardening) — EXECUTING
-Plan: 3 of 6
+Plan: 4 of 6
 **Current Phase:** 30
-**Current Plan:** 3
+**Current Plan:** 4
 **Total Plans in Phase:** 6
 **Status:** Ready to execute
-**Last Activity:** 2026-04-21
+**Last Activity:** 2026-04-22
 
-Progress: [████████▎▒] 83%
+Progress: [████████▋▒] 87%
 
 ## Performance Metrics
 
@@ -71,6 +71,7 @@ Progress: [████████▎▒] 83%
 | Phase 29 P04 | 52min | 3 tasks | 9 files |
 | Phase 30 P01 | 6min | 3 tasks | 6 files |
 | Phase 30 P02 | 12min | 3 tasks | 12 files |
+| Phase 30 P03 | 5min | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -145,6 +146,13 @@ Recent decisions affecting current work:
 - [Phase 30]: [30-02]: challenge.test.ts rewritten from static `import { signChallenge } from './challenge'` to dynamic `await import('./challenge')` inside each test -- ESM import hoisting evaluated the module BEFORE vi.stubEnv could set required env vars
 - [Phase 30]: [30-02]: auth.test.ts + register/page.test.tsx use `vi.mock('@/lib/env', ...)` hoisted above other mocks -- simplest way to bypass env.ts's Zod parse in test files that transitively import @/auth
 - [Phase 30]: [30-02]: Removed 2 obsolete tests (RATE_LIMIT_DISABLED=true bypass in prod, throws when AUTH_SECRET missing at sign time) -- env.ts's module-load validation makes both scenarios unreachable; coverage semantics shifted to env.test.ts
+- [Phase 30]: [30-03]: next.config.ts async headers() applies 4 always-on security headers + HSTS on source '/(.*)'; HSTS is wrapped in `isProduction` ternary inside the array so localhost never receives Strict-Transport-Security (D-07)
+- [Phase 30]: [30-03]: proxy.ts preserves Phase-26 auth redirect chain by hoisting the three original return branches into a single `response` variable -- CSP attach happens after all routing decisions, only on non-redirect responses
+- [Phase 30]: [30-03]: 3xx responses short-circuit BEFORE CSP attach in proxy.ts (`if response.status >= 300 && < 400 return response`) -- browsers discard redirect bodies, so CSP is wasted bytes AND caches a stale nonce against the redirect target
+- [Phase 30]: [30-03]: Nonce generated via `crypto.randomUUID()` (global in Node 20.9+, Edge-compatible) per Next.js 16 authoritative docs -- Base64-wrapped UUID gives ~48 char base64 string with 128-bit entropy
+- [Phase 30]: [30-03]: `'unsafe-inline'` retained in style-src ONLY (NOT script-src) -- documented Tailwind v4 + React 19 inline-style trade-off per D-06; script-src hardened with `'nonce-${nonce}' 'strict-dynamic'` + dev-only `'unsafe-eval'` (React Fast Refresh)
+- [Phase 30]: [30-03]: Original response headers copied onto responseWithNonce via `response.headers.forEach((v, k) => responseWithNonce.headers.set(k, v))` -- preserves Auth.js Set-Cookie on session-mutating requests that would otherwise be dropped when creating the fresh NextResponse.next({request})
+- [Phase 30]: [30-03]: createMockRequest test helper extended additively with `headers: new Headers()` -- existing 6 auth-redirect tests don't read req.headers so the addition is backwards-compatible; spies on NextResponse.next still fire because proxy.ts calls it once-or-twice and the spy asserts "was called" (not call count)
 
 ### Pending Todos
 
@@ -157,6 +165,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-21T23:55:00.000Z
-Stopped at: Completed Plan 30-02 — boot-time env validator + consumer sweep (env.ts 100% coverage; grep gate closed)
+Last session: 2026-04-22T00:05:00.000Z
+Stopped at: Completed Plan 30-03 — security headers + CSP-with-nonce shipped (10/10 proxy tests, 710/710 unit tests, 53/53 integration tests, build + lint green)
 Resume file: None

@@ -41,7 +41,7 @@ Requirements for auth + cloud deploy. Security-first — this is real financial 
 ### Vercel Deploy + Security
 
 - [x] **DEPLOY-01**: Prisma Postgres provisioned via Vercel Marketplace with pooled (runtime) and direct (migrations) connection strings
-- [ ] **DEPLOY-02**: Security headers in next.config.ts — CSP with per-request nonce, HSTS, X-Frame-Options DENY, X-Content-Type-Options nosniff
+- [x] **DEPLOY-02**: Security headers in next.config.ts — CSP with per-request nonce, HSTS, X-Frame-Options DENY, X-Content-Type-Options nosniff
 - [ ] **DEPLOY-03**: Production seed script that creates admin user (your email) with hashed password
 - [ ] **DEPLOY-04**: Vercel deployment configuration (vercel.json or project settings) with environment variables
 - [x] **DEPLOY-05**: noStore() on all Server Components fetching user-specific data to prevent cross-user cache leakage
@@ -97,7 +97,7 @@ Deferred to future milestones.
 | INVITE-03 | Phase 28 | Pending |
 | INVITE-04 | Phase 28 | Pending |
 | DEPLOY-01 | Phase 30 | Complete |
-| DEPLOY-02 | Phase 30 | Pending |
+| DEPLOY-02 | Phase 30 | Complete |
 | DEPLOY-03 | Phase 30 | Pending |
 | DEPLOY-04 | Phase 30 | Pending |
 | DEPLOY-05 | Phase 27 | Complete |
