@@ -22,3 +22,25 @@ in `src/app/(app)/movimientos/` was modified.
 
 **Suggested owner:** A future lint-pass plan or integrated into Phase 30-06
 (final polish/deploy verification).
+
+## Flaky test: backup-codes consume unit test (re-confirmed Plan 30-04)
+
+**File:** `src/lib/backup-codes.test.ts`
+
+**Symptom:** When the full test suite is run in parallel (710 tests across
+48 files), two tests in this file can fail with a mock-call-count assertion
+(`expect(updateMany).not.toHaveBeenCalled()`) — but running the file in
+isolation passes all 14 tests cleanly. Re-running the full suite immediately
+after a failure also passes 710/710.
+
+**Cause:** Parallel worker cross-contamination on shared `vi.fn()` spies for
+`prisma.backupCode.updateMany`. Pre-existing from Phase 29 — not caused by
+any Plan 30-04 change (30-04 only adds `prisma/seed.prod.ts` and one
+`package.json` script).
+
+**Why deferred:** Strictly a test-harness isolation issue, no production
+behaviour affected. Adding `vi.resetAllMocks()` to the `backup-codes.test.ts`
+`beforeEach` (or moving the file to `singleFork` pool) would address it.
+
+**Suggested owner:** A future test-stability plan; not blocking for 30-04.
+

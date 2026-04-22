@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Auth + Cloud Deploy
 current_phase: 30
-current_plan: 4
+current_plan: 5
 status: executing
-stopped_at: Plan 30-03 complete — security headers + CSP-with-nonce shipped
-last_updated: "2026-04-22T00:05:00.000Z"
+stopped_at: Plan 30-04 complete — production admin seed (idempotent, no rotation) + db:seed:prod script shipped
+last_updated: "2026-04-22T00:13:26.000Z"
 last_activity: 2026-04-22
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 23
-  completed_plans: 20
-  percent: 87
+  completed_plans: 21
+  percent: 91
 ---
 
 # Project State
@@ -28,14 +28,14 @@ See: .planning/PROJECT.md (updated 2026-04-16)
 ## Current Position
 
 Phase: 30 (Vercel Deploy + Security Hardening) — EXECUTING
-Plan: 4 of 6
+Plan: 5 of 6
 **Current Phase:** 30
-**Current Plan:** 4
+**Current Plan:** 5
 **Total Plans in Phase:** 6
 **Status:** Ready to execute
 **Last Activity:** 2026-04-22
 
-Progress: [████████▋▒] 87%
+Progress: [█████████▏] 91%
 
 ## Performance Metrics
 
@@ -72,6 +72,7 @@ Progress: [████████▋▒] 87%
 | Phase 30 P01 | 6min | 3 tasks | 6 files |
 | Phase 30 P02 | 12min | 3 tasks | 12 files |
 | Phase 30 P03 | 5min | 3 tasks | 3 files |
+| Phase 30 P04 | 10min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -153,6 +154,11 @@ Recent decisions affecting current work:
 - [Phase 30]: [30-03]: `'unsafe-inline'` retained in style-src ONLY (NOT script-src) -- documented Tailwind v4 + React 19 inline-style trade-off per D-06; script-src hardened with `'nonce-${nonce}' 'strict-dynamic'` + dev-only `'unsafe-eval'` (React Fast Refresh)
 - [Phase 30]: [30-03]: Original response headers copied onto responseWithNonce via `response.headers.forEach((v, k) => responseWithNonce.headers.set(k, v))` -- preserves Auth.js Set-Cookie on session-mutating requests that would otherwise be dropped when creating the fresh NextResponse.next({request})
 - [Phase 30]: [30-03]: createMockRequest test helper extended additively with `headers: new Headers()` -- existing 6 auth-redirect tests don't read req.headers so the addition is backwards-compatible; spies on NextResponse.next still fire because proxy.ts calls it once-or-twice and the spy asserts "was called" (not call count)
+- [Phase 30]: [30-04]: prisma/seed.prod.ts uses findUnique-then-branch instead of upsert — the update path is `data: { isAdmin: true, isApproved: true }` with NO hashedPassword field, so D-10 no-rotation is structurally guaranteed (the field cannot be accidentally added back by a bugfix)
+- [Phase 30]: [30-04]: bcrypt.hash(password, 12) runs inside the create branch only, AFTER findUnique has ruled out the update path — saves ~300ms on idempotent re-runs and matches Phase 28 P03 hash-before-$transaction discipline
+- [Phase 30]: [30-04]: ADMIN_PASSWORD length gate (< 12 chars throws) lives inline in prisma/seed.prod.ts rather than in src/lib/env.ts — the seed is a standalone CLI that bypasses Next.js boot, so env.ts's Zod schema cannot gate it
+- [Phase 30]: [30-04]: db:seed:prod placed between test:e2e and quality in package.json — NOT in build/quality/postinstall chains (D-11 compliance: seed is a manual one-shot)
+- [Phase 30]: [30-04]: Smoke-proven idempotency — first-run creates admin; second-run with DIFFERENT password kept the DB hash byte-identical (`$2b$12$FAw0dQAmw01...`), confirming no accidental rotation path
 
 ### Pending Todos
 
@@ -165,6 +171,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-22T00:05:00.000Z
-Stopped at: Completed Plan 30-03 — security headers + CSP-with-nonce shipped (10/10 proxy tests, 710/710 unit tests, 53/53 integration tests, build + lint green)
+Last session: 2026-04-22T00:13:26.000Z
+Stopped at: Completed Plan 30-04 — production admin seed shipped (prisma/seed.prod.ts idempotent no-rotate, db:seed:prod npm script, 710/710 unit tests, build + lint green; smoke-proven: first-run create, second-run no-op with byte-identical DB hash)
 Resume file: None
