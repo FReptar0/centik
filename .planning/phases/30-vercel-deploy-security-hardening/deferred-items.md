@@ -46,6 +46,12 @@ behaviour affected. Adding `vi.resetAllMocks()` to the `backup-codes.test.ts`
 
 ## upsertBudgets partial-IDOR hole (discovered Plan 30-05)
 
+> **RESOLVED 2026-04-22 via Phase 30.1 (commits `33ac3b0` + `4a79b28`)** — see
+> `.planning/phases/30.1-fix-upsertbudgets-period-ownership-idor/30.1-01-SUMMARY.md`.
+> Both ownership guards (period + batched category) now run before any DB write;
+> integration test proves no stale row is created under either attack vector.
+> Original reproduction + proposed-fix text preserved below for historical context.
+
 **File:** `src/app/(app)/presupuesto/actions.ts` L21-60 (`upsertBudgetsAction`)
 
 **Severity:** Low — NO mutation of another user's data. An authenticated

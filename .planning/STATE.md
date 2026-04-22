@@ -5,15 +5,15 @@ milestone_name: Auth + Cloud Deploy
 current_phase: 30
 current_plan: 6
 status: executing
-stopped_at: Completed Plan 30-06 Task 1 (docs) — 30-VERIFICATION.md runbook written (476 lines / 11 sections / 11-item smoke checklist / HSTS preload / rollback plan / upsertBudgets IDOR watch-item). Pre-runbook gate green (710/710 unit + 71/71 integration) after a Rule-1 prettier fix on 3 Phase-30 files left unformatted by prior plans. Plan 30-06 Task 2 (operator smoke-check on real Vercel deploy) is PENDING — no Claude-runnable verification substitutes. Phase 30 is "code-complete, awaiting operator smoke-check"; DEPLOY-04 requirement moves to Complete only after §6 smoke-checklist items 1-11 all pass and the operator records sign-off per §10.
-last_updated: "2026-04-22T04:24:17.584Z"
+stopped_at: Phase 30.1 complete -- upsertBudgets IDOR fix shipped (period + category ownership guards). v3.0 now awaits only Phase 30 operator smoke-check.
+last_updated: "2026-04-22T04:37:51.307Z"
 last_activity: 2026-04-22
 progress:
   total_phases: 7
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 24
-  completed_plans: 23
-  percent: 96
+  completed_plans: 24
+  percent: 100
 ---
 
 # Project State
@@ -185,6 +185,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-22T00:47:00.000Z
-Stopped at: Completed Plan 30-06 Task 1 (docs) — 30-VERIFICATION.md runbook written (476 lines / 11 sections / 11-item smoke checklist / HSTS preload / rollback plan / upsertBudgets IDOR watch-item). Pre-runbook gate green (710/710 unit + 71/71 integration) after a Rule-1 prettier fix on 3 Phase-30 files left unformatted by prior plans. Plan 30-06 Task 2 (operator smoke-check on real Vercel deploy) is PENDING — no Claude-runnable verification substitutes. Phase 30 is "code-complete, awaiting operator smoke-check"; DEPLOY-04 requirement moves to Complete only after §6 smoke-checklist items 1-11 all pass and the operator records sign-off per §10.
-Resume file: .planning/phases/30-vercel-deploy-security-hardening/30-VERIFICATION.md (operator-facing runbook; follow §1 through §10)
+Last session: 2026-04-22T04:37:51.301Z
+Stopped at: Phase 30.1 complete -- upsertBudgets IDOR fix shipped (period + category ownership guards). v3.0 now awaits only Phase 30 operator smoke-check.
+Resume file: .planning/phases/30.1-fix-upsertbudgets-period-ownership-idor/30.1-01-SUMMARY.md
