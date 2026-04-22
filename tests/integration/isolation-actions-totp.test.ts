@@ -18,7 +18,11 @@ vi.mock('@upstash/ratelimit', () => ({
   Ratelimit: Object.assign(
     vi.fn().mockImplementation(() => ({
       limit: vi.fn().mockResolvedValue({
-        success: true, limit: 5, remaining: 4, reset: Date.now() + 60000, pending: Promise.resolve(),
+        success: true,
+        limit: 5,
+        remaining: 4,
+        reset: Date.now() + 60000,
+        pending: Promise.resolve(),
       }),
     })),
     { slidingWindow: vi.fn(), fixedWindow: vi.fn() },
@@ -41,7 +45,12 @@ let userBId: string
 
 beforeAll(async () => {
   const a = await prisma.user.create({
-    data: { email: `iso-totp-a-${T}@test.com`, hashedPassword: 'x', isApproved: true, totpEnabled: false },
+    data: {
+      email: `iso-totp-a-${T}@test.com`,
+      hashedPassword: 'x',
+      isApproved: true,
+      totpEnabled: false,
+    },
   })
   userAId = a.id
 

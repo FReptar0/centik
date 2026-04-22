@@ -15,7 +15,11 @@ vi.mock('@upstash/ratelimit', () => ({
   Ratelimit: Object.assign(
     vi.fn().mockImplementation(() => ({
       limit: vi.fn().mockResolvedValue({
-        success: true, limit: 5, remaining: 4, reset: Date.now() + 60000, pending: Promise.resolve(),
+        success: true,
+        limit: 5,
+        remaining: 4,
+        reset: Date.now() + 60000,
+        pending: Promise.resolve(),
       }),
     })),
     { slidingWindow: vi.fn(), fixedWindow: vi.fn() },
@@ -45,18 +49,29 @@ let userBBudgetId: string
 
 beforeAll(async () => {
   const a = await prisma.user.create({
-    data: { email: `iso-action-a-${T}@test.com`, hashedPassword: 'x', isApproved: true, totpEnabled: false },
+    data: {
+      email: `iso-action-a-${T}@test.com`,
+      hashedPassword: 'x',
+      isApproved: true,
+      totpEnabled: false,
+    },
   })
   userAId = a.id
 
   const b = await prisma.user.create({
-    data: { email: `iso-action-b-${T}@test.com`, hashedPassword: 'x', isApproved: true, totpEnabled: false },
+    data: {
+      email: `iso-action-b-${T}@test.com`,
+      hashedPassword: 'x',
+      isApproved: true,
+      totpEnabled: false,
+    },
   })
   userBId = b.id
 
   const period = await prisma.period.create({
     data: {
-      month: 6, year: 2099,
+      month: 6,
+      year: 2099,
       startDate: new Date('2099-06-01'),
       endDate: new Date('2099-06-30'),
       userId: userBId,
@@ -65,38 +80,56 @@ beforeAll(async () => {
   userBPeriodId = period.id
 
   const category = await prisma.category.create({
-    data: { name: `iso-cat-b-${T}`, icon: 'test', color: '#ABCDEF', type: 'EXPENSE', userId: userBId },
+    data: {
+      name: `iso-cat-b-${T}`,
+      icon: 'test',
+      color: '#ABCDEF',
+      type: 'EXPENSE',
+      userId: userBId,
+    },
   })
   userBCategoryId = category.id
 
   const txn = await prisma.transaction.create({
     data: {
-      type: 'EXPENSE', amount: BigInt(500000), categoryId: category.id,
-      date: new Date('2099-06-15'), periodId: period.id, userId: userBId,
+      type: 'EXPENSE',
+      amount: BigInt(500000),
+      categoryId: category.id,
+      date: new Date('2099-06-15'),
+      periodId: period.id,
+      userId: userBId,
     },
   })
   userBTransactionId = txn.id
 
   const debt = await prisma.debt.create({
     data: {
-      name: `iso-debt-b-${T}`, type: 'PERSONAL_LOAN',
-      currentBalance: BigInt(2000000), annualRate: 1800, userId: userBId,
+      name: `iso-debt-b-${T}`,
+      type: 'PERSONAL_LOAN',
+      currentBalance: BigInt(2000000),
+      annualRate: 1800,
+      userId: userBId,
     },
   })
   userBDebtId = debt.id
 
   const income = await prisma.incomeSource.create({
     data: {
-      name: `iso-income-b-${T}`, defaultAmount: BigInt(3000000),
-      frequency: 'QUINCENAL', type: 'EMPLOYMENT', userId: userBId,
+      name: `iso-income-b-${T}`,
+      defaultAmount: BigInt(3000000),
+      frequency: 'QUINCENAL',
+      type: 'EMPLOYMENT',
+      userId: userBId,
     },
   })
   userBIncomeSourceId = income.id
 
   const budget = await prisma.budget.create({
     data: {
-      categoryId: category.id, quincenalAmount: BigInt(400000),
-      periodId: period.id, userId: userBId,
+      categoryId: category.id,
+      quincenalAmount: BigInt(400000),
+      periodId: period.id,
+      userId: userBId,
     },
   })
   userBBudgetId = budget.id

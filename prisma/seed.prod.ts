@@ -34,9 +34,7 @@ async function main(): Promise<void> {
       where: { email: email! },
       data: { isAdmin: true, isApproved: true },
     })
-    console.log(
-      `Admin user ${email} already exists -- flags verified (password NOT rotated).`,
-    )
+    console.log(`Admin user ${email} already exists -- flags verified (password NOT rotated).`)
     return
   }
 
