@@ -133,6 +133,65 @@ describe('Cross-user data isolation', () => {
         userId: userAId,
       },
     })
+
+    // --- Phase 30 D-22 extensions: seed extra entities owned by User A ---
+
+    // MonthlySummary (1:1 with Period)
+    await prisma.monthlySummary.create({
+      data: {
+        periodId: period.id,
+        totalIncome: BigInt(5000000),
+        totalExpenses: BigInt(100000),
+        totalSavings: BigInt(4900000),
+        savingsRate: 9800, // 98.00% in basis points
+        debtAtClose: BigInt(1000000),
+        debtPayments: BigInt(0),
+        userId: userAId,
+      },
+    })
+
+    // ValueUnit (userId-scoped per schema; unique code keeps test DB idempotent)
+    const valueUnit = await prisma.valueUnit.create({
+      data: {
+        code: `ISO-A-${Date.now()}`,
+        name: 'Isolation Test Unit',
+        precision: 2,
+        isActive: true,
+        userId: userAId,
+      },
+    })
+
+    // UnitRate for that ValueUnit
+    await prisma.unitRate.create({
+      data: {
+        unitId: valueUnit.id,
+        date: new Date('2099-01-15'),
+        rateToMxnCents: BigInt(100),
+        rateRaw: '1.00',
+        source: 'isolation-test',
+        userId: userAId,
+      },
+    })
+
+    // Asset linked to the ValueUnit
+    await prisma.asset.create({
+      data: {
+        name: 'Isolation Test Asset',
+        unitId: valueUnit.id,
+        amount: BigInt(100000),
+        category: 'SAVINGS',
+        isActive: true,
+        userId: userAId,
+      },
+    })
+
+    // BackupCode — direct insert simulates a post-2FA-enable state
+    await prisma.backupCode.create({
+      data: {
+        userId: userAId,
+        codeHash: '$2a$12$fake.hash.for.isolation.test',
+      },
+    })
   }, 30000)
 
   afterAll(async () => {
@@ -146,6 +205,13 @@ describe('Cross-user data isolation', () => {
     await prisma.monthlySummary.deleteMany({
       where: { period: { userId: { in: [userAId, userBId] } } },
     })
+    // --- Phase 30 D-22 cleanup: Asset/UnitRate reference ValueUnit,
+    // so ValueUnit must be deleted last of these four. BackupCode has no
+    // outgoing FKs besides User so order is flexible but placed first for clarity.
+    await prisma.backupCode.deleteMany({ where: { userId: { in: [userAId, userBId] } } })
+    await prisma.asset.deleteMany({ where: { userId: { in: [userAId, userBId] } } })
+    await prisma.unitRate.deleteMany({ where: { userId: { in: [userAId, userBId] } } })
+    await prisma.valueUnit.deleteMany({ where: { userId: { in: [userAId, userBId] } } })
     await prisma.debt.deleteMany({
       where: { userId: { in: [userAId, userBId] } },
     })
@@ -210,5 +276,34 @@ describe('Cross-user data isolation', () => {
       where: { userId: userAId },
     })
     expect(transactions).toHaveLength(2)
+  })
+
+  // --- Phase 30 D-22 new entity isolation tests ---
+
+  it('User B sees zero monthly summaries', async () => {
+    const summaries = await prisma.monthlySummary.findMany({
+      where: { userId: userBId },
+    })
+    expect(summaries).toHaveLength(0)
+  })
+
+  it('User B sees zero assets', async () => {
+    const assets = await prisma.asset.findMany({ where: { userId: userBId } })
+    expect(assets).toHaveLength(0)
+  })
+
+  it('User B sees zero value units', async () => {
+    const units = await prisma.valueUnit.findMany({ where: { userId: userBId } })
+    expect(units).toHaveLength(0)
+  })
+
+  it('User B sees zero unit rates', async () => {
+    const rates = await prisma.unitRate.findMany({ where: { userId: userBId } })
+    expect(rates).toHaveLength(0)
+  })
+
+  it('User B sees zero backup codes', async () => {
+    const codes = await prisma.backupCode.findMany({ where: { userId: userBId } })
+    expect(codes).toHaveLength(0)
   })
 })
