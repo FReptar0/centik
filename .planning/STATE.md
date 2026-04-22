@@ -4,16 +4,16 @@ milestone: v3.0
 milestone_name: Auth + Cloud Deploy
 current_phase: 30
 current_plan: 6
-status: awaiting-operator-smoke-check
-stopped_at: Plan 30-06 runbook written (Task 1 complete) — 30-VERIFICATION.md 476 lines / 11 sections / 11-item smoke checklist / upsertBudgets IDOR watch-item surfaced; pre-runbook gate green (710/710 unit + 71/71 integration); Task 2 (operator smoke-check on real Vercel deploy) PENDING before DEPLOY-04 can be marked Complete and Phase 30 closed
-last_updated: "2026-04-22T00:47:00.000Z"
+status: executing
+stopped_at: Completed Plan 30-06 Task 1 (docs) — 30-VERIFICATION.md runbook written (476 lines / 11 sections / 11-item smoke checklist / HSTS preload / rollback plan / upsertBudgets IDOR watch-item). Pre-runbook gate green (710/710 unit + 71/71 integration) after a Rule-1 prettier fix on 3 Phase-30 files left unformatted by prior plans. Plan 30-06 Task 2 (operator smoke-check on real Vercel deploy) is PENDING — no Claude-runnable verification substitutes. Phase 30 is "code-complete, awaiting operator smoke-check"; DEPLOY-04 requirement moves to Complete only after §6 smoke-checklist items 1-11 all pass and the operator records sign-off per §10.
+last_updated: "2026-04-22T04:24:17.584Z"
 last_activity: 2026-04-22
 progress:
-  total_phases: 6
-  completed_phases: 5
-  total_plans: 23
+  total_phases: 7
+  completed_phases: 6
+  total_plans: 24
   completed_plans: 23
-  percent: 100
+  percent: 96
 ---
 
 # Project State
@@ -31,8 +31,8 @@ Phase: 30 (Vercel Deploy + Security Hardening) — AWAITING OPERATOR SMOKE-CHECK
 Plan: 6 of 6 (docs Task 1 COMPLETE; operator Task 2 PENDING)
 **Current Phase:** 30
 **Current Plan:** 6
-**Total Plans in Phase:** 6
-**Status:** Runbook written; operator must run 30-VERIFICATION.md §6 smoke checklist against real Vercel deploy to close Phase 30 and mark DEPLOY-04 complete
+**Total Plans in Phase:** 1
+**Status:** Ready to execute
 **Last Activity:** 2026-04-22
 
 Progress: [██████████] 100% (docs 5/6 shipped as code; Plan 30-06 docs complete, operator smoke-check pending)
