@@ -27,6 +27,26 @@ export async function upsertBudgets(periodId: string, data: unknown): Promise<Ac
 
   const { userId } = await requireAuth()
 
+  // Phase 30.1 T-30.1-IDOR-001: period ownership guard (Phase 27 pattern)
+  const period = await prisma.period.findFirst({
+    where: { id: periodId, userId },
+    select: { id: true },
+  })
+  if (!period) {
+    return { error: { _form: ['Periodo no encontrado'] } }
+  }
+
+  // Phase 30.1 T-30.1-IDOR-002: batched category ownership guard. Empty-entries
+  // rejection is already handled by createBudgetSchema (Zod) earlier in the function.
+  const submittedCategoryIds = parsed.data.entries.map((e) => e.categoryId)
+  const ownedCategories = await prisma.category.findMany({
+    where: { id: { in: submittedCategoryIds }, userId },
+    select: { id: true },
+  })
+  if (ownedCategories.length !== submittedCategoryIds.length) {
+    return { error: { _form: ['Categoria no encontrada'] } }
+  }
+
   try {
     await Promise.all(
       parsed.data.entries.map(async (entry) => {
