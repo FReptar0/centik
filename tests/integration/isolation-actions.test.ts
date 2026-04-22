@@ -221,23 +221,64 @@ describe('cross-user IDOR — debts', () => {
 
 // --- Budgets ---
 //
-// NOTE on upsertBudgets: the action upserts per (periodId, categoryId, userId).
-// With User A's session + User B's periodId, findFirst returns null (no User A
-// row exists for that composite) so the action falls through to `create` with
-// userId=userAId — succeeding. User B's budget row IS untouched (load-bearing
-// assertion below), but a stale User-A row now references User B's period. We
-// sweep that row via afterAll's userAId filter. This is a partial IDOR —
-// documented in 30-05-SUMMARY for a defense-in-depth follow-up.
+// Phase 30.1 RESOLVED the partial-IDOR originally documented here. upsertBudgets
+// now runs two ownership guards before any write: (1) period.findFirst by
+// { id, userId } rejects cross-user periodId, (2) batched category.findMany
+// rejects any cross-user categoryId in entries[]. Both return the ambiguous
+// `{ error: { _form: [...] } }` shape consistent with the rest of the action
+// surface — no identity leak, no stale row creation.
 
 describe('cross-user IDOR — budgets', () => {
-  it('upsertBudgets: User A cannot overwrite User B budget row', async () => {
-    await upsertBudgets(userBPeriodId, {
+  it('upsertBudgets: User A cannot overwrite User B budget row (cross-user periodId rejected)', async () => {
+    const result = await upsertBudgets(userBPeriodId, {
       entries: [{ categoryId: userBCategoryId, quincenalAmount: '999' }],
     })
+    // Phase 30.1: action now rejects instead of silently creating a stale row
+    if ('success' in result)
+      throw new Error('upsertBudgets should not succeed with cross-user periodId')
+    expect(result.error._form).toContain('Periodo no encontrado')
+
     // Load-bearing: User B's existing budget is byte-identical to pre-action
     const after = await prisma.budget.findUnique({ where: { id: userBBudgetId } })
     expect(after?.quincenalAmount).toBe(BigInt(400000))
     expect(after?.userId).toBe(userBId)
+
+    // Phase 30.1: confirm no stale User-A row was created against User B's period
+    const staleRows = await prisma.budget.findMany({
+      where: { periodId: userBPeriodId, userId: userAId },
+    })
+    expect(staleRows).toHaveLength(0)
+  })
+
+  it('upsertBudgets: User A cannot create budgets using User B categoryId against their own period (cross-user categoryId rejected)', async () => {
+    // Seed User A period so the period guard passes; the categoryId guard must then reject.
+    const userAPeriod = await prisma.period.create({
+      data: {
+        month: 5,
+        year: 2099,
+        isClosed: false,
+        startDate: new Date('2099-05-01'),
+        endDate: new Date('2099-05-31'),
+        userId: userAId,
+      },
+    })
+
+    try {
+      const result = await upsertBudgets(userAPeriod.id, {
+        entries: [{ categoryId: userBCategoryId, quincenalAmount: '500' }],
+      })
+      if ('success' in result)
+        throw new Error('upsertBudgets should not succeed with cross-user categoryId')
+      expect(result.error._form).toContain('Categoria no encontrada')
+
+      // Confirm no stale row was created using User B's categoryId
+      const staleRows = await prisma.budget.findMany({
+        where: { categoryId: userBCategoryId, userId: userAId },
+      })
+      expect(staleRows).toHaveLength(0)
+    } finally {
+      await prisma.period.delete({ where: { id: userAPeriod.id } })
+    }
   })
 })
 
