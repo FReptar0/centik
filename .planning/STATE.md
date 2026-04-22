@@ -78,6 +78,10 @@ Progress: [██████████] 100% (docs 5/6 shipped as code; Plan 
 
 ## Accumulated Context
 
+### Roadmap Evolution
+
+- Phase 30.1 inserted after Phase 30: Fix upsertBudgets period-ownership IDOR (URGENT — surfaced by Plan 30-05 integration tests; cross-user stale-row creation via untrusted periodId + categoryId; fix is `findFirst({ where: { id, userId } })` pre-check pattern from Phase 27)
+
 ### Decisions
 
 Decisions are logged in PROJECT.md Key Decisions table.

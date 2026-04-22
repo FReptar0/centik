@@ -164,6 +164,21 @@ Plans:
 - [x] 30-05-PLAN.md -- Cross-user isolation test expansion (+5 read tests in isolation.test.ts; NEW isolation-actions.test.ts with ≥10 Server-Action IDOR tests) (completed 2026-04-22)
 - [x] 30-06-PLAN.md -- 30-VERIFICATION.md runbook + 11-item smoke checklist + HSTS preload submission + final quality gate (docs Task 1 complete 2026-04-22; operator smoke-check Task 2 PENDING before DEPLOY-04 + Phase 30 sign-off)
 
+### Phase 30.1: Fix upsertBudgets period-ownership IDOR (INSERTED)
+**Goal**: Close the partial-IDOR in `upsertBudgets` Server Action discovered by Plan 30-05 — authenticated users can currently submit another user's periodId + categoryId, creating stale cross-user Budget rows owned by the attacker but linked to the victim's period (no data leak, no victim-row mutation — but stale-row accumulation violates the per-user discipline).
+**Depends on**: Phase 30 (Plan 30-05 surfaced the finding)
+**Requirements**: Defense-in-depth for ISOL-02 / ISOL-03 (Phase 27 pattern) — no new REQ-ID
+**Success Criteria** (what must be TRUE):
+  1. `upsertBudgetsAction` rejects with an explicit error when the submitted `periodId` does not belong to the authenticated user (`findFirst({ where: { id: periodId, userId } })` pre-check fires before any write)
+  2. Same guard applied to every submitted `categoryId` in `entries[]` (IDOR protection for the category ownership path)
+  3. Integration test extends `tests/integration/isolation-actions.test.ts` (or the budgets section thereof) to prove: attacker submits User B's periodId → action rejects; attacker submits User B's categoryId → action rejects; no stale rows remain in DB after the attack attempts
+  4. Unit tests in `src/app/(app)/presupuesto/actions.test.ts` extended for the new guard behavior
+  5. `npm run quality && npm run test:integration` exits 0
+**Plans**: TBD
+
+Plans:
+- [ ] 30.1-01: TBD
+
 ## Progress
 
 **Execution Order:**
