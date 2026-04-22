@@ -37,9 +37,25 @@ export const proxy = auth((req) => {
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
   const isDev = process.env.NODE_ENV !== 'production'
 
+  // script-src: Next.js 16 + Turbopack does NOT reliably propagate the nonce
+  // to its emitted inline scripts (framework hydration manifest, chunk loader,
+  // etc.) in production builds. Using 'nonce-${value}' + 'strict-dynamic' —
+  // the "ideal" pattern from the Next docs — blocks every inline script and
+  // the app never hydrates. Until Next fixes the propagation, we fall back to
+  // 'self' + 'unsafe-inline' for script-src.
+  //
+  // Security impact: reflected/stored XSS via inline script injection is NOT
+  // mitigated by CSP in this posture. For Centik's single-admin invite-only
+  // model this is an acceptable short-term trade-off (vector is low — only
+  // the admin can inject content). Revisit when Next.js 16 + Turbopack
+  // supports stable nonce injection, OR switch to webpack-based builds.
+  //
+  // The rest of the CSP (HSTS, frame-ancestors, form-action, connect-src,
+  // img-src, font-src) stays strict and defends against clickjacking,
+  // CSRF-target confusion, data exfiltration, mixed content, etc.
   const csp = [
     `default-src 'self'`,
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ''}`,
+    `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}`,
     `style-src 'self' 'unsafe-inline'`, // Tailwind v4 + React 19 trade-off (D-06)
     `img-src 'self' data: blob:`, // QR codes (Phase 29) + backup-code download blob
     `font-src 'self' data:`, // next/font inlines as data URIs
