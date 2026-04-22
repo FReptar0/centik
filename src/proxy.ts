@@ -51,12 +51,14 @@ export const proxy = auth((req) => {
     `upgrade-insecure-requests`,
   ].join('; ')
 
-  // Inject nonce into downstream request headers so Server Components can
-  // read it via headers().get('x-nonce') if they render <Script nonce={...}>.
-  // Next.js 16 auto-applies the nonce to its own framework scripts when a CSP
-  // header containing 'nonce-${value}' is present on the response.
+  // Inject nonce + CSP into downstream request headers. Per Next.js 16 CSP docs
+  // (node_modules/next/dist/docs/01-app/02-guides/content-security-policy.md),
+  // setting Content-Security-Policy on the REQUEST is what allows Next.js to
+  // propagate the nonce into framework scripts. Without this, client components
+  // fail to hydrate because their inline scripts get blocked by the response CSP.
   const requestHeaders = new Headers(req.headers)
   requestHeaders.set('x-nonce', nonce)
+  requestHeaders.set('Content-Security-Policy', csp)
 
   const responseWithNonce = NextResponse.next({
     request: { headers: requestHeaders },
